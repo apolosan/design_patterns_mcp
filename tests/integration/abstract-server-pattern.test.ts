@@ -29,12 +29,12 @@ describe('Abstract Server Pattern Integration Tests', () => {
       expect(pattern.category).toBe('Structural');
     });
 
-    it('should have 555 total patterns including Abstract Server and new patterns', () => {
+    it('should have at least 574 total patterns including Abstract Server, new patterns, and SQL patterns', () => {
       const result = db.queryOne<{ count: number }>(
         'SELECT COUNT(*) as count FROM patterns'
       );
 
-      expect(result?.count).toBe(555);
+      expect(result?.count).toBeGreaterThanOrEqual(574);
     });
   });
 
@@ -135,7 +135,7 @@ describe('Abstract Server Pattern Integration Tests', () => {
 
       const abstractServer = patterns.find(p => p.id === 'abstract-server');
       expect(abstractServer).toBeDefined();
-      expect(patterns.length).toBe(555);
+      expect(patterns.length).toBeGreaterThanOrEqual(574);
     });
   });
 

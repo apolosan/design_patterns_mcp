@@ -1,6 +1,6 @@
 {
   "name": "design-patterns-mcp",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 500+ patterns using semantic search and vector embeddings",
   "main": "dist/mcp-server.js",
   "module": "dist/mcp-server.js",
@@ -38,16 +38,16 @@
   "scripts": {
     "build": "tsc && npm run build:copy-data",
     "build:copy-data": "cp -r data dist/ 2>/dev/null || mkdir -p dist/data",
-    "start": "node dist/src/mcp-server.js",
+    "start": "npm run build && node dist/src/mcp-server.js",
     "dev": "bun --hot src/mcp-server.ts",
     "test": "vitest",
     "lint": "eslint src/**/*.ts tests/**/*.ts",
     "lint:fix": "eslint src/**/*.ts tests/**/*.ts --fix",
     "typecheck": "tsc --noEmit",
-    "db:setup": "npm run migrate && npm run seed && npm run generate-embeddings",
-    "migrate": "node dist/src/db/init.js migrate",
-    "seed": "node dist/src/db/init.js seed",
-    "generate-embeddings": "node dist/src/generate-embeddings.js"
+    "db:setup": "npm run build && npm run migrate && npm run seed && npm run generate-embeddings",
+    "migrate": "npm run build && node dist/src/db/init.js migrate",
+    "seed": "npm run build && node dist/src/db/init.js seed",
+    "generate-embeddings": "npm run build && node dist/src/cli/generate-embeddings.js"
   },
   "repository": {
     "type": "git",

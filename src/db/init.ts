@@ -16,7 +16,7 @@ export interface InitConfig {
 export const DEFAULT_INIT_CONFIG: InitConfig = {
   databasePath: './data/design-patterns.db',
   migrationsPath: './migrations',
-  patternsPath: './src/data/patterns',
+  patternsPath: './data/patterns',
 };
 
 /**
@@ -60,7 +60,7 @@ export async function initializeDatabase(
     const seeder = createPatternSeeder(db, {
       patternsPath: config.patternsPath,
       batchSize: 10,
-      skipExisting: true,
+      skipExisting: false, // Changed to false to allow updates
     });
 
     const seedResult = await seeder.seedAll();

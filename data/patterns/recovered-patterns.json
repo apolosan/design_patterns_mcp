@@ -1,0 +1,1756 @@
+{
+  "patterns": [
+    {
+      "id": "abstract-server",
+      "name": "Abstract Server",
+      "category": "Structural",
+      "description": "Creates an abstraction layer between clients and server implementations, allowing multiple implementations without coupling the client to concrete classes. This pattern is fundamental to the Dependency Inversion Principle (DIP) and enables flexible, testable architectures in both object-oriented and functional programming.",
+      "when_to_use": [
+        "Need to decouple clients from server implementations",
+        "Multiple server implementations exist or may be needed",
+        "Want to apply Dependency Inversion Principle",
+        "Testing requires mock or stub implementations",
+        "Building plugin or extensible architectures"
+      ],
+      "benefits": [
+        "Loose coupling between client and server",
+        "Easy to add new implementations",
+        "Supports Dependency Inversion Principle",
+        "Facilitates testing with mocks and stubs",
+        "Promotes interface-based design",
+        "Enables runtime implementation switching"
+      ],
+      "drawbacks": [
+        "Adds abstraction layer complexity",
+        "May introduce performance overhead",
+        "Requires careful interface design",
+        "Can lead to over-abstraction"
+      ],
+      "use_cases": [
+        "Database access layers",
+        "File system operations",
+        "Network communication services",
+        "Logging frameworks",
+        "Authentication systems",
+        "Data persistence layers",
+        "External API integrations"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "structural",
+        "abstraction",
+        "dependency-inversion",
+        "SOLID",
+        "interface",
+        "functional-programming"
+      ]
+    },
+    {
+      "id": "ipfs-storage",
+      "name": "IPFS Storage Pattern",
+      "category": "Storage",
+      "description": "Content-addressed storage for NFT metadata and large files. Store hash on-chain, content on IPFS.",
+      "when_to_use": [
+        "NFT metadata",
+        "documents",
+        "media files",
+        "immutable content"
+      ],
+      "benefits": [
+        "Immutable",
+        "decentralized",
+        "cost-efficient vs on-chain"
+      ],
+      "drawbacks": [
+        "Requires pinning service",
+        "potential unavailability",
+        "not queryable"
+      ],
+      "use_cases": [
+        "NFT marketplaces",
+        "DAOs",
+        "decentralized content"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "storage",
+        "ipfs",
+        "nft",
+        "metadata",
+        "content-addressing"
+      ]
+    },
+    {
+      "id": "arweave-permanent",
+      "name": "Arweave Permanent Storage",
+      "category": "Storage",
+      "description": "Pay-once permanent storage for critical data. Uses endowment model for perpetual availability.",
+      "when_to_use": [
+        "Historical records",
+        "legal documents",
+        "permanent NFT storage"
+      ],
+      "benefits": [
+        "Permanent storage",
+        "one-time fee",
+        "immutable"
+      ],
+      "drawbacks": [
+        "Higher upfront cost",
+        "limited queryability",
+        "centralization risk"
+      ],
+      "use_cases": [
+        "Mirror.xyz",
+        "permanent NFTs",
+        "archival"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "storage",
+        "arweave",
+        "permanent",
+        "nft",
+        "archival"
+      ]
+    },
+    {
+      "id": "calldata-storage",
+      "name": "Calldata Storage Pattern",
+      "category": "Storage",
+      "description": "Store data in calldata instead of contract storage. Use events/calldata for historical data retrieval.",
+      "when_to_use": [
+        "Write-once data",
+        "historical logs",
+        "gas optimization"
+      ],
+      "benefits": [
+        "Cheapest on-chain storage (16 gas/byte)",
+        "permanent via archive nodes"
+      ],
+      "drawbacks": [
+        "Not queryable from contracts",
+        "requires indexer",
+        "historical only"
+      ],
+      "use_cases": [
+        "Order books",
+        "historical records",
+        "audit trails"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "storage",
+        "calldata",
+        "gas-optimization",
+        "events"
+      ]
+    },
+    {
+      "id": "eip4844-blob",
+      "name": "EIP-4844 Blob Storage",
+      "category": "Storage",
+      "description": "Proto-danksharding blob transactions for L2 data availability. Temporary (~18 days) but ultra-cheap.",
+      "when_to_use": [
+        "L2 rollup data",
+        "temporary data",
+        "cost-sensitive applications"
+      ],
+      "benefits": [
+        "10-100x cheaper than calldata",
+        "dedicated blob space"
+      ],
+      "drawbacks": [
+        "Temporary (~18 days)",
+        "requires blob indexer",
+        "not accessible from EVM"
+      ],
+      "use_cases": [
+        "Optimistic/ZK rollups",
+        "data availability layers"
+      ],
+      "complexity": "High",
+      "tags": [
+        "storage",
+        "eip4844",
+        "blobs",
+        "layer2",
+        "data-availability"
+      ]
+    },
+    {
+      "id": "fork-testing-pattern",
+      "name": "Fork Testing Pattern",
+      "category": "Development & Testing",
+      "description": "Test against mainnet state by forking at specific block. Real contracts, real data.",
+      "when_to_use": [
+        "DeFi protocol testing",
+        "integration testing",
+        "mainnet simulation"
+      ],
+      "benefits": [
+        "Real state and contracts",
+        "realistic testing",
+        "bug discovery"
+      ],
+      "drawbacks": [
+        "Slow (requires archive node)",
+        "expensive RPC calls"
+      ],
+      "use_cases": [
+        "Testing against Uniswap/Aave",
+        "integration tests",
+        "attack simulation"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "testing",
+        "fork",
+        "mainnet",
+        "hardhat",
+        "foundry",
+        "integration"
+      ]
+    },
+    {
+      "id": "fuzzing-pattern",
+      "name": "Fuzzing Pattern",
+      "category": "Development & Testing",
+      "description": "Property-based testing with random inputs. Discovers edge cases automatically.",
+      "when_to_use": [
+        "Security testing",
+        "input validation",
+        "edge case discovery"
+      ],
+      "benefits": [
+        "Finds unexpected bugs",
+        "automated",
+        "comprehensive coverage"
+      ],
+      "drawbacks": [
+        "Requires good invariants",
+        "slow",
+        "needs interpretation"
+      ],
+      "use_cases": [
+        "DeFi invariant testing",
+        "overflow detection",
+        "edge cases"
+      ],
+      "complexity": "High",
+      "tags": [
+        "testing",
+        "fuzzing",
+        "foundry",
+        "echidna",
+        "security",
+        "property-based"
+      ]
+    },
+    {
+      "id": "invariant-testing",
+      "name": "Invariant Testing Pattern",
+      "category": "Development & Testing",
+      "description": "Verify system properties always hold regardless of action sequence. High-confidence correctness.",
+      "when_to_use": [
+        "DeFi protocols",
+        "critical contracts",
+        "mathematical invariants"
+      ],
+      "benefits": [
+        "High-confidence correctness",
+        "catches complex bugs",
+        "mathematical proofs"
+      ],
+      "drawbacks": [
+        "Requires clear invariants",
+        "complex setup",
+        "slow execution"
+      ],
+      "use_cases": [
+        "AMM invariants",
+        "lending protocol solvency",
+        "supply conservation"
+      ],
+      "complexity": "Very High",
+      "tags": [
+        "testing",
+        "invariant",
+        "foundry",
+        "formal-verification",
+        "defi"
+      ]
+    },
+    {
+      "id": "multi-stage-deployment",
+      "name": "Multi-Stage Deployment Pattern",
+      "category": "Development & Deployment",
+      "description": "Deploy complex systems in ordered stages with dependencies. Organized, repeatable, auditable.",
+      "when_to_use": [
+        "Complex protocols with dependencies",
+        "multi-contract systems"
+      ],
+      "benefits": [
+        "Organized",
+        "repeatable",
+        "auditable",
+        "handles dependencies"
+      ],
+      "drawbacks": [
+        "Complex coordination",
+        "rollback challenges"
+      ],
+      "use_cases": [
+        "DeFi protocols",
+        "DAO deployments",
+        "protocol upgrades"
+      ],
+      "complexity": "High",
+      "tags": [
+        "deployment",
+        "hardhat",
+        "foundry",
+        "automation",
+        "ci-cd"
+      ]
+    },
+    {
+      "id": "multi-chain-deployment",
+      "name": "Multi-Chain Deployment Pattern",
+      "category": "Development & Deployment",
+      "description": "Deploy to multiple chains with consistent addresses using CREATE2. Reduces errors, enables cross-chain.",
+      "when_to_use": [
+        "Multi-chain protocols",
+        "consistent addressing",
+        "cross-chain apps"
+      ],
+      "benefits": [
+        "Consistent addresses",
+        "reduced errors",
+        "cross-chain compatibility"
+      ],
+      "drawbacks": [
+        "Different gas markets",
+        "chain-specific issues",
+        "coordination"
+      ],
+      "use_cases": [
+        "Omnichain protocols",
+        "multi-chain bridges",
+        "cross-chain dApps"
+      ],
+      "complexity": "High",
+      "tags": [
+        "deployment",
+        "multi-chain",
+        "create2",
+        "cross-chain",
+        "automation"
+      ]
+    },
+    {
+      "id": "ai-oracle-pattern",
+      "name": "AI Oracle Pattern",
+      "category": "AI & Blockchain",
+      "description": "Connect AI models to smart contracts via oracles. Verified AI outputs trigger on-chain actions.",
+      "when_to_use": [
+        "AI-powered DeFi",
+        "automated decisions",
+        "AI-driven contracts"
+      ],
+      "benefits": [
+        "AI-driven automation",
+        "verified outputs",
+        "composable AI+DeFi"
+      ],
+      "drawbacks": [
+        "AI reliability risk",
+        "complexity",
+        "cost",
+        "oracle dependency"
+      ],
+      "use_cases": [
+        "Chainlink AI integration",
+        "Oraichain",
+        "aelf AI oracle"
+      ],
+      "complexity": "Very High",
+      "tags": [
+        "ai",
+        "oracle",
+        "chainlink",
+        "automation",
+        "ml"
+      ]
+    },
+    {
+      "id": "onchain-ai-inference",
+      "name": "On-Chain AI Inference (zkML/opML)",
+      "category": "AI & Blockchain",
+      "description": "Verifiable AI execution on-chain using zero-knowledge or optimistic machine learning.",
+      "when_to_use": [
+        "Trustless AI",
+        "verifiable computation",
+        "autonomous agents"
+      ],
+      "benefits": [
+        "Trustless AI execution",
+        "verifiable",
+        "decentralized intelligence"
+      ],
+      "drawbacks": [
+        "Computational limits",
+        "high costs",
+        "early tech"
+      ],
+      "use_cases": [
+        "zkML (Modulus Labs)",
+        "opML",
+        "verifiable AI agents"
+      ],
+      "complexity": "Very High",
+      "tags": [
+        "ai",
+        "zkml",
+        "opml",
+        "zero-knowledge",
+        "ml-inference"
+      ]
+    },
+    {
+      "id": "stealth-address-pattern",
+      "name": "Stealth Address Pattern",
+      "category": "Privacy",
+      "description": "Generate one-time addresses from master public key. Recipient privacy, unlinkable transactions.",
+      "when_to_use": [
+        "Private payments",
+        "anonymous airdrops",
+        "unlinkable transactions"
+      ],
+      "benefits": [
+        "Unlinkable transactions",
+        "recipient privacy",
+        "no address reuse"
+      ],
+      "drawbacks": [
+        "Requires scanning",
+        "complex key management",
+        "UX challenges"
+      ],
+      "use_cases": [
+        "Umbra protocol",
+        "private transfers",
+        "anonymous recipients"
+      ],
+      "complexity": "Very High",
+      "tags": [
+        "privacy",
+        "stealth-address",
+        "anonymity",
+        "payments"
+      ]
+    },
+    {
+      "id": "fhe-pattern",
+      "name": "Fully Homomorphic Encryption (FHE)",
+      "category": "Privacy",
+      "description": "Compute on encrypted data without decryption. True confidential smart contracts.",
+      "when_to_use": [
+        "Private smart contracts",
+        "confidential DeFi",
+        "encrypted computation"
+      ],
+      "benefits": [
+        "True computation on encrypted data",
+        "maximum privacy"
+      ],
+      "drawbacks": [
+        "Very high computational overhead",
+        "early stage",
+        "slow"
+      ],
+      "use_cases": [
+        "Inco Network",
+        "Fhenix",
+        "confidential auctions",
+        "private voting"
+      ],
+      "complexity": "Very High",
+      "tags": [
+        "privacy",
+        "fhe",
+        "encryption",
+        "confidential",
+        "homomorphic"
+      ]
+    },
+    {
+      "id": "eip712-typed-data",
+      "name": "EIP-712 Typed Structured Data",
+      "category": "Security",
+      "description": "Secure off-chain signing with human-readable structured data. Domain separation, wallet display.",
+      "when_to_use": [
+        "Meta-transactions",
+        "permits",
+        "DAO voting",
+        "off-chain signatures"
+      ],
+      "benefits": [
+        "Human-readable",
+        "domain separation",
+        "wallet support",
+        "security"
+      ],
+      "drawbacks": [
+        "Implementation complexity",
+        "requires wallet support"
+      ],
+      "use_cases": [
+        "ERC-20 Permit",
+        "gasless approvals",
+        "Snapshot voting",
+        "NFT minting"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "security",
+        "eip-712",
+        "signature",
+        "meta-transaction",
+        "permit"
+      ]
+    },
+    {
+      "id": "meta-transactions-erc2771",
+      "name": "Meta-Transactions (ERC-2771)",
+      "category": "Security",
+      "description": "Gasless transactions via trusted forwarder. Users sign, relayer pays gas.",
+      "when_to_use": [
+        "Gasless onboarding",
+        "UX improvement",
+        "sponsored transactions"
+      ],
+      "benefits": [
+        "Users don't need ETH for gas",
+        "better UX",
+        "lower friction"
+      ],
+      "drawbacks": [
+        "Relayer dependency",
+        "contracts must support ERC-2771"
+      ],
+      "use_cases": [
+        "OpenGSN",
+        "Biconomy",
+        "gasless dApps",
+        "onboarding"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "gasless",
+        "meta-transaction",
+        "erc-2771",
+        "relayer",
+        "ux"
+      ]
+    },
+    {
+      "id": "declarative-programming-react",
+      "name": "Declarative Programming Pattern",
+      "category": "React Fundamentals",
+      "description": "Paradigm shift from imperative DOM manipulation to declarative UI description. React handles the how, you specify the what.",
+      "when_to_use": [
+        "All React applications",
+        "UI state management",
+        "component rendering"
+      ],
+      "benefits": [
+        "Easier to understand and maintain",
+        "predictable state management",
+        "less boilerplate"
+      ],
+      "drawbacks": [
+        "Learning curve for imperative developers",
+        "abstraction overhead"
+      ],
+      "use_cases": [
+        "Building UIs",
+        "state-driven interfaces",
+        "component composition"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "declarative",
+        "imperative",
+        "paradigm",
+        "fundamentals"
+      ]
+    },
+    {
+      "id": "react-elements-pattern",
+      "name": "React Elements Pattern",
+      "category": "React Fundamentals",
+      "description": "Lightweight objects representing DOM nodes. React elements are immutable and describe what you see on screen.",
+      "when_to_use": [
+        "Understanding React rendering",
+        "custom createElement usage",
+        "JSX transpilation"
+      ],
+      "benefits": [
+        "Performance (lightweight objects)",
+        "immutability",
+        "efficient diffing"
+      ],
+      "drawbacks": [
+        "Immutable (must create new elements for updates)",
+        "indirect DOM access"
+      ],
+      "use_cases": [
+        "Component rendering",
+        "Virtual DOM",
+        "reconciliation process"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "elements",
+        "virtual-dom",
+        "jsx",
+        "reconciliation"
+      ]
+    },
+    {
+      "id": "jsx-syntax-pattern",
+      "name": "JSX Syntax and Features Pattern",
+      "category": "React Fundamentals",
+      "description": "XML-like syntax extension for JavaScript. JSX provides a concise way to describe UI structure.",
+      "when_to_use": [
+        "All React components",
+        "UI templates",
+        "component composition"
+      ],
+      "benefits": [
+        "Readable",
+        "familiar HTML-like syntax",
+        "type-safe with TypeScript",
+        "tooling support"
+      ],
+      "drawbacks": [
+        "Requires transpilation (Babel)",
+        "not valid JavaScript",
+        "learning curve"
+      ],
+      "use_cases": [
+        "Component rendering",
+        "conditional rendering",
+        "lists",
+        "inline styles"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "jsx",
+        "syntax",
+        "babel",
+        "transpilation"
+      ]
+    },
+    {
+      "id": "typescript-react-integration",
+      "name": "TypeScript Integration Pattern",
+      "category": "React Fundamentals",
+      "description": "Type-safe React development with TypeScript. Define prop types, state types, and component contracts.",
+      "when_to_use": [
+        "Large React applications",
+        "team projects",
+        "type safety requirements"
+      ],
+      "benefits": [
+        "Type safety",
+        "better IDE support",
+        "catch errors at compile time",
+        "self-documenting"
+      ],
+      "drawbacks": [
+        "Additional setup",
+        "learning curve",
+        "verbose for simple components"
+      ],
+      "use_cases": [
+        "Component props validation",
+        "state typing",
+        "event handlers",
+        "custom hooks"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "typescript",
+        "types",
+        "props",
+        "interfaces"
+      ]
+    },
+    {
+      "id": "react-code-quality-patterns",
+      "name": "Code Quality Patterns",
+      "category": "React Fundamentals",
+      "description": "Tools and practices for clean React code: Prettier, ESLint, functional programming principles.",
+      "when_to_use": [
+        "All React projects",
+        "team development",
+        "code consistency"
+      ],
+      "benefits": [
+        "Consistent code style",
+        "catch errors early",
+        "better maintainability"
+      ],
+      "drawbacks": [
+        "Initial setup time",
+        "potential conflicts between tools"
+      ],
+      "use_cases": [
+        "Code formatting",
+        "linting",
+        "immutability",
+        "pure functions"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "code-quality",
+        "eslint",
+        "prettier",
+        "functional-programming"
+      ]
+    },
+    {
+      "id": "controlled-uncontrolled-forms",
+      "name": "Controlled and Uncontrolled Forms",
+      "category": "React Forms",
+      "description": "Controlled: React state controls input. Uncontrolled: DOM holds state via refs.",
+      "when_to_use": [
+        "Form inputs",
+        "validation",
+        "dynamic forms",
+        "file uploads"
+      ],
+      "benefits": [
+        "Controlled: validation",
+        "dynamic. Uncontrolled: simpler for static"
+      ],
+      "drawbacks": [
+        "Controlled: boilerplate. Uncontrolled: less control"
+      ],
+      "use_cases": [
+        "Login forms",
+        "search inputs",
+        "file upload",
+        "form validation"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "forms",
+        "controlled",
+        "uncontrolled",
+        "input",
+        "validation",
+        "modern"
+      ]
+    },
+    {
+      "id": "tailwind-css-pattern",
+      "name": "Tailwind CSS Pattern",
+      "category": "React Styling",
+      "description": "Utility-first CSS framework. Industry standard for React in 2024-2025.",
+      "when_to_use": [
+        "Modern React apps",
+        "rapid development",
+        "consistent design systems"
+      ],
+      "benefits": [
+        "Fast development",
+        "no CSS files",
+        "great DX",
+        "tree-shakeable",
+        "consistent"
+      ],
+      "drawbacks": [
+        "Learning curve",
+        "verbose HTML",
+        "requires build step"
+      ],
+      "use_cases": [
+        "Component styling",
+        "responsive design",
+        "dark mode",
+        "design systems"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "tailwind",
+        "css",
+        "styling",
+        "utility-first",
+        "modern",
+        "2024"
+      ]
+    },
+    {
+      "id": "css-modules-pattern",
+      "name": "CSS Modules Pattern",
+      "category": "React Styling",
+      "description": "Scoped CSS with modules. Still recommended by Next.js for custom styles in 2024.",
+      "when_to_use": [
+        "Component-scoped custom styles",
+        "when Tailwind is not enough"
+      ],
+      "benefits": [
+        "Scoped styles",
+        "no naming conflicts",
+        "standard CSS",
+        "type-safe with TypeScript"
+      ],
+      "drawbacks": [
+        "Separate files",
+        "more boilerplate than Tailwind"
+      ],
+      "use_cases": [
+        "Complex animations",
+        "custom designs",
+        "component libraries"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "css-modules",
+        "styling",
+        "scoped",
+        "nextjs",
+        "modern"
+      ]
+    },
+    {
+      "id": "react-server-components",
+      "name": "React Server Components (RSC)",
+      "category": "React Server Components",
+      "description": "Server-rendered components in React 18+. Default in Next.js App Router. Zero client JS.",
+      "when_to_use": [
+        "Data fetching",
+        "SEO",
+        "performance",
+        "reducing client bundle"
+      ],
+      "benefits": [
+        "Zero client JS",
+        "direct DB access",
+        "better performance",
+        "automatic code splitting"
+      ],
+      "drawbacks": [
+        "Cannot use hooks",
+        "event handlers",
+        "or browser APIs"
+      ],
+      "use_cases": [
+        "Server data fetching",
+        "static content",
+        "SEO pages",
+        "dashboard data"
+      ],
+      "complexity": "High",
+      "tags": [
+        "react",
+        "rsc",
+        "server-components",
+        "nextjs",
+        "app-router",
+        "modern",
+        "2024"
+      ]
+    },
+    {
+      "id": "suspense-data-fetching",
+      "name": "Suspense for Data Fetching",
+      "category": "React Server Components",
+      "description": "Declarative loading states with Suspense. Stream UI as data loads.",
+      "when_to_use": [
+        "Async data fetching",
+        "streaming SSR",
+        "loading states"
+      ],
+      "benefits": [
+        "Declarative loading",
+        "streaming",
+        "better UX",
+        "automatic code splitting"
+      ],
+      "drawbacks": [
+        "Requires Suspense-compatible data sources",
+        "React 18+"
+      ],
+      "use_cases": [
+        "Server data",
+        "slow API calls",
+        "incremental rendering"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "suspense",
+        "streaming",
+        "loading",
+        "data-fetching",
+        "modern"
+      ]
+    },
+    {
+      "id": "react-19-features",
+      "name": "React 19 New Features",
+      "category": "React Modern",
+      "description": "React 19 features: use hook, form actions, useOptimistic, useFormStatus.",
+      "when_to_use": [
+        "React 19+ apps",
+        "async data",
+        "form handling",
+        "optimistic updates"
+      ],
+      "benefits": [
+        "Better DX",
+        "built-in form handling",
+        "optimistic updates",
+        "simpler async"
+      ],
+      "drawbacks": [
+        "React 19 only (cutting edge)",
+        "ecosystem catching up"
+      ],
+      "use_cases": [
+        "Form submissions",
+        "async resources",
+        "optimistic UI",
+        "loading states"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "react-19",
+        "use",
+        "form-actions",
+        "optimistic",
+        "modern",
+        "2025"
+      ]
+    },
+    {
+      "id": "core-react-hooks",
+      "name": "Core React Hooks (useState, useEffect, useContext)",
+      "category": "React Hooks",
+      "description": "Essential hooks for state, side effects, and context. Foundation of modern React.",
+      "when_to_use": [
+        "All functional components",
+        "state management",
+        "side effects",
+        "global state"
+      ],
+      "benefits": [
+        "Simpler than class components",
+        "composable",
+        "reusable",
+        "better code organization"
+      ],
+      "drawbacks": [
+        "Rules of hooks must be followed",
+        "learning curve for beginners"
+      ],
+      "use_cases": [
+        "Component state",
+        "API calls",
+        "subscriptions",
+        "DOM manipulation",
+        "theme/auth context"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "hooks",
+        "useState",
+        "useEffect",
+        "useContext",
+        "state",
+        "side-effects",
+        "modern"
+      ]
+    },
+    {
+      "id": "use-reducer-hook",
+      "name": "useReducer Hook Pattern",
+      "category": "React Hooks",
+      "description": "Complex state management with reducer pattern. Alternative to useState for complex state logic.",
+      "when_to_use": [
+        "Complex state logic",
+        "multiple sub-values",
+        "state transitions",
+        "Redux-like patterns"
+      ],
+      "benefits": [
+        "Predictable state updates",
+        "easier testing",
+        "cleaner complex logic",
+        "TypeScript-friendly"
+      ],
+      "drawbacks": [
+        "More boilerplate than useState",
+        "overkill for simple state"
+      ],
+      "use_cases": [
+        "Form state",
+        "shopping cart",
+        "multi-step wizards",
+        "undo/redo",
+        "complex UI state"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "hooks",
+        "useReducer",
+        "reducer",
+        "state-management",
+        "redux-pattern",
+        "modern"
+      ]
+    },
+    {
+      "id": "custom-hooks-pattern",
+      "name": "Custom Hooks Pattern",
+      "category": "React Hooks",
+      "description": "Extract reusable stateful logic into custom hooks. Share behavior across components.",
+      "when_to_use": [
+        "Reusable logic",
+        "shared state patterns",
+        "abstracting complex behavior"
+      ],
+      "benefits": [
+        "Code reuse",
+        "separation of concerns",
+        "testable",
+        "composable"
+      ],
+      "drawbacks": [
+        "Can be overused",
+        "must follow rules of hooks"
+      ],
+      "use_cases": [
+        "Data fetching",
+        "form handling",
+        "local storage",
+        "window size",
+        "debounce",
+        "auth state"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "hooks",
+        "custom-hooks",
+        "reusable-logic",
+        "composition",
+        "modern"
+      ]
+    },
+    {
+      "id": "react-18-concurrent-hooks",
+      "name": "React 18 Concurrent Hooks (useId, useTransition, useDeferredValue)",
+      "category": "React Hooks",
+      "description": "React 18 hooks for concurrent rendering, non-blocking updates, and unique IDs.",
+      "when_to_use": [
+        "SSR hydration",
+        "unique IDs",
+        "non-urgent updates",
+        "large lists",
+        "heavy computations"
+      ],
+      "benefits": [
+        "Better UX",
+        "non-blocking UI",
+        "SSR-safe IDs",
+        "smoother interactions"
+      ],
+      "drawbacks": [
+        "React 18+ only",
+        "complexity for simple cases"
+      ],
+      "use_cases": [
+        "Form IDs",
+        "accessibility",
+        "search filtering",
+        "tab switching",
+        "expensive renders"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "hooks",
+        "react-18",
+        "concurrent",
+        "useId",
+        "useTransition",
+        "useDeferredValue",
+        "modern",
+        "2024"
+      ]
+    },
+    {
+      "id": "use-memo-callback-optimization",
+      "name": "useMemo and useCallback Optimization Pattern",
+      "category": "React Hooks",
+      "description": "Memoization hooks to prevent unnecessary re-renders and expensive recalculations.",
+      "when_to_use": [
+        "Performance optimization",
+        "expensive calculations",
+        "callback stability",
+        "React.memo"
+      ],
+      "benefits": [
+        "Better performance",
+        "prevents unnecessary renders",
+        "stable references"
+      ],
+      "drawbacks": [
+        "Premature optimization risk",
+        "memory overhead",
+        "complexity"
+      ],
+      "use_cases": [
+        "Heavy computations",
+        "large lists",
+        "callback props",
+        "derived state",
+        "object/array deps"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "hooks",
+        "useMemo",
+        "useCallback",
+        "optimization",
+        "performance",
+        "memoization",
+        "modern"
+      ]
+    },
+    {
+      "id": "use-ref-forward-ref-pattern",
+      "name": "useRef and forwardRef Pattern",
+      "category": "React Hooks",
+      "description": "Direct DOM access and ref forwarding for component libraries and imperative operations.",
+      "when_to_use": [
+        "DOM manipulation",
+        "focus management",
+        "animations",
+        "third-party libraries",
+        "component libraries"
+      ],
+      "benefits": [
+        "Direct DOM access",
+        "persistent values",
+        "no re-renders",
+        "component library APIs"
+      ],
+      "drawbacks": [
+        "Imperative (vs declarative)",
+        "can bypass React",
+        "easy to misuse"
+      ],
+      "use_cases": [
+        "Auto-focus",
+        "scroll position",
+        "media players",
+        "canvas",
+        "measuring elements",
+        "imperative API"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "hooks",
+        "useRef",
+        "forwardRef",
+        "dom",
+        "refs",
+        "imperative",
+        "component-library",
+        "modern"
+      ]
+    },
+    {
+      "id": "form-validation-pattern",
+      "name": "Form Validation Pattern",
+      "category": "React Forms",
+      "description": "Advanced form validation with libraries like React Hook Form and Zod for type-safe validation.",
+      "when_to_use": [
+        "Complex forms",
+        "validation rules",
+        "type safety",
+        "performance optimization"
+      ],
+      "benefits": [
+        "Type-safe",
+        "performant",
+        "less re-renders",
+        "great DX",
+        "schema validation"
+      ],
+      "drawbacks": [
+        "Additional dependencies",
+        "learning curve"
+      ],
+      "use_cases": [
+        "Registration forms",
+        "checkout",
+        "surveys",
+        "multi-step forms",
+        "dynamic validation"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "forms",
+        "validation",
+        "react-hook-form",
+        "zod",
+        "type-safety",
+        "modern",
+        "2024"
+      ]
+    },
+    {
+      "id": "react-animations-pattern",
+      "name": "React Animations Pattern",
+      "category": "React UI",
+      "description": "Modern animations with Framer Motion. Declarative animations for React.",
+      "when_to_use": [
+        "UI transitions",
+        "page animations",
+        "interactive elements",
+        "micro-interactions"
+      ],
+      "benefits": [
+        "Declarative",
+        "performant",
+        "gesture support",
+        "layout animations",
+        "easy API"
+      ],
+      "drawbacks": [
+        "Bundle size",
+        "complexity for simple animations"
+      ],
+      "use_cases": [
+        "Page transitions",
+        "modals",
+        "dropdowns",
+        "hover effects",
+        "list animations"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "animations",
+        "framer-motion",
+        "transitions",
+        "gestures",
+        "modern",
+        "2024"
+      ]
+    },
+    {
+      "id": "svg-components-pattern",
+      "name": "SVG Components Pattern",
+      "category": "React UI",
+      "description": "Inline SVG components for icons, illustrations, and data visualizations.",
+      "when_to_use": [
+        "Icon systems",
+        "data viz",
+        "custom graphics",
+        "animations",
+        "interactive SVG"
+      ],
+      "benefits": [
+        "Styleable with CSS",
+        "animatable",
+        "accessible",
+        "small bundle size"
+      ],
+      "drawbacks": [
+        "Verbose for complex SVG",
+        "requires SVG knowledge"
+      ],
+      "use_cases": [
+        "Icon libraries",
+        "charts",
+        "maps",
+        "logos",
+        "illustrations",
+        "progress indicators"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "svg",
+        "icons",
+        "graphics",
+        "data-visualization",
+        "modern"
+      ]
+    },
+    {
+      "id": "react-anti-patterns",
+      "name": "React Anti-Patterns",
+      "category": "React Best Practices",
+      "description": "Common mistakes and anti-patterns to avoid in React development.",
+      "when_to_use": [
+        "Code reviews",
+        "learning",
+        "refactoring",
+        "preventing bugs"
+      ],
+      "benefits": [
+        "Better code quality",
+        "fewer bugs",
+        "better performance",
+        "maintainability"
+      ],
+      "drawbacks": [
+        "None - avoiding anti-patterns is always beneficial"
+      ],
+      "use_cases": [
+        "Key prop issues",
+        "state mutations",
+        "effect dependencies",
+        "prop drilling"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "anti-patterns",
+        "best-practices",
+        "mistakes",
+        "code-quality",
+        "modern"
+      ]
+    },
+    {
+      "id": "compound-components-pattern",
+      "name": "Compound Components Pattern",
+      "category": "React Components",
+      "description": "Components that work together to form a complete UI, sharing implicit state.",
+      "when_to_use": [
+        "Component libraries",
+        "complex UI controls",
+        "flexible APIs",
+        "reusable components"
+      ],
+      "benefits": [
+        "Flexible API",
+        "separation of concerns",
+        "implicit state sharing",
+        "composable"
+      ],
+      "drawbacks": [
+        "More complex implementation",
+        "requires Context"
+      ],
+      "use_cases": [
+        "Tabs",
+        "accordions",
+        "dropdowns",
+        "menus",
+        "select components",
+        "modals"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "compound-components",
+        "composition",
+        "component-library",
+        "api-design",
+        "modern"
+      ]
+    },
+    {
+      "id": "react-context-api-pattern",
+      "name": "Context API Pattern",
+      "category": "React State Management",
+      "description": "Global state management without prop drilling. Built-in React solution for sharing data.",
+      "when_to_use": [
+        "Theme",
+        "auth",
+        "language",
+        "user settings",
+        "avoiding prop drilling"
+      ],
+      "benefits": [
+        "Built-in",
+        "no dependencies",
+        "simple API",
+        "works with hooks"
+      ],
+      "drawbacks": [
+        "Re-renders all consumers",
+        "not optimized for frequent updates"
+      ],
+      "use_cases": [
+        "Global UI state",
+        "user preferences",
+        "feature flags",
+        "shared data"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "context",
+        "state-management",
+        "global-state",
+        "prop-drilling",
+        "modern"
+      ]
+    },
+    {
+      "id": "react-router-patterns",
+      "name": "React Router Patterns",
+      "category": "React Routing",
+      "description": "Client-side routing with React Router v6. SPA navigation and route management.",
+      "when_to_use": [
+        "Multi-page SPAs",
+        "navigation",
+        "protected routes",
+        "nested routes"
+      ],
+      "benefits": [
+        "Declarative routing",
+        "nested routes",
+        "hooks API",
+        "code splitting"
+      ],
+      "drawbacks": [
+        "Learning curve",
+        "breaking changes between versions"
+      ],
+      "use_cases": [
+        "App navigation",
+        "authentication flows",
+        "layouts",
+        "404 pages",
+        "dynamic routes"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "routing",
+        "react-router",
+        "navigation",
+        "spa",
+        "v6",
+        "modern"
+      ]
+    },
+    {
+      "id": "react-performance-patterns",
+      "name": "React Performance Optimization Patterns",
+      "category": "React Performance",
+      "description": "Techniques for optimizing React performance: React.memo, lazy loading, code splitting.",
+      "when_to_use": [
+        "Performance issues",
+        "large lists",
+        "heavy components",
+        "bundle size"
+      ],
+      "benefits": [
+        "Better performance",
+        "smaller bundles",
+        "faster initial load"
+      ],
+      "drawbacks": [
+        "Complexity",
+        "premature optimization risks"
+      ],
+      "use_cases": [
+        "Component memoization",
+        "route-based splitting",
+        "dynamic imports",
+        "virtual scrolling"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "performance",
+        "optimization",
+        "memo",
+        "lazy",
+        "code-splitting",
+        "modern"
+      ]
+    },
+    {
+      "id": "react-error-boundary-pattern",
+      "name": "Error Boundary Pattern",
+      "category": "React Error Handling",
+      "description": "Catch and handle React component errors gracefully with error boundaries.",
+      "when_to_use": [
+        "Production apps",
+        "error handling",
+        "fallback UI",
+        "error logging"
+      ],
+      "benefits": [
+        "Prevents app crashes",
+        "better UX",
+        "error tracking integration"
+      ],
+      "drawbacks": [
+        "Class component required (until React 19)",
+        "does not catch event handler errors"
+      ],
+      "use_cases": [
+        "Component errors",
+        "async errors",
+        "API failures",
+        "graceful degradation"
+      ],
+      "complexity": "Low",
+      "tags": [
+        "react",
+        "error-handling",
+        "error-boundary",
+        "resilience",
+        "production",
+        "modern"
+      ]
+    },
+    {
+      "id": "react-testing-library-pattern",
+      "name": "React Testing Library Pattern",
+      "category": "React Testing",
+      "description": "User-centric testing with React Testing Library. Test components as users interact.",
+      "when_to_use": [
+        "Component testing",
+        "integration testing",
+        "user behavior testing"
+      ],
+      "benefits": [
+        "User-focused",
+        "encourages accessible code",
+        "simple API",
+        "maintainable"
+      ],
+      "drawbacks": [
+        "Learning curve",
+        "can be verbose for complex scenarios"
+      ],
+      "use_cases": [
+        "Form validation",
+        "user interactions",
+        "accessibility",
+        "component behavior"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "react",
+        "testing",
+        "react-testing-library",
+        "jest",
+        "tdd",
+        "modern",
+        "2024"
+      ]
+    },
+    {
+      "id": "sql-where-filtering",
+      "name": "WHERE Clause Filtering Pattern",
+      "category": "Data Query",
+      "description": "Reduces dataset size by filtering rows using WHERE clause predicates. This fundamental SQL pattern improves query performance by eliminating unnecessary data early in query execution, reducing memory usage and processing time.",
+      "when_to_use": "[\"Need to reduce result set size\",\"Filter data based on specific conditions\",\"Improve query performance\",\"Retrieve only relevant records\",\"Combine multiple filter criteria with AND/OR\"]",
+      "benefits": "[\"Reduces data transfer and memory usage\",\"Improves query performance\",\"Decreases processing time\",\"Enables precise data retrieval\",\"Can leverage indexes for optimization\",\"Reduces network bandwidth\"]",
+      "drawbacks": "[\"Complex WHERE clauses can be hard to maintain\",\"Improper indexing leads to full table scans\",\"OR conditions may prevent index usage\",\"Function calls on columns prevent index usage\"]",
+      "use_cases": "[\"Filtering by date ranges\",\"Searching by specific attributes\",\"Excluding deleted or inactive records\",\"Filtering by user permissions\",\"Combining multiple search criteria\",\"Pagination queries\"]",
+      "complexity": "Low",
+      "tags": [
+        "sql",
+        "filtering",
+        "where",
+        "performance",
+        "query-optimization",
+        "data-retrieval"
+      ]
+    },
+    {
+      "id": "sql-group-by-aggregation",
+      "name": "GROUP BY Aggregation Pattern",
+      "category": "Data Query",
+      "description": "Aggregates data into groups using GROUP BY clause combined with aggregate functions (SUM, AVG, COUNT, MAX, MIN). This pattern transforms detailed data into summary statistics, enabling analytical queries and reporting at various granularity levels.",
+      "when_to_use": "[\"Need summary statistics from detailed data\",\"Calculate totals, averages, or counts per category\",\"Generate reports with grouped data\",\"Analyze data at different granularity levels\",\"Combine with HAVING for filtered aggregates\"]",
+      "benefits": "[\"Reduces data volume through aggregation\",\"Provides meaningful business metrics\",\"Enables multi-level analysis\",\"Improves query performance with proper indexing\",\"Supports complex analytical queries\"]",
+      "drawbacks": "[\"Can be memory-intensive for large groups\",\"May require careful index design\",\"HAVING clause evaluated after grouping\",\"Complex grouping can impact readability\"]",
+      "use_cases": "[\"Sales reporting by region or period\",\"Calculating customer lifetime value\",\"Inventory analysis by category\",\"Website analytics (page views, sessions)\",\"Financial summaries and KPIs\",\"Trend analysis over time periods\"]",
+      "complexity": "Medium",
+      "tags": [
+        "sql",
+        "aggregation",
+        "group-by",
+        "analytics",
+        "reporting",
+        "sum",
+        "avg",
+        "count"
+      ]
+    },
+    {
+      "id": "sql-case-expression",
+      "name": "CASE Expression Pattern",
+      "category": "Data Query",
+      "description": "Implements conditional logic within SQL queries using CASE expressions. Allows data transformation, categorization, and dynamic value assignment based on conditions. Supports both simple and searched CASE formats for flexible conditional processing.",
+      "when_to_use": "[\"Need conditional value transformation\",\"Categorize data into groups\",\"Implement business logic in queries\",\"Handle NULL or missing values\",\"Create pivot-like transformations\",\"Dynamic sorting with ORDER BY\"]",
+      "benefits": "[\"Keeps logic in database layer\",\"Avoids multiple queries for conditional data\",\"Improves performance vs application-side logic\",\"Enables complex data transformations\",\"Works in SELECT, WHERE, ORDER BY, HAVING\"]",
+      "drawbacks": "[\"Complex CASE statements reduce readability\",\"Can be hard to maintain\",\"May impact query performance if overused\",\"Limited error handling capabilities\"]",
+      "use_cases": "[\"Data categorization and bucketing\",\"Status translation (codes to descriptions)\",\"Conditional aggregations\",\"Dynamic sorting logic\",\"NULL value handling\",\"Creating calculated columns\"]",
+      "complexity": "Medium",
+      "tags": [
+        "sql",
+        "case",
+        "conditional-logic",
+        "transformation",
+        "business-logic",
+        "coalesce",
+        "isnull"
+      ]
+    },
+    {
+      "id": "sql-common-table-expression",
+      "name": "Common Table Expression (CTE) Pattern",
+      "category": "Data Query",
+      "description": "Defines temporary named result sets using WITH clause that can be referenced within SELECT, INSERT, UPDATE, or DELETE statements. CTEs improve query readability, enable recursive queries, and help break complex queries into manageable logical steps. Particularly powerful for hierarchical data traversal.",
+      "when_to_use": "[\"Simplify complex queries with multiple subqueries\",\"Improve query readability and maintainability\",\"Process hierarchical or recursive data\",\"Reuse same subquery multiple times\",\"Create step-by-step query logic\",\"Replace derived tables for better clarity\"]",
+      "benefits": "[\"Greatly improves code readability\",\"Can be referenced multiple times in query\",\"Enables recursive queries for hierarchical data\",\"Easier to debug than nested subqueries\",\"Supports forward references between CTEs\",\"Better performance than multiple subqueries in some cases\"]",
+      "drawbacks": "[\"May not be materialized (re-executed each time)\",\"Can impact performance if not optimized\",\"Recursive CTEs need termination conditions\",\"Not all databases optimize CTEs equally\"]",
+      "use_cases": "[\"Organizational hierarchies (manager-employee)\",\"Bill of materials (BOM) structures\",\"File system directory traversal\",\"Social network graph traversal\",\"Breaking complex reports into steps\",\"Recursive calculations (Fibonacci, factorials)\"]",
+      "complexity": "Medium",
+      "tags": [
+        "sql",
+        "cte",
+        "with-clause",
+        "recursive",
+        "hierarchical-data",
+        "query-organization",
+        "readability"
+      ]
+    },
+    {
+      "id": "sql-window-functions",
+      "name": "Window Functions Pattern",
+      "category": "Data Query",
+      "description": "Performs calculations across a set of rows related to the current row using OVER clause. Unlike GROUP BY which collapses rows, window functions preserve individual rows while adding calculated values. Supports ranking, running totals, moving averages, and row comparisons without self-joins.",
+      "when_to_use": "[\"Calculate running totals or cumulative sums\",\"Rank or number rows within partitions\",\"Calculate moving averages\",\"Compare current row with previous/next rows\",\"Perform analytics without losing row detail\",\"Avoid complex self-joins\"]",
+      "benefits": "[\"Preserves all rows (unlike GROUP BY)\",\"Eliminates need for self-joins\",\"Enables complex analytics in single query\",\"Better performance than correlated subqueries\",\"Supports partitioning and ordering\",\"Clean, readable syntax\"]",
+      "drawbacks": "[\"Can be memory-intensive for large datasets\",\"May impact performance without proper indexing\",\"Complex syntax for beginners\",\"Not all databases support all window functions\"]",
+      "use_cases": "[\"Sales running totals and YoY comparisons\",\"Ranking products, customers, employees\",\"Calculating moving averages (stock prices)\",\"Finding gaps and islands in sequences\",\"Page views and session analytics\",\"Salary percentile calculations\"]",
+      "complexity": "Medium",
+      "tags": [
+        "sql",
+        "window-functions",
+        "over-clause",
+        "row-number",
+        "rank",
+        "lead",
+        "lag",
+        "running-total"
+      ]
+    },
+    {
+      "id": "sql-pivot-unpivot",
+      "name": "PIVOT and UNPIVOT Pattern",
+      "category": "Data Query",
+      "description": "Transforms data between row-based and column-based formats. PIVOT rotates rows into columns for cross-tab reports, while UNPIVOT normalizes column data into rows. Essential for data warehousing, reporting, and transforming data between normalized and denormalized forms.",
+      "when_to_use": "[\"Create cross-tabulation reports\",\"Transform time-series data to columnar format\",\"Generate matrix-style reports\",\"Normalize wide tables into long format\",\"Prepare data for specific visualization needs\",\"Convert between OLTP and OLAP formats\"]",
+      "benefits": "[\"Simplifies cross-tab reporting\",\"Reduces need for complex CASE statements\",\"Improves report readability\",\"Enables dynamic column generation\",\"Essential for data transformation pipelines\"]",
+      "drawbacks": "[\"Can be memory-intensive\",\"Static PIVOT requires known column values\",\"Complex syntax for beginners\",\"May require dynamic SQL for flexibility\",\"Not all databases support PIVOT/UNPIVOT\"]",
+      "use_cases": "[\"Sales by month/quarter reports\",\"Product comparison matrices\",\"Demographic cross-tabulations\",\"Survey response analysis\",\"Normalizing spreadsheet imports\",\"ETL data transformations\"]",
+      "complexity": "Medium",
+      "tags": [
+        "sql",
+        "pivot",
+        "unpivot",
+        "cross-tab",
+        "data-transformation",
+        "reshape",
+        "reporting"
+      ]
+    },
+    {
+      "id": "sql-json-data-handling",
+      "name": "JSON Data Handling Pattern",
+      "category": "Data Query",
+      "description": "Stores, queries, and manipulates JSON data within relational databases. Modern SQL databases provide native JSON functions for parsing, querying, and modifying JSON documents, enabling hybrid relational-document data models. Essential for flexible schemas, API integrations, and semi-structured data.",
+      "when_to_use": "[\"Store semi-structured or variable-schema data\",\"Handle API responses in database\",\"Flexible attribute storage (EAV alternative)\",\"Audit logs and event data\",\"User preferences and settings\",\"Integrate with NoSQL-style data\"]",
+      "benefits": "[\"Flexible schema without ALTER TABLE\",\"Reduces need for many-to-many tables\",\"Native indexing on JSON paths\",\"Query and update nested data\",\"Better than serialized text/XML\",\"Maintains ACID compliance\"]",
+      "drawbacks": "[\"Can impact query performance\",\"Less efficient than normalized tables\",\"JSON validation overhead\",\"Harder to maintain data integrity\",\"Index strategy more complex\"]",
+      "use_cases": "[\"Product catalogs with variable attributes\",\"User profiles and preferences\",\"Event and audit logging\",\"API data storage\",\"Configuration and metadata\",\"Multi-tenant application data\"]",
+      "complexity": "Medium",
+      "tags": [
+        "sql",
+        "json",
+        "semi-structured",
+        "document-store",
+        "nosql",
+        "flexible-schema"
+      ]
+    },
+    {
+      "id": "sql-query-optimization",
+      "name": "Query Optimization Pattern",
+      "category": "Performance",
+      "description": "Techniques and best practices for optimizing SQL query performance through query plan analysis, execution statistics, and query rewriting. Focuses on understanding query execution, identifying bottlenecks, and applying optimization strategies to improve response times and resource utilization.",
+      "when_to_use": "[\"Queries running slower than expected\",\"High CPU or memory usage\",\"Need to improve application performance\",\"Analyzing execution plans\",\"Optimizing for large datasets\",\"Reducing database server load\"]",
+      "benefits": "[\"Dramatically improves query performance\",\"Reduces server resource consumption\",\"Better user experience\",\"Enables scaling without hardware upgrades\",\"Identifies missing indexes\",\"Reveals inefficient query patterns\"]",
+      "drawbacks": "[\"Requires understanding of query execution\",\"Optimization can be time-consuming\",\"May need database-specific knowledge\",\"Over-optimization can reduce maintainability\",\"Performance depends on data distribution\"]",
+      "use_cases": "[\"Slow-running reports and dashboards\",\"High-volume transaction processing\",\"Real-time analytics queries\",\"Data warehousing ETL processes\",\"API endpoint performance tuning\",\"Database migration optimization\"]",
+      "complexity": "High",
+      "tags": [
+        "sql",
+        "performance",
+        "optimization",
+        "execution-plan",
+        "query-tuning",
+        "bottleneck",
+        "sargable"
+      ]
+    },
+    {
+      "id": "sql-indexing-strategies",
+      "name": "Index Strategy Pattern",
+      "category": "Performance",
+      "description": "Strategic creation and management of database indexes to optimize query performance. Covers clustered vs non-clustered indexes, composite indexes, covering indexes, filtered indexes, and index maintenance. Proper indexing is critical for query performance but requires careful planning to avoid overhead.",
+      "when_to_use": "[\"Slow query performance on large tables\",\"Frequent queries on specific columns\",\"JOIN operations on foreign keys\",\"WHERE clause filters\",\"ORDER BY and GROUP BY operations\",\"Preventing full table scans\"]",
+      "benefits": "[\"Dramatically speeds up SELECT queries\",\"Improves JOIN performance\",\"Enables faster sorting and grouping\",\"Reduces I/O operations\",\"Supports query optimizer decisions\",\"Essential for large tables\"]",
+      "drawbacks": "[\"Slows down INSERT, UPDATE, DELETE\",\"Consumes additional disk space\",\"Requires maintenance (rebuild/reorganize)\",\"Too many indexes hurt performance\",\"Index fragmentation over time\",\"Requires ongoing monitoring\"]",
+      "use_cases": "[\"Primary and foreign key columns\",\"Frequently searched columns\",\"JOIN columns\",\"Columns in WHERE clauses\",\"ORDER BY columns\",\"High-cardinality columns\"]",
+      "complexity": "High",
+      "tags": [
+        "sql",
+        "indexing",
+        "performance",
+        "clustered-index",
+        "non-clustered",
+        "composite-index",
+        "covering-index"
+      ]
+    }
+  ]
+}

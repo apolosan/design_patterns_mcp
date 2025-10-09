@@ -1,0 +1,26 @@
+{
+  "id": "sql-where-filtering",
+  "name": "WHERE Clause Filtering Pattern",
+  "category": "Data Query",
+  "description": "Reduces dataset size by filtering rows using WHERE clause predicates. This fundamental SQL pattern improves query performance by eliminating unnecessary data early in query execution, reducing memory usage and processing time.",
+  "when_to_use": "[\"Need to reduce result set size\",\"Filter data based on specific conditions\",\"Improve query performance\",\"Retrieve only relevant records\",\"Combine multiple filter criteria with AND/OR\"]",
+  "benefits": "[\"Reduces data transfer and memory usage\",\"Improves query performance\",\"Decreases processing time\",\"Enables precise data retrieval\",\"Can leverage indexes for optimization\",\"Reduces network bandwidth\"]",
+  "drawbacks": "[\"Complex WHERE clauses can be hard to maintain\",\"Improper indexing leads to full table scans\",\"OR conditions may prevent index usage\",\"Function calls on columns prevent index usage\"]",
+  "use_cases": "[\"Filtering by date ranges\",\"Searching by specific attributes\",\"Excluding deleted or inactive records\",\"Filtering by user permissions\",\"Combining multiple search criteria\",\"Pagination queries\"]",
+  "complexity": "Low",
+  "tags": ["sql", "filtering", "where", "performance", "query-optimization", "data-retrieval"],
+  "examples": {
+    "tsql": {
+      "description": "T-SQL WHERE clause filtering with multiple conditions and best practices",
+      "code": "-- Basic WHERE filtering\nSELECT CustomerID, CustomerName, City, Country\nFROM Customers\nWHERE Country = 'USA'\n  AND City = 'Seattle';\n\n-- Date range filtering (SARGable - Search ARGument able)\nSELECT OrderID, OrderDate, TotalAmount\nFROM Orders\nWHERE OrderDate >= '2024-01-01'\n  AND OrderDate < '2024-02-01';  -- Better than BETWEEN for performance\n\n-- IN clause for multiple values\nSELECT ProductID, ProductName, CategoryID\nFROM Products\nWHERE CategoryID IN (1, 3, 5, 7);\n\n-- LIKE pattern matching\nSELECT EmployeeID, FirstName, LastName, Email\nFROM Employees\nWHERE Email LIKE '%@company.com'\n  AND LastName LIKE 'S%';  -- Prefix search can use index\n\n-- Avoiding anti-patterns (these prevent index usage)\n-- BAD: Function on column\n-- WHERE YEAR(OrderDate) = 2024  -- Scans entire table\n\n-- GOOD: SARGable version\nWHERE OrderDate >= '2024-01-01' \n  AND OrderDate < '2025-01-01';\n\n-- Complex filtering with proper precedence\nSELECT *\nFROM Customers\nWHERE (Country = 'USA' OR Country = 'Canada')\n  AND (CreditLimit > 10000)\n  AND IsActive = 1;"
+    },
+    "postgresql": {
+      "description": "PostgreSQL WHERE filtering with advanced features",
+      "code": "-- Basic filtering with NULL handling\nSELECT customer_id, customer_name, email\nFROM customers\nWHERE email IS NOT NULL\n  AND country = 'USA';\n\n-- Array containment (PostgreSQL specific)\nSELECT product_id, product_name, tags\nFROM products\nWHERE tags @> ARRAY['electronics', 'sale'];  -- Contains both tags\n\n-- JSON filtering (PostgreSQL specific)\nSELECT user_id, profile\nFROM users\nWHERE profile->>'city' = 'Seattle'\n  AND (profile->'preferences'->>'notifications')::boolean = true;\n\n-- Full-text search filtering\nSELECT article_id, title, content\nFROM articles\nWHERE to_tsvector('english', content) @@ to_tsquery('postgresql & performance');\n\n-- Range types filtering\nSELECT event_id, event_name, event_period\nFROM events\nWHERE event_period @> CURRENT_DATE;  -- Events happening today\n\n-- DISTINCT ON with filtering\nSELECT DISTINCT ON (customer_id)\n  customer_id, order_date, total_amount\nFROM orders\nWHERE order_date >= CURRENT_DATE - INTERVAL '30 days'\nORDER BY customer_id, order_date DESC;"
+    },
+    "mysql": {
+      "description": "MySQL WHERE clause filtering with optimization techniques",
+      "code": "-- Basic WHERE filtering\nSELECT customer_id, customer_name, city\nFROM customers\nWHERE country = 'USA'\n  AND city = 'New York';\n\n-- Efficient date filtering\nSELECT order_id, order_date, amount\nFROM orders\nWHERE order_date >= '2024-01-01'\n  AND order_date < DATE_ADD('2024-01-01', INTERVAL 1 MONTH);\n\n-- Multiple conditions with indexes\nSELECT product_id, product_name, price, stock\nFROM products\nWHERE price BETWEEN 10.00 AND 100.00\n  AND stock > 0\n  AND is_active = TRUE;\n\n-- CASE-sensitive filtering\nSELECT user_id, username\nFROM users\nWHERE username = BINARY 'JohnDoe';  -- Case-sensitive match\n\n-- Filtering with subquery\nSELECT customer_id, customer_name\nFROM customers\nWHERE customer_id IN (\n  SELECT DISTINCT customer_id\n  FROM orders\n  WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 90 DAY)\n);\n\n-- Using indexes hint (when needed)\nSELECT /*+ INDEX(orders idx_order_date) */\n  order_id, customer_id, total\nFROM orders\nWHERE order_date >= '2024-01-01'\n  AND status = 'completed';"
+    }
+  }
+}

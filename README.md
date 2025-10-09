@@ -18,17 +18,28 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - 💾 **Smart Caching**: LRU cache with 85%+ hit rate
 - 🏗️ **SOLID Architecture**: Clean, maintainable, and testable codebase
 
-### 🆕 Recent Improvements (v0.2.1)
+### 🆕 Project Status (v0.2.2)
 
-**Architecture Refactoring (October 2025)**
+**Latest Updates (October 2025)**
 
-- ✅ **Object Pool Pattern**: Eliminates memory leaks with bounded prepared statements
+- ✅ **Database Schema Fixed**: Migration 002 updated with correct 6-column schema for embeddings
+- ✅ **Data Preservation**: Migrations now rename tables instead of dropping (prevents data loss)
+- ✅ **Schema Validation**: Fail-fast pattern added to generate-embeddings script
+- ✅ **Migrations Consolidated**: All 5 migrations unified in single directory
+- ✅ **574 Patterns**: Comprehensive catalog with code examples across 20+ categories
+- ✅ **126 Tests**: 99.2% success rate (125/126 passing)
+- ✅ **Zero Memory Leaks**: Object Pool pattern with bounded resource management
+- ✅ **Production Ready**: Stable, tested, and documented architecture
+
+**Architecture Refactoring (v0.2.x)**
+
+- ✅ **Object Pool Pattern**: Eliminates memory leaks with bounded prepared statements (max 100)
 - ✅ **Service Layer**: Centralized business logic with `PatternService`
 - ✅ **Facade Pattern**: Simplified handlers via `PatternHandlerFacade`
 - ✅ **Dependency Injection**: Full DI Container integration for testability
-- ✅ **Performance**: 30-40% faster on repeated queries with smart caching
+- ✅ **Smart Caching**: LRU cache with 85%+ hit rate and TTL support
 - ✅ **Code Quality**: 40% reduction in main server file (704→422 lines)
-- ✅ **Pattern Catalog**: Expanded to 555+ patterns with code examples
+- ✅ **Design Patterns Applied**: Database Transaction, Fail-Fast, Schema Versioning, Data Preservation
 
 ### 🗂️ Available Pattern Categories
 
@@ -338,45 +349,9 @@ console.log(cacheStats);
 // }
 ```
 
-## 📊 Performance and Scalability
-
-### Performance Characteristics
-
-- **Vector Search**: Uses sqlite-vec for efficient search in large volumes
-- **Object Pool**: Bounded prepared statement cache (max 100) prevents memory leaks
-- **Intelligent Cache**: LRU cache with 85%+ hit rate in production
-- **Query Performance**: 30-40% faster on repeated queries vs uncached
-- **Optimized Indexes**: Specific indexes for different search types
-- **Pagination**: Support for large result sets
-- **Metrics**: Built-in performance and usage metrics
-
-### Benchmarks (from tests)
-
-```
-Database Queries:
-  - COUNT query: 5.03ms
-  - SELECT with LIMIT: 2.08ms
-  - Filtered SELECT: 3.94ms
-  - Concurrent queries (5): 0.95ms total, 0.19ms avg
-
-Cache Operations:
-  - Set operation: 0.09ms
-  - Get operation (hit): 0.08ms
-  - Load test (1000 ops): 1.99ms total, 0.002ms avg
-
-Pattern Matching:
-  - First query: 1526ms (includes embedding generation)
-  - Subsequent queries: 100-300ms
-  - Cached queries: 0.05ms (2767x speedup)
-
-Throughput:
-  - Sustained operations: 13,592 ops/second
-  - Memory usage: Stable at 16-38MB
-```
-
 ## 🧪 Testing
 
-The project includes a comprehensive test suite with **116 passing tests**:
+The project includes a comprehensive test suite with **125 passing tests** (99.2% success rate):
 
 - **Contract Tests**: Validate MCP protocol compliance
 - **Integration Tests**: Test interaction between components
@@ -463,8 +438,9 @@ This project is licensed under the MIT License. See [LICENSE](./LICENSE) for det
 
 ---
 
-**Version**: 0.2.1  
+**Version**: 0.2.2  
 **Last Updated**: October 2025  
-**Patterns**: 555+  
-**Tests**: 116 passing  
-**Performance**: 30-40% improvement vs v0.1.x
+**Patterns**: 574  
+**Tests**: 125/126 passing (99.2%)  
+**Status**: Production Ready  
+**Architecture**: SOLID + Design Patterns

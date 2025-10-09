@@ -80,6 +80,31 @@ async function main(): Promise<void> {
       )
     `);
 
+    // Validate schema integrity (Fail-Fast Pattern)
+    const schemaInfo = dbManager.query<{ name: string }>(
+      `PRAGMA table_info(pattern_embeddings)`
+    );
+    
+    const expectedColumns = new Set(['pattern_id', 'embedding', 'model', 'strategy', 'dimensions', 'created_at']);
+    const actualColumns = new Set(schemaInfo.map(col => col.name));
+    
+    if (expectedColumns.size !== actualColumns.size || 
+        ![...expectedColumns].every(col => actualColumns.has(col))) {
+      const missing = [...expectedColumns].filter(col => !actualColumns.has(col));
+      const extra = [...actualColumns].filter(col => !expectedColumns.has(col));
+      
+      throw new Error(
+        `Schema mismatch for pattern_embeddings table!\n` +
+        `Expected columns: ${[...expectedColumns].join(', ')}\n` +
+        `Actual columns: ${[...actualColumns].join(', ')}\n` +
+        `Missing columns: ${missing.join(', ') || 'none'}\n` +
+        `Extra columns: ${extra.join(', ') || 'none'}\n` +
+        `This usually means migrations need to be re-run. Try: npm run migrate`
+      );
+    }
+    
+    logger.info('generate-embeddings', '✓ Schema validation passed - all required columns present');
+
     // Store embeddings with strategy information
     for (let i = 0; i < patterns.length; i++) {
       const patternId = patternIds[i];

@@ -1,0 +1,202 @@
+{
+  "patterns": [
+    {
+      "id": "data-sampling",
+      "name": "Data Sampling Pattern",
+      "category": "Data Engineering",
+      "description": "Selects a representative subset of a large dataset for analysis or model training while preserving statistical properties and diversity",
+      "problem": "Large datasets consume excessive memory and processing time, making exploratory analysis and rapid prototyping infeasible",
+      "solution": "Apply statistical sampling techniques (random, stratified, systematic) to create smaller representative subsets that maintain the dataset's characteristics",
+      "when_to_use": [
+        "Dataset too large to fit in memory",
+        "Rapid prototyping and experimentation needed",
+        "Exploratory data analysis on massive datasets",
+        "Testing pipelines before full-scale processing"
+      ],
+      "benefits": [
+        "Reduced memory footprint",
+        "Faster iteration cycles",
+        "Enable local development",
+        "Maintain statistical properties",
+        "Cost-effective analysis"
+      ],
+      "drawbacks": [
+        "Risk of sampling bias",
+        "May miss rare patterns",
+        "Sample size determination critical",
+        "Not suitable for final production models"
+      ],
+      "use_cases": [
+        "Customer behavior analysis on millions of transactions",
+        "Sensor data analysis from IoT devices",
+        "Social media sentiment analysis",
+        "A/B testing with large user bases"
+      ],
+      "related_patterns": ["Data Partitioning", "Data Streaming", "Feature Engineering Pipeline"],
+      "complexity": "Low",
+      "tags": ["data-engineering", "sampling", "scalability", "preprocessing", "big-data"],
+      "code_examples": [
+        {
+          "language": "python",
+          "code": "import pandas as pd\nimport numpy as np\n\n# Random Sampling\ndef random_sample(data: pd.DataFrame, fraction: float = 0.1) -> pd.DataFrame:\n    \"\"\"Sample random fraction of dataset\"\"\"\n    return data.sample(frac=fraction, random_state=42)\n\n# Stratified Sampling\ndef stratified_sample(\n    data: pd.DataFrame, \n    strata_column: str, \n    fraction: float = 0.1\n) -> pd.DataFrame:\n    \"\"\"Maintain class distribution in sample\"\"\"\n    return data.groupby(strata_column, group_keys=False).apply(\n        lambda x: x.sample(frac=fraction, random_state=42)\n    )\n\n# Reservoir Sampling for Streams\ndef reservoir_sample(stream_iterator, sample_size: int):\n    \"\"\"Sample from data stream of unknown size\"\"\"\n    reservoir = []\n    for i, item in enumerate(stream_iterator):\n        if i < sample_size:\n            reservoir.append(item)\n        else:\n            j = np.random.randint(0, i + 1)\n            if j < sample_size:\n                reservoir[j] = item\n    return reservoir\n\n# Usage Example\ndata = pd.read_csv('large_dataset.csv')\n\n# 10% random sample\nsampled_data = random_sample(data, fraction=0.1)\n\n# Stratified sample maintaining category distribution\nstratified_data = stratified_sample(data, 'category', fraction=0.05)\n\nprint(f\"Original: {len(data):,} rows\")\nprint(f\"Sampled: {len(sampled_data):,} rows\")"
+        },
+        {
+          "language": "python",
+          "code": "from sklearn.model_selection import train_test_split\n\nclass DataSampler:\n    \"\"\"Reusable sampling utility for ML workflows\"\"\"\n    \n    def __init__(self, sampling_strategy='random', sample_size=0.1):\n        self.sampling_strategy = sampling_strategy\n        self.sample_size = sample_size\n        \n    def fit_sample(self, X, y=None):\n        if self.sampling_strategy == 'random':\n            if y is not None:\n                X_sample, _, y_sample, _ = train_test_split(\n                    X, y, train_size=self.sample_size, \n                    stratify=y, random_state=42\n                )\n                return X_sample, y_sample\n            return X.sample(frac=self.sample_size)\n        \n        elif self.sampling_strategy == 'systematic':\n            step = int(1 / self.sample_size)\n            return X.iloc[::step]\n        \n        return X\n\n# Usage\nsampler = DataSampler(sampling_strategy='random', sample_size=0.1)\nX_train_sample, y_train_sample = sampler.fit_sample(X_train, y_train)"
+        }
+      ]
+    },
+    {
+      "id": "data-streaming",
+      "name": "Data Streaming Pattern",
+      "category": "Data Engineering",
+      "description": "Processes data in continuous chunks or streams rather than loading entire datasets into memory, enabling handling of data larger than available RAM",
+      "problem": "Datasets exceed available memory, making traditional batch processing impossible or inefficient",
+      "solution": "Read and process data incrementally in manageable chunks, maintaining minimal state and performing transformations on-the-fly",
+      "when_to_use": [
+        "Dataset larger than available RAM",
+        "Real-time data ingestion needed",
+        "Continuous data processing pipelines",
+        "Log file processing and monitoring"
+      ],
+      "benefits": [
+        "Unbounded dataset processing",
+        "Constant memory usage",
+        "Real-time processing capability",
+        "Scalable to infinite data streams",
+        "Reduced infrastructure costs"
+      ],
+      "drawbacks": [
+        "Limited lookback capability",
+        "Complex state management",
+        "Harder to debug",
+        "Requires streaming-aware algorithms",
+        "Potential data ordering issues"
+      ],
+      "use_cases": [
+        "Log analysis and monitoring",
+        "Real-time analytics on sensor data",
+        "Social media feed processing",
+        "Video frame-by-frame analysis",
+        "Financial tick data processing"
+      ],
+      "related_patterns": ["Data Sampling", "Real-Time Inference", "Load Balancing"],
+      "complexity": "Medium",
+      "tags": ["streaming", "data-engineering", "scalability", "real-time", "big-data"],
+      "code_examples": [
+        {
+          "language": "python",
+          "code": "import pandas as pd\nfrom typing import Iterator, Callable\n\n# Basic Chunk Processing\ndef process_large_file_in_chunks(\n    file_path: str,\n    chunk_size: int = 10000,\n    process_func: Callable = None\n) -> Iterator:\n    \"\"\"Process large CSV file in chunks\"\"\"\n    for chunk in pd.read_csv(file_path, chunksize=chunk_size):\n        if process_func:\n            yield process_func(chunk)\n        else:\n            yield chunk\n\n# Streaming Aggregation\ndef streaming_aggregation(file_path: str, chunk_size: int = 10000):\n    \"\"\"Compute statistics without loading full dataset\"\"\"\n    total_count = 0\n    running_sum = 0\n    running_sum_sq = 0\n    \n    for chunk in pd.read_csv(file_path, chunksize=chunk_size):\n        total_count += len(chunk)\n        running_sum += chunk['value'].sum()\n        running_sum_sq += (chunk['value'] ** 2).sum()\n    \n    mean = running_sum / total_count\n    variance = (running_sum_sq / total_count) - (mean ** 2)\n    \n    return {'count': total_count, 'mean': mean, 'variance': variance}\n\n# Usage\nresults = []\nfor chunk in process_large_file_in_chunks('large_dataset.csv', chunk_size=5000):\n    # Process each chunk\n    filtered = chunk[chunk['value'] > 100]\n    results.append(filtered)\n\nfinal_result = pd.concat(results, ignore_index=True)"
+        },
+        {
+          "language": "python",
+          "code": "from collections import defaultdict\nimport json\n\nclass StreamProcessor:\n    \"\"\"Generic streaming data processor\"\"\"\n    \n    def __init__(self, window_size: int = 1000):\n        self.window_size = window_size\n        self.state = defaultdict(list)\n        \n    def process_stream(self, data_stream):\n        \"\"\"Process data stream with sliding window\"\"\"\n        for item in data_stream:\n            yield self._process_item(item)\n            self._update_window(item)\n    \n    def _process_item(self, item):\n        # Apply transformations\n        processed = item.copy()\n        processed['window_avg'] = self._compute_window_average()\n        return processed\n    \n    def _update_window(self, item):\n        self.state['window'].append(item['value'])\n        if len(self.state['window']) > self.window_size:\n            self.state['window'].pop(0)\n    \n    def _compute_window_average(self):\n        if not self.state['window']:\n            return 0\n        return sum(self.state['window']) / len(self.state['window'])\n\n# Real-Time Log Processing\ndef process_log_stream(log_file: str):\n    \"\"\"Tail-like log processing\"\"\"\n    with open(log_file, 'r') as f:\n        while True:\n            line = f.readline()\n            if not line:\n                break\n            \n            # Process line-by-line\n            log_entry = json.loads(line)\n            if log_entry.get('level') == 'ERROR':\n                yield log_entry\n\n# Usage\nprocessor = StreamProcessor(window_size=100)\n\ndef data_generator():\n    # Simulates streaming data\n    for i in range(1000000):\n        yield {'id': i, 'value': i * 2}\n\nfor processed_item in processor.process_stream(data_generator()):\n    if processed_item['id'] % 10000 == 0:\n        print(f\"Processed {processed_item['id']} items\")"
+        }
+      ]
+    },
+    {
+      "id": "distributed-training",
+      "name": "Distributed Training Pattern",
+      "category": "AI/ML",
+      "description": "Distributes model training across multiple machines or GPUs to handle large datasets and models that exceed single-machine capabilities",
+      "problem": "Training large deep learning models on massive datasets requires computational resources beyond a single machine's capacity",
+      "solution": "Parallelize training across multiple compute nodes using data parallelism (split data) or model parallelism (split model), with synchronized gradient updates",
+      "when_to_use": [
+        "Training data exceeds single machine memory",
+        "Model training time is prohibitively long",
+        "Large-scale deep learning models",
+        "Need to scale training to production datasets"
+      ],
+      "benefits": [
+        "Drastically reduced training time",
+        "Handle massive datasets",
+        "Scale to hundreds of GPUs",
+        "Enable larger model architectures",
+        "Cost-effective for large workloads"
+      ],
+      "drawbacks": [
+        "Complex setup and debugging",
+        "Communication overhead",
+        "Requires specialized frameworks",
+        "Potential gradient synchronization issues",
+        "Infrastructure costs"
+      ],
+      "use_cases": [
+        "Large language model training (GPT, BERT)",
+        "Computer vision on massive image datasets",
+        "Recommendation systems with billions of users",
+        "Scientific simulations and research",
+        "Traffic pattern analysis at city scale"
+      ],
+      "related_patterns": ["Model Parallelism", "Data Partitioning", "Load Balancing"],
+      "complexity": "Very High",
+      "tags": ["distributed-computing", "training", "scalability", "deep-learning", "parallelism"],
+      "code_examples": [
+        {
+          "language": "python",
+          "code": "import torch\nimport torch.nn as nn\nimport torch.distributed as dist\nfrom torch.nn.parallel import DistributedDataParallel as DDP\nfrom torch.utils.data.distributed import DistributedSampler\n\ndef setup_distributed(rank, world_size):\n    \"\"\"Initialize distributed training environment\"\"\"\n    dist.init_process_group(\n        backend='nccl',  # Use 'gloo' for CPU\n        init_method='env://',\n        world_size=world_size,\n        rank=rank\n    )\n\ndef cleanup_distributed():\n    \"\"\"Clean up distributed training\"\"\"\n    dist.destroy_process_group()\n\nclass DistributedTrainer:\n    def __init__(self, model, rank, world_size):\n        self.rank = rank\n        self.world_size = world_size\n        \n        # Move model to GPU\n        self.device = torch.device(f'cuda:{rank}')\n        model = model.to(self.device)\n        \n        # Wrap model with DDP\n        self.model = DDP(model, device_ids=[rank])\n        \n    def train(self, train_loader, epochs=10):\n        optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)\n        criterion = nn.CrossEntropyLoss()\n        \n        for epoch in range(epochs):\n            self.model.train()\n            for batch_idx, (data, target) in enumerate(train_loader):\n                data, target = data.to(self.device), target.to(self.device)\n                \n                optimizer.zero_grad()\n                output = self.model(data)\n                loss = criterion(output, target)\n                loss.backward()\n                optimizer.step()\n                \n                if batch_idx % 100 == 0 and self.rank == 0:\n                    print(f'Epoch {epoch}, Batch {batch_idx}, Loss: {loss.item():.4f}')\n\n# Main training function\ndef main():\n    rank = int(os.environ['RANK'])\n    world_size = int(os.environ['WORLD_SIZE'])\n    \n    setup_distributed(rank, world_size)\n    \n    # Create model\n    model = YourModel()\n    \n    # Create distributed sampler\n    train_dataset = YourDataset()\n    train_sampler = DistributedSampler(\n        train_dataset,\n        num_replicas=world_size,\n        rank=rank\n    )\n    \n    train_loader = torch.utils.data.DataLoader(\n        train_dataset,\n        batch_size=32,\n        sampler=train_sampler\n    )\n    \n    # Train\n    trainer = DistributedTrainer(model, rank, world_size)\n    trainer.train(train_loader)\n    \n    cleanup_distributed()\n\nif __name__ == '__main__':\n    main()"
+        },
+        {
+          "language": "python",
+          "code": "# Using PyTorch Lightning for simplified distributed training\nimport pytorch_lightning as pl\nfrom torch.utils.data import DataLoader\n\nclass DistributedLightningModel(pl.LightningModule):\n    def __init__(self, model):\n        super().__init__()\n        self.model = model\n        self.criterion = nn.CrossEntropyLoss()\n        \n    def forward(self, x):\n        return self.model(x)\n    \n    def training_step(self, batch, batch_idx):\n        x, y = batch\n        y_hat = self(x)\n        loss = self.criterion(y_hat, y)\n        self.log('train_loss', loss)\n        return loss\n    \n    def configure_optimizers(self):\n        return torch.optim.Adam(self.parameters(), lr=0.001)\n\n# Trainer with distributed strategy\nmodel = DistributedLightningModel(YourModel())\n\ntrainer = pl.Trainer(\n    accelerator='gpu',\n    devices=4,  # Use 4 GPUs\n    strategy='ddp',  # Distributed Data Parallel\n    max_epochs=10,\n    precision=16  # Mixed precision for faster training\n)\n\ntrain_loader = DataLoader(train_dataset, batch_size=32, num_workers=4)\ntrainer.fit(model, train_loader)"
+        },
+        {
+          "language": "python",
+          "code": "# TensorFlow distributed training\nimport tensorflow as tf\n\nclass DistributedTensorFlowTrainer:\n    def __init__(self, num_gpus=4):\n        # Create distribution strategy\n        self.strategy = tf.distribute.MirroredStrategy(\n            devices=[f'/gpu:{i}' for i in range(num_gpus)]\n        )\n        print(f'Number of devices: {self.strategy.num_replicas_in_sync}')\n        \n    def create_model(self):\n        with self.strategy.scope():\n            model = tf.keras.Sequential([\n                tf.keras.layers.Dense(128, activation='relu'),\n                tf.keras.layers.Dense(64, activation='relu'),\n                tf.keras.layers.Dense(10, activation='softmax')\n            ])\n            \n            model.compile(\n                optimizer='adam',\n                loss='sparse_categorical_crossentropy',\n                metrics=['accuracy']\n            )\n        return model\n    \n    def train(self, train_dataset, epochs=10):\n        # Distribute dataset\n        dist_dataset = self.strategy.experimental_distribute_dataset(train_dataset)\n        \n        model = self.create_model()\n        \n        # Training loop\n        model.fit(\n            dist_dataset,\n            epochs=epochs,\n            verbose=1\n        )\n        \n        return model\n\n# Usage\ntrainer = DistributedTensorFlowTrainer(num_gpus=4)\ntrain_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train)).batch(32)\nmodel = trainer.train(train_dataset, epochs=10)"
+        }
+      ]
+    },
+    {
+      "id": "auto-scaling",
+      "name": "Auto-Scaling Pattern",
+      "category": "Infrastructure",
+      "description": "Dynamically adjusts computational resources based on real-time workload demands, using metrics and policies to add or remove instances automatically",
+      "problem": "Static resource allocation leads to either over-provisioning (wasted cost) or under-provisioning (poor performance) as workload varies",
+      "solution": "Implement automated scaling policies that monitor key metrics (CPU, memory, request rate) and trigger resource adjustments based on thresholds or predictive models",
+      "when_to_use": [
+        "Highly variable traffic patterns",
+        "Cost optimization is critical",
+        "Peak demand exceeds baseline capacity",
+        "Cloud-based AI services"
+      ],
+      "benefits": [
+        "Cost optimization",
+        "Improved reliability",
+        "Handle traffic spikes automatically",
+        "Better resource utilization",
+        "Reduced manual intervention"
+      ],
+      "drawbacks": [
+        "Scaling lag time",
+        "Potential thrashing with bad policies",
+        "Complex configuration",
+        "Cold start delays",
+        "Monitoring overhead"
+      ],
+      "use_cases": [
+        "E-commerce during sales events",
+        "ML inference services with variable load",
+        "Content delivery networks",
+        "Real-time analytics platforms",
+        "Gaming backend servers"
+      ],
+      "related_patterns": ["Load Balancing", "Circuit Breaker", "Health Check"],
+      "complexity": "High",
+      "tags": ["auto-scaling", "infrastructure", "cloud", "scalability", "kubernetes"],
+      "code_examples": [
+        {
+          "language": "yaml",
+          "code": "# Kubernetes Horizontal Pod Autoscaler (HPA)\napiVersion: autoscaling/v2\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: ml-inference-hpa\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: Deployment\n    name: ml-inference-service\n  minReplicas: 2\n  maxReplicas: 20\n  metrics:\n  # CPU-based scaling\n  - type: Resource\n    resource:\n      name: cpu\n      target:\n        type: Utilization\n        averageUtilization: 70\n  # Memory-based scaling\n  - type: Resource\n    resource:\n      name: memory\n      target:\n        type: Utilization\n        averageUtilization: 80\n  # Custom metric: request rate\n  - type: Pods\n    pods:\n      metric:\n        name: http_requests_per_second\n      target:\n        type: AverageValue\n        averageValue: \"1000\"\n  behavior:\n    scaleDown:\n      stabilizationWindowSeconds: 300\n      policies:\n      - type: Percent\n        value: 50\n        periodSeconds: 60\n    scaleUp:\n      stabilizationWindowSeconds: 0\n      policies:\n      - type: Percent\n        value: 100\n        periodSeconds: 30\n      - type: Pods\n        value: 4\n        periodSeconds: 30\n      selectPolicy: Max"
+        },
+        {
+          "language": "python",
+          "code": "import boto3\nimport time\nfrom datetime import datetime, timedelta\n\nclass AWSAutoScaler:\n    \"\"\"Custom auto-scaling logic for AWS EC2\"\"\"\n    \n    def __init__(self, asg_name: str, region: str = 'us-east-1'):\n        self.asg_name = asg_name\n        self.client = boto3.client('autoscaling', region_name=region)\n        self.cloudwatch = boto3.client('cloudwatch', region_name=region)\n        \n    def get_current_capacity(self):\n        response = self.client.describe_auto_scaling_groups(\n            AutoScalingGroupNames=[self.asg_name]\n        )\n        asg = response['AutoScalingGroups'][0]\n        return {\n            'desired': asg['DesiredCapacity'],\n            'min': asg['MinSize'],\n            'max': asg['MaxSize'],\n            'current': len(asg['Instances'])\n        }\n    \n    def get_metrics(self, metric_name: str, period: int = 300):\n        \"\"\"Get CloudWatch metrics for scaling decisions\"\"\"\n        end_time = datetime.utcnow()\n        start_time = end_time - timedelta(seconds=period)\n        \n        response = self.cloudwatch.get_metric_statistics(\n            Namespace='AWS/EC2',\n            MetricName=metric_name,\n            Dimensions=[\n                {'Name': 'AutoScalingGroupName', 'Value': self.asg_name}\n            ],\n            StartTime=start_time,\n            EndTime=end_time,\n            Period=period,\n            Statistics=['Average']\n        )\n        \n        if response['Datapoints']:\n            return response['Datapoints'][0]['Average']\n        return None\n    \n    def scale_up(self, increment: int = 2):\n        \"\"\"Scale up by adding instances\"\"\"\n        capacity = self.get_current_capacity()\n        new_capacity = min(capacity['desired'] + increment, capacity['max'])\n        \n        self.client.set_desired_capacity(\n            AutoScalingGroupName=self.asg_name,\n            DesiredCapacity=new_capacity\n        )\n        print(f\"Scaled up from {capacity['desired']} to {new_capacity}\")\n    \n    def scale_down(self, decrement: int = 1):\n        \"\"\"Scale down by removing instances\"\"\"\n        capacity = self.get_current_capacity()\n        new_capacity = max(capacity['desired'] - decrement, capacity['min'])\n        \n        self.client.set_desired_capacity(\n            AutoScalingGroupName=self.asg_name,\n            DesiredCapacity=new_capacity\n        )\n        print(f\"Scaled down from {capacity['desired']} to {new_capacity}\")\n    \n    def auto_scale_loop(self, cpu_threshold_up=70, cpu_threshold_down=30):\n        \"\"\"Main auto-scaling loop\"\"\"\n        while True:\n            cpu_usage = self.get_metrics('CPUUtilization')\n            \n            if cpu_usage is not None:\n                print(f\"Current CPU: {cpu_usage:.2f}%\")\n                \n                if cpu_usage > cpu_threshold_up:\n                    self.scale_up()\n                elif cpu_usage < cpu_threshold_down:\n                    self.scale_down()\n            \n            time.sleep(60)  # Check every minute\n\n# Usage\nscaler = AWSAutoScaler(asg_name='ml-inference-asg')\nscaler.auto_scale_loop(cpu_threshold_up=75, cpu_threshold_down=25)"
+        },
+        {
+          "language": "python",
+          "code": "# Predictive Auto-Scaling using ML\nimport numpy as np\nfrom sklearn.ensemble import RandomForestRegressor\nimport pandas as pd\n\nclass PredictiveAutoScaler:\n    \"\"\"ML-driven predictive auto-scaling\"\"\"\n    \n    def __init__(self):\n        self.model = RandomForestRegressor(n_estimators=100)\n        self.history = []\n        \n    def train(self, historical_data: pd.DataFrame):\n        \"\"\"Train on historical usage patterns\"\"\"\n        # Features: hour, day_of_week, month, previous_load\n        X = historical_data[[\n            'hour', 'day_of_week', 'month', 'prev_load'\n        ]]\n        y = historical_data['required_capacity']\n        \n        self.model.fit(X, y)\n    \n    def predict_required_capacity(self, current_time: datetime) -> int:\n        \"\"\"Predict future capacity needs\"\"\"\n        features = np.array([[\n            current_time.hour,\n            current_time.weekday(),\n            current_time.month,\n            self._get_recent_load()\n        ]])\n        \n        predicted = self.model.predict(features)[0]\n        return int(np.ceil(predicted))\n    \n    def _get_recent_load(self) -> float:\n        if not self.history:\n            return 0\n        return np.mean(self.history[-10:])  # Last 10 measurements\n    \n    def record_load(self, load: float):\n        \"\"\"Record current load for future predictions\"\"\"\n        self.history.append(load)\n        if len(self.history) > 1000:\n            self.history.pop(0)\n    \n    def scale_decision(self, \n                       current_capacity: int, \n                       current_load: float,\n                       min_capacity: int = 2,\n                       max_capacity: int = 20) -> int:\n        \"\"\"Make scaling decision based on prediction\"\"\"\n        self.record_load(current_load)\n        \n        predicted_capacity = self.predict_required_capacity(datetime.now())\n        \n        # Add buffer for safety\n        target_capacity = int(predicted_capacity * 1.2)\n        \n        # Respect limits\n        target_capacity = max(min_capacity, min(target_capacity, max_capacity))\n        \n        return target_capacity\n\n# Usage\nscaler = PredictiveAutoScaler()\n\n# Train on historical data\nhistorical_df = pd.read_csv('usage_history.csv')\nscaler.train(historical_df)\n\n# Make scaling decision\ncurrent_load = get_current_load_metrics()\ntarget = scaler.scale_decision(\n    current_capacity=5,\n    current_load=current_load\n)\nprint(f\"Recommended capacity: {target} instances\")"
+        }
+      ]
+    }
+  ]
+}

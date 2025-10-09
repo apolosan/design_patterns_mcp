@@ -7,6 +7,8 @@ CREATE TABLE pattern_embeddings (
   pattern_id TEXT PRIMARY KEY,
   embedding TEXT NOT NULL,
   model TEXT NOT NULL,
+  strategy TEXT NOT NULL,
+  dimensions INTEGER NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -39,4 +41,6 @@ CREATE INDEX idx_pattern_usage_created_at ON pattern_usage(created_at);
 -- DOWN
 DROP TABLE IF EXISTS pattern_usage;
 DROP TABLE IF EXISTS search_queries;
-DROP TABLE IF EXISTS pattern_embeddings;
+-- IMPORTANT: Preserve embeddings data by renaming instead of dropping
+-- This prevents data loss if migration is accidentally rolled back
+ALTER TABLE pattern_embeddings RENAME TO pattern_embeddings_backup_migration_002;

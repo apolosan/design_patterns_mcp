@@ -1,0 +1,145 @@
+{
+  "patterns": [
+    {
+      "id": "load-balancing",
+      "name": "Load Balancing Pattern",
+      "category": "Infrastructure",
+      "description": "Distributes incoming requests evenly across multiple backend instances to prevent overload and ensure optimal resource utilization",
+      "problem": "Uneven request distribution causes some instances to be overloaded while others are underutilized, leading to poor performance and failures",
+      "solution": "Implement a load balancer that routes requests using algorithms (round-robin, least connections, weighted) to distribute workload evenly across available instances",
+      "when_to_use": [
+        "Multiple identical service instances",
+        "Need high availability",
+        "Prevent single point of failure",
+        "Optimize resource utilization"
+      ],
+      "benefits": [
+        "Improved reliability",
+        "Better resource utilization",
+        "Horizontal scalability",
+        "Fault tolerance",
+        "Reduced latency"
+      ],
+      "drawbacks": [
+        "Additional component complexity",
+        "Potential single point of failure",
+        "Session affinity challenges",
+        "Configuration overhead"
+      ],
+      "use_cases": [
+        "ML inference services",
+        "API gateways",
+        "Web applications",
+        "Microservices architecture",
+        "Content delivery"
+      ],
+      "related_patterns": ["Auto-Scaling", "Circuit Breaker", "Health Check"],
+      "complexity": "Medium",
+      "tags": ["load-balancing", "infrastructure", "scalability", "availability", "nginx"],
+      "code_examples": [
+        {
+          "language": "nginx",
+          "code": "# Nginx Load Balancer Configuration\nupstream ml_inference_backend {\n    # Load balancing algorithm\n    least_conn;  # Route to server with fewest active connections\n    \n    # Backend servers with weights\n    server inference-1.example.com:8000 weight=3 max_fails=3 fail_timeout=30s;\n    server inference-2.example.com:8000 weight=2;\n    server inference-3.example.com:8000 weight=1;\n    server inference-4.example.com:8000 backup;  # Backup server\n    \n    # Health check\n    keepalive 32;\n}\n\nserver {\n    listen 80;\n    server_name api.example.com;\n    \n    location /predict {\n        proxy_pass http://ml_inference_backend;\n        proxy_next_upstream error timeout http_500 http_502 http_503;\n        proxy_connect_timeout 5s;\n        proxy_send_timeout 10s;\n        proxy_read_timeout 10s;\n        \n        # Headers\n        proxy_set_header Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n        \n        # Load balancing headers\n        add_header X-Upstream-Server $upstream_addr;\n    }\n    \n    # Health check endpoint\n    location /health {\n        access_log off;\n        return 200 \"healthy\";\n        add_header Content-Type text/plain;\n    }\n}"
+        },
+        {
+          "language": "python",
+          "code": "from flask import Flask, request\nimport requests\nimport random\nfrom collections import defaultdict\nimport threading\nimport time\n\nclass LoadBalancer:\n    \"\"\"Simple load balancer implementation\"\"\"\n    \n    def __init__(self, backends, algorithm='round_robin'):\n        self.backends = backends\n        self.algorithm = algorithm\n        self.current_index = 0\n        self.connection_counts = defaultdict(int)\n        self.health_status = {b: True for b in backends}\n        self.lock = threading.Lock()\n        \n        # Start health check thread\n        self.start_health_checks()\n    \n    def get_next_backend(self):\n        \"\"\"Select next backend based on algorithm\"\"\"\n        healthy_backends = [b for b in self.backends if self.health_status[b]]\n        \n        if not healthy_backends:\n            raise Exception(\"No healthy backends available\")\n        \n        if self.algorithm == 'round_robin':\n            with self.lock:\n                backend = healthy_backends[self.current_index % len(healthy_backends)]\n                self.current_index += 1\n            return backend\n        \n        elif self.algorithm == 'least_connections':\n            return min(healthy_backends, \n                      key=lambda b: self.connection_counts[b])\n        \n        elif self.algorithm == 'random':\n            return random.choice(healthy_backends)\n        \n        else:\n            return healthy_backends[0]\n    \n    def forward_request(self, path, method='GET', **kwargs):\n        \"\"\"Forward request to backend\"\"\"\n        backend = self.get_next_backend()\n        \n        with self.lock:\n            self.connection_counts[backend] += 1\n        \n        try:\n            url = f\"{backend}{path}\"\n            response = requests.request(method, url, **kwargs)\n            return response\n        finally:\n            with self.lock:\n                self.connection_counts[backend] -= 1\n    \n    def check_health(self, backend):\n        \"\"\"Check if backend is healthy\"\"\"\n        try:\n            response = requests.get(f\"{backend}/health\", timeout=2)\n            return response.status_code == 200\n        except:\n            return False\n    \n    def start_health_checks(self, interval=10):\n        \"\"\"Periodically check backend health\"\"\"\n        def health_check_loop():\n            while True:\n                for backend in self.backends:\n                    self.health_status[backend] = self.check_health(backend)\n                    print(f\"Backend {backend}: {'healthy' if self.health_status[backend] else 'unhealthy'}\")\n                time.sleep(interval)\n        \n        thread = threading.Thread(target=health_check_loop, daemon=True)\n        thread.start()\n\n# Flask app as load balancer\napp = Flask(__name__)\n\nbackends = [\n    'http://localhost:8001',\n    'http://localhost:8002',\n    'http://localhost:8003'\n]\n\nlb = LoadBalancer(backends, algorithm='least_connections')\n\n@app.route('/predict', methods=['POST'])\ndef predict():\n    try:\n        response = lb.forward_request(\n            '/predict',\n            method='POST',\n            json=request.json,\n            timeout=30\n        )\n        return response.json(), response.status_code\n    except Exception as e:\n        return {'error': str(e)}, 503\n\nif __name__ == '__main__':\n    app.run(host='0.0.0.0', port=8000)"
+        }
+      ]
+    },
+    {
+      "id": "data-partitioning",
+      "name": "Data Partitioning Pattern",
+      "category": "Data Engineering",
+      "description": "Divides large datasets into smaller, manageable partitions (shards) that can be processed independently across multiple machines or storage systems",
+      "problem": "Single-machine processing bottleneck when dealing with datasets that exceed memory or computational capacity",
+      "solution": "Strategically split data using partitioning keys (hash, range, list) to distribute across multiple nodes while maintaining data locality and query efficiency",
+      "when_to_use": [
+        "Dataset exceeds single machine capacity",
+        "Need parallel processing",
+        "Distributed storage required",
+        "Database sharding needed"
+      ],
+      "benefits": [
+        "Parallel processing capability",
+        "Improved query performance",
+        "Scalable storage",
+        "Fault isolation",
+        "Better resource utilization"
+      ],
+      "drawbacks": [
+        "Increased complexity",
+        "Cross-partition queries expensive",
+        "Rebalancing challenges",
+        "Hotspot risks with poor partitioning"
+      ],
+      "use_cases": [
+        "Distributed databases",
+        "Big data processing (Spark, Hadoop)",
+        "Time-series data storage",
+        "User data sharding",
+        "Log aggregation systems"
+      ],
+      "related_patterns": ["Data Streaming", "Data Sampling", "Distributed Training"],
+      "complexity": "High",
+      "tags": ["partitioning", "sharding", "distributed", "scalability", "data-engineering"],
+      "code_examples": [
+        {
+          "language": "python",
+          "code": "import hashlib\nimport pandas as pd\nfrom pathlib import Path\nfrom typing import List, Callable\n\nclass DataPartitioner:\n    \"\"\"Generic data partitioning utility\"\"\"\n    \n    def __init__(self, num_partitions: int = 10):\n        self.num_partitions = num_partitions\n    \n    def hash_partition(self, key: str) -> int:\n        \"\"\"Hash-based partitioning for uniform distribution\"\"\"\n        hash_val = int(hashlib.md5(str(key).encode()).hexdigest(), 16)\n        return hash_val % self.num_partitions\n    \n    def range_partition(self, value: float, ranges: List[tuple]) -> int:\n        \"\"\"Range-based partitioning for ordered data\"\"\"\n        for partition_id, (start, end) in enumerate(ranges):\n            if start <= value < end:\n                return partition_id\n        return len(ranges) - 1\n    \n    def partition_dataframe(\n        self, \n        df: pd.DataFrame, \n        partition_key: str,\n        method: str = 'hash'\n    ) -> dict:\n        \"\"\"Partition DataFrame into multiple partitions\"\"\"\n        partitions = {}\n        \n        if method == 'hash':\n            df['_partition'] = df[partition_key].apply(self.hash_partition)\n        elif method == 'modulo':\n            df['_partition'] = df[partition_key] % self.num_partitions\n        \n        for partition_id in range(self.num_partitions):\n            partition_df = df[df['_partition'] == partition_id].copy()\n            partition_df.drop('_partition', axis=1, inplace=True)\n            partitions[partition_id] = partition_df\n        \n        return partitions\n    \n    def save_partitions(\n        self, \n        partitions: dict, \n        base_path: str,\n        file_format: str = 'parquet'\n    ):\n        \"\"\"Save partitions to disk\"\"\"\n        base_path = Path(base_path)\n        base_path.mkdir(parents=True, exist_ok=True)\n        \n        for partition_id, df in partitions.items():\n            file_path = base_path / f\"partition_{partition_id}.{file_format}\"\n            \n            if file_format == 'parquet':\n                df.to_parquet(file_path)\n            elif file_format == 'csv':\n                df.to_csv(file_path, index=False)\n    \n    def load_partition(self, base_path: str, partition_id: int) -> pd.DataFrame:\n        \"\"\"Load specific partition\"\"\"\n        file_path = Path(base_path) / f\"partition_{partition_id}.parquet\"\n        return pd.read_parquet(file_path)\n\n# Usage Example\npartitioner = DataPartitioner(num_partitions=10)\n\n# Load large dataset\nlarge_df = pd.read_csv('large_dataset.csv')\n\n# Partition by user_id\npartitions = partitioner.partition_dataframe(\n    large_df, \n    partition_key='user_id',\n    method='hash'\n)\n\n# Save partitions\npartitioner.save_partitions(partitions, 'data/partitioned')\n\nprint(f\"Created {len(partitions)} partitions\")\nfor pid, df in partitions.items():\n    print(f\"Partition {pid}: {len(df)} rows\")"
+        },
+        {
+          "language": "python",
+          "code": "# PySpark partitioning example\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.functions import col, hash\n\nclass SparkPartitioner:\n    \"\"\"Spark-based data partitioning for big data\"\"\"\n    \n    def __init__(self, app_name='DataPartitioner'):\n        self.spark = SparkSession.builder \\\n            .appName(app_name) \\\n            .config('spark.sql.shuffle.partitions', '200') \\\n            .getOrCreate()\n    \n    def partition_by_hash(self, input_path, output_path, partition_key, num_partitions=100):\n        \"\"\"Hash partition using Spark\"\"\"\n        df = self.spark.read.parquet(input_path)\n        \n        # Repartition by hash of key\n        partitioned_df = df.repartition(num_partitions, partition_key)\n        \n        # Write partitioned data\n        partitioned_df.write \\\n            .partitionBy(partition_key) \\\n            .mode('overwrite') \\\n            .parquet(output_path)\n    \n    def partition_by_range(self, input_path, output_path, partition_key, num_partitions=100):\n        \"\"\"Range partition for sorted data\"\"\"\n        df = self.spark.read.parquet(input_path)\n        \n        # Repartition by range\n        partitioned_df = df.repartitionByRange(num_partitions, partition_key)\n        \n        partitioned_df.write \\\n            .mode('overwrite') \\\n            .parquet(output_path)\n    \n    def partition_time_series(self, input_path, output_path, date_column='date'):\n        \"\"\"Partition time-series data by date\"\"\"\n        df = self.spark.read.parquet(input_path)\n        \n        # Partition by year, month, day\n        df.write \\\n            .partitionBy('year', 'month', 'day') \\\n            .mode('overwrite') \\\n            .parquet(output_path)\n\n# Usage\npartitioner = SparkPartitioner()\n\n# Hash partitioning by user_id\npartitioner.partition_by_hash(\n    input_path='s3://data/raw/',\n    output_path='s3://data/partitioned/',\n    partition_key='user_id',\n    num_partitions=100\n)\n\n# Time-series partitioning\npartitioner.partition_time_series(\n    input_path='s3://data/logs/',\n    output_path='s3://data/logs_partitioned/',\n    date_column='timestamp'\n)"
+        }
+      ]
+    },
+    {
+      "id": "fault-tolerance",
+      "name": "Fault Tolerance Pattern",
+      "category": "Reliability",
+      "description": "Builds system resilience through redundancy, failover mechanisms, and graceful degradation to maintain availability despite component failures",
+      "problem": "Hardware failures, network issues, or software bugs cause system downtime and data loss",
+      "solution": "Implement redundancy (active-passive, active-active), automatic failover, checkpointing, and circuit breakers to detect and recover from failures",
+      "when_to_use": [
+        "High availability requirements (>99.9%)",
+        "Mission-critical applications",
+        "Distributed systems",
+        "Long-running computations"
+      ],
+      "benefits": [
+        "Improved system availability",
+        "Automatic recovery",
+        "Data preservation",
+        "Reduced downtime",
+        "Better user experience"
+      ],
+      "drawbacks": [
+        "Increased complexity",
+        "Higher infrastructure costs",
+        "Consistency challenges",
+        "Monitoring overhead"
+      ],
+      "use_cases": [
+        "ML training job checkpointing",
+        "Database replication",
+        "Microservices resilience",
+        "Distributed caching",
+        "Message queue reliability"
+      ],
+      "related_patterns": ["Circuit Breaker", "Retry", "Health Check", "Load Balancing"],
+      "complexity": "Very High",
+      "tags": ["fault-tolerance", "reliability", "availability", "resilience", "redundancy"],
+      "code_examples": [
+        {
+          "language": "python",
+          "code": "import time\nimport pickle\nfrom pathlib import Path\nfrom typing import Callable, Any\nimport functools\n\nclass Checkpointer:\n    \"\"\"Checkpointing for fault-tolerant long-running tasks\"\"\"\n    \n    def __init__(self, checkpoint_dir: str = './checkpoints'):\n        self.checkpoint_dir = Path(checkpoint_dir)\n        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)\n    \n    def save_checkpoint(self, state: dict, checkpoint_name: str):\n        \"\"\"Save checkpoint to disk\"\"\"\n        checkpoint_path = self.checkpoint_dir / f\"{checkpoint_name}.pkl\"\n        with open(checkpoint_path, 'wb') as f:\n            pickle.dump(state, f)\n        print(f\"Checkpoint saved: {checkpoint_path}\")\n    \n    def load_checkpoint(self, checkpoint_name: str) -> dict:\n        \"\"\"Load checkpoint from disk\"\"\"\n        checkpoint_path = self.checkpoint_dir / f\"{checkpoint_name}.pkl\"\n        if checkpoint_path.exists():\n            with open(checkpoint_path, 'rb') as f:\n                return pickle.load(f)\n        return None\n    \n    def checkpoint_exists(self, checkpoint_name: str) -> bool:\n        checkpoint_path = self.checkpoint_dir / f\"{checkpoint_name}.pkl\"\n        return checkpoint_path.exists()\n\ndef with_retry(max_attempts=3, delay=1, exponential_backoff=True):\n    \"\"\"Decorator for automatic retry on failure\"\"\"\n    def decorator(func):\n        @functools.wraps(func)\n        def wrapper(*args, **kwargs):\n            attempts = 0\n            current_delay = delay\n            \n            while attempts < max_attempts:\n                try:\n                    return func(*args, **kwargs)\n                except Exception as e:\n                    attempts += 1\n                    if attempts >= max_attempts:\n                        raise\n                    \n                    print(f\"Attempt {attempts} failed: {e}\")\n                    print(f\"Retrying in {current_delay} seconds...\")\n                    time.sleep(current_delay)\n                    \n                    if exponential_backoff:\n                        current_delay *= 2\n        return wrapper\n    return decorator\n\nclass FaultTolerantTrainer:\n    \"\"\"Fault-tolerant ML training with checkpointing\"\"\"\n    \n    def __init__(self, model, checkpoint_interval=100):\n        self.model = model\n        self.checkpoint_interval = checkpoint_interval\n        self.checkpointer = Checkpointer()\n    \n    @with_retry(max_attempts=3, delay=2)\n    def train_epoch(self, epoch, data_loader):\n        \"\"\"Train single epoch with retry\"\"\"\n        self.model.train()\n        total_loss = 0\n        \n        for batch_idx, (data, target) in enumerate(data_loader):\n            loss = self.model.train_step(data, target)\n            total_loss += loss\n            \n            # Checkpoint periodically\n            if batch_idx % self.checkpoint_interval == 0:\n                self.save_checkpoint(epoch, batch_idx, total_loss)\n        \n        return total_loss / len(data_loader)\n    \n    def save_checkpoint(self, epoch, batch_idx, loss):\n        state = {\n            'epoch': epoch,\n            'batch_idx': batch_idx,\n            'model_state': self.model.state_dict(),\n            'loss': loss\n        }\n        self.checkpointer.save_checkpoint(state, f\"epoch_{epoch}_batch_{batch_idx}\")\n    \n    def resume_from_checkpoint(self, checkpoint_name):\n        \"\"\"Resume training from checkpoint\"\"\"\n        state = self.checkpointer.load_checkpoint(checkpoint_name)\n        if state:\n            self.model.load_state_dict(state['model_state'])\n            print(f\"Resumed from epoch {state['epoch']}, batch {state['batch_idx']}\")\n            return state['epoch'], state['batch_idx']\n        return 0, 0\n\n# Usage\ntrainer = FaultTolerantTrainer(model, checkpoint_interval=100)\n\n# Resume if checkpoint exists\nstart_epoch, start_batch = trainer.resume_from_checkpoint('latest')\n\nfor epoch in range(start_epoch, num_epochs):\n    try:\n        loss = trainer.train_epoch(epoch, train_loader)\n        print(f\"Epoch {epoch}: Loss = {loss:.4f}\")\n    except Exception as e:\n        print(f\"Training failed at epoch {epoch}: {e}\")\n        print(\"Checkpoint saved, can resume later\")\n        break"
+        },
+        {
+          "language": "python",
+          "code": "# Circuit Breaker Pattern for fault tolerance\nfrom enum import Enum\nimport time\nfrom datetime import datetime, timedelta\n\nclass CircuitState(Enum):\n    CLOSED = \"closed\"  # Normal operation\n    OPEN = \"open\"      # Failing, reject requests\n    HALF_OPEN = \"half_open\"  # Testing if recovered\n\nclass CircuitBreaker:\n    \"\"\"Circuit breaker for fault-tolerant service calls\"\"\"\n    \n    def __init__(\n        self,\n        failure_threshold=5,\n        timeout=60,\n        retry_timeout=30\n    ):\n        self.failure_threshold = failure_threshold\n        self.timeout = timeout\n        self.retry_timeout = retry_timeout\n        \n        self.failure_count = 0\n        self.last_failure_time = None\n        self.state = CircuitState.CLOSED\n    \n    def call(self, func, *args, **kwargs):\n        \"\"\"Execute function with circuit breaker protection\"\"\"\n        if self.state == CircuitState.OPEN:\n            if self._should_attempt_reset():\n                self.state = CircuitState.HALF_OPEN\n            else:\n                raise Exception(\"Circuit breaker is OPEN\")\n        \n        try:\n            result = func(*args, **kwargs)\n            self._on_success()\n            return result\n        except Exception as e:\n            self._on_failure()\n            raise\n    \n    def _on_success(self):\n        self.failure_count = 0\n        self.state = CircuitState.CLOSED\n    \n    def _on_failure(self):\n        self.failure_count += 1\n        self.last_failure_time = datetime.now()\n        \n        if self.failure_count >= self.failure_threshold:\n            self.state = CircuitState.OPEN\n            print(f\"Circuit breaker opened after {self.failure_count} failures\")\n    \n    def _should_attempt_reset(self):\n        return (\n            self.last_failure_time and\n            datetime.now() - self.last_failure_time > timedelta(seconds=self.retry_timeout)\n        )\n\n# Usage with ML inference service\nclass ResilientMLService:\n    def __init__(self):\n        self.circuit_breaker = CircuitBreaker(\n            failure_threshold=3,\n            timeout=30,\n            retry_timeout=60\n        )\n    \n    @with_retry(max_attempts=2)\n    def predict(self, data):\n        \"\"\"Make prediction with circuit breaker and retry\"\"\"\n        return self.circuit_breaker.call(self._call_model, data)\n    \n    def _call_model(self, data):\n        # Actual model inference\n        response = requests.post(\n            'http://ml-service/predict',\n            json=data,\n            timeout=5\n        )\n        response.raise_for_status()\n        return response.json()\n\nservice = ResilientMLService()\ntry:\n    result = service.predict({'features': [1, 2, 3]})\nexcept Exception as e:\n    print(f\"Service unavailable: {e}\")\n    # Fallback to cached result or default response"
+        }
+      ]
+    }
+  ]
+}
