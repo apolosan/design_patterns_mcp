@@ -1,6 +1,6 @@
 # Design Patterns MCP Server 🎯
 
-An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using semantic search and vector embeddings. This project offers access to a comprehensive catalog of **555+ design patterns** through a natural language interface.
+An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using semantic search and vector embeddings. This project offers access to a comprehensive catalog of **574+ design patterns** through a natural language interface.
 
 ## 📋 Overview
 
@@ -9,13 +9,13 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 ### ✨ Key Features
 
 - 🔍 **Intelligent Semantic Search**: Find patterns using natural problem descriptions
-- 📚 **Comprehensive Catalog**: 555+ patterns organized in 20+ categories
+- 📚 **Comprehensive Catalog**: 574+ patterns organized in 90+ categories
 - 🎯 **Contextual Recommendations**: Suggestions based on programming language and domain
 - ⚡ **Vector Search**: Uses SQLite with vector extensions for efficient search
 - 🌐 **Multi-language**: Support for multiple programming languages
 - 🔧 **MCP Integration**: Compatible with Claude Code, Cursor and other MCP clients
-- 🚀 **High Performance**: Object Pool pattern prevents memory leaks, 30-40% faster queries
-- 💾 **Smart Caching**: LRU cache with 85%+ hit rate
+- 🚀 **High Performance**: Object Pool pattern prevents memory leaks, optimized queries
+- 💾 **Smart Caching**: LRU cache with 85%+ hit rate reduces database load
 - 🏗️ **SOLID Architecture**: Clean, maintainable, and testable codebase
 
 ### 🆕 Project Status (v0.2.2)
@@ -91,7 +91,7 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - **React Best Practices** (1): Code organization
 - **React Modern** (1): React 19 features
 
-#### **Blockchain & Web3** (105 patterns)
+#### **Blockchain & Web3** (115 patterns)
 - **DeFi Protocols**: AMM (4), Lending (4), Stablecoin (3), Yield (2), Derivatives (2), Vault (2), Tokenomics (1)
 - **NFT Patterns** (13): Minting, Marketplace, Metadata
 - **NFT Royalty** (2): EIP-2981, Custom royalties
@@ -185,7 +185,7 @@ src/
 └── mcp-server.ts       # MCP server
 
 data/
-├── patterns/           # JSON files with 555+ pattern definitions
+├── patterns/           # JSON files with 574+ pattern definitions
 └── design-patterns.db  # SQLite database with embeddings
 ```
 
