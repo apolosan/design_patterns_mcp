@@ -41,29 +41,117 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - ✅ **Code Quality**: 40% reduction in main server file (704→422 lines)
 - ✅ **Design Patterns Applied**: Database Transaction, Fail-Fast, Schema Versioning, Data Preservation
 
-### 🗂️ Available Pattern Categories
+### 🗂️ Available Pattern Categories (574 Patterns)
 
-- **GoF Patterns**: Classic patterns (Creational, Structural, Behavioral)
-- **Architectural Patterns**: MVC, MVP, MVVM, Clean Architecture, Hexagonal
-- **Microservices Patterns**: Circuit Breaker, Event Sourcing, CQRS, Saga
-- **Cloud Patterns**: Auto-scaling, Load Balancing, Service Discovery
-- **AI/ML Patterns**: Model Training, RAG, Few-Shot Learning, Continual Learning
-- **React Patterns**: Hooks, Server Components, Suspense, React 19 features
-- **Enterprise Patterns**: Repository, Unit of Work, Dependency Injection
-- **Security Patterns**: Authentication, Authorization, Data Protection
-- **Performance Patterns**: Caching, Lazy Loading, Object Pool, Connection Pooling
-- **Concurrency Patterns**: Producer-Consumer, Thread Pool, Actor Model
-- **Integration Patterns**: Message Queue, Event Bus, API Gateway
-- **Data Access Patterns**: Active Record, Data Mapper, Query Object
-- **Testing Patterns**: Test Double, Page Object, Builder Pattern for tests
-- **Functional Patterns**: Monads, Functors, Higher-Order Functions
-- **Reactive Patterns**: Observer, Publisher-Subscriber, Reactive Streams
-- **DDD Patterns**: Aggregate, Value Object, Domain Service, Bounded Context
-- **Game Development Patterns**: State Machine, Component System, Object Pool
-- **Mobile Patterns**: Model-View-Intent, Redux-like patterns, Offline-First
-- **IoT Patterns**: Device Twin, Telemetry Ingestion, Edge Processing
-- **Blockchain/Web3 Patterns**: DeFi, NFT, DAO, Cross-chain
-- **Anti-Patterns**: Practices to avoid and their solutions
+#### **Classic Design Patterns (GoF)**
+- **Creational** (5): Factory, Builder, Singleton, Prototype, Abstract Factory
+- **Structural** (8): Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy
+- **Behavioral** (11): Observer, Strategy, Command, State, Chain of Responsibility, Iterator, Mediator, Memento, Template Method, Visitor, Interpreter
+
+#### **Architectural & Enterprise** (59 patterns)
+- **Architectural** (16): MVC, MVP, MVVM, Clean Architecture, Hexagonal, Layered, Event-Driven
+- **Enterprise** (24): Repository, Unit of Work, Service Layer, Dependency Injection
+- **Domain-Driven Design** (19): Aggregate, Value Object, Entity, Domain Event, Bounded Context
+
+#### **Microservices & Cloud** (38 patterns)
+- **Microservices** (23): Circuit Breaker, Event Sourcing, CQRS, Saga, Service Mesh
+- **Cloud-Native** (14): Auto-scaling, Load Balancing, Service Discovery
+- **Serverless** (1): Function as a Service patterns
+
+#### **Data Engineering & Management** (54 patterns)
+- **Data Access** (11): Active Record, Data Mapper, Query Object
+- **Data Engineering** (4): ETL, Data Pipeline, Stream Processing
+- **Data Storage** (3): Partitioning, Sharding, Replication
+- **Data Quality** (3): Validation, Cleansing, Monitoring
+- **Data Query** (7): WHERE Filtering, CASE Expression, CTE, Window Functions
+- **Data Ingestion** (8): Batch, Streaming, CDC
+- **Data Flow** (3): Data Lineage, Data Catalog
+- **Data Security** (3): Encryption, Masking, Access Control
+- **Data Observability** (3): Monitoring, Alerting, Logging
+- **Data Value** (5): Monetization, Governance, Quality Metrics
+- **Data Management** (4): Lifecycle, Archival, Retention
+
+#### **AI/ML & MLOps** (39 patterns)
+- **AI/ML** (38): Model Training, RAG, Few-Shot Learning, Fine-Tuning, Inference Optimization
+- **MLOps** (1): Model Deployment, Monitoring, A/B Testing
+
+#### **React Patterns** (27 patterns)
+- **React Fundamentals** (5): Components, Props, State
+- **React Hooks** (6): useState, useEffect, Custom Hooks
+- **React Server Components** (2): RSC, Streaming
+- **React State Management** (1): Context, Redux patterns
+- **React Performance** (1): Memoization, Code Splitting
+- **React Forms** (2): Controlled, Uncontrolled
+- **React Routing** (1): Navigation patterns
+- **React Styling** (2): CSS-in-JS, Tailwind
+- **React Testing** (1): Testing Library, E2E
+- **React Components** (1): Composition patterns
+- **React Error Handling** (1): Error Boundaries
+- **React UI** (2): Accessibility, Responsive Design
+- **React Best Practices** (1): Code organization
+- **React Modern** (1): React 19 features
+
+#### **Blockchain & Web3** (105 patterns)
+- **DeFi Protocols**: AMM (4), Lending (4), Stablecoin (3), Yield (2), Derivatives (2), Vault (2), Tokenomics (1)
+- **NFT Patterns** (13): Minting, Marketplace, Metadata
+- **NFT Royalty** (2): EIP-2981, Custom royalties
+- **NFT Storage** (1): IPFS, Arweave integration
+- **Smart Contract**: Security (5), Upgradeability (3), Access Control (3), Factory (2), Gas Optimization (5)
+- **DAO Patterns**: Governance (9), Treasury (2)
+- **Cross-Chain** (8): Bridge, Relay, Atomic Swap
+- **Layer 2**: Scaling (6), Data Availability (1)
+- **Account Abstraction** (5): ERC-4337, Session Keys
+- **MEV** (3): Protection, Extraction, Ordering
+- **Privacy** (2): Zero-Knowledge (3), Stealth Addresses
+- **Real World Assets** (3): Tokenization, Oracle integration
+- **Token Economics** (2): Vesting, Distribution
+- **Restaking** (2): EigenLayer patterns
+- **Sustainable Blockchain** (3): Energy efficiency
+- **Modular Blockchain** (1): Celestia, Avail
+- **Intent-Based Architecture** (3): User intents, Solvers
+- **Web3 Frontend** (8): Wallet connection, Transaction handling
+- **AI & Blockchain** (2): AI + Web3 integration
+
+#### **Performance & Optimization** (25 patterns)
+- **Performance** (21): Caching, Lazy Loading, Object Pool, Connection Pooling
+- **Caching** (4): Cache-Aside, Write-Through, Read-Through
+
+#### **Concurrency & Reactive** (37 patterns)
+- **Concurrency** (20): Producer-Consumer, Thread Pool, Actor Model, Lock-Free
+- **Reactive** (17): Observer, Publisher-Subscriber, Reactive Streams, Backpressure
+
+#### **Integration & Messaging** (23 patterns)
+- **Integration** (20): Message Queue, Event Bus, API Gateway, ESB
+- **Messaging** (3): Publish-Subscribe, Point-to-Point
+
+#### **Testing & Quality** (15 patterns)
+- **Testing** (15): Test Double, Page Object, Builder Pattern for tests, Contract Testing
+
+#### **Development Practices** (30 patterns)
+- **Functional** (22): Monads, Functors, Higher-Order Functions, Immutability
+- **Error Management** (7): Exception Handling, Retry, Circuit Breaker
+- **Idempotency** (7): Idempotent Operations, Request Deduplication
+
+#### **Mobile & IoT** (24 patterns)
+- **Mobile** (10): Model-View-Intent, Redux patterns, Offline-First
+- **IoT** (13): Device Twin, Telemetry Ingestion, Edge Processing
+- **Edge Computing** (1): Edge Analytics
+
+#### **Game Development** (16 patterns)
+- **Game Development** (16): State Machine, Component System, Object Pool, Command Pattern
+
+#### **Security** (16 patterns)
+- **Security** (16): Authentication, Authorization, Data Protection, OWASP Top 10
+
+#### **Storage & Infrastructure** (5 patterns)
+- **Storage** (4): File System, Object Storage, Database patterns
+- **Infrastructure** (1): IaC patterns
+
+#### **Others**
+- **Anti-Patterns** (15): Common mistakes and their solutions
+- **Reliability** (1): Fault tolerance patterns
+- **Development & Deployment** (2): CI/CD patterns
+- **Development & Testing** (3): TDD, BDD patterns
 
 ## 🏗️ Project Architecture
 
