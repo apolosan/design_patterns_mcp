@@ -42,17 +42,27 @@ export class StatementPool {
   }
 
   /**
-   * Get or create a prepared statement
+   * Get or create a prepared statement (with error recovery)
    */
   getOrCreate(sql: string, factory: () => any): any {
     const pooled = this.pool.get(sql);
 
     if (pooled) {
-      // Statement exists in pool
-      pooled.lastUsed = Date.now();
-      pooled.useCount++;
-      this.updateMetrics(true);
-      return pooled.statement;
+      // Statement exists in pool - verify it's still valid
+      try {
+        // Test statement validity if possible
+        if (pooled.statement && typeof pooled.statement.safeIntegers === 'function') {
+          pooled.statement.safeIntegers(); // SQLite test call
+        }
+        pooled.lastUsed = Date.now();
+        pooled.useCount++;
+        this.updateMetrics(true);
+        return pooled.statement;
+      } catch (error) {
+        // Statement corrupted - remove and recreate
+        this.pool.delete(sql);
+        // Fall through to create new one
+      }
     }
 
     // Statement not in pool, create new one
@@ -63,16 +73,23 @@ export class StatementPool {
       this.evictLRU();
     }
 
-    // Create and store new statement
-    const statement = factory();
-    this.pool.set(sql, {
-      statement,
-      lastUsed: Date.now(),
-      useCount: 1,
-    });
+    // Create and store new statement with error handling
+    try {
+      const statement = factory();
+      this.pool.set(sql, {
+        statement,
+        lastUsed: Date.now(),
+        useCount: 1,
+      });
 
-    this.metrics.size = this.pool.size;
-    return statement;
+      this.metrics.size = this.pool.size;
+      return statement;
+    } catch (error) {
+      // Factory failed - propagate error but don't corrupt pool
+      throw new Error(
+        `Failed to create prepared statement: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
   }
 
   /**

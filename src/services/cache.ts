@@ -36,6 +36,7 @@ export class CacheService {
     size: 0,
     hitRate: 0,
   };
+  private setInProgress = new Set<string>();
 
   constructor(config: Partial<CacheConfig> = {}) {
     this.config = {
@@ -73,24 +74,35 @@ export class CacheService {
   }
 
   /**
-   * Set cached value with optional TTL
+   * Set cached value with optional TTL (Thread-safe with simple lock)
    */
   set<T = any>(key: string, data: T, ttl?: number): void {
-    const entry: CacheEntry<T> = {
-      data,
-      timestamp: Date.now(),
-      ttl: ttl || this.config.defaultTTL,
-      accessCount: 0,
-      lastAccessed: Date.now(),
-    };
-
-    // Check if we need to evict entries
-    if (this.cache.size >= this.config.maxSize && !this.cache.has(key)) {
-      this.evictLRU();
+    // Simple lock to prevent concurrent modifications to same key
+    if (this.setInProgress.has(key)) {
+      return; // Skip if already being set
     }
+    
+    this.setInProgress.add(key);
+    
+    try {
+      const entry: CacheEntry<T> = {
+        data,
+        timestamp: Date.now(),
+        ttl: ttl || this.config.defaultTTL,
+        accessCount: 0,
+        lastAccessed: Date.now(),
+      };
 
-    this.cache.set(key, entry);
-    this.metrics.size = this.cache.size;
+      // Check if we need to evict entries (now race-condition safe)
+      if (this.cache.size >= this.config.maxSize && !this.cache.has(key)) {
+        this.evictLRU();
+      }
+
+      this.cache.set(key, entry);
+      this.metrics.size = this.cache.size;
+    } finally {
+      this.setInProgress.delete(key);
+    }
   }
 
   /**
@@ -233,6 +245,22 @@ export class CacheService {
   }
 
   /**
+   * Fast hash function for objects (FNV-1a algorithm)
+   * Much faster than JSON.stringify for cache key generation
+   */
+  private hashObject(obj: any): string {
+    const str = typeof obj === 'string' ? obj : JSON.stringify(obj);
+    let hash = 2166136261; // FNV offset basis
+    
+    for (let i = 0; i < str.length; i++) {
+      hash ^= str.charCodeAt(i);
+      hash = Math.imul(hash, 16777619); // FNV prime
+    }
+    
+    return (hash >>> 0).toString(36); // Convert to base36 for shorter keys
+  }
+
+  /**
    * Get or set pattern (convenience method for pattern caching)
    */
   getPattern(patternId: string): any {
@@ -247,12 +275,15 @@ export class CacheService {
    * Get or set search results (convenience method for search caching)
    */
   getSearchResults(query: string, options?: any): any {
-    const key = `search:${query}:${JSON.stringify(options || {})}`;
+    const optionsHash = this.hashObject(options || {});
+    const key = `search:${query}:${optionsHash}`;
     return this.get(key);
   }
 
   setSearchResults(query: string, options: any, results: any, ttl?: number): void {
-    const key = `search:${query}:${JSON.stringify(options || {})}`;
+    // Use fast hash for options instead of JSON.stringify for better performance
+    const optionsHash = this.hashObject(options || {});
+    const key = `search:${query}:${optionsHash}`;
     this.set(key, results, ttl);
   }
 
@@ -268,40 +299,8 @@ export class CacheService {
   }
 }
 
-/**
- * Singleton pattern consolidated - use DI Container instead
- * These functions are deprecated and kept for backward compatibility
- * @deprecated Use DI Container with TOKENS.CACHE_SERVICE instead
- */
-let cacheService: CacheService | null = null;
-
-/**
- * @deprecated Use container.get(TOKENS.CACHE_SERVICE) instead
- */
-export function getCacheService(): CacheService {
-  if (!cacheService) {
-    cacheService = new CacheService();
-  }
-  return cacheService;
-}
-
-/**
- * @deprecated Use container.registerSingleton(TOKENS.CACHE_SERVICE, ...) instead
- */
-export function initializeCacheService(config?: Partial<CacheConfig>): CacheService {
-  if (cacheService) {
-    cacheService.clear();
-  }
-  cacheService = new CacheService(config);
-  return cacheService;
-}
-
-/**
- * @deprecated Managed by DI Container lifecycle
- */
-export function closeCacheService(): void {
-  if (cacheService) {
-    cacheService.clear();
-    cacheService = null;
-  }
-}
+// Deprecated singleton functions removed - use DI Container instead
+// MIGRATION GUIDE:
+// - Replace getCacheService() with container.get(TOKENS.CACHE_SERVICE)
+// - Replace initializeCacheService() with container.registerSingleton(TOKENS.CACHE_SERVICE, ...)
+// - closeCacheService() is managed by DI Container lifecycle

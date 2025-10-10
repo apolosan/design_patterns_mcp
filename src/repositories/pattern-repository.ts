@@ -15,6 +15,10 @@ interface PatternRow {
   description: string;
   problem: string;
   solution: string;
+  when_to_use?: string;
+  benefits?: string;
+  drawbacks?: string;
+  complexity?: string;
   structure?: string;
   participants?: string;
   collaborations?: string;
@@ -33,13 +37,40 @@ interface PatternRow {
 export class SqlitePatternRepository implements PatternRepository {
   constructor(private db: DatabaseManager) {}
 
+  private validateId(id: string): void {
+    if (!id || typeof id !== 'string') {
+      throw new Error('Invalid pattern ID: ID must be a non-empty string');
+    }
+    if (id.length > 255) {
+      throw new Error('Invalid pattern ID: ID must not exceed 255 characters');
+    }
+    if (!/^[a-zA-Z0-9_-]+$/.test(id)) {
+      throw new Error('Invalid pattern ID: ID must contain only alphanumeric characters, hyphens, and underscores');
+    }
+  }
+
+  private validateName(name: string): void {
+    if (!name || typeof name !== 'string') {
+      throw new Error('Invalid pattern name: name must be a non-empty string');
+    }
+    if (name.length > 255) {
+      throw new Error('Invalid pattern name: name must not exceed 255 characters');
+    }
+  }
+
+  private sanitizeWildcards(value: string): string {
+    return value.replace(/[%_]/g, '\\$&');
+  }
+
   async findById(id: string): Promise<Pattern | null> {
+    this.validateId(id);
     const query = 'SELECT * FROM patterns WHERE id = ?';
     const row = this.db.get<PatternRow>(query, [id]);
     return row ? this.mapRowToPattern(row) : null;
   }
 
   async findByName(name: string): Promise<Pattern | null> {
+    this.validateName(name);
     const query = 'SELECT * FROM patterns WHERE name = ? COLLATE NOCASE';
     const row = this.db.get<PatternRow>(query, [name]);
     return row ? this.mapRowToPattern(row) : null;
@@ -191,17 +222,23 @@ export class SqlitePatternRepository implements PatternRepository {
   async findByTags(tags: string[], matchAll: boolean = false): Promise<Pattern[]> {
     if (tags.length === 0) return [];
 
+    tags.forEach(tag => {
+      if (!tag || typeof tag !== 'string' || tag.length > 100) {
+        throw new Error('Invalid tag: tags must be non-empty strings not exceeding 100 characters');
+      }
+    });
+
     let query: string;
     const params: string[] = [];
 
     if (matchAll) {
       const conditions = tags.map(() => 'tags LIKE ?').join(' AND ');
       query = `SELECT * FROM patterns WHERE ${conditions}`;
-      tags.forEach(tag => params.push(`%${tag}%`));
+      tags.forEach(tag => params.push(`%${this.sanitizeWildcards(tag)}%`));
     } else {
       const conditions = tags.map(() => 'tags LIKE ?').join(' OR ');
       query = `SELECT * FROM patterns WHERE ${conditions}`;
-      tags.forEach(tag => params.push(`%${tag}%`));
+      tags.forEach(tag => params.push(`%${this.sanitizeWildcards(tag)}%`));
     }
 
     const rows = this.db.all<PatternRow>(query, params);
@@ -253,6 +290,18 @@ export class SqlitePatternRepository implements PatternRepository {
     }));
   }
 
+  async findByIds(ids: string[]): Promise<Pattern[]> {
+    if (ids.length === 0) return [];
+
+    ids.forEach(id => this.validateId(id));
+
+    const placeholders = ids.map(() => '?').join(',');
+    const query = `SELECT * FROM patterns WHERE id IN (${placeholders})`;
+    
+    const rows = this.db.all<PatternRow>(query, ids);
+    return rows.map(row => this.mapRowToPattern(row));
+  }
+
   async saveMany(patterns: Pattern[]): Promise<Pattern[]> {
     const saved: Pattern[] = [];
     
@@ -297,13 +346,13 @@ export class SqlitePatternRepository implements PatternRepository {
       description: row.description,
       problem: row.problem,
       solution: row.solution,
-      when_to_use: [],
-      benefits: [],
-      drawbacks: [],
+      when_to_use: row.when_to_use ? (typeof row.when_to_use === 'string' ? JSON.parse(row.when_to_use) : row.when_to_use) : [],
+      benefits: row.benefits ? (typeof row.benefits === 'string' ? JSON.parse(row.benefits) : row.benefits) : [],
+      drawbacks: row.drawbacks ? (typeof row.drawbacks === 'string' ? JSON.parse(row.drawbacks) : row.drawbacks) : [],
       use_cases: row.use_cases ? JSON.parse(row.use_cases) : [],
       implementations: [],
       relatedPatterns: row.related_patterns ? JSON.parse(row.related_patterns) : undefined,
-      complexity: 'Medium',
+      complexity: row.complexity || 'Medium',
       popularity: 0.5,
       tags: row.tags ? parseTags(row.tags) : [],
       structure: row.structure,

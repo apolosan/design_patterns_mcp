@@ -313,6 +313,7 @@ class MockPatternRepository implements PatternRepository {
   async findByCategory(category: string, limit?: number) { return []; }
   async findByTags(tags: string[], matchAll?: boolean) { return []; }
   async search(query: string, filters?: any) { return []; }
+  async findByIds(ids: string[]) { return []; }
   async saveMany(patterns: any[]) { return patterns; }
   async count(filters?: any) { return 0; }
   async exists(id: string) { return false; }

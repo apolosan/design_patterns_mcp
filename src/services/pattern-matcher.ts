@@ -6,7 +6,7 @@ import { DatabaseManager } from './database-manager.js';
 import { VectorOperationsService } from './vector-operations.js';
 import { PatternRecommendation } from '../models/recommendation.js';
 import { PatternAnalyzer } from './pattern-analyzer.js';
-import { getCacheService } from './cache.js';
+import { CacheService } from './cache.js';
 import { structuredLogger } from '../utils/logger.js';
 import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
 import { EmbeddingServiceAdapter } from '../adapters/embedding-service-adapter.js';
@@ -83,16 +83,19 @@ export class PatternMatcher {
   private config: PatternMatcherConfig;
   private patternAnalyzer: PatternAnalyzer;
   private embeddingAdapter: EmbeddingServiceAdapter;
+  private cache: CacheService;
 
   constructor(
     db: DatabaseManager,
     vectorOps: VectorOperationsService,
-    config: PatternMatcherConfig
+    config: PatternMatcherConfig,
+    cache?: CacheService
   ) {
     this.db = db;
     this.vectorOps = vectorOps;
     this.config = config;
     this.patternAnalyzer = new PatternAnalyzer();
+    this.cache = cache || new CacheService();
     
     // Initialize embedding adapter with the same strategy pattern used for generation
     this.embeddingAdapter = new EmbeddingServiceAdapter({
@@ -115,7 +118,7 @@ export class PatternMatcher {
         maxResults: request.maxResults,
         programmingLanguage: request.programmingLanguage,
       })}`;
-      const cachedResult = getCacheService().get(cacheKey);
+      const cachedResult = this.cache.get(cacheKey);
 
       if (cachedResult) {
         return cachedResult;
@@ -129,7 +132,7 @@ export class PatternMatcher {
       const finalResults = recommendations.slice(0, request.maxResults || this.config.maxResults);
 
       // Cache the results for 30 minutes
-      getCacheService().set(cacheKey, finalResults, 1800000);
+      this.cache.set(cacheKey, finalResults, 1800000);
 
       return finalResults;
     } catch (error) {
@@ -423,7 +426,7 @@ export class PatternMatcher {
     const normalizedEmbedding = embedding.map(val => val / (norm || 1));
 
     // Cache the embedding for 1 hour
-    getCacheService().setEmbeddings(query, normalizedEmbedding, 3600000);
+    this.cache.setEmbeddings(query, normalizedEmbedding, 3600000);
 
     return normalizedEmbedding;
   }

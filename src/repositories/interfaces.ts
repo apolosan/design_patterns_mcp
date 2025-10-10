@@ -38,6 +38,7 @@ export interface PatternRepository {
   search(query: string, filters?: SearchFilters): Promise<SearchResult[]>;
   
   // Bulk operations
+  findByIds(ids: string[]): Promise<Pattern[]>;
   saveMany(patterns: Pattern[]): Promise<Pattern[]>;
   count(filters?: SearchFilters): Promise<number>;
   exists(id: string): Promise<boolean>;

@@ -42,18 +42,20 @@ export async function initializeDatabase(
     const migrationManager = new MigrationManager(db, config.migrationsPath);
     await migrationManager.initialize();
 
-    // Run migrations
+    // Run migrations with graceful degradation
     logger.info('db-init', 'Running migrations...');
     const migrationResult = await migrationManager.migrate();
 
     if (!migrationResult.success) {
-      throw new Error(`Migration failed: ${migrationResult.message}`);
+      logger.error('db-init', `Migration failed: ${migrationResult.message}`);
+      logger.warn('db-init', 'Continuing with existing schema - database may be partially initialized');
+      // Don't throw - allow continuing with existing schema
+    } else {
+      logger.info(
+        'db-init',
+        `Migrations completed: ${migrationResult.executed?.length || 0} executed`
+      );
     }
-
-    logger.info(
-      'db-init',
-      `Migrations completed: ${migrationResult.executed?.length || 0} executed`
-    );
 
     // Seed pattern data
     logger.info('db-init', 'Seeding pattern data...');
@@ -66,13 +68,15 @@ export async function initializeDatabase(
     const seedResult = await seeder.seedAll();
 
     if (!seedResult.success) {
-      throw new Error(`Seeding failed: ${seedResult.message}`);
+      logger.error('db-init', `Seeding failed: ${seedResult.message}`);
+      logger.warn('db-init', 'Continuing with existing data - some patterns may be missing');
+      // Don't throw - allow continuing with partial data
+    } else {
+      logger.info(
+        'db-init',
+        `Seeding completed: ${seedResult.totalPatterns || 0} patterns, ${seedResult.totalImplementations || 0} implementations`
+      );
     }
-
-    logger.info(
-      'db-init',
-      `Seeding completed: ${seedResult.totalPatterns || 0} patterns, ${seedResult.totalImplementations || 0} implementations`
-    );
 
     // Validate data
     logger.info('db-init', 'Validating seeded data...');

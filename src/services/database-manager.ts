@@ -72,24 +72,31 @@ export class DatabaseManager {
    */
   async close(): Promise<void> {
     if (this.db) {
-      // Export database to file before closing (only if not readonly and path exists)
-      if (this.config.filename && !this.config.options?.readonly) {
-        try {
+      try {
+        // Clear statement pool FIRST to prevent memory leaks
+        this.statementPool.clear();
+        logger.info('database-manager', 'Statement pool cleared');
+
+        // Export database to file before closing (only if not readonly and path exists)
+        if (this.config.filename && !this.config.options?.readonly) {
           const dbDir = path.dirname(this.config.filename);
           if (!fs.existsSync(dbDir)) {
-            fs.mkdirSync(dbDir, { recursive: true });
+            await fs.promises.mkdir(dbDir, { recursive: true });
           }
           const data = this.db.export();
           const buffer = Buffer.from(data);
-          fs.writeFileSync(this.config.filename, buffer);
-        } catch (error) {
-          logger.warn('database-manager', `Failed to export database on close: ${error}`);
+          await fs.promises.writeFile(this.config.filename, buffer);
+          logger.info('database-manager', `Database exported to ${this.config.filename}`);
         }
-      }
 
-      this.db.close();
-      this.db = null;
-      logger.info('database-manager', 'Database connection closed');
+        // Close database connection
+        this.db.close();
+        this.db = null;
+        logger.info('database-manager', 'Database connection closed successfully');
+      } catch (error) {
+        logger.error('database-manager', 'Failed to close database properly', error instanceof Error ? error : new Error(String(error)));
+        throw error;
+      }
     }
   }
 
@@ -192,24 +199,51 @@ export class DatabaseManager {
   }
 
   /**
-   * Execute multiple SQL statements in a transaction
+   * Execute multiple SQL statements in a transaction (with retry logic)
+   * Retries on transient errors (SQLITE_BUSY, SQLITE_LOCKED)
    */
-  transaction<T>(callback: () => T): T {
+  transaction<T>(callback: () => T, maxRetries: number = 3, retryDelay: number = 100): T {
     if (!this.db) {
       throw new Error('Database not initialized');
     }
 
-    // sql.js doesn't have built-in transactions, so we'll just execute the callback
-    // In a production system, you'd want to implement proper transaction handling
-    try {
-      this.db.run('BEGIN TRANSACTION');
-      const result = callback();
-      this.db.run('COMMIT');
-      return result;
-    } catch (error) {
-      this.db.run('ROLLBACK');
-      throw error;
+    let lastError: Error | null = null;
+    
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        this.db.run('BEGIN TRANSACTION');
+        const result = callback();
+        this.db.run('COMMIT');
+        return result;
+      } catch (error) {
+        this.db.run('ROLLBACK');
+        
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        const isTransient = errorMsg.includes('BUSY') || 
+                           errorMsg.includes('LOCKED') ||
+                           errorMsg.includes('database is locked');
+        
+        if (isTransient && attempt < maxRetries - 1) {
+          // Transient error - wait and retry with exponential backoff
+          const waitTime = retryDelay * Math.pow(2, attempt);
+          logger.warn('database-manager', `Transaction failed (attempt ${attempt + 1}/${maxRetries}), retrying in ${waitTime}ms...`);
+          
+          // Synchronous sleep for retry delay
+          const start = Date.now();
+          while (Date.now() - start < waitTime) {
+            // Busy wait (not ideal but works for small delays)
+          }
+          
+          lastError = error instanceof Error ? error : new Error(String(error));
+          continue;
+        }
+        
+        // Non-transient error or max retries exceeded
+        throw error;
+      }
     }
+    
+    throw lastError || new Error('Transaction failed after all retries');
   }
 
   /**

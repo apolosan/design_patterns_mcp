@@ -25,7 +25,7 @@ import { SemanticSearchService } from './services/semantic-search.js';
 import { LLMBridgeService } from './services/llm-bridge.js';
 import { MigrationManager } from './services/migrations.js';
 import { PatternSeeder } from './services/pattern-seeder.js';
-import { initializeCacheService } from './services/cache.js';
+import { CacheService } from './services/cache.js';
 import { logger } from './services/logger.js';
 import { parseTags, parseArrayProperty } from './utils/parse-tags.js';
 
@@ -61,8 +61,8 @@ class DesignPatternsMCPServer {
       },
     });
 
-    // Initialize cache service
-    initializeCacheService({
+    // Initialize cache service (using direct instantiation instead of deprecated singleton)
+    const cacheService = new CacheService({
       maxSize: 1000,
       defaultTTL: 3600000, // 1 hour
       enableMetrics: config.logLevel === 'debug',
@@ -85,7 +85,7 @@ class DesignPatternsMCPServer {
       useHybridSearch: true,
       semanticWeight: 0.7,
       keywordWeight: 0.3,
-    });
+    }, cacheService);
 
     this.semanticSearch = new SemanticSearchService(this.db, this.vectorOps, {
       modelName: 'all-MiniLM-L6-v2',
@@ -473,19 +473,15 @@ class DesignPatternsMCPServer {
 
   private async handleCountPatterns(args: any): Promise<any> {
     try {
-      const patterns = this.db.query('SELECT id, name, category FROM patterns ORDER BY category');
-      const total = patterns.length;
+      // OPTIMIZATION: Use COUNT instead of loading all rows
+      const totalResult = this.db.queryOne<{ total: number }>('SELECT COUNT(*) as total FROM patterns');
+      const total = totalResult?.total || 0;
 
       if (args.includeDetails) {
-        // Create category breakdown
-        const categoryBreakdown: { [key: string]: number } = {};
-        patterns.forEach(pattern => {
-          categoryBreakdown[pattern.category] = (categoryBreakdown[pattern.category] || 0) + 1;
-        });
-
-        const breakdown = Object.entries(categoryBreakdown)
-          .map(([category, count]) => ({ category, count }))
-          .sort((a, b) => b.count - a.count);
+        // Get category breakdown efficiently
+        const breakdown = this.db.query<{ category: string; count: number }>(
+          'SELECT category, COUNT(*) as count FROM patterns GROUP BY category ORDER BY count DESC'
+        );
 
         return {
           content: [
@@ -520,8 +516,9 @@ class DesignPatternsMCPServer {
 
   // Resource handlers
   private async handleReadPatterns(): Promise<any> {
+    // OPTIMIZATION: Add pagination with LIMIT to prevent loading all 574+ patterns
     const patterns = this.db.query(
-      'SELECT id, name, category, description, complexity, tags FROM patterns ORDER BY name'
+      'SELECT id, name, category, description, complexity, tags FROM patterns ORDER BY name LIMIT 100'
     );
 
     return {

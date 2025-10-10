@@ -5,7 +5,7 @@
 
 import { EmbeddingStrategy, EmbeddingVector } from '../strategies/embedding-strategy.js';
 import { EmbeddingStrategyFactory } from '../factories/embedding-factory.js';
-import { getCacheService } from '../services/cache.js';
+import { CacheService } from '../services/cache.js';
 import { structuredLogger } from '../utils/logger.js';
 
 export interface EmbeddingServiceConfig {
@@ -23,8 +23,9 @@ export class EmbeddingServiceAdapter {
   private strategy: EmbeddingStrategy | null = null;
   private config: Required<EmbeddingServiceConfig>;
   private factory: EmbeddingStrategyFactory;
+  private cache: CacheService;
 
-  constructor(config: EmbeddingServiceConfig = {}) {
+  constructor(config: EmbeddingServiceConfig = {}, cache?: CacheService) {
     this.config = {
       cacheEnabled: true,
       cacheTTL: 3600000, // 1 hour
@@ -33,6 +34,8 @@ export class EmbeddingServiceAdapter {
       retryDelay: 1000,
       ...config,
     };
+
+    this.cache = cache || new CacheService();
 
     this.factory = EmbeddingStrategyFactory.getInstance({
       preferredStrategy: 'transformers',
@@ -64,7 +67,7 @@ export class EmbeddingServiceAdapter {
 
     // Check cache first
     if (this.config.cacheEnabled) {
-      const cachedEmbedding = getCacheService().getEmbeddings(text);
+      const cachedEmbedding = this.cache.getEmbeddings(text);
       if (cachedEmbedding) {
         return cachedEmbedding;
       }
@@ -75,7 +78,7 @@ export class EmbeddingServiceAdapter {
     
     // Cache the result
     if (this.config.cacheEnabled) {
-      getCacheService().setEmbeddings(text, embedding.values, this.config.cacheTTL);
+      this.cache.setEmbeddings(text, embedding.values, this.config.cacheTTL);
     }
 
     return embedding.values;
@@ -96,7 +99,7 @@ export class EmbeddingServiceAdapter {
     // Check cache for each text
     if (this.config.cacheEnabled) {
       texts.forEach((text, index) => {
-        const cachedEmbedding = getCacheService().getEmbeddings(text);
+        const cachedEmbedding = this.cache.getEmbeddings(text);
         if (cachedEmbedding) {
           cachedResults.set(index, cachedEmbedding);
         } else {
@@ -114,7 +117,7 @@ export class EmbeddingServiceAdapter {
     uncachedTexts.forEach((item, i) => {
       const embedding = newEmbeddings[i];
       if (this.config.cacheEnabled) {
-        getCacheService().setEmbeddings(item.text, embedding, this.config.cacheTTL);
+        this.cache.setEmbeddings(item.text, embedding, this.config.cacheTTL);
       }
       cachedResults.set(item.index, embedding);
     });
