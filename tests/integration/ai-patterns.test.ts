@@ -1,19 +1,22 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 import { createPatternSeeder } from '../../src/services/pattern-seeder';
+import { MigrationManager } from '../../src/services/migrations';
+import { getTestDatabaseConfig } from '../helpers/test-db';
 import path from 'path';
 
 describe('AI/ML Patterns', () => {
   let dbManager: DatabaseManager;
 
   beforeAll(async () => {
-    // Initialize test database
-    dbManager = new DatabaseManager({
-      filename: ':memory:',
-      options: { readonly: false },
-    });
-
+    // Initialize test database with proper schema
+    dbManager = new DatabaseManager(getTestDatabaseConfig(false));
     await dbManager.initialize();
+
+    // Run migrations to ensure schema is up to date
+    const migrationManager = new MigrationManager(dbManager, './migrations');
+    await migrationManager.initialize();
+    await migrationManager.migrate();
 
     // Seed patterns for testing
     const seeder = createPatternSeeder(dbManager, {

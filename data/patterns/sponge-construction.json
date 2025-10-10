@@ -1,0 +1,32 @@
+{
+  "id": "sponge-construction",
+  "name": "Sponge Construction",
+  "category": "Security",
+  "description": "Revolutionary hash construction using a fixed-size state divided into rate (r) and capacity (c) portions. Absorbing phase XORs input blocks into rate portion, squeezing phase extracts output from rate portion. Security level is min(t/2, c/2) for t-bit output.",
+  "when_to_use": "[\"SHA-3\",\"Arbitrary-length output\",\"Quantum-resistant applications\",\"Length extension immunity\",\"Authenticated encryption\",\"Stream ciphers\"]",
+  "benefits": "[\"Immune to length extension attacks\",\"Arbitrary output length\",\"Inherently quantum-resistant\",\"Single construction for multiple primitives\"]",
+  "drawbacks": "[\"Complex implementation\",\"Slower than optimized Merkle-Damgård\",\"Requires strong permutation function\",\"Higher memory usage\"]",
+  "use_cases": "[\"SHA-3 (Keccak)\",\"SHAKE128/256\",\"ASCON\",\"Authenticated encryption (AEAD)\",\"Zero-knowledge proofs\",\"Stream ciphers\"]",
+  "complexity": "Very High",
+  "tags": [
+    "cryptography",
+    "hash-function",
+    "sponge",
+    "keccak",
+    "sha-3",
+    "quantum-resistant",
+    "arbitrary-output",
+    "absorb",
+    "squeeze"
+  ],
+  "examples": {
+    "cpp": {
+      "language": "cpp",
+      "code": "#include <array>\n#include <vector>\n#include <cstdint>\n\nclass SpongeConstruction {\nprivate:\n    static constexpr size_t RATE = 136;      // 1088 bits for SHA3-256\n    static constexpr size_t CAPACITY = 64;   // 512 bits\n    static constexpr size_t STATE_SIZE = 200; // 1600 bits total\n    \n    std::array<uint64_t, 25> state; // 25 lanes of 64 bits\n    \n    // Round constants for iota\n    static constexpr std::array<uint64_t, 24> RC = {\n        0x0000000000000001ULL, 0x0000000000008082ULL, 0x800000000000808AULL,\n        0x8000000080008000ULL, 0x000000000000808BULL, 0x0000000080000001ULL,\n        // ... 24 constants total\n    };\n    \n    uint64_t rotl64(uint64_t x, int n) {\n        return (x << n) | (x >> (64 - n));\n    }\n    \n    void theta() {\n        std::array<uint64_t, 5> C, D;\n        \n        for (int x = 0; x < 5; x++) {\n            C[x] = state[x] ^ state[x + 5] ^ state[x + 10] ^ \n                   state[x + 15] ^ state[x + 20];\n        }\n        \n        for (int x = 0; x < 5; x++) {\n            D[x] = C[(x + 4) % 5] ^ rotl64(C[(x + 1) % 5], 1);\n        }\n        \n        for (int x = 0; x < 5; x++) {\n            for (int y = 0; y < 5; y++) {\n                state[x + 5 * y] ^= D[x];\n            }\n        }\n    }\n    \n    void rho_pi() {\n        uint64_t current = state[1];\n        // Pi and rho steps combined\n        for (int i = 0; i < 24; i++) {\n            int j = piln[i]; // Precomputed permutation indices\n            uint64_t temp = state[j];\n            state[j] = rotl64(current, r[i]); // r[i] are rotation offsets\n            current = temp;\n        }\n    }\n    \n    void chi() {\n        for (int y = 0; y < 5; y++) {\n            std::array<uint64_t, 5> temp;\n            for (int x = 0; x < 5; x++) {\n                temp[x] = state[x + 5 * y];\n            }\n            for (int x = 0; x < 5; x++) {\n                state[x + 5 * y] = temp[x] ^ \n                    ((~temp[(x + 1) % 5]) & temp[(x + 2) % 5]);\n            }\n        }\n    }\n    \n    void iota(int round) {\n        state[0] ^= RC[round];\n    }\n    \n    void keccak_f() {\n        for (int round = 0; round < 24; round++) {\n            theta();\n            rho_pi();\n            chi();\n            iota(round);\n        }\n    }\n    \npublic:\n    SpongeConstruction() {\n        state.fill(0);\n    }\n    \n    std::vector<uint8_t> hash(const std::vector<uint8_t>& input, size_t outputLen) {\n        state.fill(0);\n        \n        // Absorbing phase\n        size_t offset = 0;\n        while (offset < input.size()) {\n            size_t blockSize = std::min(RATE, input.size() - offset);\n            \n            // XOR input into rate portion\n            for (size_t i = 0; i < blockSize; i++) {\n                reinterpret_cast<uint8_t*>(state.data())[i] ^= input[offset + i];\n            }\n            \n            if (offset + blockSize < input.size() || blockSize == RATE) {\n                keccak_f();\n            }\n            offset += blockSize;\n        }\n        \n        // Padding (pad10*1 for SHA-3)\n        size_t pos = input.size() % RATE;\n        reinterpret_cast<uint8_t*>(state.data())[pos] ^= 0x06;\n        reinterpret_cast<uint8_t*>(state.data())[RATE - 1] ^= 0x80;\n        keccak_f();\n        \n        // Squeezing phase\n        std::vector<uint8_t> output;\n        output.reserve(outputLen);\n        \n        while (output.size() < outputLen) {\n            size_t blockSize = std::min(RATE, outputLen - output.size());\n            uint8_t* stateBytes = reinterpret_cast<uint8_t*>(state.data());\n            \n            for (size_t i = 0; i < blockSize; i++) {\n                output.push_back(stateBytes[i]);\n            }\n            \n            if (output.size() < outputLen) {\n                keccak_f();\n            }\n        }\n        \n        return output;\n    }\n};"
+    },
+    "rust": {
+      "language": "rust",
+      "code": "use tiny_keccak::{Hasher, Sha3};\n\nfn sha3_256_hash(input: &[u8]) -> [u8; 32] {\n    let mut hasher = Sha3::v256();\n    let mut output = [0u8; 32];\n    hasher.update(input);\n    hasher.finalize(&mut output);\n    output\n}\n\n// SHAKE (extendable output)\nuse tiny_keccak::Shake;\n\nfn shake256_hash(input: &[u8], output_len: usize) -> Vec<u8> {\n    let mut hasher = Shake::v256();\n    let mut output = vec![0u8; output_len];\n    hasher.update(input);\n    hasher.finalize(&mut output);\n    output\n}\n\nfn main() {\n    let message = b\"Hello, Sponge!\";\n    \n    // SHA3-256 (fixed output)\n    let hash = sha3_256_hash(message);\n    println!(\"SHA3-256: {:?}\", hex::encode(hash));\n    \n    // SHAKE256 (arbitrary length output)\n    let hash_64 = shake256_hash(message, 64);\n    let hash_128 = shake256_hash(message, 128);\n    println!(\"SHAKE256-64: {:?}\", hex::encode(hash_64));\n}"
+    }
+  }
+}

@@ -45,14 +45,16 @@ export class VectorOperationsService {
 
       const sql = `
         INSERT OR REPLACE INTO pattern_embeddings (
-          pattern_id, embedding, model, created_at
-        ) VALUES (?, ?, ?, ?)
+          pattern_id, embedding, model, strategy, dimensions, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?)
       `;
 
       const params = [
         patternId,
         JSON.stringify(embedding),
         this.config.model,
+        'semantic', // Default strategy
+        embedding.length, // Dimensions
         new Date().toISOString(),
       ];
 

@@ -1,0 +1,12 @@
+{
+  "id": "feedback-focused-testing",
+  "name": "Feedback-Focused Testing",
+  "category": "Testing",
+  "description": "Test design pattern that integrates continuous feedback mechanisms into the testing process, providing rapid insights for development teams",
+  "when_to_use": "CI/CD pipelines\nAgile development\nContinuous integration\nReal-time monitoring",
+  "benefits": "Rapid issue detection\nImproved productivity\nHigher quality software\nContinuous improvement",
+  "drawbacks": "Infrastructure requirements\nNotification fatigue\nFalse positives\nResource intensive",
+  "use_cases": "DevOps pipelines\nContinuous deployment\nQuality gates\nAutomated monitoring",
+  "complexity": "Medium",
+  "tags": ["testing", "ci-cd", "feedback", "monitoring", "continuous-integration"]
+}

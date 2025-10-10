@@ -1,0 +1,24 @@
+{
+  "id": "association-rule-mining",
+  "name": "Association Rule Mining",
+  "category": "Big Data Analysis",
+  "description": "Discovers frequent patterns and relationships between items in large datasets using market basket analysis techniques",
+  "when_to_use": "Market basket analysis\nRecommendation systems\nCross-selling opportunities\nFraud detection\nBiological pattern discovery",
+  "benefits": "Uncovers hidden relationships\nActionable business insights\nScalable to large datasets\nUnsupervised learning approach",
+  "drawbacks": "Computationally expensive\nMay generate too many rules\nRequires careful parameter tuning\nInterpretability challenges",
+  "use_cases": "E-commerce recommendations\nHealthcare pattern analysis\nWeb usage mining\nSupply chain optimization\nGenomic research",
+  "complexity": "High",
+  "tags": [
+    "big-data",
+    "unsupervised-learning",
+    "pattern-mining",
+    "market-basket-analysis",
+    "frequent-itemsets"
+  ],
+  "examples": {
+    "python": {
+      "language": "python",
+      "code": "from mlxtend.frequent_patterns import apriori, association_rules\nimport pandas as pd\n\ndef association_rule_mining(transactions, min_support=0.01, min_confidence=0.2):\n    \"\"\"\n    Mine association rules from transaction data\n    \n    Parameters:\n    - transactions: DataFrame with binary columns (items) and rows (transactions)\n    - min_support: Minimum support threshold\n    - min_confidence: Minimum confidence threshold\n    \"\"\"\n    \n    # Find frequent itemsets\n    frequent_itemsets = apriori(transactions, min_support=min_support, use_colnames=True)\n    \n    # Generate association rules\n    rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=min_confidence)\n    \n    # Sort by lift (strength of association)\n    rules = rules.sort_values('lift', ascending=False)\n    \n    return {\n        'frequent_itemsets': frequent_itemsets,\n        'rules': rules,\n        'summary': {\n            'total_rules': len(rules),\n            'avg_confidence': rules['confidence'].mean(),\n            'avg_lift': rules['lift'].mean()\n        }\n    }\n\n# Example usage\n# Sample transaction data\ndata = {\n    'bread': [1, 0, 1, 1, 0],\n    'milk': [1, 1, 0, 1, 1],\n    'butter': [0, 1, 1, 1, 0],\n    'cheese': [0, 0, 1, 1, 1],\n    'eggs': [1, 1, 0, 0, 1]\n}\n\ntransactions_df = pd.DataFrame(data)\n\n# Mine association rules\nresult = association_rule_mining(transactions_df, min_support=0.2, min_confidence=0.5)\n\nprint(f\"Found {result['summary']['total_rules']} association rules\")\nprint(\"Top rules by lift:\")\nprint(result['rules'][['antecedents', 'consequents', 'support', 'confidence', 'lift']].head())"
+    }
+  }
+}

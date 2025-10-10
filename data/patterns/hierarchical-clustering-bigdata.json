@@ -1,0 +1,18 @@
+{
+  "id": "hierarchical-clustering-bigdata",
+  "name": "Hierarchical Clustering for Big Data",
+  "category": "Big Data Analysis",
+  "description": "Builds nested cluster hierarchies using agglomerative or divisive methods, suitable for exploratory data analysis on large datasets",
+  "when_to_use": "Exploratory data analysis\nTaxonomy creation\nUnderstanding data structure\nWhen cluster count is unknown\nSmall to medium datasets",
+  "benefits": "No need to specify cluster count\nProduces dendrogram for visualization\nHierarchical relationships preserved\nGood for understanding data structure",
+  "drawbacks": "Computationally expensive O(n³)\nNot suitable for very large datasets\nOnce merged, clusters cannot be split\nSensitive to noise",
+  "use_cases": "Gene expression analysis\nCustomer segmentation\nDocument clustering\nPhylogenetic analysis\nMarket research",
+  "complexity": "Medium",
+  "tags": ["big-data", "clustering", "unsupervised-learning", "hierarchical", "dendrogram"],
+  "examples": {
+    "python": {
+      "language": "python",
+      "code": "from scipy.cluster.hierarchy import linkage, dendrogram, fcluster\nimport matplotlib.pyplot as plt\nimport numpy as np\n\ndef hierarchical_clustering_bigdata(data, method='ward', metric='euclidean', max_clusters=None):\n    \"\"\"\n    Perform hierarchical clustering on big data\n    \n    Parameters:\n    - data: numpy array or pandas DataFrame\n    - method: linkage method ('single', 'complete', 'average', 'ward')\n    - metric: distance metric\n    - max_clusters: maximum number of clusters to form\n    \"\"\"\n    \n    # Compute linkage matrix\n    linkage_matrix = linkage(data, method=method, metric=metric)\n    \n    # Create dendrogram\n    plt.figure(figsize=(10, 7))\n    dendrogram(linkage_matrix)\n    plt.title('Hierarchical Clustering Dendrogram')\n    plt.xlabel('Sample Index')\n    plt.ylabel('Distance')\n    plt.show()\n    \n    # Form flat clusters if max_clusters specified\n    if max_clusters:\n        clusters = fcluster(linkage_matrix, max_clusters, criterion='maxclust')\n    else:\n        # Use distance threshold (elbow method could be applied here)\n        clusters = fcluster(linkage_matrix, t=linkage_matrix[:, 2].max() * 0.7, criterion='distance')\n    \n    return {\n        'linkage_matrix': linkage_matrix,\n        'clusters': clusters,\n        'cluster_counts': np.bincount(clusters),\n        'method': method,\n        'metric': metric\n    }\n\n# Example usage\n# Generate sample data\nnp.random.seed(42)\ndata = np.random.randn(100, 4)\n\n# Perform hierarchical clustering\nresult = hierarchical_clustering_bigdata(data, method='ward', max_clusters=5)\n\nprint(f\"Number of clusters formed: {len(np.unique(result['clusters']))}\")\nprint(f\"Cluster sizes: {result['cluster_counts']}\")\nprint(f\"Linkage method: {result['method']}\")"
+    }
+  }
+}

@@ -8,15 +8,5 @@
   "drawbacks": "Complex implementation\nPerformance overhead\nLearning curve",
   "use_cases": "ORM layers\nLegacy integration\nDomain-driven design",
   "complexity": "High",
-  "tags": [
-    "enterprise",
-    "mapping",
-    "independence"
-  ],
-  "examples": {
-    "cross-reference": {
-      "language": "cross-reference",
-      "code": "// See Data Mapper pattern for implementation example\n// Reference pattern: data-mapper-pattern"
-    }
-  }
+  "tags": ["enterprise", "mapping", "independence"]
 }

@@ -1,0 +1,190 @@
+{
+  "patterns": [
+    {
+      "id": "bias-mitigation",
+      "name": "Bias Mitigation Pattern",
+      "category": "AI Governance",
+      "description": "Systematically identifies, measures, and reduces bias in AI systems",
+      "problem": "AI models trained on biased data produce discriminatory outcomes",
+      "solution": "Implement bias detection and mitigation strategies",
+      "when_to_use": [
+        "Training AI models for decision-making systems"
+      ],
+      "benefits": [
+        "Fair outcomes",
+        "Regulatory compliance"
+      ],
+      "drawbacks": [
+        "Increased complexity"
+      ],
+      "use_cases": [
+        "Hiring systems",
+        "Loan approval"
+      ],
+      "related_patterns": [
+        "Fairness Pattern"
+      ],
+      "complexity": "High",
+      "tags": [
+        "ai-governance",
+        "ethics",
+        "bias"
+      ],
+      "code_examples": [
+        {
+          "language": "python",
+          "code": "import pandas as pd\nimport numpy as np\n\nclass BiasDetector:\n    def __init__(self, protected_attribute='gender'):\n        self.protected_attr = protected_attribute\n\n    def detect_bias(self, X, y, protected_attributes):\n        privileged_mask = (protected_attributes[self.protected_attr] == 1)\n        unprivileged_mask = (protected_attributes[self.protected_attr] == 0)\n        \n        privileged_rate = y[privileged_mask].mean()\n        unprivileged_rate = y[unprivileged_mask].mean()\n        \n        disparate_impact = unprivileged_rate / privileged_rate if privileged_rate > 0 else 0\n        \n        return {\n            'disparate_impact': disparate_impact,\n            'privileged_rate': privileged_rate,\n            'unprivileged_rate': unprivileged_rate\n        }\n\ndetector = BiasDetector()\nbias_metrics = detector.detect_bias(X, y, protected_data)\nprint(f'Disparate Impact: {bias_metrics[\"disparate_impact\"]:.3f}')"
+        }
+      ]
+    },
+    {
+      "id": "fairness-pattern",
+      "name": "Fairness Pattern",
+      "category": "AI Governance",
+      "description": "Ensures AI systems provide equitable outcomes across demographic groups",
+      "problem": "AI systems can perpetuate societal inequalities",
+      "solution": "Integrate fairness metrics and constraints into ML pipelines",
+      "when_to_use": [
+        "Building decision-making AI systems"
+      ],
+      "benefits": [
+        "Equitable treatment",
+        "Regulatory compliance"
+      ],
+      "drawbacks": [
+        "Accuracy-fairness trade-offs"
+      ],
+      "use_cases": [
+        "Automated hiring",
+        "Credit scoring"
+      ],
+      "related_patterns": [
+        "Bias Mitigation Pattern"
+      ],
+      "complexity": "High",
+      "tags": [
+        "ai-governance",
+        "ethics",
+        "fairness"
+      ],
+      "code_examples": [
+        {
+          "language": "python",
+          "code": "import numpy as np\n\ndef calculate_fairness_metrics(y_true, y_pred, sensitive_features):\n    metrics = {}\n    \n    for group in sensitive_features.unique():\n        mask = sensitive_features == group\n        group_metrics = {\n            'selection_rate': y_pred[mask].mean(),\n            'accuracy': (y_true[mask] == y_pred[mask]).mean()\n        }\n        metrics[str(group)] = group_metrics\n    \n    if len(metrics) >= 2:\n        selection_rates = [metrics[g]['selection_rate'] for g in metrics]\n        metrics['selection_rate_disparity'] = max(selection_rates) - min(selection_rates)\n    \n    return metrics\n\nfairness_metrics = calculate_fairness_metrics(y_test, predictions, test_data['gender'])\nprint(f'Selection Rate Disparity: {fairness_metrics.get(\"selection_rate_disparity\", 0):.3f}')"
+        }
+      ]
+    },
+    {
+      "id": "interpretability-pattern",
+      "name": "Interpretability Pattern",
+      "category": "AI Governance",
+      "description": "Makes AI model decisions transparent and understandable",
+      "problem": "Complex AI models act as black boxes",
+      "solution": "Implement interpretability techniques like SHAP values",
+      "when_to_use": [
+        "High-stakes decision-making systems"
+      ],
+      "benefits": [
+        "Increased transparency",
+        "Easier debugging"
+      ],
+      "drawbacks": [
+        "Computational overhead"
+      ],
+      "use_cases": [
+        "Financial risk assessment",
+        "Medical diagnosis"
+      ],
+      "related_patterns": [
+        "Bias Mitigation Pattern"
+      ],
+      "complexity": "Medium",
+      "tags": [
+        "ai-governance",
+        "interpretability"
+      ],
+      "code_examples": [
+        {
+          "language": "python",
+          "code": "import shap\nfrom sklearn.ensemble import RandomForestClassifier\n\nclass InterpretableModel:\n    def __init__(self):\n        self.model = RandomForestClassifier(random_state=42)\n        self.explainer = None\n\n    def fit(self, X_train, y_train):\n        self.model.fit(X_train, y_train)\n        self.explainer = shap.TreeExplainer(self.model)\n        return self\n\n    def explain_prediction(self, X_instance):\n        shap_values = self.explainer.shap_values(X_instance)\n        return dict(zip(X_instance.columns, shap_values[1][0]))\n\nmodel = InterpretableModel()\nmodel.fit(X_train, y_train)\nexplanation = model.explain_prediction(X_test.iloc[[0]])\nprint('Feature contributions:', explanation)"
+        }
+      ]
+    },
+    {
+      "id": "ai-privacy-pattern",
+      "name": "AI Privacy Pattern",
+      "category": "AI Governance",
+      "description": "Implements privacy-preserving techniques in AI systems",
+      "problem": "AI systems require access to sensitive personal data",
+      "solution": "Apply federated learning and differential privacy",
+      "when_to_use": [
+        "Processing sensitive data",
+        "Multi-party AI"
+      ],
+      "benefits": [
+        "Enhanced privacy",
+        "Regulatory compliance"
+      ],
+      "drawbacks": [
+        "Increased complexity"
+      ],
+      "use_cases": [
+        "Healthcare models",
+        "Financial risk assessment"
+      ],
+      "related_patterns": [
+        "Bias Mitigation Pattern"
+      ],
+      "complexity": "High",
+      "tags": [
+        "ai-governance",
+        "privacy",
+        "security"
+      ],
+      "code_examples": [
+        {
+          "language": "python",
+          "code": "import numpy as np\nfrom sklearn.linear_model import LogisticRegression\n\nclass DifferentialPrivacy:\n    def __init__(self, epsilon=1.0):\n        self.epsilon = epsilon\n\n    def add_noise(self, data, sensitivity=1.0):\n        scale = sensitivity / self.epsilon\n        noise = np.random.laplace(0, scale, data.shape)\n        return data + noise\n\n    def train_private_model(self, X_train, y_train):\n        model = LogisticRegression(random_state=42)\n        model.fit(X_train, y_train)\n        return model\n\ndp = DifferentialPrivacy(epsilon=0.5)\nnoisy_data = dp.add_noise(X_train.values)\nprivate_model = dp.train_private_model(noisy_data, y_train)"
+        }
+      ]
+    },
+    {
+      "id": "ai-governance-pattern",
+      "name": "AI Governance Pattern",
+      "category": "AI Governance",
+      "description": "Establishes comprehensive governance frameworks for AI systems",
+      "problem": "AI systems lack standardized governance",
+      "solution": "Implement governance framework with policies and monitoring",
+      "when_to_use": [
+        "Large-scale AI development",
+        "High-risk applications"
+      ],
+      "benefits": [
+        "Regulatory compliance",
+        "Risk mitigation"
+      ],
+      "drawbacks": [
+        "High implementation complexity"
+      ],
+      "use_cases": [
+        "Financial AI systems",
+        "Healthcare applications"
+      ],
+      "related_patterns": [
+        "Bias Mitigation Pattern"
+      ],
+      "complexity": "High",
+      "tags": [
+        "ai-governance",
+        "ethics",
+        "compliance"
+      ],
+      "code_examples": [
+        {
+          "language": "python",
+          "code": "import datetime\n\nclass AIGovernanceFramework:\n    def __init__(self, organization_name: str):\n        self.organization_name = organization_name\n        self.policies = {}\n        self.risk_assessments = []\n\n    def define_policies(self, policies: dict):\n        self.policies = policies\n\n    def assess_risk(self, model_info: dict) -> dict:\n        risk_score = 0.0\n        if model_info.get('type') == 'deep_learning':\n            risk_score += 0.5\n        if model_info.get('critical_system'):\n            risk_score += 0.3\n\n        return {\n            'risk_score': risk_score,\n            'level': 'HIGH' if risk_score > 0.5 else 'LOW'\n        }\n\nframework = AIGovernanceFramework('AI Corp')\nframework.define_policies({\n    'data_governance': 'Encrypt sensitive data',\n    'model_monitoring': 'Track performance metrics'\n})\n\nrisk = framework.assess_risk({'type': 'deep_learning', 'critical_system': True})\nprint(f'Risk Level: {risk[\"level\"]}')"
+        }
+      ]
+    }
+  ]
+}

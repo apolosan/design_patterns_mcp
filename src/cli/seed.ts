@@ -11,6 +11,7 @@ import { logger } from '../services/logger.js';
 
 async function main(): Promise<void> {
   try {
+    logger.info('seed', 'Starting seeding script');
     // Initialize database
     const dbConfig = {
       filename: './data/design-patterns.db',
@@ -74,7 +75,7 @@ async function main(): Promise<void> {
     const dbManager = await import('../services/database-manager.js');
     await dbManager.closeDatabaseManager();
     logger.info('seed', '✅ Database saved to file');
-    console.log('✅ Seeding completed successfully!');
+    logger.info('seed', '✅ Seeding completed successfully!');
   } catch (error) {
     console.error('❌ Seeding failed:', error);
     process.exit(1);

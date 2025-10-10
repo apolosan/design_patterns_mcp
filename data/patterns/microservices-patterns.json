@@ -6,7 +6,12 @@
       "category": "Microservices",
       "description": "Single entry point for all clients providing routing, composition, and protocol translation",
       "when_to_use": ["Multiple microservices", "Client simplification", "Cross-cutting concerns"],
-      "benefits": ["Single entry point", "Request routing", "Protocol translation", "Cross-cutting concerns"],
+      "benefits": [
+        "Single entry point",
+        "Request routing",
+        "Protocol translation",
+        "Cross-cutting concerns"
+      ],
       "drawbacks": ["Single point of failure", "Performance bottleneck", "Development bottleneck"],
       "use_cases": ["Mobile backends", "Web applications", "Third-party integrations"],
       "complexity": "Medium",
@@ -42,7 +47,12 @@
       "category": "Microservices",
       "description": "Separate API gateway for each type of client application",
       "when_to_use": ["Different client needs", "Client optimization", "Team ownership"],
-      "benefits": ["Client optimization", "Team autonomy", "Tailored APIs", "Independent deployment"],
+      "benefits": [
+        "Client optimization",
+        "Team autonomy",
+        "Tailored APIs",
+        "Independent deployment"
+      ],
       "drawbacks": ["Code duplication", "Multiple backends", "Coordination complexity"],
       "use_cases": ["Mobile vs web apps", "Partner APIs", "Client-specific backends"],
       "complexity": "Medium",
@@ -68,7 +78,11 @@
       "when_to_use": ["Service dependencies", "Fault tolerance", "Resilience"],
       "benefits": ["Failure isolation", "Fast failure", "System stability", "Resource protection"],
       "drawbacks": ["False positives", "Configuration complexity", "Monitoring overhead"],
-      "use_cases": ["External service calls", "Database connections", "Inter-service communication"],
+      "use_cases": [
+        "External service calls",
+        "Database connections",
+        "Inter-service communication"
+      ],
       "complexity": "Medium",
       "tags": ["microservices", "resilience", "fault-tolerance"]
     },
@@ -227,18 +241,6 @@
       "use_cases": ["Database connections", "External APIs", "Protocol translation"],
       "complexity": "Medium",
       "tags": ["microservices", "networking", "proxy"]
-    },
-    {
-      "id": "adapter-ms",
-      "name": "Adapter (Microservices)",
-      "category": "Microservices",
-      "description": "Standardizes output from main service for external consumption",
-      "when_to_use": ["Interface standardization", "Legacy integration", "Protocol adaptation"],
-      "benefits": ["Interface standardization", "Legacy integration", "Protocol adaptation"],
-      "drawbacks": ["Additional layer", "Complexity", "Performance overhead"],
-      "use_cases": ["Legacy system integration", "API standardization", "Protocol conversion"],
-      "complexity": "Low",
-      "tags": ["microservices", "integration", "standardization"]
     },
     {
       "id": "strangler-fig",

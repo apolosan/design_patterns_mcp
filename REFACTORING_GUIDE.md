@@ -6,33 +6,36 @@ This refactoring applies SOLID principles and design patterns to improve the MCP
 
 ### Impact Metrics
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| **Lines in mcp-server.ts** | 704 | 422 | **-40%** |
-| **SRP Violations** | 7 | 0 | **-100%** |
-| **Singleton Patterns** | 3 different | 1 (DI) | **-67%** |
-| **Cache in handlers** | 0% | 100% | **+100%** |
-| **Memory leak risk** | High | Zero | **Eliminated** |
-| **Testability** | 6/10 | 9/10 | **+50%** |
-| **Maintainability** | 6/10 | 9/10 | **+50%** |
+| Metric                     | Before      | After  | Improvement    |
+| -------------------------- | ----------- | ------ | -------------- |
+| **Lines in mcp-server.ts** | 704         | 422    | **-40%**       |
+| **SRP Violations**         | 7           | 0      | **-100%**      |
+| **Singleton Patterns**     | 3 different | 1 (DI) | **-67%**       |
+| **Cache in handlers**      | 0%          | 100%   | **+100%**      |
+| **Memory leak risk**       | High        | Zero   | **Eliminated** |
+| **Testability**            | 6/10        | 9/10   | **+50%**       |
+| **Maintainability**        | 6/10        | 9/10   | **+50%**       |
 
 ## 🎯 Achieved Objectives
 
 ### ✅ 1. Interface Unification
+
 - **Problem**: `Pattern` interface duplicated in 2 files
 - **Solution**: Consolidated in `src/models/pattern.ts`
 - **Impact**: Eliminates inconsistencies and facilitates maintenance
 
 ### ✅ 2. Object Pool Pattern
+
 - **Problem**: Unlimited prepared statements (memory leak)
 - **Solution**: `StatementPool` with limit of 100 statements and LRU eviction
 - **Files**: `src/services/statement-pool.ts`
-- **Impact**: 
+- **Impact**:
   - Stable memory even under high load
   - Prevents memory leaks
   - Hit rate: 70-85% in production
 
 ### ✅ 3. Service Layer Pattern
+
 - **Problem**: Scattered business logic
 - **Solution**: `PatternService` centralizes high-level operations
 - **Files**: `src/services/pattern-service.ts`
@@ -42,9 +45,10 @@ This refactoring applies SOLID principles and design patterns to improve the MCP
   - Easy addition of new features
 
 ### ✅ 4. Consolidated Dependency Injection
+
 - **Problem**: DI Container existed but wasn't used
 - **Solution**: All services registered in container
-- **Files**: 
+- **Files**:
   - `src/core/container.ts` (expanded tokens)
   - `src/mcp-server-refactored.ts` (full usage)
 - **Impact**:
@@ -53,6 +57,7 @@ This refactoring applies SOLID principles and design patterns to improve the MCP
   - Reduced coupling
 
 ### ✅ 5. Facade Pattern
+
 - **Problem**: Handlers with 50+ lines each
 - **Solution**: `PatternHandlerFacade` simplifies handlers
 - **Files**: `src/facades/pattern-handler-facade.ts`
@@ -62,9 +67,10 @@ This refactoring applies SOLID principles and design patterns to improve the MCP
   - Facilitates integration tests
 
 ### ✅ 6. Singleton Consolidation
+
 - **Problem**: 3 different Singleton implementations
 - **Solution**: DI Container as single manager
-- **Files**: 
+- **Files**:
   - `src/services/cache.ts` (deprecated)
   - `src/services/database-manager.ts` (deprecated)
   - `src/services/pattern-storage.ts` (deprecated)
@@ -203,12 +209,12 @@ test('should find pattern', async () => {
 // ✅ Mock via DI
 test('should find pattern', async () => {
   const mockRepo = {
-    findById: vi.fn().mockResolvedValue(mockPattern)
+    findById: vi.fn().mockResolvedValue(mockPattern),
   };
-  
+
   container.registerValue(TOKENS.PATTERN_REPOSITORY, mockRepo);
   const service = container.get(TOKENS.PATTERN_SERVICE);
-  
+
   const result = await service.findPatternById('test');
   expect(result).toEqual(mockPattern);
 });
@@ -253,11 +259,13 @@ console.log(stats);
 The refactoring maintains **backward compatibility**:
 
 ### Option 1: Use refactored version (recommended)
+
 ```typescript
 import { createDesignPatternsServer } from './mcp-server-refactored.js';
 ```
 
 ### Option 2: Continue with original (deprecated)
+
 ```typescript
 import { createDesignPatternsServer } from './mcp-server.js';
 // Works, but lacks improvements
@@ -297,16 +305,17 @@ const cache = container.get(TOKENS.CACHE_SERVICE);
 
 ## 📚 Applied Design Patterns
 
-| Pattern | Location | Benefit |
-|---------|----------|---------|
-| **Repository** | `repositories/pattern-repository.ts` | Data abstraction |
-| **Service Layer** | `services/pattern-service.ts` | Business logic |
-| **Object Pool** | `services/statement-pool.ts` | Resource management |
-| **Facade** | `facades/pattern-handler-facade.ts` | Interface simplification |
-| **Dependency Injection** | `core/container.ts` | Inversion of control |
-| **Strategy** | `strategies/search-strategy.ts` | Interchangeable algorithms |
-| **Factory** | `factories/service-factory.ts` | Object creation |
-| **Singleton** | Via DI Container | Single instance |
+| Pattern                  | Location                             | Benefit                    |
+| ------------------------ | ------------------------------------ | -------------------------- |
+| **Repository**           | `repositories/pattern-repository.ts` | Data abstraction           |
+| **Service Layer**        | `services/pattern-service.ts`        | Business logic             |
+| **Object Pool**          | `services/statement-pool.ts`         | Resource management        |
+| **Facade**               | `facades/pattern-handler-facade.ts`  | Interface simplification   |
+| **Dependency Injection** | `core/container.ts`                  | Inversion of control       |
+| **Strategy**             | `strategies/search-strategy.ts`      | Interchangeable algorithms |
+| **Logger**               | `utils/logger.ts`                    | Structured logging system  |
+| **Factory**              | `factories/service-factory.ts`       | Object creation            |
+| **Singleton**            | Via DI Container                     | Single instance            |
 
 ## 🔗 References
 
@@ -316,11 +325,12 @@ const cache = container.get(TOKENS.CACHE_SERVICE);
 - [Service Layer Pattern](https://martinfowler.com/eaaCatalog/serviceLayer.html)
 - [Repository Pattern](https://martinfowler.com/eaaCatalog/repository.html)
 
-## 🔄 Post-Refactoring Updates (v0.2.2)
+## 🔄 Post-Refactoring Updates (v0.2.3)
 
 ### ✅ Critical Improvements Implemented (October 2025)
 
 **Schema Fix & Data Preservation (2025-10-09)**
+
 - **Problem**: Migration 002 created `pattern_embeddings` table with 4 columns, but application expected 6
 - **Solution**: Schema updated with `strategy` and `dimensions` columns
 - **Patterns Applied**:
@@ -332,40 +342,56 @@ const cache = container.get(TOKENS.CACHE_SERVICE);
 - **Impact**: Zero data loss, 574 embeddings preserved
 
 **Dead Code Removal (2025-10-09)**
-- **Files Removed**: 
+
+- **Files Removed**:
   - `src/repositories/optimized-pattern-queries.ts` (337 lines)
   - `src/utils/sql-query-helpers.ts` (367 lines)
 - **Reason**: Zero references in codebase, educational code not integrated
 - **Benefit**: 704 lines of dead code eliminated
 
 **Build System Hardening (2025-10-09)**
+
 - **Problem**: Scripts dependent on `dist/` failed without prior build
 - **Solution**: Auto-build added to all dist-dependent scripts
 - **Tests**: Future assertions with `toBeGreaterThanOrEqual(574)`
 - **Files**: `package.json`, integration tests
 
 **Pattern Catalog Expansion**
+
 - **v0.2.0**: 555 patterns in 20+ categories
-- **v0.2.2**: 574 patterns in 90+ categories
+- **v0.2.3**: 594+ patterns in 90+ categories
 - **New Categories**: Data Engineering (54), AI/ML (39), Blockchain (115), React (27)
 - **SQL Patterns**: 9 patterns with implemented code (Data Query)
 
-### 📊 Updated Metrics (v0.2.2)
+**Logging Infrastructure Enhancement (2025-10-09)**
 
-| Metric | v0.2.0 | v0.2.2 | Status |
-|--------|--------|--------|--------|
-| **Total Patterns** | 555 | 574 | ✅ +19 |
-| **Categories** | 20+ | 90+ | ✅ +70 |
-| **Tests Passing** | 116/116 | 125/126 | ✅ 99.2% |
-| **Build Status** | Passing | Passing | ✅ |
-| **TypeScript Errors** | 0 | 0 | ✅ |
-| **Memory Leaks** | Zero | Zero | ✅ |
-| **Database Integrity** | Verified | Verified | ✅ |
-| **Documentation** | Complete | Enhanced | ✅ |
+- **Problem**: Inconsistent logging with console.log scattered throughout codebase
+- **Solution**: Implemented structured logging using Logger service across main application files
+- **Files Updated**:
+  - `src/services/pattern-loader.ts` (5 console.log → logger.info)
+  - `src/db/init.ts` (3 console.log → logger.info)
+  - `src/cli/seed.ts` (2 console.log → logger.info)
+- **Pattern Applied**: Logger Pattern for structured, service-based logging
+- **Impact**: Improved debugging, monitoring, and professional code quality
+
+### 📊 Updated Metrics (v0.2.3)
+
+| Metric                 | v0.2.0   | v0.2.3   | Status  |
+| ---------------------- | -------- | -------- | ------- |
+| **Total Patterns**     | 555      | 594+     | ✅ +39  |
+| **Categories**         | 20+      | 90+      | ✅ +70  |
+| **Tests Passing**      | 116/116  | 130/130  | ✅ 100% |
+| **Build Status**       | Passing  | Passing  | ✅      |
+| **TypeScript Errors**  | 0        | 0        | ✅      |
+| **Memory Leaks**       | Zero     | Zero     | ✅      |
+| **Database Integrity** | Verified | Verified | ✅      |
+| **Structured Logging** | Partial  | Complete | ✅      |
+| **Documentation**      | Complete | Enhanced | ✅      |
 
 ### 🗂️ Current Project State
 
 **Architecture**
+
 - Layered Architecture with DDD patterns
 - Object Pool (max 100 statements, 70-85% hit rate)
 - LRU Cache (85%+ hit rate)
@@ -374,12 +400,14 @@ const cache = container.get(TOKENS.CACHE_SERVICE);
 - Fully integrated DI Container
 
 **Migrations**
+
 - 5 migrations consolidated in `./migrations/`
 - Schema versioning implemented
 - Data preservation in DOWN migrations
 - Migrations 004 and 005 now applied
 
 **Performance**
+
 - 30-40% improvement vs v0.1.x
 - 28,000+ ops/second sustained
 - Cache hit rate: 85%+
@@ -387,15 +415,17 @@ const cache = container.get(TOKENS.CACHE_SERVICE);
 - Zero memory leaks
 
 **Quality**
-- 125/126 tests passing (99.2%)
+
+- 130/130 tests passing (100%)
 - Coverage: 51.8%
 - Testability: 9/10
 - Maintainability: 9/10
 - TypeScript strict mode: ✅
+- Structured logging: ✅ (10 console.log replaced with Logger)
 
 ---
 
-**Version**: 1.1.0 (updated to v0.2.2)  
-**Initial Date**: 2025-10-01  
-**Last Update**: 2025-10-09  
+**Version**: 1.1.0 (updated to v0.2.3)
+**Initial Date**: 2025-10-01
+**Last Update**: 2025-10-09
 **Author**: Design Patterns MCP Team

@@ -1,19 +1,22 @@
 import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 import { VectorOperationsService } from '../../src/services/vector-operations';
+import { MigrationManager } from '../../src/services/migrations';
+import { getTestDatabaseConfig } from '../helpers/test-db';
 
 describe('Vector Operations with sqlite-vec', () => {
   let dbManager: DatabaseManager;
   let vectorOps: VectorOperationsService;
 
   beforeAll(async () => {
-    // Create test database in memory
-    dbManager = new DatabaseManager({
-      filename: ':memory:',
-      options: { readonly: false },
-    });
-
+    // Initialize test database with proper schema
+    dbManager = new DatabaseManager(getTestDatabaseConfig(false));
     await dbManager.initialize();
+
+    // Run migrations to ensure schema is up to date
+    const migrationManager = new MigrationManager(dbManager, './migrations');
+    await migrationManager.initialize();
+    await migrationManager.migrate();
 
     // Initialize vector operations service
     vectorOps = new VectorOperationsService(dbManager, {
@@ -204,12 +207,12 @@ describe('Vector Operations with sqlite-vec', () => {
 
     dbManager.execute(`
       CREATE TABLE IF NOT EXISTS pattern_embeddings (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        pattern_id TEXT NOT NULL,
+        pattern_id TEXT PRIMARY KEY,
         embedding TEXT NOT NULL,
         model TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (pattern_id) REFERENCES patterns(id) ON DELETE CASCADE
+        strategy TEXT NOT NULL,
+        dimensions INTEGER NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 

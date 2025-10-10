@@ -1,9 +1,97 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 import { createVectorOperationsService } from '../../src/services/vector-operations';
 import { createPatternMatcher } from '../../src/services/pattern-matcher';
 import { createPatternSeeder } from '../../src/services/pattern-seeder';
 import path from 'path';
+
+async function createFullSchema(dbManager: DatabaseManager): Promise<void> {
+  // Drop existing tables to ensure clean schema
+  dbManager.execute('DROP TABLE IF EXISTS pattern_embeddings');
+  dbManager.execute('DROP TABLE IF EXISTS pattern_relationships');
+  dbManager.execute('DROP TABLE IF EXISTS pattern_implementations');
+  dbManager.execute('DROP TABLE IF EXISTS patterns');
+
+  // Create patterns table with all columns including examples
+  dbManager.execute(`
+    CREATE TABLE patterns (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      category TEXT NOT NULL,
+      description TEXT NOT NULL,
+      when_to_use TEXT,
+      benefits TEXT,
+      drawbacks TEXT,
+      use_cases TEXT,
+      complexity TEXT NOT NULL,
+      tags TEXT,
+      examples TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Create pattern_implementations table
+  dbManager.execute(`
+    CREATE TABLE pattern_implementations (
+      id TEXT PRIMARY KEY,
+      pattern_id TEXT NOT NULL,
+      language TEXT NOT NULL,
+      approach TEXT NOT NULL,
+      code TEXT NOT NULL,
+      explanation TEXT NOT NULL,
+      dependencies TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (pattern_id) REFERENCES patterns(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Create pattern_relationships table
+  dbManager.execute(`
+    CREATE TABLE pattern_relationships (
+      id TEXT PRIMARY KEY,
+      source_pattern_id TEXT NOT NULL,
+      target_pattern_id TEXT NOT NULL,
+      type TEXT NOT NULL,
+      strength REAL DEFAULT 1.0,
+      description TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (source_pattern_id) REFERENCES patterns(id) ON DELETE CASCADE,
+      FOREIGN KEY (target_pattern_id) REFERENCES patterns(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Create pattern_embeddings table
+  dbManager.execute(`
+    CREATE TABLE pattern_embeddings (
+      pattern_id TEXT PRIMARY KEY,
+      embedding TEXT NOT NULL,
+      model TEXT NOT NULL,
+      strategy TEXT NOT NULL,
+      dimensions INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Create indexes
+  dbManager.execute('CREATE INDEX IF NOT EXISTS idx_patterns_category ON patterns(category)');
+  dbManager.execute('CREATE INDEX IF NOT EXISTS idx_patterns_complexity ON patterns(complexity)');
+  dbManager.execute(
+    'CREATE INDEX IF NOT EXISTS idx_pattern_implementations_pattern_id ON pattern_implementations(pattern_id)'
+  );
+  dbManager.execute(
+    'CREATE INDEX IF NOT EXISTS idx_pattern_implementations_language ON pattern_implementations(language)'
+  );
+  dbManager.execute(
+    'CREATE INDEX IF NOT EXISTS idx_pattern_relationships_source ON pattern_relationships(source_pattern_id)'
+  );
+  dbManager.execute(
+    'CREATE INDEX IF NOT EXISTS idx_pattern_relationships_target ON pattern_relationships(target_pattern_id)'
+  );
+  dbManager.execute(
+    'CREATE INDEX IF NOT EXISTS idx_pattern_relationships_type ON pattern_relationships(type)'
+  );
+}
 
 describe('Pattern Matching with Semantic Search', () => {
   let dbManager: DatabaseManager;
@@ -16,8 +104,10 @@ describe('Pattern Matching with Semantic Search', () => {
       filename: ':memory:',
       options: { readonly: false },
     });
-
     await dbManager.initialize();
+
+    // Create full schema manually (since migrations fail on in-memory DBs with existing tables)
+    await createFullSchema(dbManager);
 
     // Seed patterns for testing
     const seeder = createPatternSeeder(dbManager, {
@@ -40,6 +130,12 @@ describe('Pattern Matching with Semantic Search', () => {
 
     // Create pattern matcher
     patternMatcher = createPatternMatcher(dbManager, vectorOps);
+  });
+
+  afterAll(async () => {
+    if (dbManager) {
+      await dbManager.close();
+    }
   });
 
   it('should find patterns using semantic similarity', async () => {

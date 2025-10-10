@@ -1,0 +1,24 @@
+{
+  "id": "correlation-analysis-bigdata",
+  "name": "Correlation Analysis for Big Data",
+  "category": "Big Data Analysis",
+  "description": "Analyzes relationships between variables in large datasets to identify patterns, dependencies, and predictive relationships",
+  "when_to_use": "Feature selection\nRisk assessment\nPortfolio analysis\nCausal inference studies\nPredictive modeling",
+  "benefits": "Identifies variable relationships\nSupports feature engineering\nHelps understand data structure\nFoundation for causal analysis",
+  "drawbacks": "Correlation ≠ causation\nSensitive to outliers\nMay miss nonlinear relationships\nRequires careful interpretation",
+  "use_cases": "Financial market analysis\nHealthcare outcome prediction\nClimate pattern analysis\nCustomer behavior modeling\nSupply chain optimization",
+  "complexity": "Medium",
+  "tags": [
+    "big-data",
+    "correlation",
+    "statistical-analysis",
+    "feature-selection",
+    "relationship-discovery"
+  ],
+  "examples": {
+    "python": {
+      "language": "python",
+      "code": "import pandas as pd\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nfrom scipy.stats import pearsonr, spearmanr\n\ndef correlation_analysis_bigdata(data, method='pearson', threshold=0.5):\n    \"\"\"\n    Perform correlation analysis on big data\n    \n    Parameters:\n    - data: DataFrame with numerical columns\n    - method: 'pearson', 'spearman', or 'kendall'\n    - threshold: correlation strength threshold\n    \"\"\"\n    \n    # Compute correlation matrix\n    if method == 'pearson':\n        corr_matrix = data.corr(method='pearson')\n    elif method == 'spearman':\n        corr_matrix = data.corr(method='spearman')\n    else:\n        corr_matrix = data.corr(method='kendall')\n    \n    # Find highly correlated pairs\n    high_corr_pairs = []\n    for i in range(len(corr_matrix.columns)):\n        for j in range(i+1, len(corr_matrix.columns)):\n            corr_value = corr_matrix.iloc[i, j]\n            if abs(corr_value) > threshold:\n                high_corr_pairs.append({\n                    'var1': corr_matrix.columns[i],\n                    'var2': corr_matrix.columns[j],\n                    'correlation': corr_value,\n                    'strength': 'strong' if abs(corr_value) > 0.8 else 'moderate'\n                })\n    \n    # Create correlation heatmap\n    plt.figure(figsize=(10, 8))\n    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0,\n                square=True, linewidths=0.5)\n    plt.title(f'{method.capitalize()} Correlation Matrix')\n    plt.tight_layout()\n    plt.show()\n    \n    return {\n        'correlation_matrix': corr_matrix,\n        'high_correlations': high_corr_pairs,\n        'method': method,\n        'threshold': threshold,\n        'summary': {\n            'total_pairs': len(high_corr_pairs),\n            'strong_correlations': len([p for p in high_corr_pairs if p['strength'] == 'strong']),\n            'avg_correlation': np.mean([abs(p['correlation']) for p in high_corr_pairs]) if high_corr_pairs else 0\n        }\n    }\n\n# Example usage\n# Generate sample financial data\nnp.random.seed(42)\ndata = pd.DataFrame({\n    'stock_A': np.random.randn(1000),\n    'stock_B': np.random.randn(1000) * 0.8 + np.random.randn(1000) * 0.2,\n    'interest_rate': np.random.randn(1000),\n    'inflation': np.random.randn(1000),\n    'GDP_growth': np.random.randn(1000)\n})\n\n# Add some correlations\n# Make stock_B correlated with stock_A\ndata['stock_B'] = data['stock_A'] * 0.6 + data['stock_B'] * 0.4\n# Make GDP_growth correlated with interest_rate\ndata['GDP_growth'] = data['interest_rate'] * -0.4 + data['GDP_growth'] * 0.6\n\n# Perform correlation analysis\nresult = correlation_analysis_bigdata(data, method='pearson', threshold=0.3)\n\nprint(f\"Found {result['summary']['total_pairs']} highly correlated pairs\")\nprint(f\"Strong correlations: {result['summary']['strong_correlations']}\")\nprint(\"\\nTop correlations:\")\nfor pair in sorted(result['high_correlations'], key=lambda x: abs(x['correlation']), reverse=True)[:3]:\n    print(f\"{pair['var1']} ↔ {pair['var2']}: {pair['correlation']:.3f} ({pair['strength']})\")"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "merkle-damgard-construction",
+  "name": "Merkle-Damgård Construction",
+  "category": "Security",
+  "description": "Method to construct collision-resistant hash functions from compression functions. Message is padded, divided into blocks, and processed iteratively with H_i = f(H_{i-1}, m_i). Provides collision resistance if compression function is collision-resistant.",
+  "when_to_use": "[\"Legacy hash functions\",\"Compatibility with existing systems\",\"Collision resistance requirements\",\"SHA-256/SHA-512 implementations\"]",
+  "benefits": "[\"Proven security properties\",\"Collision resistance\",\"Widely implemented and tested\",\"Foundation for hash standards\"]",
+  "drawbacks": "[\"Length extension attacks\",\"Multicollision attacks\",\"Second preimage attacks\",\"Not quantum-resistant\",\"Requires careful padding\"]",
+  "use_cases": "[\"SHA-256\",\"SHA-512\",\"MD5 (broken)\",\"SHA-1 (deprecated)\",\"Legacy cryptographic systems\"]",
+  "complexity": "Medium",
+  "tags": [
+    "cryptography",
+    "hash-function",
+    "merkle-damgard",
+    "collision-resistance",
+    "compression-function",
+    "padding",
+    "length-extension"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "import crypto from 'crypto';\n\nclass MerkleDamgardHash {\n    private blockSize: number = 64; // 512 bits\n    private outputSize: number = 32; // 256 bits\n    \n    private compressionFunction(h: Buffer, block: Buffer): Buffer {\n        // Using SHA-256 as compression primitive\n        const hash = crypto.createHash('sha256');\n        hash.update(h);\n        hash.update(block);\n        return hash.digest();\n    }\n    \n    private pad(message: Buffer): Buffer {\n        const msgLen = message.length;\n        const bitLen = BigInt(msgLen * 8);\n        \n        const padLen = this.blockSize - ((msgLen + 9) % this.blockSize);\n        \n        const padding = Buffer.alloc(padLen + 9);\n        padding[0] = 0x80; // First bit 1, rest 0s\n        \n        // Last 8 bytes: message length in bits (big-endian)\n        padding.writeBigUInt64BE(bitLen, padLen + 1);\n        \n        return Buffer.concat([message, padding]);\n    }\n    \n    hash(message: Buffer): Buffer {\n        const paddedMsg = this.pad(message);\n        \n        // SHA-256 IV (first 32 bits of square roots of first 8 primes)\n        let h = Buffer.from([\n            0x6a, 0x09, 0xe6, 0x67, 0xbb, 0x67, 0xae, 0x85,\n            0x3c, 0x6e, 0xf3, 0x72, 0xa5, 0x4f, 0xf5, 0x3a,\n            0x51, 0x0e, 0x52, 0x7f, 0x9b, 0x05, 0x68, 0x8c,\n            0x1f, 0x83, 0xd9, 0xab, 0x5b, 0xe0, 0xcd, 0x19\n        ]);\n        \n        // Process each block\n        for (let i = 0; i < paddedMsg.length; i += this.blockSize) {\n            const block = paddedMsg.slice(i, i + this.blockSize);\n            h = this.compressionFunction(h, block);\n        }\n        \n        return h;\n    }\n    \n    // Demonstrates length extension vulnerability\n    extendHash(originalHash: Buffer, extension: Buffer): Buffer {\n        // Attacker can compute H(original || padding || extension)\n        // without knowing original message!\n        return this.compressionFunction(originalHash, extension);\n    }\n}"
+    },
+    "cpp": {
+      "language": "cpp",
+      "code": "#include <vector>\n#include <cstdint>\n#include <cstring>\n#include <openssl/sha.h>\n\nclass MerkleDamgardHash {\nprivate:\n    static constexpr size_t BLOCK_SIZE = 64;  // 512 bits\n    static constexpr size_t OUTPUT_SIZE = 32; // 256 bits\n    \n    std::vector<uint8_t> compressionFunction(\n        const std::vector<uint8_t>& h,\n        const std::vector<uint8_t>& block\n    ) {\n        SHA256_CTX ctx;\n        SHA256_Init(&ctx);\n        SHA256_Update(&ctx, h.data(), h.size());\n        SHA256_Update(&ctx, block.data(), block.size());\n        \n        std::vector<uint8_t> result(OUTPUT_SIZE);\n        SHA256_Final(result.data(), &ctx);\n        return result;\n    }\n    \n    std::vector<uint8_t> pad(const std::vector<uint8_t>& message) {\n        size_t msgLen = message.size();\n        uint64_t bitLen = msgLen * 8;\n        \n        size_t padLen = BLOCK_SIZE - ((msgLen + 9) % BLOCK_SIZE);\n        \n        std::vector<uint8_t> result = message;\n        result.reserve(msgLen + padLen + 9);\n        \n        result.push_back(0x80); // Bit 1 followed by zeros\n        result.insert(result.end(), padLen, 0x00);\n        \n        // Message length in bits (big-endian)\n        for (int i = 7; i >= 0; i--) {\n            result.push_back((bitLen >> (i * 8)) & 0xFF);\n        }\n        \n        return result;\n    }\n    \npublic:\n    std::vector<uint8_t> hash(const std::vector<uint8_t>& message) {\n        auto paddedMsg = pad(message);\n        \n        // SHA-256 initialization vector\n        std::vector<uint8_t> h = {\n            0x6a, 0x09, 0xe6, 0x67, 0xbb, 0x67, 0xae, 0x85,\n            0x3c, 0x6e, 0xf3, 0x72, 0xa5, 0x4f, 0xf5, 0x3a,\n            0x51, 0x0e, 0x52, 0x7f, 0x9b, 0x05, 0x68, 0x8c,\n            0x1f, 0x83, 0xd9, 0xab, 0x5b, 0xe0, 0xcd, 0x19\n        };\n        \n        // Process blocks\n        for (size_t i = 0; i < paddedMsg.size(); i += BLOCK_SIZE) {\n            std::vector<uint8_t> block(\n                paddedMsg.begin() + i,\n                paddedMsg.begin() + i + BLOCK_SIZE\n            );\n            h = compressionFunction(h, block);\n        }\n        \n        return h;\n    }\n};"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "foundation-first-testing",
+  "name": "Foundation-First Testing",
+  "category": "Testing",
+  "description": "Test design pattern that prioritizes testing foundational components before higher-level integration, ensuring solid building blocks for the application",
+  "when_to_use": "Layered architecture testing\nUnit testing foundation\nIntegration testing strategy\nTest pyramid implementation",
+  "benefits": "Early bug detection\nImproved code quality\nFaster feedback loop\nReduced integration issues",
+  "drawbacks": "Slower initial progress\nRequires discipline\nMay seem counterintuitive\nAdditional planning needed",
+  "use_cases": "E-commerce applications\nMicroservices architecture\nComplex business logic\nMulti-layer applications",
+  "complexity": "Medium",
+  "tags": ["testing", "architecture", "unit-testing", "integration-testing", "test-pyramid"]
+}

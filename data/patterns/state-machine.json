@@ -1,0 +1,22 @@
+{
+  "id": "state-machine",
+  "name": "State Machine",
+  "category": "Embedded Systems",
+  "description": "Manages system behavior through discrete states and transitions, fundamental to embedded systems for handling complex logic flows",
+  "when_to_use": "Complex system behavior with multiple operating modes\nEvent-driven systems requiring predictable responses\nResource-constrained environments needing deterministic behavior\nSystems with clear state boundaries and transitions",
+  "benefits": "Predictable behavior\nEasier debugging and testing\nClear system state visibility\nReduced complexity in large systems",
+  "drawbacks": "Can become complex with many states\nState explosion in large systems\nRequires careful transition design\nMay need different implementations for different constraints",
+  "use_cases": "Device control systems\nCommunication protocol handlers\nUser interface state management\nProcess control systems\nReal-time system event handling",
+  "complexity": "Medium",
+  "tags": ["embedded", "state-management", "event-driven", "deterministic", "real-time"],
+  "examples": {
+    "c": {
+      "language": "c",
+      "code": "typedef enum {\n    STATE_IDLE,\n    STATE_RUNNING,\n    STATE_ERROR,\n    STATE_SHUTDOWN\n} SystemState;\n\nSystemState current_state = STATE_IDLE;\n\nvoid state_machine_update(Event event) {\n    switch (current_state) {\n        case STATE_IDLE:\n            if (event == EVENT_START) {\n                current_state = STATE_RUNNING;\n                start_system();\n            }\n            break;\n            \n        case STATE_RUNNING:\n            if (event == EVENT_STOP) {\n                current_state = STATE_SHUTDOWN;\n                stop_system();\n            } else if (event == EVENT_ERROR) {\n                current_state = STATE_ERROR;\n                handle_error();\n            }\n            break;\n            \n        case STATE_ERROR:\n            if (event == EVENT_RESET) {\n                current_state = STATE_IDLE;\n                reset_system();\n            }\n            break;\n            \n        case STATE_SHUTDOWN:\n            // Terminal state\n            break;\n    }\n}"
+    },
+    "typescript": {
+      "language": "typescript",
+      "code": "enum DeviceState {\n    OFF = 'off',\n    STARTING = 'starting',\n    RUNNING = 'running',\n    ERROR = 'error'\n}\n\nclass DeviceStateMachine {\n    private state: DeviceState = DeviceState.OFF;\n    \n    transition(event: string): void {\n        switch (this.state) {\n            case DeviceState.OFF:\n                if (event === 'power_on') {\n                    this.state = DeviceState.STARTING;\n                    this.initializeDevice();\n                }\n                break;\n                \n            case DeviceState.STARTING:\n                if (event === 'initialized') {\n                    this.state = DeviceState.RUNNING;\n                    this.startOperation();\n                } else if (event === 'error') {\n                    this.state = DeviceState.ERROR;\n                    this.handleError();\n                }\n                break;\n                \n            case DeviceState.RUNNING:\n                if (event === 'power_off') {\n                    this.state = DeviceState.OFF;\n                    this.shutdownDevice();\n                }\n                break;\n                \n            case DeviceState.ERROR:\n                if (event === 'reset') {\n                    this.state = DeviceState.OFF;\n                    this.resetDevice();\n                }\n                break;\n        }\n    }\n    \n    private initializeDevice(): void {\n        console.log('Initializing device...');\n    }\n    \n    private startOperation(): void {\n        console.log('Device running');\n    }\n    \n    private shutdownDevice(): void {\n        console.log('Shutting down device');\n    }\n    \n    private handleError(): void {\n        console.log('Error occurred');\n    }\n    \n    private resetDevice(): void {\n        console.log('Resetting device');\n    }\n}"
+    }
+  }
+}

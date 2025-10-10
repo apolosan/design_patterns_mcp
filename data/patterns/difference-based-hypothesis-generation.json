@@ -1,0 +1,24 @@
+{
+  "id": "difference-based-hypothesis-generation",
+  "name": "Difference-Based Hypothesis Generation",
+  "category": "Big Data Analysis",
+  "description": "Generates hypotheses by analyzing differences between datasets, time periods, or conceptual spaces to identify patterns and anomalies",
+  "when_to_use": "Time series analysis\nSpatial data comparison\nAnomaly detection\nTrend identification\nBefore-after analysis",
+  "benefits": "Reveals hidden patterns\nQuantifies changes\nSupports evidence-based decisions\nApplicable to various data types",
+  "drawbacks": "Requires comparable datasets\nMay miss gradual changes\nNoise sensitivity\nComputational complexity",
+  "use_cases": "Market trend analysis\nMedical diagnosis comparison\nEnvironmental monitoring\nQuality control\nPolicy impact assessment",
+  "complexity": "Medium",
+  "tags": [
+    "big-data",
+    "hypothesis-generation",
+    "difference-analysis",
+    "pattern-discovery",
+    "temporal-analysis"
+  ],
+  "examples": {
+    "python": {
+      "language": "python",
+      "code": "import pandas as pd\nimport numpy as np\n\ndef difference_based_analysis(data1, data2, threshold=0.1):\n    \"\"\"\n    Basic difference analysis between two datasets\n    \"\"\"\n    diff = data2 - data1\n    significant_changes = diff.abs() > threshold\n    \n    return {\n        'differences': diff,\n        'significant_changes': significant_changes,\n        'change_magnitude': diff.abs().mean()\n    }\n\n# Time series difference\ndef time_difference_analysis(time_series, window=7):\n    \"\"\"\n    Analyze differences over time windows\n    \"\"\"\n    diff = time_series.diff(window)\n    anomalies = diff.abs() > diff.std() * 3\n    \n    return {\n        'time_differences': diff,\n        'anomalies': anomalies\n    }\n\n# Usage example\ndata_before = pd.Series([100, 105, 102, 108, 110])\ndata_after = pd.Series([95, 98, 105, 115, 120])\n\nresult = difference_based_analysis(data_before, data_after)\nprint(f\"Significant changes: {result['significant_changes'].sum()}\")\nprint(f\"Average change magnitude: {result['change_magnitude']:.2f}\")"
+    }
+  }
+}

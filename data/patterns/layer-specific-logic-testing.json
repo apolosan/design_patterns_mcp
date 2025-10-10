@@ -1,0 +1,12 @@
+{
+  "id": "layer-specific-logic-testing",
+  "name": "Layer-Specific Logic Testing",
+  "category": "Testing",
+  "description": "Test design pattern that focuses on testing components at their appropriate architectural layer, ensuring logic is validated where it resides",
+  "when_to_use": "Layered architecture\nAPI testing\nBusiness logic validation\nComponent isolation",
+  "benefits": "Precise testing\nAccurate validation\nBetter error isolation\nImproved test efficiency",
+  "drawbacks": "Requires architectural knowledge\nMay need multiple test types\nCoordination between layers\nPotential test duplication",
+  "use_cases": "REST API testing\nService layer testing\nBusiness logic validation\nMicroservices testing",
+  "complexity": "Medium",
+  "tags": ["testing", "architecture", "api-testing", "layered-architecture", "component-testing"]
+}

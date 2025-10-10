@@ -42,7 +42,7 @@ export class PatternSeeder {
 
       for (const file of patternFiles) {
         const data = await this.loadPatternFile(file);
-        const patterns = data.patterns || [];
+        const patterns = data.patterns || (data.id ? [data] : []);
 
         for (const pattern of patterns) {
           allPatterns.push(pattern);
@@ -236,8 +236,8 @@ export class PatternSeeder {
       const sql = `
         INSERT OR REPLACE INTO patterns (
           id, name, category, description, when_to_use, benefits,
-          drawbacks, use_cases, complexity, tags, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          drawbacks, use_cases, complexity, tags, examples, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
       const params = [
@@ -251,6 +251,7 @@ export class PatternSeeder {
         JSON.stringify(pattern.use_cases || []),
         pattern.complexity,
         JSON.stringify(pattern.tags || []),
+        pattern.examples ? JSON.stringify(pattern.examples) : null,
         (pattern.createdAt ? new Date(pattern.createdAt) : new Date()).toISOString(),
         (pattern.updatedAt ? new Date(pattern.updatedAt) : new Date()).toISOString(),
       ];
@@ -331,7 +332,7 @@ export class PatternSeeder {
     try {
       const files = fs
         .readdirSync(this.config.patternsPath)
-        .filter(file => file.endsWith('.json') && file.includes('patterns'))
+        .filter(file => file.endsWith('.json'))
         .map(file => path.join(this.config.patternsPath, file));
 
       return files;

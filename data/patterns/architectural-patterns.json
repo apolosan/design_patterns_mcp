@@ -1,196 +1,220 @@
 {
   "patterns": [
-  {
-    "id": "clean-architecture",
-    "name": "Clean Architecture",
-    "category": "Architectural",
-    "description": "Separates concerns by organizing code into layers with dependencies flowing inward",
-    "when_to_use": ["Complex business logic", "Long-term maintainability", "Framework independence"],
-    "benefits": ["Testability", "Framework independence", "Database independence", "Clear separation of concerns"],
-    "drawbacks": ["Increased complexity", "Over-engineering for simple apps", "Learning curve"],
-    "use_cases": ["Enterprise applications", "Microservices", "Domain-rich applications"],
-    "complexity": "High",
-    "tags": ["clean", "layered", "dependency-inversion"]
-  },
-  {
-    "id": "hexagonal-architecture",
-    "name": "Hexagonal Architecture",
-    "category": "Architectural",
-    "description": "Isolates core application logic from external concerns using ports and adapters",
-    "when_to_use": ["Multiple external systems", "Testing isolation", "Framework flexibility"],
-    "benefits": ["Testability", "Flexibility", "External system isolation", "Clear boundaries"],
-    "drawbacks": ["Complex setup", "Interface proliferation", "Over-abstraction risk"],
-    "use_cases": ["Integration-heavy systems", "Legacy system modernization", "API-first applications"],
-    "complexity": "High",
-    "tags": ["ports-and-adapters", "isolation", "boundaries"]
-  },
-  {
-    "id": "onion-architecture",
-    "name": "Onion Architecture",
-    "category": "Architectural",
-    "description": "Organizes code in concentric layers with domain at the center",
-    "when_to_use": ["Domain-driven design", "Complex business rules", "Long-term evolution"],
-    "benefits": ["Domain focus", "Dependency inversion", "Testability", "Flexibility"],
-    "drawbacks": ["Learning curve", "Initial complexity", "Over-engineering risk"],
-    "use_cases": ["Domain-rich applications", "Business-critical systems", "Complex workflows"],
-    "complexity": "High",
-    "tags": ["domain-centric", "layers", "ddd"]
-  },
-  {
-    "id": "layered-architecture",
-    "name": "Layered Architecture",
-    "category": "Architectural",
-    "description": "Organizes application into horizontal layers with defined responsibilities",
-    "when_to_use": ["Traditional enterprise apps", "Clear separation needed", "Team specialization"],
-    "benefits": ["Separation of concerns", "Team organization", "Familiar pattern", "Technology isolation"],
-    "drawbacks": ["Rigid structure", "Performance overhead", "Tight coupling risk"],
-    "use_cases": ["Enterprise applications", "Web applications", "Traditional systems"],
-    "complexity": "Medium",
-    "tags": ["layers", "separation", "traditional"]
-  },
-  {
-    "id": "mvc",
-    "name": "Model-View-Controller",
-    "category": "Architectural",
-    "description": "Separates application logic into model, view, and controller components",
-    "when_to_use": ["Web applications", "UI-heavy applications", "Rapid development"],
-    "benefits": ["Separation of concerns", "Reusability", "Parallel development", "Familiar pattern"],
-    "drawbacks": ["Tight coupling between components", "Complex for simple apps", "State management issues"],
-    "use_cases": ["Web frameworks", "Desktop applications", "RESTful APIs"],
-    "complexity": "Medium",
-    "tags": ["presentation", "web", "separation"]
-  },
-  {
-    "id": "mvp",
-    "name": "Model-View-Presenter",
-    "category": "Architectural",
-    "description": "Improves testability by making presenter handle view logic",
-    "when_to_use": ["Testing requirements", "Complex UI logic", "View technology changes"],
-    "benefits": ["High testability", "View independence", "Clear responsibilities", "Reusable presenters"],
-    "drawbacks": ["Increased complexity", "More classes", "Potential god presenter"],
-    "use_cases": ["Desktop applications", "Mobile apps", "Testing-critical systems"],
-    "complexity": "Medium",
-    "tags": ["presentation", "testing", "ui"]
-  },
-  {
-    "id": "mvvm",
-    "name": "Model-View-ViewModel",
-    "category": "Architectural",
-    "description": "Uses data binding to connect view with view model",
-    "when_to_use": ["Data binding support", "Rich UI applications", "Declarative UI"],
-    "benefits": ["Data binding", "Testability", "View independence", "Rich UI support"],
-    "drawbacks": ["Complex debugging", "Memory leaks risk", "Framework dependency"],
-    "use_cases": ["WPF applications", "Angular/Vue apps", "Mobile applications"],
-    "complexity": "Medium",
-    "tags": ["data-binding", "ui", "framework"]
-  },
-  {
-    "id": "domain-driven-design",
-    "name": "Domain-Driven Design",
-    "category": "Architectural",
-    "description": "Focuses on modeling complex business domains through ubiquitous language",
-    "when_to_use": ["Complex business domains", "Large teams", "Long-term projects"],
-    "benefits": ["Business alignment", "Maintainable code", "Team communication", "Domain focus"],
-    "drawbacks": ["High learning curve", "Initial overhead", "Requires domain expertise"],
-    "use_cases": ["Enterprise software", "Financial systems", "Healthcare applications"],
-    "complexity": "High",
-    "tags": ["domain-modeling", "ubiquitous-language", "bounded-context"]
-  },
-  {
-    "id": "event-driven-architecture",
-    "name": "Event-Driven Architecture",
-    "category": "Architectural",
-    "description": "Uses events to trigger and communicate between decoupled services",
-    "when_to_use": ["Microservices", "Real-time systems", "Scalable applications"],
-    "benefits": ["Loose coupling", "Scalability", "Flexibility", "Real-time processing"],
-    "drawbacks": ["Complexity", "Eventual consistency", "Debugging difficulty"],
-    "use_cases": ["E-commerce platforms", "IoT systems", "Reactive applications"],
-    "complexity": "High",
-    "tags": ["events", "decoupling", "reactive"]
-  },
-  {
-    "id": "cqrs",
-    "name": "Command Query Responsibility Segregation",
-    "category": "Architectural",
-    "description": "Separates read and write operations using different models",
-    "when_to_use": ["Complex read/write patterns", "Performance optimization", "Event sourcing"],
-    "benefits": ["Performance", "Scalability", "Flexibility", "Optimized models"],
-    "drawbacks": ["Increased complexity", "Eventual consistency", "Code duplication"],
-    "use_cases": ["High-performance systems", "Event sourcing", "Complex reporting"],
-    "complexity": "High",
-    "tags": ["command-query", "performance", "segregation"]
-  },
-  {
-    "id": "event-sourcing",
-    "name": "Event Sourcing",
-    "category": "Architectural",
-    "description": "Stores all changes as a sequence of events instead of current state",
-    "when_to_use": ["Audit requirements", "Complex business logic", "Time-travel debugging"],
-    "benefits": ["Complete audit trail", "Temporal queries", "Debugging", "Scalability"],
-    "drawbacks": ["Storage overhead", "Query complexity", "Event versioning"],
-    "use_cases": ["Financial systems", "Version control", "Audit-critical applications"],
-    "complexity": "High",
-    "tags": ["events", "audit", "temporal"]
-  },
-  {
-    "id": "microservices",
-    "name": "Microservices Architecture",
-    "category": "Architectural",
-    "description": "Decomposes application into small, independently deployable services",
-    "when_to_use": ["Large teams", "Independent deployments", "Technology diversity"],
-    "benefits": ["Technology freedom", "Independent scaling", "Team autonomy", "Fault isolation"],
-    "drawbacks": ["Distributed complexity", "Network overhead", "Data consistency"],
-    "use_cases": ["Large-scale applications", "Cloud-native systems", "DevOps environments"],
-    "complexity": "High",
-    "tags": ["distributed", "services", "independence"]
-  },
-  {
-    "id": "service-oriented-architecture",
-    "name": "Service-Oriented Architecture",
-    "category": "Architectural",
-    "description": "Structures application as a collection of loosely coupled services",
-    "when_to_use": ["Enterprise integration", "Legacy system integration", "Service reusability"],
-    "benefits": ["Reusability", "Interoperability", "Flexibility", "Service governance"],
-    "drawbacks": ["Performance overhead", "Complexity", "Service management"],
-    "use_cases": ["Enterprise systems", "B2B integration", "Legacy modernization"],
-    "complexity": "High",
-    "tags": ["services", "enterprise", "integration"]
-  },
-  {
-    "id": "serverless-architecture",
-    "name": "Serverless Architecture",
-    "category": "Architectural",
-    "description": "Executes code in stateless compute containers managed by cloud providers",
-    "when_to_use": ["Event-driven applications", "Variable workloads", "Rapid scaling"],
-    "benefits": ["No server management", "Auto-scaling", "Pay-per-use", "Fast deployment"],
-    "drawbacks": ["Vendor lock-in", "Cold start latency", "Limited control"],
-    "use_cases": ["API backends", "Data processing", "Web applications"],
-    "complexity": "Medium",
-    "tags": ["serverless", "cloud", "functions"]
-  },
-  {
-    "id": "modular-monolith",
-    "name": "Modular Monolith",
-    "category": "Architectural",
-    "description": "Single deployable unit with well-defined internal module boundaries",
-    "when_to_use": ["Medium-sized applications", "Team coordination", "Gradual evolution"],
-    "benefits": ["Simplicity", "Performance", "Easy debugging", "Consistent transactions"],
-    "drawbacks": ["Scaling limitations", "Technology constraints", "Deployment coupling"],
-    "use_cases": ["Growing applications", "Team-sized projects", "Microservices preparation"],
-    "complexity": "Medium",
-    "tags": ["monolith", "modular", "boundaries"]
-  },
-  {
-    "id": "repository-pattern",
-    "name": "Repository Pattern",
-    "category": "Architectural",
-    "description": "Encapsulates data access logic and provides a uniform interface",
-    "when_to_use": ["Data access abstraction", "Multiple data sources", "Testing isolation"],
-    "benefits": ["Data source abstraction", "Testability", "Centralized queries", "Consistency"],
-    "drawbacks": ["Additional abstraction layer", "Potential over-engineering", "Query limitations"],
-    "use_cases": ["Domain-driven design", "Unit testing", "Multiple databases"],
-    "complexity": "Medium",
-    "tags": ["data-access", "abstraction", "testing"]
-  }
+    {
+      "id": "clean-architecture",
+      "name": "Clean Architecture",
+      "category": "Architectural",
+      "description": "Separates concerns by organizing code into layers with dependencies flowing inward",
+      "when_to_use": [
+        "Complex business logic",
+        "Long-term maintainability",
+        "Framework independence"
+      ],
+      "benefits": [
+        "Testability",
+        "Framework independence",
+        "Database independence",
+        "Clear separation of concerns"
+      ],
+      "drawbacks": ["Increased complexity", "Over-engineering for simple apps", "Learning curve"],
+      "use_cases": ["Enterprise applications", "Microservices", "Domain-rich applications"],
+      "complexity": "High",
+      "tags": ["clean", "layered", "dependency-inversion"]
+    },
+    {
+      "id": "hexagonal-architecture",
+      "name": "Hexagonal Architecture",
+      "category": "Architectural",
+      "description": "Isolates core application logic from external concerns using ports and adapters",
+      "when_to_use": ["Multiple external systems", "Testing isolation", "Framework flexibility"],
+      "benefits": ["Testability", "Flexibility", "External system isolation", "Clear boundaries"],
+      "drawbacks": ["Complex setup", "Interface proliferation", "Over-abstraction risk"],
+      "use_cases": [
+        "Integration-heavy systems",
+        "Legacy system modernization",
+        "API-first applications"
+      ],
+      "complexity": "High",
+      "tags": ["ports-and-adapters", "isolation", "boundaries"]
+    },
+    {
+      "id": "onion-architecture",
+      "name": "Onion Architecture",
+      "category": "Architectural",
+      "description": "Organizes code in concentric layers with domain at the center",
+      "when_to_use": ["Domain-driven design", "Complex business rules", "Long-term evolution"],
+      "benefits": ["Domain focus", "Dependency inversion", "Testability", "Flexibility"],
+      "drawbacks": ["Learning curve", "Initial complexity", "Over-engineering risk"],
+      "use_cases": ["Domain-rich applications", "Business-critical systems", "Complex workflows"],
+      "complexity": "High",
+      "tags": ["domain-centric", "layers", "ddd"]
+    },
+    {
+      "id": "layered-architecture",
+      "name": "Layered Architecture",
+      "category": "Architectural",
+      "description": "Organizes application into horizontal layers with defined responsibilities",
+      "when_to_use": [
+        "Traditional enterprise apps",
+        "Clear separation needed",
+        "Team specialization"
+      ],
+      "benefits": [
+        "Separation of concerns",
+        "Team organization",
+        "Familiar pattern",
+        "Technology isolation"
+      ],
+      "drawbacks": ["Rigid structure", "Performance overhead", "Tight coupling risk"],
+      "use_cases": ["Enterprise applications", "Web applications", "Traditional systems"],
+      "complexity": "Medium",
+      "tags": ["layers", "separation", "traditional"]
+    },
+    {
+      "id": "mvc",
+      "name": "Model-View-Controller",
+      "category": "Architectural",
+      "description": "Separates application logic into model, view, and controller components",
+      "when_to_use": ["Web applications", "UI-heavy applications", "Rapid development"],
+      "benefits": [
+        "Separation of concerns",
+        "Reusability",
+        "Parallel development",
+        "Familiar pattern"
+      ],
+      "drawbacks": [
+        "Tight coupling between components",
+        "Complex for simple apps",
+        "State management issues"
+      ],
+      "use_cases": ["Web frameworks", "Desktop applications", "RESTful APIs"],
+      "complexity": "Medium",
+      "tags": ["presentation", "web", "separation"]
+    },
+    {
+      "id": "mvp",
+      "name": "Model-View-Presenter",
+      "category": "Architectural",
+      "description": "Improves testability by making presenter handle view logic",
+      "when_to_use": ["Testing requirements", "Complex UI logic", "View technology changes"],
+      "benefits": [
+        "High testability",
+        "View independence",
+        "Clear responsibilities",
+        "Reusable presenters"
+      ],
+      "drawbacks": ["Increased complexity", "More classes", "Potential god presenter"],
+      "use_cases": ["Desktop applications", "Mobile apps", "Testing-critical systems"],
+      "complexity": "Medium",
+      "tags": ["presentation", "testing", "ui"]
+    },
+    {
+      "id": "mvvm",
+      "name": "Model-View-ViewModel",
+      "category": "Architectural",
+      "description": "Uses data binding to connect view with view model",
+      "when_to_use": ["Data binding support", "Rich UI applications", "Declarative UI"],
+      "benefits": ["Data binding", "Testability", "View independence", "Rich UI support"],
+      "drawbacks": ["Complex debugging", "Memory leaks risk", "Framework dependency"],
+      "use_cases": ["WPF applications", "Angular/Vue apps", "Mobile applications"],
+      "complexity": "Medium",
+      "tags": ["data-binding", "ui", "framework"]
+    },
+    {
+      "id": "domain-driven-design",
+      "name": "Domain-Driven Design",
+      "category": "Architectural",
+      "description": "Focuses on modeling complex business domains through ubiquitous language",
+      "when_to_use": ["Complex business domains", "Large teams", "Long-term projects"],
+      "benefits": ["Business alignment", "Maintainable code", "Team communication", "Domain focus"],
+      "drawbacks": ["High learning curve", "Initial overhead", "Requires domain expertise"],
+      "use_cases": ["Enterprise software", "Financial systems", "Healthcare applications"],
+      "complexity": "High",
+      "tags": ["domain-modeling", "ubiquitous-language", "bounded-context"]
+    },
+    {
+      "id": "event-driven-architecture",
+      "name": "Event-Driven Architecture",
+      "category": "Architectural",
+      "description": "Uses events to trigger and communicate between decoupled services",
+      "when_to_use": ["Microservices", "Real-time systems", "Scalable applications"],
+      "benefits": ["Loose coupling", "Scalability", "Flexibility", "Real-time processing"],
+      "drawbacks": ["Complexity", "Eventual consistency", "Debugging difficulty"],
+      "use_cases": ["E-commerce platforms", "IoT systems", "Reactive applications"],
+      "complexity": "High",
+      "tags": ["events", "decoupling", "reactive"]
+    },
+    {
+      "id": "cqrs",
+      "name": "Command Query Responsibility Segregation",
+      "category": "Architectural",
+      "description": "Separates read and write operations using different models",
+      "when_to_use": ["Complex read/write patterns", "Performance optimization", "Event sourcing"],
+      "benefits": ["Performance", "Scalability", "Flexibility", "Optimized models"],
+      "drawbacks": ["Increased complexity", "Eventual consistency", "Code duplication"],
+      "use_cases": ["High-performance systems", "Event sourcing", "Complex reporting"],
+      "complexity": "High",
+      "tags": ["command-query", "performance", "segregation"]
+    },
+    {
+      "id": "event-sourcing",
+      "name": "Event Sourcing",
+      "category": "Architectural",
+      "description": "Stores all changes as a sequence of events instead of current state",
+      "when_to_use": ["Audit requirements", "Complex business logic", "Time-travel debugging"],
+      "benefits": ["Complete audit trail", "Temporal queries", "Debugging", "Scalability"],
+      "drawbacks": ["Storage overhead", "Query complexity", "Event versioning"],
+      "use_cases": ["Financial systems", "Version control", "Audit-critical applications"],
+      "complexity": "High",
+      "tags": ["events", "audit", "temporal"]
+    },
+    {
+      "id": "microservices",
+      "name": "Microservices Architecture",
+      "category": "Architectural",
+      "description": "Decomposes application into small, independently deployable services",
+      "when_to_use": ["Large teams", "Independent deployments", "Technology diversity"],
+      "benefits": ["Technology freedom", "Independent scaling", "Team autonomy", "Fault isolation"],
+      "drawbacks": ["Distributed complexity", "Network overhead", "Data consistency"],
+      "use_cases": ["Large-scale applications", "Cloud-native systems", "DevOps environments"],
+      "complexity": "High",
+      "tags": ["distributed", "services", "independence"]
+    },
+    {
+      "id": "service-oriented-architecture",
+      "name": "Service-Oriented Architecture",
+      "category": "Architectural",
+      "description": "Structures application as a collection of loosely coupled services",
+      "when_to_use": ["Enterprise integration", "Legacy system integration", "Service reusability"],
+      "benefits": ["Reusability", "Interoperability", "Flexibility", "Service governance"],
+      "drawbacks": ["Performance overhead", "Complexity", "Service management"],
+      "use_cases": ["Enterprise systems", "B2B integration", "Legacy modernization"],
+      "complexity": "High",
+      "tags": ["services", "enterprise", "integration"]
+    },
+    {
+      "id": "serverless-architecture",
+      "name": "Serverless Architecture",
+      "category": "Architectural",
+      "description": "Executes code in stateless compute containers managed by cloud providers",
+      "when_to_use": ["Event-driven applications", "Variable workloads", "Rapid scaling"],
+      "benefits": ["No server management", "Auto-scaling", "Pay-per-use", "Fast deployment"],
+      "drawbacks": ["Vendor lock-in", "Cold start latency", "Limited control"],
+      "use_cases": ["API backends", "Data processing", "Web applications"],
+      "complexity": "Medium",
+      "tags": ["serverless", "cloud", "functions"]
+    },
+    {
+      "id": "modular-monolith",
+      "name": "Modular Monolith",
+      "category": "Architectural",
+      "description": "Single deployable unit with well-defined internal module boundaries",
+      "when_to_use": ["Medium-sized applications", "Team coordination", "Gradual evolution"],
+      "benefits": ["Simplicity", "Performance", "Easy debugging", "Consistent transactions"],
+      "drawbacks": ["Scaling limitations", "Technology constraints", "Deployment coupling"],
+      "use_cases": ["Growing applications", "Team-sized projects", "Microservices preparation"],
+      "complexity": "Medium",
+      "tags": ["monolith", "modular", "boundaries"]
+    }
   ]
 }

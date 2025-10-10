@@ -5,7 +5,7 @@
 import { initializeDatabaseManager, DatabaseManager } from '../services/database-manager.js';
 import { MigrationManager } from '../services/migrations.js';
 import { createPatternSeeder } from '../services/pattern-seeder.js';
-import { logger } from '../services/logger.js';
+import { logger, createLogger, LogLevel } from '../services/logger.js';
 
 export interface InitConfig {
   databasePath: string;
@@ -197,10 +197,13 @@ export interface HealthResult {
 }
 
 // CLI runner
-if (import.meta.main) {
+if (import.meta.url === `file://${process.argv[1]}`) {
+  logger.info('db-init', 'Starting db init script...');
   const command = process.argv[2] || 'init';
+  logger.info('db-init', 'Command:', command);
 
-  if (command === 'init') {
+  if (command === 'init' || command === 'seed') {
+    logger.info('db-init', 'Initializing database...');
     logger.info('db-init', 'Starting database initialization...');
     initializeDatabase()
       .then(result => {
@@ -236,7 +239,7 @@ if (import.meta.main) {
         console.error('❌ Health check error:', error);
       });
   } else {
-    logger.info('db-init', 'Usage: bun run src/db/init.ts [init|health]');
+    logger.info('db-init', 'Usage: bun run src/db/init.ts [init|seed|health]');
     process.exit(1);
   }
 }

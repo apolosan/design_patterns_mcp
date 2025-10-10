@@ -17,7 +17,11 @@
       "name": "Object Pool (Performance)",
       "category": "Performance",
       "description": "Reuses expensive objects to avoid creation and garbage collection overhead",
-      "when_to_use": ["Expensive object creation", "High-frequency allocation", "Memory optimization"],
+      "when_to_use": [
+        "Expensive object creation",
+        "High-frequency allocation",
+        "Memory optimization"
+      ],
       "benefits": ["Reduced allocation", "Better memory usage", "Predictable performance"],
       "drawbacks": ["Pool management overhead", "Memory waste", "Lifecycle complexity"],
       "use_cases": ["Database connections", "Thread pools", "Graphics objects"],
@@ -49,36 +53,16 @@
       "tags": ["performance", "caching", "data"]
     },
     {
-      "id": "write-through-cache-perf",
-      "name": "Write-Through Cache",
-      "category": "Performance",
-      "description": "Writes data to cache and storage simultaneously for consistency",
-      "when_to_use": ["Data consistency", "Write performance", "Cache reliability"],
-      "benefits": ["Data consistency", "Cache reliability", "Read performance"],
-      "drawbacks": ["Write latency", "Implementation complexity", "Resource overhead"],
-      "use_cases": ["Critical data", "Consistent reads", "Reliable caching"],
-      "complexity": "High",
-      "tags": ["performance", "caching", "consistency"]
-    },
-    {
-      "id": "write-behind-cache-perf",
-      "name": "Write-Behind Cache",
-      "category": "Performance",
-      "description": "Writes to cache immediately and to storage asynchronously for better write performance",
-      "when_to_use": ["Write-heavy workloads", "Write performance", "Batch processing"],
-      "benefits": ["Write performance", "Batch efficiency", "Reduced write load"],
-      "drawbacks": ["Data loss risk", "Complexity", "Eventual consistency"],
-      "use_cases": ["High-throughput writes", "Logging systems", "Analytics data"],
-      "complexity": "High",
-      "tags": ["performance", "caching", "async"]
-    },
-    {
       "id": "database-connection-pooling",
       "name": "Database Connection Pooling",
       "category": "Performance",
       "description": "Maintains pool of reusable database connections to reduce connection overhead",
       "when_to_use": ["Database-heavy applications", "Connection overhead", "Scalability"],
-      "benefits": ["Reduced connection overhead", "Better resource utilization", "Improved throughput"],
+      "benefits": [
+        "Reduced connection overhead",
+        "Better resource utilization",
+        "Improved throughput"
+      ],
       "drawbacks": ["Pool management", "Connection leaks", "Configuration complexity"],
       "use_cases": ["Web applications", "Enterprise systems", "High-concurrency apps"],
       "complexity": "Medium",

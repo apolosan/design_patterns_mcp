@@ -1,0 +1,32 @@
+{
+  "id": "feistel-network",
+  "name": "Feistel Network",
+  "category": "Security",
+  "description": "Symmetric block cipher construction where the block is divided into two halves. Each round applies the right half unchanged, and transforms the left half using XOR with a round function F of the right half and round key.",
+  "when_to_use": "[\"Building block ciphers\",\"Format-preserving encryption\",\"Hardware-efficient applications\",\"Sequential processing requirements\"]",
+  "benefits": "[\"Proven security (Luby-Rackoff theorem)\",\"Hardware-efficient\",\"F function doesn't need to be invertible\",\"Same algorithm for encryption/decryption\"]",
+  "drawbacks": "[\"Sequential processing (not parallel)\",\"Requires careful key scheduling\",\"Vulnerable to related-key attacks if poorly designed\"]",
+  "use_cases": "[\"DES\",\"Blowfish\",\"Twofish\",\"GOST\",\"Camellia\",\"CAST-128\",\"Format-preserving encryption\"]",
+  "complexity": "High",
+  "tags": [
+    "cryptography",
+    "block-cipher",
+    "feistel",
+    "symmetric-encryption",
+    "construction-pattern"
+  ],
+  "examples": {
+    "cpp": {
+      "language": "cpp",
+      "code": "#include <vector>\n#include <cstdint>\n#include <cstring>\n\nclass FeistelCipher {\nprivate:\n    std::vector<uint64_t> roundKeys;\n    const int numRounds = 16;\n    \n    // Round function F (simplified example)\n    uint64_t roundFunction(uint64_t half, uint64_t key) {\n        uint64_t result = half ^ key;\n        result = ((result << 5) | (result >> 59)); // Rotation\n        return result;\n    }\n    \npublic:\n    FeistelCipher(const uint8_t* masterKey, size_t keyLen) {\n        roundKeys.resize(numRounds);\n        for (int i = 0; i < numRounds; i++) {\n            uint64_t k = 0;\n            memcpy(&k, masterKey, std::min(keyLen, sizeof(uint64_t)));\n            roundKeys[i] = k ^ (i * 0x9E3779B97F4A7C15ULL);\n        }\n    }\n    \n    void encrypt(uint64_t& left, uint64_t& right) {\n        for (int i = 0; i < numRounds; i++) {\n            uint64_t newLeft = right;\n            uint64_t temp = roundFunction(right, roundKeys[i]);\n            uint64_t newRight = left ^ temp;\n            left = newLeft;\n            right = newRight;\n        }\n        std::swap(left, right); // Final swap\n    }\n    \n    void decrypt(uint64_t& left, uint64_t& right) {\n        std::swap(left, right); // Undo final swap\n        \n        for (int i = numRounds - 1; i >= 0; i--) {\n            uint64_t newRight = left;\n            uint64_t temp = roundFunction(left, roundKeys[i]);\n            uint64_t newLeft = right ^ temp;\n            left = newLeft;\n            right = newRight;\n        }\n    }\n};"
+    },
+    "typescript": {
+      "language": "typescript",
+      "code": "class FeistelCipher {\n    private roundKeys: bigint[];\n    private readonly numRounds = 16;\n    \n    constructor(masterKey: Buffer) {\n        this.roundKeys = [];\n        const baseKey = masterKey.readBigUInt64BE(0);\n        \n        for (let i = 0; i < this.numRounds; i++) {\n            this.roundKeys.push(baseKey ^ BigInt(i) * 0x9E3779B97F4A7C15n);\n        }\n    }\n    \n    private roundFunction(half: bigint, key: bigint): bigint {\n        const mask = 0xFFFFFFFFFFFFFFFFn;\n        let result = (half ^ key) & mask;\n        result = ((result << 5n) | (result >> 59n)) & mask;\n        return result;\n    }\n    \n    encryptBlock(left: bigint, right: bigint): [bigint, bigint] {\n        for (let i = 0; i < this.numRounds; i++) {\n            const newLeft = right;\n            const temp = this.roundFunction(right, this.roundKeys[i]);\n            const newRight = left ^ temp;\n            left = newLeft;\n            right = newRight;\n        }\n        return [right, left]; // Final swap\n    }\n    \n    decryptBlock(left: bigint, right: bigint): [bigint, bigint] {\n        [left, right] = [right, left]; // Undo final swap\n        \n        for (let i = this.numRounds - 1; i >= 0; i--) {\n            const newRight = left;\n            const temp = this.roundFunction(left, this.roundKeys[i]);\n            const newLeft = right ^ temp;\n            left = newLeft;\n            right = newRight;\n        }\n        \n        return [left, right];\n    }\n}"
+    },
+    "rust": {
+      "language": "rust",
+      "code": "struct FeistelCipher {\n    round_keys: Vec<u64>,\n    num_rounds: usize,\n}\n\nimpl FeistelCipher {\n    fn new(master_key: &[u8]) -> Self {\n        let num_rounds = 16;\n        let mut round_keys = Vec::with_capacity(num_rounds);\n        \n        let base_key = u64::from_be_bytes(master_key[..8].try_into().unwrap());\n        \n        for i in 0..num_rounds {\n            round_keys.push(base_key ^ (i as u64).wrapping_mul(0x9E3779B97F4A7C15));\n        }\n        \n        FeistelCipher { round_keys, num_rounds }\n    }\n    \n    fn round_function(&self, half: u64, key: u64) -> u64 {\n        let result = half ^ key;\n        result.rotate_left(5)\n    }\n    \n    fn encrypt_block(&self, mut left: u64, mut right: u64) -> (u64, u64) {\n        for i in 0..self.num_rounds {\n            let new_left = right;\n            let temp = self.round_function(right, self.round_keys[i]);\n            let new_right = left ^ temp;\n            left = new_left;\n            right = new_right;\n        }\n        (right, left) // Final swap\n    }\n    \n    fn decrypt_block(&self, mut left: u64, mut right: u64) -> (u64, u64) {\n        std::mem::swap(&mut left, &mut right); // Undo final swap\n        \n        for i in (0..self.num_rounds).rev() {\n            let new_right = left;\n            let temp = self.round_function(left, self.round_keys[i]);\n            let new_left = right ^ temp;\n            left = new_left;\n            right = new_right;\n        }\n        \n        (left, right)\n    }\n}"
+    }
+  }
+}

@@ -29,7 +29,11 @@
       "name": "Message Endpoint",
       "category": "Integration",
       "description": "Connection point for applications to send and receive messages",
-      "when_to_use": ["Message-based communication", "Decoupled systems", "Asynchronous processing"],
+      "when_to_use": [
+        "Message-based communication",
+        "Decoupled systems",
+        "Asynchronous processing"
+      ],
       "benefits": ["Decoupling", "Asynchronous communication", "Location transparency"],
       "drawbacks": ["Message handling complexity", "Error management", "Delivery guarantees"],
       "use_cases": ["Microservices communication", "Event-driven architecture", "Message queues"],
@@ -155,30 +159,6 @@
       "use_cases": ["Critical messaging", "Audit trails", "Message recovery"],
       "complexity": "Medium",
       "tags": ["integration", "persistence", "reliability"]
-    },
-    {
-      "id": "api-gateway-integration",
-      "name": "API Gateway",
-      "category": "Integration",
-      "description": "Single entry point for managing API requests and routing to appropriate services",
-      "when_to_use": ["API management", "Service aggregation", "Cross-cutting concerns"],
-      "benefits": ["Centralized management", "Security enforcement", "Request routing"],
-      "drawbacks": ["Single point of failure", "Performance bottleneck", "Complexity"],
-      "use_cases": ["Microservices", "API management", "Service composition"],
-      "complexity": "High",
-      "tags": ["integration", "api", "gateway"]
-    },
-    {
-      "id": "adapter-integration",
-      "name": "Adapter Pattern (Integration)",
-      "category": "Integration",
-      "description": "Adapts interface of one system to work with another incompatible system",
-      "when_to_use": ["Interface mismatch", "Legacy integration", "Third-party systems"],
-      "benefits": ["Interface compatibility", "Legacy support", "Minimal changes"],
-      "drawbacks": ["Additional layer", "Performance overhead", "Maintenance complexity"],
-      "use_cases": ["Legacy systems", "Third-party integration", "Interface adaptation"],
-      "complexity": "Medium",
-      "tags": ["integration", "adapter", "compatibility"]
     },
     {
       "id": "facade-integration",

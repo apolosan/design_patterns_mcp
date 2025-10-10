@@ -1,0 +1,12 @@
+{
+  "id": "simplicity-driven-testing",
+  "name": "Simplicity-Driven Testing",
+  "category": "Testing",
+  "description": "Test design pattern that prioritizes implementing simpler tests first to build momentum and establish a foundation before tackling complex scenarios",
+  "when_to_use": "Test automation initiation\nAgile development\nRapid deployment\nIncremental testing",
+  "benefits": "Quick wins\nReduced maintenance\nIncreased efficiency\nBetter coverage foundation",
+  "drawbacks": "May miss complex scenarios initially\nRequires careful planning\nPotential rework\nDelayed complex testing",
+  "use_cases": "Startup development\nAgile teams\nMVP testing\nIterative development",
+  "complexity": "Low",
+  "tags": ["testing", "agile", "automation", "incremental", "simplicity"]
+}

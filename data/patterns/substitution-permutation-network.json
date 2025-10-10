@@ -1,0 +1,32 @@
+{
+  "id": "substitution-permutation-network",
+  "name": "Substitution-Permutation Network (SPN)",
+  "category": "Security",
+  "description": "Block cipher construction using alternating layers of substitution (S-boxes) and permutation (P-boxes). Each bit of output depends on all input bits, providing confusion and diffusion. Round keys are XORed at each round.",
+  "when_to_use": "[\"High-performance block ciphers\",\"Parallel processing applications\",\"Modern CPU architectures\",\"Speed-critical applications\"]",
+  "benefits": "[\"Inherently parallel\",\"Fast on modern CPUs\",\"Proven security properties\",\"High throughput\"]",
+  "drawbacks": "[\"Complex S-box design requirements\",\"Vulnerable to side-channel attacks\",\"Requires invertible components\",\"Higher implementation complexity\"]",
+  "use_cases": "[\"AES (Rijndael)\",\"3-Way\",\"Kalyna\",\"Kuznyechik\",\"PRESENT\",\"SAFER\",\"SHARK\",\"Square\"]",
+  "complexity": "Very High",
+  "tags": [
+    "cryptography",
+    "block-cipher",
+    "spn",
+    "aes",
+    "rijndael",
+    "substitution",
+    "permutation",
+    "confusion",
+    "diffusion"
+  ],
+  "examples": {
+    "cpp": {
+      "language": "cpp",
+      "code": "#include <array>\n#include <vector>\n#include <cstdint>\n\nclass SPNetwork {\nprivate:\n    static constexpr int ROUNDS = 10;\n    std::array<std::array<uint8_t, 256>, ROUNDS> roundKeys;\n    \n    // S-box (simplified AES-like)\n    static constexpr std::array<uint8_t, 256> SBOX = {\n        // S-box values would go here...\n    };\n    \n    // Inverse S-box for decryption\n    static constexpr std::array<uint8_t, 256> INV_SBOX = {\n        // Inverse S-box values would go here...\n    };\n    \n    void subBytes(std::array<uint8_t, 16>& state) {\n        for (auto& byte : state) {\n            byte = SBOX[byte];\n        }\n    }\n    \n    void shiftRows(std::array<uint8_t, 16>& state) {\n        std::array<uint8_t, 16> temp = state;\n        \n        // Row 1: shift left 1\n        state[1] = temp[5]; state[5] = temp[9]; \n        state[9] = temp[13]; state[13] = temp[1];\n        \n        // Row 2: shift left 2\n        state[2] = temp[10]; state[10] = temp[2];\n        state[6] = temp[14]; state[14] = temp[6];\n        \n        // Row 3: shift left 3\n        state[3] = temp[15]; state[15] = temp[11];\n        state[11] = temp[7]; state[7] = temp[3];\n    }\n    \n    uint8_t gfMul(uint8_t a, uint8_t b) {\n        uint8_t p = 0;\n        for (int i = 0; i < 8; i++) {\n            if (b & 1) p ^= a;\n            bool hi_bit_set = (a & 0x80);\n            a <<= 1;\n            if (hi_bit_set) a ^= 0x1B;\n            b >>= 1;\n        }\n        return p;\n    }\n    \n    void mixColumns(std::array<uint8_t, 16>& state) {\n        for (int col = 0; col < 4; col++) {\n            uint8_t s0 = state[col * 4 + 0];\n            uint8_t s1 = state[col * 4 + 1];\n            uint8_t s2 = state[col * 4 + 2];\n            uint8_t s3 = state[col * 4 + 3];\n            \n            state[col * 4 + 0] = gfMul(0x02, s0) ^ gfMul(0x03, s1) ^ s2 ^ s3;\n            state[col * 4 + 1] = s0 ^ gfMul(0x02, s1) ^ gfMul(0x03, s2) ^ s3;\n            state[col * 4 + 2] = s0 ^ s1 ^ gfMul(0x02, s2) ^ gfMul(0x03, s3);\n            state[col * 4 + 3] = gfMul(0x03, s0) ^ s1 ^ s2 ^ gfMul(0x02, s3);\n        }\n    }\n    \n    void addRoundKey(std::array<uint8_t, 16>& state, int round) {\n        for (int i = 0; i < 16; i++) {\n            state[i] ^= roundKeys[round][i];\n        }\n    }\n    \npublic:\n    std::array<uint8_t, 16> encrypt(const std::array<uint8_t, 16>& plaintext) {\n        std::array<uint8_t, 16> state = plaintext;\n        \n        addRoundKey(state, 0);\n        \n        for (int round = 1; round < ROUNDS; round++) {\n            subBytes(state);\n            shiftRows(state);\n            mixColumns(state);\n            addRoundKey(state, round);\n        }\n        \n        // Final round (no MixColumns)\n        subBytes(state);\n        shiftRows(state);\n        addRoundKey(state, ROUNDS);\n        \n        return state;\n    }\n};"
+    },
+    "rust": {
+      "language": "rust",
+      "code": "const SBOX: [u8; 256] = [\n    // S-box values...\n];\n\nconst INV_SBOX: [u8; 256] = [\n    // Inverse S-box values...\n];\n\nfn sub_bytes(state: &mut [u8; 16]) {\n    for byte in state.iter_mut() {\n        *byte = SBOX[*byte as usize];\n    }\n}\n\nfn shift_rows(state: &mut [u8; 16]) {\n    let temp = *state;\n    \n    // Row 1: shift left 1\n    state[1] = temp[5];  state[5] = temp[9];\n    state[9] = temp[13]; state[13] = temp[1];\n    \n    // Row 2: shift left 2  \n    state[2] = temp[10]; state[10] = temp[2];\n    state[6] = temp[14]; state[14] = temp[6];\n    \n    // Row 3: shift left 3\n    state[3] = temp[15]; state[15] = temp[11];\n    state[11] = temp[7]; state[7] = temp[3];\n}\n\nfn gf_mul(mut a: u8, mut b: u8) -> u8 {\n    let mut p = 0u8;\n    for _ in 0..8 {\n        if b & 1 != 0 {\n            p ^= a;\n        }\n        let hi_bit_set = a & 0x80 != 0;\n        a <<= 1;\n        if hi_bit_set {\n            a ^= 0x1B;\n        }\n        b >>= 1;\n    }\n    p\n}\n\nfn mix_columns(state: &mut [u8; 16]) {\n    for col in 0..4 {\n        let s0 = state[col * 4];\n        let s1 = state[col * 4 + 1];\n        let s2 = state[col * 4 + 2];\n        let s3 = state[col * 4 + 3];\n        \n        state[col * 4] = gf_mul(0x02, s0) ^ gf_mul(0x03, s1) ^ s2 ^ s3;\n        state[col * 4 + 1] = s0 ^ gf_mul(0x02, s1) ^ gf_mul(0x03, s2) ^ s3;\n        state[col * 4 + 2] = s0 ^ s1 ^ gf_mul(0x02, s2) ^ gf_mul(0x03, s3);\n        state[col * 4 + 3] = gf_mul(0x03, s0) ^ s1 ^ s2 ^ gf_mul(0x02, s3);\n    }\n}"
+    }
+  }
+}

@@ -23,11 +23,14 @@ interface PatternData {
     code: string;
     explanation: string;
   }>;
-  examples?: Record<string, {
-    language?: string;
-    description?: string;
-    code: string;
-  }>;
+  examples?: Record<
+    string,
+    {
+      language?: string;
+      description?: string;
+      code: string;
+    }
+  >;
   relatedPatterns?: Array<{
     patternId: string;
     type: string;
@@ -44,8 +47,15 @@ interface PatternFile {
 }
 
 export class PatternLoaderService {
-  private patternStorage = getPatternStorageService();
+  private patternStorage: ReturnType<typeof getPatternStorageService> | null = null;
   private loadedPatterns = new Set<string>();
+
+  private getPatternStorage(): ReturnType<typeof getPatternStorageService> {
+    if (!this.patternStorage) {
+      this.patternStorage = getPatternStorageService();
+    }
+    return this.patternStorage;
+  }
 
   /**
    * Load patterns from a JSON file
@@ -55,7 +65,7 @@ export class PatternLoaderService {
       logger.info('pattern-loader', `Loading patterns from: ${filePath}`);
 
       if (!fs.existsSync(filePath)) {
-        console.warn(`Pattern file not found: ${filePath}`);
+        logger.warn('pattern-loader', `Pattern file not found: ${filePath}`);
         return;
       }
 
@@ -72,14 +82,19 @@ export class PatternLoaderService {
         }
 
         // Convert examples to proper format
-        const examples = patternData.examples ? Object.entries(patternData.examples).reduce((acc, [lang, example]) => {
-          acc[lang] = {
-            language: example.language || lang,
-            description: example.description,
-            code: example.code,
-          };
-          return acc;
-        }, {} as Record<string, { language: string; description?: string; code: string }>) : undefined;
+        const examples = patternData.examples
+          ? Object.entries(patternData.examples).reduce(
+              (acc, [lang, example]) => {
+                acc[lang] = {
+                  language: example.language || lang,
+                  description: example.description,
+                  code: example.code,
+                };
+                return acc;
+              },
+              {} as Record<string, { language: string; description?: string; code: string }>
+            )
+          : undefined;
 
         // Convert pattern data to Pattern interface format
         const pattern: Pattern = {
@@ -123,16 +138,19 @@ export class PatternLoaderService {
 
       // Store patterns in database
       if (patterns.length > 0) {
-        await this.patternStorage.storePatterns(patterns);
+        await this.getPatternStorage().storePatterns(patterns);
         logger.info('pattern-loader', `Stored ${patterns.length} patterns from ${filePath}`);
       }
 
       // Store implementations
       if (implementations.length > 0) {
         for (const impl of implementations) {
-          await this.patternStorage.storePatternImplementation(impl);
+          await this.getPatternStorage().storePatternImplementation(impl);
         }
-        logger.info('pattern-loader', `Stored ${implementations.length} implementations from ${filePath}`);
+        logger.info(
+          'pattern-loader',
+          `Stored ${implementations.length} implementations from ${filePath}`
+        );
       }
     } catch (error) {
       console.error(`Error loading patterns from ${filePath}:`, error);
@@ -141,9 +159,119 @@ export class PatternLoaderService {
   }
 
   /**
+   * Load individual pattern file (single pattern object or patterns array)
+   */
+  async loadIndividualPatternFile(filePath: string): Promise<void> {
+    try {
+      logger.info('pattern-loader', `Loading individual pattern from: ${filePath}`);
+
+      if (!fs.existsSync(filePath)) {
+        logger.warn('pattern-loader', `Pattern file not found: ${filePath}`);
+        return;
+      }
+
+      const fileContent = fs.readFileSync(filePath, 'utf8');
+      const parsedContent = JSON.parse(fileContent);
+
+      // Handle both single pattern object and patterns array format
+      let patternDataList: PatternData[];
+
+      if (Array.isArray(parsedContent)) {
+        // Direct array of patterns
+        patternDataList = parsedContent as PatternData[];
+      } else if (parsedContent.patterns && Array.isArray(parsedContent.patterns)) {
+        // Wrapped in patterns object (batch file format)
+        patternDataList = parsedContent.patterns as PatternData[];
+      } else {
+        // Single pattern object
+        patternDataList = [parsedContent as PatternData];
+      }
+
+      for (const patternData of patternDataList) {
+        // Skip if already loaded
+        if (this.loadedPatterns.has(patternData.id)) {
+          continue;
+        }
+
+        // Convert examples to proper format
+        const examples = patternData.examples
+          ? Object.entries(patternData.examples).reduce(
+              (acc, [lang, example]) => {
+                acc[lang] = {
+                  language: example.language || lang,
+                  description: example.description,
+                  code: example.code,
+                };
+                return acc;
+              },
+              {} as Record<string, { language: string; description?: string; code: string }>
+            )
+          : undefined;
+
+        // Convert pattern data to Pattern interface format
+        const pattern: Pattern = {
+          id: patternData.id,
+          name: patternData.name,
+          category: patternData.category,
+          description: patternData.description,
+          problem: '', // Will be populated from JSON if available
+          solution: '', // Will be populated from JSON if available
+          when_to_use: patternData.whenToUse || patternData.when_to_use || [],
+          benefits: patternData.benefits || [],
+          drawbacks: patternData.drawbacks || [],
+          use_cases: patternData.useCases || patternData.use_cases || [],
+          implementations: [],
+          complexity: patternData.complexity,
+          tags: patternData.tags,
+          examples,
+          createdAt: patternData.createdAt ? new Date(patternData.createdAt) : new Date(),
+          updatedAt: patternData.updatedAt ? new Date(patternData.updatedAt) : new Date(),
+        };
+
+        // Store pattern in database
+        await this.getPatternStorage().storePatterns([pattern]);
+        logger.info('pattern-loader', `Stored individual pattern: ${patternData.name}`);
+
+        // Convert and store implementations
+        if (patternData.implementations) {
+          const implementations: PatternImplementation[] = [];
+          for (const impl of patternData.implementations) {
+            const implementation: PatternImplementation = {
+              id: `${patternData.id}-${impl.language}`,
+              pattern_id: patternData.id,
+              language: impl.language,
+              approach: 'standard',
+              code: impl.code,
+              explanation: impl.explanation,
+            };
+            implementations.push(implementation);
+          }
+
+          if (implementations.length > 0) {
+            for (const impl of implementations) {
+              await this.getPatternStorage().storePatternImplementation(impl);
+            }
+            logger.info(
+              'pattern-loader',
+              `Stored ${implementations.length} implementations for ${patternData.name}`
+            );
+          }
+        }
+
+        this.loadedPatterns.add(patternData.id);
+      }
+    } catch (error) {
+      console.error(`Error loading individual pattern from ${filePath}:`, error);
+      console.error('Error details:', error instanceof Error ? error.message : String(error));
+      throw error;
+    }
+  }
+
+  /**
    * Load all pattern categories
    */
   async loadAllPatternCategories(): Promise<void> {
+    logger.info('pattern-loader', 'Starting loadAllPatternCategories');
     const patternFiles = [
       'abstract-server-pattern.json',
       'ai-patterns.json',
@@ -153,6 +281,7 @@ export class PatternLoaderService {
       'concurrency-patterns.json',
       'data-access-patterns.json',
       'ddd-patterns.json',
+      'embedded-systems-patterns.json',
       'enterprise-patterns.json',
       'functional-patterns.json',
       'game-patterns.json',
@@ -171,6 +300,7 @@ export class PatternLoaderService {
 
     logger.info('pattern-loader', 'Loading all pattern categories...');
 
+    // Load batch pattern files
     for (const fileName of patternFiles) {
       // Check both src/data/patterns and data/patterns directories
       let filePath = path.join(process.cwd(), 'data', 'patterns', fileName);
@@ -178,6 +308,21 @@ export class PatternLoaderService {
         filePath = path.join(process.cwd(), 'src', 'data', 'patterns', fileName);
       }
       await this.loadPatternsFromFile(filePath);
+    }
+
+    // Load individual pattern files
+    const patternsDir = path.join(process.cwd(), 'data', 'patterns');
+    logger.info('pattern-loader', `Checking patterns directory: ${patternsDir}`);
+    if (fs.existsSync(patternsDir)) {
+      const files = fs.readdirSync(patternsDir);
+      logger.info('pattern-loader', `Found ${files.length} files in patterns directory`);
+      for (const file of files) {
+        if (file.endsWith('.json') && !patternFiles.includes(file)) {
+          logger.info('pattern-loader', `Loading individual pattern file: ${file}`);
+          const filePath = path.join(patternsDir, file);
+          await this.loadIndividualPatternFile(filePath);
+        }
+      }
     }
 
     logger.info('pattern-loader', 'All pattern categories loaded successfully');

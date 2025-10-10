@@ -1,18 +1,20 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
-import { INITIAL_SCHEMA_MIGRATION } from '../../src/services/migrations';
+import { MigrationManager } from '../../src/services/migrations';
+import { getTestDatabaseConfig } from '../helpers/test-db';
 
 describe('Architectural Patterns', () => {
   let dbManager: DatabaseManager;
 
   beforeAll(async () => {
-    // Create test database in memory
-    dbManager = new DatabaseManager({
-      filename: ':memory:',
-      options: { readonly: false },
-    });
-
+    // Initialize test database with proper schema
+    dbManager = new DatabaseManager(getTestDatabaseConfig(false));
     await dbManager.initialize();
+
+    // Run migrations to ensure schema is up to date
+    const migrationManager = new MigrationManager(dbManager, './migrations');
+    await migrationManager.initialize();
+    await migrationManager.migrate();
 
     // Create schema - use IF NOT EXISTS to avoid conflicts with other tests
     const schemaStatements = [

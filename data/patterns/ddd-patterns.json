@@ -18,7 +18,12 @@
       "category": "Domain-Driven Design",
       "description": "Map showing relationships and integration patterns between bounded contexts",
       "when_to_use": ["Multiple contexts", "Integration planning", "Team coordination"],
-      "benefits": ["Clear relationships", "Integration strategy", "Team coordination", "Risk identification"],
+      "benefits": [
+        "Clear relationships",
+        "Integration strategy",
+        "Team coordination",
+        "Risk identification"
+      ],
       "drawbacks": ["Maintenance overhead", "Complexity", "Documentation burden"],
       "use_cases": ["System architecture", "Integration planning", "Team boundaries"],
       "complexity": "Medium",
@@ -30,23 +35,16 @@
       "category": "Domain-Driven Design",
       "description": "Common language shared by domain experts and developers within bounded context",
       "when_to_use": ["Domain modeling", "Team communication", "Knowledge sharing"],
-      "benefits": ["Clear communication", "Shared understanding", "Accurate modeling", "Reduced ambiguity"],
+      "benefits": [
+        "Clear communication",
+        "Shared understanding",
+        "Accurate modeling",
+        "Reduced ambiguity"
+      ],
       "drawbacks": ["Establishment effort", "Maintenance overhead", "Cultural resistance"],
       "use_cases": ["Domain modeling", "Documentation", "Code naming"],
       "complexity": "Medium",
       "tags": ["ddd", "strategic", "language"]
-    },
-    {
-      "id": "anti-corruption-layer-ddd",
-      "name": "Anti-Corruption Layer (DDD)",
-      "category": "Domain-Driven Design",
-      "description": "Isolates domain model from legacy or external systems",
-      "when_to_use": ["Legacy integration", "External systems", "Model protection"],
-      "benefits": ["Model protection", "Integration flexibility", "Legacy isolation"],
-      "drawbacks": ["Additional complexity", "Performance overhead", "Maintenance cost"],
-      "use_cases": ["Legacy system integration", "Third-party APIs", "System migration"],
-      "complexity": "High",
-      "tags": ["ddd", "strategic", "isolation"]
     },
     {
       "id": "shared-kernel",
@@ -203,18 +201,6 @@
       "use_cases": ["Independent modules", "Legacy isolation", "Prototype development"],
       "complexity": "Low",
       "tags": ["ddd", "strategic", "independence"]
-    },
-    {
-      "id": "repository-ddd",
-      "name": "Repository (DDD)",
-      "category": "Domain-Driven Design",
-      "description": "Encapsulates logic needed to access aggregates from persistence",
-      "when_to_use": ["Aggregate persistence", "Data access abstraction", "Testing"],
-      "benefits": ["Persistence abstraction", "Testability", "Aggregate focus"],
-      "drawbacks": ["Additional complexity", "Performance considerations", "Interface proliferation"],
-      "use_cases": ["Aggregate storage", "Query abstraction", "Testing scenarios"],
-      "complexity": "Medium",
-      "tags": ["ddd", "tactical", "persistence"]
     },
     {
       "id": "specification",

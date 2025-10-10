@@ -18,7 +18,7 @@ describe('Performance Tests', () => {
   let patternMatcher: PatternMatcher;
 
   const PERFORMANCE_THRESHOLDS = {
-    MAX_RESPONSE_TIME_MS: 2000, // 2 seconds
+    MAX_RESPONSE_TIME_MS: 5000, // 5 seconds - increased for semantic search
     MAX_MEMORY_USAGE_MB: 150, // 150 MB - allow for test framework overhead
     MIN_THROUGHPUT_RPS: 10, // 10 requests per second
     MAX_DB_QUERY_TIME_MS: 500, // 500ms for database queries

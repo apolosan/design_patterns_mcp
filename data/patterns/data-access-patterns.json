@@ -1,18 +1,6 @@
 {
   "patterns": [
     {
-      "id": "repository-pattern",
-      "name": "Repository Pattern",
-      "category": "Data Access",
-      "description": "Encapsulates logic needed to access data sources with more object-oriented view of persistence layer",
-      "when_to_use": ["Data access abstraction", "Testing", "Multiple data sources"],
-      "benefits": ["Data access abstraction", "Testability", "Centralized logic", "Flexibility"],
-      "drawbacks": ["Additional complexity", "Performance overhead", "Over-abstraction"],
-      "use_cases": ["Data access layers", "Testing scenarios", "Multiple databases"],
-      "complexity": "Medium",
-      "tags": ["data-access", "abstraction", "persistence"]
-    },
-    {
       "id": "dao-pattern",
       "name": "Data Access Object (DAO)",
       "category": "Data Access",
@@ -20,7 +8,11 @@
       "when_to_use": ["Database abstraction", "Legacy systems", "Multiple data sources"],
       "benefits": ["Database independence", "Centralized data access", "Code reusability"],
       "drawbacks": ["Additional layer", "Complexity", "Performance overhead"],
-      "use_cases": ["Enterprise applications", "Legacy database integration", "Multi-database systems"],
+      "use_cases": [
+        "Enterprise applications",
+        "Legacy database integration",
+        "Multi-database systems"
+      ],
       "complexity": "Medium",
       "tags": ["data-access", "abstraction", "database"]
     },
@@ -29,7 +21,11 @@
       "name": "Object-Relational Mapping (ORM)",
       "category": "Data Access",
       "description": "Technique for converting data between incompatible type systems in OOP languages and relational databases",
-      "when_to_use": ["Object-oriented applications", "Complex domain models", "Database abstraction"],
+      "when_to_use": [
+        "Object-oriented applications",
+        "Complex domain models",
+        "Database abstraction"
+      ],
       "benefits": ["Object-oriented data access", "Database independence", "Automatic mapping"],
       "drawbacks": ["Performance overhead", "Complex queries", "Learning curve"],
       "use_cases": ["Enterprise applications", "Domain-driven design", "Rapid development"],
@@ -41,7 +37,11 @@
       "name": "Connection Pool",
       "category": "Data Access",
       "description": "Maintains cache of database connections to improve performance and resource utilization",
-      "when_to_use": ["High-traffic applications", "Performance optimization", "Resource management"],
+      "when_to_use": [
+        "High-traffic applications",
+        "Performance optimization",
+        "Resource management"
+      ],
       "benefits": ["Performance improvement", "Resource efficiency", "Connection reuse"],
       "drawbacks": ["Configuration complexity", "Memory overhead", "Connection leaks"],
       "use_cases": ["Web applications", "Enterprise systems", "High-concurrency applications"],
@@ -68,7 +68,11 @@
       "when_to_use": ["Frequent data access", "Performance optimization", "Reduced database load"],
       "benefits": ["Automatic loading", "Simplified client code", "Performance improvement"],
       "drawbacks": ["Cache complexity", "Potential inconsistency", "Memory usage"],
-      "use_cases": ["High-read applications", "Database performance optimization", "Content delivery"],
+      "use_cases": [
+        "High-read applications",
+        "Database performance optimization",
+        "Content delivery"
+      ],
       "complexity": "Medium",
       "tags": ["data-access", "caching", "performance"]
     },
@@ -140,21 +144,13 @@
       "when_to_use": ["High availability", "Read scaling", "Disaster recovery"],
       "benefits": ["High availability", "Read performance", "Fault tolerance"],
       "drawbacks": ["Consistency challenges", "Replication lag", "Storage overhead"],
-      "use_cases": ["High-availability systems", "Read-heavy applications", "Geographic distribution"],
+      "use_cases": [
+        "High-availability systems",
+        "Read-heavy applications",
+        "Geographic distribution"
+      ],
       "complexity": "High",
       "tags": ["data-access", "replication", "availability"]
-    },
-    {
-      "id": "data-mapper-pattern",
-      "name": "Data Mapper",
-      "category": "Data Access",
-      "description": "Layer that moves data between objects and database while keeping them independent",
-      "when_to_use": ["Domain model independence", "Complex mappings", "Legacy databases"],
-      "benefits": ["Independence", "Flexibility", "Testing", "Domain focus"],
-      "drawbacks": ["Complex implementation", "Performance overhead", "Learning curve"],
-      "use_cases": ["Domain-driven design", "Legacy integration", "Complex mappings"],
-      "complexity": "High",
-      "tags": ["data-access", "mapping", "independence"]
     },
     {
       "id": "lazy-loading",
