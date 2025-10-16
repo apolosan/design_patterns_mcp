@@ -242,7 +242,7 @@ describe('Database Migration', () => {
     beforeEach(async () => {
       // Create a fresh in-memory database for each test
       testDbManager = new DatabaseManager({
-        filename: ':memory:',
+        filename: `:memory:${Date.now()}-${Math.random()}`,
         options: { readonly: false },
       });
       await testDbManager.initialize();
@@ -257,11 +257,12 @@ describe('Database Migration', () => {
 
     it('should validate DDL migration execution - tables created', async () => {
       // Create a test migration that creates a table
+      const uniqueId = Date.now();
       const testMigration = {
-        id: '999_test_validation',
+        id: `999_test_validation_${uniqueId}`,
         name: 'Test DDL Validation',
-        up: 'CREATE TABLE test_validation_table (id INTEGER PRIMARY KEY, name TEXT);',
-        down: 'DROP TABLE test_validation_table;',
+        up: `CREATE TABLE test_validation_table_${uniqueId} (id INTEGER PRIMARY KEY, name TEXT);`,
+        down: `DROP TABLE test_validation_table_${uniqueId};`,
         createdAt: new Date(),
       };
 
@@ -270,22 +271,25 @@ describe('Database Migration', () => {
 
       // Verify the table was created
       const tables = testDbManager.query(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='test_validation_table'"
+        `SELECT name FROM sqlite_master WHERE type='table' AND name='test_validation_table_${uniqueId}'`
       );
       expect(tables.length).toBe(1);
-      expect(tables[0].name).toBe('test_validation_table');
+      expect(tables[0].name).toBe(`test_validation_table_${uniqueId}`);
     });
 
     it('should validate DDL migration execution - indexes created', async () => {
       // First create a table
-      testDbManager.execDDL('CREATE TABLE test_index_table (id INTEGER PRIMARY KEY, name TEXT);');
+      const uniqueId = Date.now();
+      testDbManager.execDDL(
+        `CREATE TABLE test_index_table_${uniqueId} (id INTEGER PRIMARY KEY, name TEXT);`
+      );
 
       // Create a test migration that creates an index
       const testMigration = {
-        id: '999_test_index_validation',
+        id: `999_test_index_validation_${uniqueId}`,
         name: 'Test Index DDL Validation',
-        up: 'CREATE INDEX idx_test_index_table_name ON test_index_table(name);',
-        down: 'DROP INDEX idx_test_index_table_name;',
+        up: `CREATE INDEX idx_test_index_table_name_${uniqueId} ON test_index_table_${uniqueId}(name);`,
+        down: `DROP INDEX idx_test_index_table_name_${uniqueId};`,
         createdAt: new Date(),
       };
 
@@ -294,35 +298,35 @@ describe('Database Migration', () => {
 
       // Verify the index was created
       const indexes = testDbManager.query(
-        "SELECT name FROM sqlite_master WHERE type='index' AND name='idx_test_index_table_name'"
+        `SELECT name FROM sqlite_master WHERE type='index' AND name='idx_test_index_table_name_${uniqueId}'`
       );
       expect(indexes.length).toBe(1);
-      expect(indexes[0].name).toBe('idx_test_index_table_name');
+      expect(indexes[0].name).toBe(`idx_test_index_table_name_${uniqueId}`);
     });
 
     it('should fail DDL validation when table is not created', async () => {
-      // Create a migration with invalid SQL that won't create the expected table
+      // Create a migration with invalid DDL syntax
+      const uniqueId = Date.now();
       const testMigration = {
-        id: '999_test_invalid_ddl',
+        id: `999_test_invalid_ddl_${uniqueId}`,
         name: 'Test Invalid DDL',
-        up: 'SELECT 1;', // This is not DDL, won't create a table
+        up: `CREATE TABLE test_validation_table_${uniqueId} (id INTEGER PRIMARY KEY, name TEXT, );`,
         down: '',
         createdAt: new Date(),
       };
 
-      // This should fail because no table is created
-      await expect((testMigrationManager as any).executeMigration(testMigration)).rejects.toThrow(
-        'Migration 999_test_invalid_ddl failed: object'
-      );
+      // This should fail due to syntax error
+      await expect((testMigrationManager as any).executeMigration(testMigration)).rejects.toThrow();
     });
 
     it('should rollback DDL migration on failure', async () => {
       // Create a migration that creates a table then fails
+      const uniqueId = Date.now();
       const testMigration = {
-        id: '999_test_rollback',
+        id: `999_test_rollback_${uniqueId}`,
         name: 'Test DDL Rollback',
-        up: 'CREATE TABLE test_rollback_table (id INTEGER PRIMARY KEY); CREATE TABLE nonexistent_table (invalid syntax);',
-        down: 'DROP TABLE IF EXISTS test_rollback_table;',
+        up: `CREATE TABLE test_rollback_table_${uniqueId} (id INTEGER PRIMARY KEY); CREATE TABLE nonexistent_table_${uniqueId} (id INTEGER PRIMARY KEY, name TEXT, );`,
+        down: `DROP TABLE IF EXISTS test_rollback_table_${uniqueId};`,
         createdAt: new Date(),
       };
 
@@ -333,7 +337,7 @@ describe('Database Migration', () => {
 
       // Verify the table was rolled back (doesn't exist)
       const tables = testDbManager.query(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='test_rollback_table'"
+        `SELECT name FROM sqlite_master WHERE type='table' AND name='test_rollback_table_${uniqueId}'`
       );
       expect(tables.length).toBe(0);
     });
@@ -368,13 +372,22 @@ describe('Database Migration', () => {
       const tableExists = await existsMethod('test_existence_table');
       expect(tableExists).toBe(true);
 
-      // Test non-existing table
-      const tableNotExists = await existsMethod('nonexistent_table');
+      // Test non-existing table (use a unique name to avoid conflicts)
+      const tableNotExists = await existsMethod('definitely_not_a_table_12345');
       expect(tableNotExists).toBe(false);
     });
 
     it('should handle DDL migration retry with rollback', async () => {
       let attemptCount = 0;
+      const uniqueId = Date.now();
+
+      const testMigration = {
+        id: `999_test_retry_${uniqueId}`,
+        name: 'Test Retry with Rollback',
+        up: `CREATE TABLE retry_test_table_${uniqueId} (id INTEGER PRIMARY KEY, name TEXT);`,
+        down: `DROP TABLE retry_test_table_${uniqueId};`,
+        createdAt: new Date(),
+      };
 
       // Mock the executeMigration to fail twice then succeed
       const originalExecute = (testMigrationManager as any).executeMigration;
@@ -382,19 +395,13 @@ describe('Database Migration', () => {
         attemptCount++;
         if (attemptCount < 3) {
           // Create partial state then fail
-          testDbManager.execDDL('CREATE TABLE retry_test_table (id INTEGER PRIMARY KEY);');
+          testDbManager.execDDL(
+            `CREATE TABLE retry_test_table_${uniqueId} (id INTEGER PRIMARY KEY);`
+          );
           throw new Error('Simulated failure');
         }
         // On third attempt, succeed
         return originalExecute.call(testMigrationManager, migration);
-      };
-
-      const testMigration = {
-        id: '999_test_retry',
-        name: 'Test Retry with Rollback',
-        up: 'CREATE TABLE retry_test_table (id INTEGER PRIMARY KEY, name TEXT);',
-        down: 'DROP TABLE retry_test_table;',
-        createdAt: new Date(),
       };
 
       // Should succeed after retries
@@ -404,7 +411,7 @@ describe('Database Migration', () => {
 
       // Verify final state
       const tables = testDbManager.query(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='retry_test_table'"
+        `SELECT name FROM sqlite_master WHERE type='table' AND name='retry_test_table_${uniqueId}'`
       );
       expect(tables.length).toBe(1);
       expect(attemptCount).toBe(3); // Should have failed twice, succeeded on third

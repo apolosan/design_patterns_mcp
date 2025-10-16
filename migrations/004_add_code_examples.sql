@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS pattern_code_examples (
 );
 
 -- Create indexes for code examples
-CREATE INDEX idx_pattern_code_examples_pattern_id ON pattern_code_examples(pattern_id);
-CREATE INDEX idx_pattern_code_examples_language ON pattern_code_examples(language);
+CREATE INDEX IF NOT EXISTS idx_pattern_code_examples_pattern_id ON pattern_code_examples(pattern_id);
+CREATE INDEX IF NOT EXISTS idx_pattern_code_examples_language ON pattern_code_examples(language);
 
 -- DOWN
 DROP INDEX IF EXISTS idx_patterns_has_examples;

@@ -34,9 +34,9 @@ CREATE TABLE IF NOT EXISTS pattern_usage (
 );
 
 -- Create indexes
-CREATE INDEX idx_search_queries_created_at ON search_queries(created_at);
-CREATE INDEX idx_pattern_usage_pattern_id ON pattern_usage(pattern_id);
-CREATE INDEX idx_pattern_usage_created_at ON pattern_usage(created_at);
+CREATE INDEX IF NOT EXISTS idx_search_queries_created_at ON search_queries(created_at);
+CREATE INDEX IF NOT EXISTS idx_pattern_usage_pattern_id ON pattern_usage(pattern_id);
+CREATE INDEX IF NOT EXISTS idx_pattern_usage_created_at ON pattern_usage(created_at);
 
 -- DOWN
 DROP TABLE IF EXISTS pattern_usage;

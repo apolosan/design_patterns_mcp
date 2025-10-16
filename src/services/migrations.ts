@@ -1005,13 +1005,27 @@ export class MigrationManager {
           throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
         }
 
-        // Execute migration
-        await this.executeMigrationWithRetry(migration, options);
-        const record = await this.recordMigration(migration);
-        executed.push(record);
-        results.push({ migration: migration.id, success: true });
-
-        logger.info('migrations', `Gradual migration completed: ${migration.id}`);
+        if (options.dryRun) {
+          // In dry run, just simulate what would be executed without actually doing it
+          const checksum = this.calculateChecksum(migration.up);
+          const record: MigrationRecord = {
+            id: migration.id,
+            name: migration.name,
+            executedAt: new Date(),
+            checksum,
+          };
+          executed.push(record);
+          results.push({ migration: migration.id, success: true });
+          logger.info('migrations', `Dry run: would execute migration ${migration.id}`);
+          break; // Only process first migration in dry run
+        } else {
+          // Execute migration
+          await this.executeMigrationWithRetry(migration, options);
+          const record = await this.recordMigration(migration);
+          executed.push(record);
+          results.push({ migration: migration.id, success: true });
+          logger.info('migrations', `Gradual migration completed: ${migration.id}`);
+        }
 
         // Optional: break after first successful migration for true gradual approach
         if (options.dryRun) {
@@ -1355,9 +1369,9 @@ export const VECTOR_SEARCH_MIGRATION: Migration = {
     );
 
     -- Create indexes
-    CREATE INDEX idx_search_queries_created_at ON search_queries(created_at);
-    CREATE INDEX idx_pattern_usage_pattern_id ON pattern_usage(pattern_id);
-    CREATE INDEX idx_pattern_usage_created_at ON pattern_usage(created_at);
+    CREATE INDEX IF NOT EXISTS idx_search_queries_created_at ON search_queries(created_at);
+    CREATE INDEX IF NOT EXISTS idx_pattern_usage_pattern_id ON pattern_usage(pattern_id);
+    CREATE INDEX IF NOT EXISTS idx_pattern_usage_created_at ON pattern_usage(created_at);
   `,
   down: `
     DROP TABLE IF EXISTS pattern_usage;

@@ -128,6 +128,18 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
   }
 
   async save(input: CreateRelationshipInput): Promise<Relationship> {
+    // Validate that source pattern exists
+    const sourceExists = await this.patternExists(input.sourcePatternId);
+    if (!sourceExists) {
+      throw new Error(`Source pattern '${input.sourcePatternId}' does not exist`);
+    }
+
+    // Validate that target pattern exists
+    const targetExists = await this.patternExists(input.targetPatternId);
+    if (!targetExists) {
+      throw new Error(`Target pattern '${input.targetPatternId}' does not exist`);
+    }
+
     // Check if relationship already exists
     const exists = await this.exists(input.sourcePatternId, input.targetPatternId);
     if (exists) {
@@ -240,8 +252,14 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
   async exists(sourceId: string, targetId: string): Promise<boolean> {
     const sql =
       'SELECT COUNT(*) as count FROM pattern_relationships WHERE source_pattern_id = ? AND target_pattern_id = ?';
-    const result = this.db.queryOne(sql, [sourceId, targetId]) as { count: number };
-    return result.count > 0;
+    const result = this.db.queryOne<{ count: number }>(sql, [sourceId, targetId]);
+    return (result?.count ?? 0) > 0;
+  }
+
+  async patternExists(patternId: string): Promise<boolean> {
+    const sql = 'SELECT COUNT(*) as count FROM patterns WHERE id = ?';
+    const result = this.db.queryOne<{ count: number }>(sql, [patternId]);
+    return (result?.count ?? 0) > 0;
   }
 
   async findById(id: string): Promise<Relationship | null> {

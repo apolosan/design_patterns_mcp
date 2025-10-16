@@ -54,13 +54,13 @@ CREATE TABLE IF NOT EXISTS user_preferences (
 );
 
 -- Create indexes for better performance
-CREATE INDEX idx_patterns_category ON patterns(category);
-CREATE INDEX idx_patterns_complexity ON patterns(complexity);
-CREATE INDEX idx_pattern_implementations_pattern_id ON pattern_implementations(pattern_id);
-CREATE INDEX idx_pattern_implementations_language ON pattern_implementations(language);
-CREATE INDEX idx_pattern_relationships_source ON pattern_relationships(source_pattern_id);
-CREATE INDEX idx_pattern_relationships_target ON pattern_relationships(target_pattern_id);
-CREATE INDEX idx_pattern_relationships_type ON pattern_relationships(type);
+CREATE INDEX IF NOT EXISTS idx_patterns_category ON patterns(category);
+CREATE INDEX IF NOT EXISTS idx_patterns_complexity ON patterns(complexity);
+CREATE INDEX IF NOT EXISTS idx_pattern_implementations_pattern_id ON pattern_implementations(pattern_id);
+CREATE INDEX IF NOT EXISTS idx_pattern_implementations_language ON pattern_implementations(language);
+CREATE INDEX IF NOT EXISTS idx_pattern_relationships_source ON pattern_relationships(source_pattern_id);
+CREATE INDEX IF NOT EXISTS idx_pattern_relationships_target ON pattern_relationships(target_pattern_id);
+CREATE INDEX IF NOT EXISTS idx_pattern_relationships_type ON pattern_relationships(type);
 
 -- DOWN
 DROP TABLE IF EXISTS user_preferences;
