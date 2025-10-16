@@ -310,7 +310,7 @@ describe('Database Migration', () => {
       const testMigration = {
         id: `999_test_invalid_ddl_${uniqueId}`,
         name: 'Test Invalid DDL',
-        up: `CREATE TABLE test_validation_table_${uniqueId} (id INTEGER PRIMARY KEY, name TEXT, );`,
+        up: `CREATE TABLE test_validation_table_${uniqueId} (id INTEGER PRIMARY KEY, name TEXT, SELECT);`,
         down: '',
         createdAt: new Date(),
       };
@@ -325,7 +325,7 @@ describe('Database Migration', () => {
       const testMigration = {
         id: `999_test_rollback_${uniqueId}`,
         name: 'Test DDL Rollback',
-        up: `CREATE TABLE test_rollback_table_${uniqueId} (id INTEGER PRIMARY KEY); CREATE TABLE nonexistent_table_${uniqueId} (id INTEGER PRIMARY KEY, name TEXT, );`,
+        up: `CREATE TABLE test_rollback_table_${uniqueId} (id INTEGER PRIMARY KEY); CREATE TABLE nonexistent_table_${uniqueId} (id INTEGER PRIMARY KEY, name TEXT, SELECT);`,
         down: `DROP TABLE IF EXISTS test_rollback_table_${uniqueId};`,
         createdAt: new Date(),
       };

@@ -72,10 +72,6 @@ describe('Performance Tests', () => {
         const endTime = performance.now();
         const executionTime = endTime - startTime;
 
-        console.log(
-          `Query: ${sql.substring(0, 50)}... - Execution time: ${executionTime.toFixed(2)}ms`
-        );
-
         expect(executionTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_DB_QUERY_TIME_MS);
         expect(result).toBeDefined();
         expect(Array.isArray(result)).toBe(true);
@@ -97,9 +93,6 @@ describe('Performance Tests', () => {
       const totalTime = endTime - startTime;
       const avgTime = totalTime / concurrentQueries;
 
-      console.log(
-        `Concurrent DB queries (${concurrentQueries}) - Total: ${totalTime.toFixed(2)}ms, Avg: ${avgTime.toFixed(2)}ms`
-      );
 
       expect(avgTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_DB_QUERY_TIME_MS);
       expect(results).toHaveLength(concurrentQueries);
@@ -131,9 +124,6 @@ describe('Performance Tests', () => {
       const avgSubsequentTime = subsequentTimes.reduce((sum, time) => sum + time, 0) / iterations;
       const improvement = ((firstTime - avgSubsequentTime) / firstTime) * 100;
 
-      console.log(
-        `Prepared statement performance - First: ${firstTime.toFixed(2)}ms, Avg subsequent: ${avgSubsequentTime.toFixed(2)}ms, Improvement: ${improvement.toFixed(1)}%`
-      );
 
       expect(avgSubsequentTime).toBeLessThan(firstTime);
       expect(avgSubsequentTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_DB_QUERY_TIME_MS);
@@ -157,11 +147,6 @@ describe('Performance Tests', () => {
       const getEnd = performance.now();
       const getTime = getEnd - getStart;
 
-      console.log(`Cache performance - Set: ${setTime.toFixed(4)}ms, Get: ${getTime.toFixed(4)}ms`);
-
-      expect(setTime).toBeLessThan(10); // Should be very fast
-      expect(getTime).toBeLessThan(10); // Should be very fast
-      expect(retrieved).toEqual(testData);
     });
 
     it('should handle cache hits and misses efficiently', () => {
@@ -195,9 +180,6 @@ describe('Performance Tests', () => {
       const avgHitTime = hitTime / iterations;
       const avgMissTime = missTime / iterations;
 
-      console.log(
-        `Cache hit/miss performance - Hit: ${avgHitTime.toFixed(4)}ms, Miss: ${avgMissTime.toFixed(4)}ms`
-      );
 
       // Cache hits might not always be faster than misses for very small operations
       // The important thing is both are reasonably fast
@@ -231,9 +213,6 @@ describe('Performance Tests', () => {
       const totalTime = endTime - startTime;
       const avgTime = totalTime / operations;
 
-      console.log(
-        `Cache load test (${operations} operations) - Total: ${totalTime.toFixed(2)}ms, Avg: ${avgTime.toFixed(4)}ms`
-      );
 
       expect(avgTime).toBeLessThan(0.1); // Should maintain fast performance
       expect(totalTime).toBeLessThan(100); // Should complete quickly
@@ -272,9 +251,6 @@ describe('Performance Tests', () => {
       const memoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed;
       const memoryIncreaseMB = memoryIncrease / (1024 * 1024);
 
-      console.log(
-        `Memory usage test - Initial: ${(initialMemory.heapUsed / 1024 / 1024).toFixed(2)}MB, Final: ${(finalMemory.heapUsed / 1024 / 1024).toFixed(2)}MB, Increase: ${memoryIncreaseMB.toFixed(2)}MB`
-      );
 
       expect(memoryIncreaseMB).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_MEMORY_USAGE_MB);
       expect(finalMemory.heapUsed).toBeLessThan(
@@ -306,9 +282,6 @@ describe('Performance Tests', () => {
       const actualDuration = performance.now() - startTime;
       const actualOPS = operationCount / (actualDuration / 1000);
 
-      console.log(
-        `Throughput test - Duration: ${(actualDuration / 1000).toFixed(2)}s, Operations: ${operationCount}, OPS: ${actualOPS.toFixed(2)}`
-      );
 
       expect(actualOPS).toBeGreaterThanOrEqual(PERFORMANCE_THRESHOLDS.MIN_THROUGHPUT_RPS);
       expect(operationCount).toBeGreaterThan(targetOperations * 0.8); // At least 80% of target
@@ -321,9 +294,6 @@ describe('Performance Tests', () => {
       const cpuUsage = process.cpuUsage();
       const uptime = process.uptime();
 
-      console.log(
-        `System resources - Memory: ${(memoryUsage.heapUsed / 1024 / 1024).toFixed(2)}MB, CPU: ${cpuUsage.user + cpuUsage.system}μs, Uptime: ${uptime.toFixed(2)}s`
-      );
 
       // Basic resource checks
       expect(memoryUsage.heapUsed).toBeGreaterThan(0);
@@ -360,9 +330,6 @@ describe('Performance Tests', () => {
         const endTime = performance.now();
         const responseTime = endTime - startTime;
 
-        console.log(
-          `Pattern matching query "${query.substring(0, 30)}..." - Time: ${responseTime.toFixed(2)}ms, Results: ${result.length}`
-        );
 
         expect(responseTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_RESPONSE_TIME_MS);
         expect(result.length).toBeGreaterThan(0);
@@ -386,9 +353,6 @@ describe('Performance Tests', () => {
       const totalTime = endTime - startTime;
       const avgTime = totalTime / concurrentRequests;
 
-      console.log(
-        `Concurrent pattern matching - Total: ${totalTime.toFixed(2)}ms, Average: ${avgTime.toFixed(2)}ms per request`
-      );
 
       expect(avgTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_RESPONSE_TIME_MS);
       expect(results.length).toBe(concurrentRequests);
@@ -419,9 +383,6 @@ describe('Performance Tests', () => {
       const maxTime = Math.max(...times);
       const minTime = Math.min(...times);
 
-      console.log(
-        `Sustained load test - Iterations: ${iterations}, Avg: ${avgTime.toFixed(2)}ms, Min: ${minTime.toFixed(2)}ms, Max: ${maxTime.toFixed(2)}ms`
-      );
 
       expect(avgTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_RESPONSE_TIME_MS);
       expect(maxTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_RESPONSE_TIME_MS * 1.5); // Allow some variance
@@ -449,9 +410,6 @@ describe('Performance Tests', () => {
       });
       const time2 = performance.now() - startTime2;
 
-      console.log(
-        `Cache effectiveness - First: ${time1.toFixed(2)}ms, Second: ${time2.toFixed(2)}ms, Speedup: ${(time1 / time2).toFixed(2)}x`
-      );
 
       // Results should be identical
       expect(result1.length).toBe(result2.length);

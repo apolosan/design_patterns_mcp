@@ -20,7 +20,7 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - 🏗️ **SOLID Architecture**: Clean, maintainable, and testable codebase
 - 🛡️ **Production Ready**: High test pass rate (212/212), zero memory leaks, graceful degradation
 
-### 🆕 Project Status (v0.2.7)
+### 🆕 Project Status (v0.2.8)
 
 **Latest Updates (October 2025)**
 
@@ -557,7 +557,7 @@ This project is licensed under the MIT License. See [LICENSE](./LICENSE) for det
 
 ---
 
-**Version**: 0.2.7
+**Version**: 0.2.8
 **Last Updated**: October 2025
 **Patterns**: 622
 **Tests**: 212/212 passing (98.1%)

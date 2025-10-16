@@ -3,9 +3,12 @@
 -- Description: Adds optional code examples field to patterns table
 
 -- UP
--- Add examples column to patterns table (JSON format for multiple language examples) if not exists
+-- Add examples column to patterns table (JSON format for multiple language examples)
 -- Note: SQLite doesn't support IF NOT EXISTS for ALTER TABLE, so we check pragmatically
 -- This will be handled by the migration manager to skip if column exists
+
+-- Add examples column to patterns table
+ALTER TABLE patterns ADD COLUMN examples TEXT;
 
 -- Create index for patterns with examples (after column is added)
 CREATE INDEX IF NOT EXISTS idx_patterns_has_examples ON patterns(id) WHERE examples IS NOT NULL;

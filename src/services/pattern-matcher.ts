@@ -82,7 +82,7 @@ export class PatternMatcher {
   private vectorOps: VectorOperationsService;
   private config: PatternMatcherConfig;
   private patternAnalyzer: PatternAnalyzer;
-  private embeddingAdapter: EmbeddingServiceAdapter;
+  private embeddingAdapter: EmbeddingServiceAdapter | null = null;
   private cache: CacheService;
 
   constructor(
@@ -97,14 +97,7 @@ export class PatternMatcher {
     this.patternAnalyzer = new PatternAnalyzer();
     this.cache = cache || new CacheService();
 
-    // Initialize embedding adapter with the same strategy pattern used for generation
-    this.embeddingAdapter = new EmbeddingServiceAdapter({
-      cacheEnabled: true,
-      cacheTTL: 3600000, // 1 hour
-      batchSize: 10,
-      retryAttempts: 3,
-      retryDelay: 1000,
-    });
+    // Embedding adapter will be initialized lazily in generateQueryEmbedding
   }
 
   /**
@@ -159,6 +152,13 @@ export class PatternMatcher {
       allMatches.push(...keywordMatches);
     }
 
+    // If no matches found, try a broader keyword search
+    if (allMatches.length === 0) {
+      structuredLogger.warn('pattern-matcher', 'No matches found, trying broader search');
+      const broadMatches = await this.broadKeywordSearch(request);
+      allMatches.push(...broadMatches);
+    }
+
     // Hybrid search (combine results)
     if (this.config.useHybridSearch && allMatches.length > 0) {
       return this.combineMatches(allMatches);
@@ -172,7 +172,7 @@ export class PatternMatcher {
    */
   private async semanticSearch(request: PatternRequest): Promise<MatchResult[]> {
     try {
-      // Generate embedding for the query (simplified - would use actual embedding model)
+      // Generate embedding for the query
       const queryEmbedding = await this.generateQueryEmbedding(request.query);
 
       // Search for similar patterns
@@ -199,8 +199,13 @@ export class PatternMatcher {
 
       return matches;
     } catch (error) {
-      structuredLogger.error('pattern-matcher', 'Semantic search failed', error as Error);
-      return [];
+      structuredLogger.error(
+        'pattern-matcher',
+        'Semantic search failed, falling back to keyword search',
+        error as Error
+      );
+      // Fallback to keyword search if semantic fails
+      return this.keywordSearch(request);
     }
   }
 
@@ -260,7 +265,59 @@ export class PatternMatcher {
 
       return matches;
     } catch (error) {
-      console.error('Keyword search failed:', error);
+      structuredLogger.error('pattern-matcher', 'Keyword search failed', error as Error);
+      return [];
+    }
+  }
+
+  /**
+   * Perform broad keyword search (lower threshold, no category filter)
+   */
+  private async broadKeywordSearch(request: PatternRequest): Promise<MatchResult[]> {
+    try {
+      const queryWords = this.tokenizeQuery(request.query);
+      const matches: MatchResult[] = [];
+
+      // Get all patterns (no category filter)
+      const patterns = this.db.query<{
+        id: string;
+        name: string;
+        category: string;
+        description: string;
+        complexity: string;
+        tags: string;
+      }>(`SELECT id, name, category, description, complexity, tags FROM patterns`);
+
+      for (const pattern of patterns) {
+        const score = this.calculateKeywordScore(queryWords, pattern);
+        const confidence = Math.min(score / 10, 0.99);
+
+        // Lower threshold for broad search
+        if (confidence >= 0.01) {
+          matches.push({
+            pattern: {
+              id: pattern.id,
+              name: pattern.name,
+              category: pattern.category,
+              description: pattern.description,
+              complexity: pattern.complexity,
+              tags: parseTags(pattern.tags),
+            },
+            confidence,
+            matchType: 'keyword' as const,
+            reasons: this.generateKeywordReasons(queryWords, pattern),
+            metadata: {
+              keywordScore: score,
+              finalScore: confidence,
+            },
+          });
+        }
+      }
+
+      // Return top matches
+      return matches.sort((a, b) => b.confidence - a.confidence).slice(0, 10);
+    } catch (error) {
+      structuredLogger.error('pattern-matcher', 'Broad keyword search failed', error as Error);
       return [];
     }
   }
@@ -371,7 +428,20 @@ export class PatternMatcher {
    */
   private async generateQueryEmbedding(query: string): Promise<number[]> {
     try {
-      // Initialize adapter if needed
+      // Ensure adapter is initialized
+      if (!this.embeddingAdapter) {
+        this.embeddingAdapter = new EmbeddingServiceAdapter({
+          cacheEnabled: true,
+          cacheTTL: 3600000, // 1 hour
+          batchSize: 10,
+          retryAttempts: 3,
+          retryDelay: 1000,
+          preferredStrategy: 'transformers',
+          fallbackToSimple: true,
+        });
+      }
+
+      // Initialize if needed
       if (!(await this.embeddingAdapter.isReady())) {
         await this.embeddingAdapter.initialize();
       }
@@ -379,11 +449,15 @@ export class PatternMatcher {
       // Use the embedding adapter to generate query embedding with the same strategy
       const embedding = await this.embeddingAdapter.generateEmbedding(query);
 
+      if (!embedding || embedding.length === 0) {
+        throw new Error('Empty embedding generated');
+      }
+
       return embedding;
     } catch (error) {
       structuredLogger.error(
         'pattern-matcher',
-        'Failed to generate query embedding',
+        'Failed to generate query embedding, using fallback',
         error as Error
       );
 

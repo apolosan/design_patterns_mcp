@@ -245,7 +245,6 @@ describe('Production Readiness Tests', () => {
       expect(columnNames).toContain(column);
     }
 
-    console.log('✅ Database schema validation passed');
   });
 
   it('should test with production-like configuration', async () => {
@@ -330,7 +329,6 @@ describe('Production Readiness Tests', () => {
       if (recommendations.length === 0) {
         console.warn(`⚠️  PRODUCTION ISSUE: No results for query: "${query}"`);
       } else {
-        console.log(`✅ Query "${query}" returned ${recommendations.length} results`);
       }
       
       expect(recommendations).toBeDefined();

@@ -28,6 +28,7 @@ import { PatternSeeder } from './services/pattern-seeder.js';
 import { CacheService } from './services/cache.js';
 import { logger } from './services/logger.js';
 import { parseTags, parseArrayProperty } from './utils/parse-tags.js';
+import { MCPRateLimiter } from './utils/rate-limiter.js';
 
 export interface MCPServerConfig {
   databasePath: string;
@@ -46,6 +47,7 @@ class DesignPatternsMCPServer {
   private migrationManager: MigrationManager;
   private patternSeeder: PatternSeeder;
   private config: MCPServerConfig;
+  private rateLimiter: MCPRateLimiter;
 
   constructor(config: MCPServerConfig) {
     this.config = config;
@@ -79,7 +81,7 @@ class DesignPatternsMCPServer {
 
     this.patternMatcher = new PatternMatcher(this.db, this.vectorOps, {
       maxResults: 5,
-      minConfidence: 0.1,
+      minConfidence: 0.05, // Lower threshold for more results
       useSemanticSearch: true,
       useKeywordSearch: true,
       useHybridSearch: true,
@@ -115,6 +117,14 @@ class DesignPatternsMCPServer {
       patternsPath,
       batchSize: 100,
       skipExisting: true,
+    });
+
+    // Initialize rate limiter
+    this.rateLimiter = new MCPRateLimiter({
+      maxRequestsPerMinute: 60,
+      maxRequestsPerHour: 1000,
+      maxConcurrentRequests: this.config.maxConcurrentRequests,
+      burstLimit: 20,
     });
 
     // Initialize MCP server
@@ -224,22 +234,30 @@ class DesignPatternsMCPServer {
       };
     });
 
-    // Handle tool calls
+    // Handle tool calls with rate limiting
     this.server.setRequestHandler(CallToolRequestSchema, async request => {
       const { name, arguments: args } = request.params;
 
-      switch (name) {
-        case 'find_patterns':
-          return await this.handleFindPatterns(args);
-        case 'search_patterns':
-          return await this.handleSearchPatterns(args);
-        case 'get_pattern_details':
-          return await this.handleGetPatternDetails(args);
-        case 'count_patterns':
-          return await this.handleCountPatterns(args);
-        default:
-          throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
-      }
+      // Apply rate limiting to tool calls
+      const rateLimitedHandler = this.rateLimiter.wrapToolHandler(
+        async (toolName: string, toolArgs: any) => {
+          switch (toolName) {
+            case 'find_patterns':
+              return await this.handleFindPatterns(toolArgs);
+            case 'search_patterns':
+              return await this.handleSearchPatterns(toolArgs);
+            case 'get_pattern_details':
+              return await this.handleGetPatternDetails(toolArgs);
+            case 'count_patterns':
+              return await this.handleCountPatterns(toolArgs);
+            default:
+              throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${toolName}`);
+          }
+        },
+        name
+      );
+
+      return await rateLimitedHandler(name, args);
     });
 
     // List available resources

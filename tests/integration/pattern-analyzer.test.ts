@@ -84,7 +84,6 @@ describe('Code Analysis Pattern Detection', () => {
 
       class ConcreteObserver implements Observer {
         update(message: string): void {
-          console.log('Received:', message);
         }
       }
 
@@ -178,9 +177,9 @@ describe('Code Analysis Pattern Detection', () => {
         method16() { return this.data8.test('string'); }
         method17() { return this.data9.then(() => 'done'); }
         method18() { throw this.data10; }
-        method19() { console.log('method 19'); }
-        method20() { console.log('method 20'); }
-        method21() { console.log('method 21'); }
+        method19() { return this.data1.toUpperCase(); }
+        method20() { return this.data2 * 2; }
+        method21() { return !this.data3; }
       }
     `;
 
@@ -227,7 +226,6 @@ describe('Code Analysis Pattern Detection', () => {
         if (x > 0) {
           if (y > 0) {
             if (z > 0) {
-              console.log('all positive');
             }
           }
         }
