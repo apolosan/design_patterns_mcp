@@ -1,0 +1,18 @@
+{
+  "id": "channels",
+  "name": "Channels Pattern",
+  "category": "Concurrency",
+  "description": "Communication primitive for coroutine-based producer-consumer patterns with backpressure",
+  "when_to_use": "Data streaming between coroutines, backpressure handling, actor communication",
+  "benefits": "Type safety, backpressure, cancellation support, flow control",
+  "drawbacks": "Learning curve, channel management, potential deadlocks",
+  "use_cases": "Data pipelines, streaming processing, actor communication, work distribution",
+  "complexity": "Medium",
+  "tags": ["concurrency", "kotlin", "communication", "backpressure", "producer-consumer"],
+  "examples": {
+    "kotlin": {
+      "language": "kotlin",
+      "code": "import kotlinx.coroutines.channels.*\n\nsuspend fun produceNumbers(channel: SendChannel<Int>) {\n    for (i in 1..10) {\n        channel.send(i)\n        delay(100) // Simulate work\n    }\n    channel.close()\n}\n\nsuspend fun consumeNumbers(channel: ReceiveChannel<Int>) {\n    for (number in channel) {\n        println(\"Received: $number\")\n        processNumber(number)\n    }\n}\n\nsuspend fun filterNumbers(\n    input: ReceiveChannel<Int>, \n    output: SendChannel<Int>\n) {\n    for (number in input) {\n        if (number % 2 == 0) {\n            output.send(number)\n        }\n    }\n    output.close()\n}\n\nfun main() = runBlocking {\n    val numbers = Channel<Int>()\n    val evenNumbers = Channel<Int>(5) // Buffered channel\n    \n    launch { produceNumbers(numbers) }\n    launch { filterNumbers(numbers, evenNumbers) }\n    consumeNumbers(evenNumbers)\n}\n\n// Actor pattern with channels\nsuspend fun actorProcessor(\n    mailbox: Channel<ActorMessage>\n) = coroutineScope {\n    for (message in mailbox) {\n        when (message) {\n            is ProcessData -> processData(message.data)\n            is Shutdown -> break\n        }\n    }\n}"
+    }
+  }
+}

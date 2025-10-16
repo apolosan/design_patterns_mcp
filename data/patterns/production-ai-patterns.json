@@ -33,7 +33,7 @@
         "NLP model deployments",
         "Computer vision applications"
       ],
-      "related_patterns": ["Feature Store", "Model Registry", "CI/CD Pipeline"],
+      "related_patterns": ["feature-engineering-pipeline", "model-versioning", "CI/CD Pipeline"],
       "complexity": "High",
       "tags": ["mlops", "versioning", "deployment", "model-management", "production"],
       "code_examples": [
@@ -80,7 +80,11 @@
         "Categorical encoding",
         "Anomaly detection features"
       ],
-      "related_patterns": ["Feature Store", "Data Preprocessing", "Model Versioning"],
+      "related_patterns": [
+        "feature-engineering-pipeline",
+        "Data Preprocessing",
+        "model-versioning"
+      ],
       "complexity": "High",
       "tags": ["feature-engineering", "pipeline", "data-preprocessing", "mlops", "transformation"],
       "code_examples": [
@@ -128,7 +132,7 @@
         "Autonomous vehicle perception",
         "Industrial IoT predictive maintenance"
       ],
-      "related_patterns": ["Knowledge Distillation", "Transfer Learning", "Model Compression"],
+      "related_patterns": ["Knowledge Distillation", "transfer-learning", "Model Compression"],
       "complexity": "Very High",
       "tags": ["edge-computing", "model-optimization", "quantization", "pruning", "mobile-ai"],
       "code_examples": [
@@ -176,7 +180,7 @@
         "Real-time translation",
         "Game AI opponents"
       ],
-      "related_patterns": ["Caching", "Load Balancing", "Auto-Scaling", "Circuit Breaker"],
+      "related_patterns": ["cache-aside", "load-balancing", "auto-scaling", "circuit-breaker"],
       "complexity": "High",
       "tags": ["inference", "latency", "real-time", "performance", "caching"],
       "code_examples": [

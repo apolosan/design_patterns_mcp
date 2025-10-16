@@ -7,6 +7,7 @@ import { CallToolRequest, Tool } from '@modelcontextprotocol/sdk/types.js';
 import { PatternRequest } from '../models/request.js';
 import { Pattern } from '../models/pattern.js';
 import { UserPreference } from '../models/preference.js';
+import { RelationshipType } from '../models/relationship.js';
 import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
 
 // Import real service interfaces
@@ -582,6 +583,161 @@ export class MCPToolsHandler {
           },
         },
       },
+      {
+        name: 'create_relationship',
+        description: 'Create a new relationship between two design patterns',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            source_pattern_id: {
+              type: 'string',
+              description: 'ID of the source pattern',
+            },
+            target_pattern_id: {
+              type: 'string',
+              description: 'ID of the target pattern',
+            },
+            type: {
+              type: 'string',
+              description: 'Type of relationship',
+              enum: [
+                'related',
+                'extends',
+                'implements',
+                'uses',
+                'similar',
+                'alternative',
+                'complements',
+                'conflicts',
+                'prerequisite',
+                'successor',
+              ],
+            },
+            strength: {
+              type: 'number',
+              description: 'Strength of the relationship (0.0 to 1.0)',
+              minimum: 0.0,
+              maximum: 1.0,
+              default: 1.0,
+            },
+            description: {
+              type: 'string',
+              description: 'Human-readable description of the relationship',
+              minLength: 10,
+              maxLength: 500,
+            },
+          },
+          required: ['source_pattern_id', 'target_pattern_id', 'type', 'description'],
+        },
+      },
+      {
+        name: 'get_relationships',
+        description: 'Get relationships for patterns with optional filtering',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            pattern_id: {
+              type: 'string',
+              description:
+                'Pattern ID to get relationships for (optional - returns all if not specified)',
+            },
+            type: {
+              type: 'string',
+              description: 'Filter by relationship type',
+              enum: [
+                'related',
+                'extends',
+                'implements',
+                'uses',
+                'similar',
+                'alternative',
+                'complements',
+                'conflicts',
+                'prerequisite',
+                'successor',
+              ],
+            },
+            min_strength: {
+              type: 'number',
+              description: 'Minimum relationship strength',
+              minimum: 0.0,
+              maximum: 1.0,
+            },
+            include_pattern_details: {
+              type: 'boolean',
+              description: 'Include full pattern details in response',
+              default: true,
+            },
+            limit: {
+              type: 'number',
+              description: 'Maximum number of relationships to return',
+              minimum: 1,
+              maximum: 100,
+              default: 50,
+            },
+          },
+        },
+      },
+      {
+        name: 'update_relationship',
+        description: 'Update an existing relationship between patterns',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            relationship_id: {
+              type: 'string',
+              description: 'ID of the relationship to update',
+            },
+            type: {
+              type: 'string',
+              description: 'New relationship type',
+              enum: [
+                'related',
+                'extends',
+                'implements',
+                'uses',
+                'similar',
+                'alternative',
+                'complements',
+                'conflicts',
+                'prerequisite',
+                'successor',
+              ],
+            },
+            strength: {
+              type: 'number',
+              description: 'New relationship strength (0.0 to 1.0)',
+              minimum: 0.0,
+              maximum: 1.0,
+            },
+            description: {
+              type: 'string',
+              description: 'New relationship description',
+              minLength: 10,
+              maxLength: 500,
+            },
+          },
+          required: ['relationship_id'],
+        },
+      },
+      {
+        name: 'delete_relationship',
+        description: 'Delete a relationship between two patterns',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            source_pattern_id: {
+              type: 'string',
+              description: 'ID of the source pattern',
+            },
+            target_pattern_id: {
+              type: 'string',
+              description: 'ID of the target pattern',
+            },
+          },
+          required: ['source_pattern_id', 'target_pattern_id'],
+        },
+      },
     ];
   }
 
@@ -978,9 +1134,7 @@ export class MCPToolsHandler {
               text:
                 `## Total Design Patterns: ${total}\n\n` +
                 `### Breakdown by Category:\n` +
-                breakdown
-                  .map(item => `- **${item.category}**: ${item.count} patterns`)
-                  .join('\n') +
+                breakdown.map(item => `- **${item.category}**: ${item.count} patterns`).join('\n') +
                 '\n\n' +
                 `*Total patterns from all sources: ${total}*`,
             },

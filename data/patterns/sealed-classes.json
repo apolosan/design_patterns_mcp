@@ -1,0 +1,18 @@
+{
+  "id": "sealed-classes",
+  "name": "Sealed Classes Pattern",
+  "category": "Behavioral",
+  "description": "Exhaustive type hierarchies that restrict inheritance to a fixed set of subclasses",
+  "when_to_use": "State machines, error handling, algebraic data types, exhaustive type checking",
+  "benefits": "Type safety, exhaustive when expressions, pattern matching, compiler guarantees",
+  "drawbacks": "Inheritance limitations, compilation overhead, sealed modifier required",
+  "use_cases": "State management, result types, event handling, parsing results",
+  "complexity": "Low",
+  "tags": ["kotlin", "type-safety", "exhaustive", "pattern-matching", "algebraic-data-types"],
+  "examples": {
+    "kotlin": {
+      "language": "kotlin",
+      "code": "// Result type (Railway oriented programming)\nsealed class Result<out T> {\n    data class Success<T>(val data: T) : Result<T>()\n    data class Error(val exception: Exception) : Result<Nothing>()\n    object Loading : Result<Nothing>()\n}\n\nfun processResult(result: Result<String>) {\n    when (result) {\n        is Result.Success -> println(\"Success: ${result.data}\")\n        is Result.Error -> println(\"Error: ${result.exception.message}\")\n        Result.Loading -> println(\"Loading...\")\n    } // Compiler ensures exhaustive handling\n}\n\n// State machine\nsealed class OrderState {\n    object Created : OrderState()\n    data class Confirmed(val confirmedAt: Instant) : OrderState()\n    data class Paid(val paidAt: Instant, val amount: Double) : OrderState()\n    data class Shipped(val shippedAt: Instant, val trackingId: String) : OrderState()\n    data class Delivered(val deliveredAt: Instant) : OrderState()\n    data class Cancelled(val cancelledAt: Instant, val reason: String) : OrderState()\n}\n\nfun nextState(current: OrderState, event: OrderEvent): OrderState {\n    return when (current) {\n        is OrderState.Created -> when (event) {\n            OrderEvent.Confirm -> OrderState.Confirmed(Instant.now())\n            OrderEvent.Cancel -> OrderState.Cancelled(Instant.now(), \"User cancelled\")\n            else -> current\n        }\n        is OrderState.Confirmed -> when (event) {\n            OrderEvent.Pay -> OrderState.Paid(Instant.now(), event.amount)\n            OrderEvent.Cancel -> OrderState.Cancelled(Instant.now(), \"User cancelled\")\n            else -> current\n        }\n        // ... other states\n        else -> current\n    }\n}\n\n// Expression problem solution\nsealed class Shape\n\ndata class Circle(val radius: Double) : Shape()\ndata class Rectangle(val width: Double, val height: Double) : Shape()\ndata class Triangle(val base: Double, val height: Double) : Shape()\n\nfun area(shape: Shape): Double = when (shape) {\n    is Circle -> Math.PI * shape.radius * shape.radius\n    is Rectangle -> shape.width * shape.height\n    is Triangle -> shape.base * shape.height / 2\n}\n\n// Adding new operation is easy\nfun perimeter(shape: Shape): Double = when (shape) {\n    is Circle -> 2 * Math.PI * shape.radius\n    is Rectangle -> 2 * (shape.width + shape.height)\n    is Triangle -> shape.base + 2 * sqrt(shape.base * shape.base / 4 + shape.height * shape.height)\n}\n\n// Adding new shape requires modifying all functions\n// But compiler catches missing cases\n\ndata class Square(val side: Double) : Shape()\n// Compiler error: 'when' expression must be exhaustive"
+    }
+  }
+}

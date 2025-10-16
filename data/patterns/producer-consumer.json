@@ -8,15 +8,18 @@
   "drawbacks": "Buffer management\nSynchronization complexity\nMemory overhead",
   "use_cases": "Data pipelines\nEvent processing\nStreaming systems",
   "complexity": "Medium",
-  "tags": [
-    "concurrency",
-    "buffering",
-    "streaming"
-  ],
+  "tags": ["concurrency", "buffering", "streaming"],
   "examples": {
     "typescript": {
       "language": "typescript",
       "code": "// Producer-Consumer: decouple production from consumption\nclass BlockingQueue<T> {\n  private queue: T[] = [];\n  private waiters: Array<(value: T) => void> = [];\n  private maxSize: number;\n  \n  constructor(maxSize = Infinity) {\n    this.maxSize = maxSize;\n  }\n  \n  async put(item: T): Promise<void> {\n    while (this.queue.length >= this.maxSize) {\n      await new Promise(resolve => setTimeout(resolve, 10));\n    }\n    \n    this.queue.push(item);\n    const waiter = this.waiters.shift();\n    if (waiter) waiter(item);\n  }\n  \n  async take(): Promise<T> {\n    if (this.queue.length > 0) {\n      return this.queue.shift()!;\n    }\n    \n    return new Promise(resolve => {\n      this.waiters.push(resolve);\n    });\n  }\n}\n\n// Producer\nasync function producer(queue: BlockingQueue<number>) {\n  for (let i = 0; i < 10; i++) {\n    await queue.put(i);\n    console.log('Produced:', i);\n  }\n}\n\n// Consumer\nasync function consumer(queue: BlockingQueue<number>) {\n  while (true) {\n    const item = await queue.take();\n    console.log('Consumed:', item);\n    await new Promise(resolve => setTimeout(resolve, 100));\n  }\n}\n\nconst queue = new BlockingQueue<number>(5);\nproducer(queue);\nconsumer(queue);"
     }
-  }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "channels",
+      "type": "enhances",
+      "description": "Channels provide a more type-safe and coroutine-aware implementation of the Producer-Consumer pattern with built-in backpressure"
+    }
+  ]
 }

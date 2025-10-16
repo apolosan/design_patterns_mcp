@@ -1,0 +1,455 @@
+/**
+ * Unit Tests for PatternService Relationship Methods
+ * Tests the business logic layer for relationship operations
+ */
+
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { PatternService } from '../../src/services/pattern-service.js';
+import { DatabaseManager } from '../../src/services/database-manager.js';
+import type { PatternRepository } from '../../src/repositories/interfaces.js';
+import type { RelationshipRepository } from '../../src/repositories/interfaces.js';
+import type { CacheService } from '../../src/services/cache.js';
+import type { SemanticSearchService } from '../../src/services/semantic-search.js';
+import type { VectorOperationsService } from '../../src/services/vector-operations.js';
+
+// Mock implementations
+class MockPatternRepository implements PatternRepository {
+  async findById(id: string) {
+    if (id === 'adapter') {
+      return {
+        id: 'adapter',
+        name: 'Adapter',
+        category: 'Structural',
+        description: 'Allows incompatible interfaces',
+        complexity: 'Low',
+        tags: 'structural,wrapper',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+    }
+    if (id === 'facade') {
+      return {
+        id: 'facade',
+        name: 'Facade',
+        category: 'Structural',
+        description: 'Provides simplified interface',
+        complexity: 'Low',
+        tags: 'structural,interface',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+    }
+    return null;
+  }
+
+  async exists(id: string): Promise<boolean> {
+    return ['adapter', 'facade', 'singleton'].includes(id);
+  }
+
+  // Other methods not needed for these tests
+  async findAll() {
+    return [];
+  }
+  async search() {
+    return [];
+  }
+  async create() {
+    throw new Error('Not implemented');
+  }
+  async update() {
+    throw new Error('Not implemented');
+  }
+  async delete() {
+    throw new Error('Not implemented');
+  }
+  async count() {
+    return 0;
+  }
+  async findByCategory() {
+    return [];
+  }
+  async findByComplexity() {
+    return [];
+  }
+  async getCategories() {
+    return [];
+  }
+  async getSupportedLanguages() {
+    return [];
+  }
+}
+
+class MockRelationshipRepository implements RelationshipRepository {
+  private relationships: any[] = [];
+
+  async findByPatternId(patternId: string) {
+    return this.relationships.filter(
+      r => r.sourcePatternId === patternId || r.targetPatternId === patternId
+    );
+  }
+
+  async findWithPatterns(filters?: any) {
+    let results = this.relationships;
+
+    if (filters?.sourcePatternId) {
+      results = results.filter(r => r.sourcePatternId === filters.sourcePatternId);
+    }
+
+    if (filters?.targetPatternId) {
+      results = results.filter(r => r.targetPatternId === filters.targetPatternId);
+    }
+
+    if (filters?.type) {
+      results = results.filter(r => r.type === filters.type);
+    }
+
+    if (filters?.minStrength !== undefined) {
+      results = results.filter(r => r.strength >= filters.minStrength);
+    }
+
+    return results.map(r => ({
+      ...r,
+      sourcePattern: { id: r.sourcePatternId, name: 'Source Pattern', category: 'Test' },
+      targetPattern: { id: r.targetPatternId, name: 'Target Pattern', category: 'Test' },
+    }));
+  }
+
+  async save(input: any) {
+    const relationship = {
+      id: `rel_${Date.now()}`,
+      ...input,
+      strength: input.strength ?? 1.0,
+      createdAt: new Date(),
+    };
+    this.relationships.push(relationship);
+    return relationship;
+  }
+
+  async update(id: string, input: any) {
+    const index = this.relationships.findIndex(r => r.id === id);
+    if (index === -1) return null;
+
+    this.relationships[index] = { ...this.relationships[index], ...input };
+    return this.relationships[index];
+  }
+
+  async delete(sourceId: string, targetId: string) {
+    const index = this.relationships.findIndex(
+      r => r.sourcePatternId === sourceId && r.targetPatternId === targetId
+    );
+    if (index === -1) return false;
+
+    this.relationships.splice(index, 1);
+    return true;
+  }
+
+  // Other methods not needed for these tests
+  async findBySourceId() {
+    return [];
+  }
+  async findByTargetId() {
+    return [];
+  }
+  async findByType() {
+    return [];
+  }
+  async exists() {
+    return false;
+  }
+  async findById() {
+    return null;
+  }
+  async deleteById() {
+    return false;
+  }
+  async count() {
+    return 0;
+  }
+}
+
+class MockCacheService implements CacheService {
+  private cache = new Map<string, any>();
+
+  async get(key: string) {
+    return this.cache.get(key);
+  }
+
+  async set(key: string, value: any, ttl?: number) {
+    this.cache.set(key, value);
+  }
+
+  async delete(key: string) {
+    this.cache.delete(key);
+  }
+
+  async clear() {
+    this.cache.clear();
+  }
+
+  getStats() {
+    return {
+      hits: 0,
+      misses: 0,
+      sets: 0,
+      deletes: 0,
+      clears: 0,
+      size: this.cache.size,
+    };
+  }
+}
+
+describe('PatternService - Relationship Methods', () => {
+  let patternService: PatternService;
+  let mockPatternRepo: MockPatternRepository;
+  let mockRelationshipRepo: MockRelationshipRepository;
+  let mockCache: MockCacheService;
+  let mockSemanticSearch: any;
+  let mockVectorOps: any;
+
+  beforeEach(() => {
+    mockPatternRepo = new MockPatternRepository();
+    mockRelationshipRepo = new MockRelationshipRepository();
+    mockCache = new MockCacheService();
+    mockSemanticSearch = {};
+    mockVectorOps = {};
+
+    patternService = new PatternService(
+      mockPatternRepo as any,
+      mockRelationshipRepo as any,
+      mockCache as any,
+      mockSemanticSearch,
+      mockVectorOps
+    );
+  });
+
+  describe('getPatternRelationships', () => {
+    it('should return relationships for a pattern', async () => {
+      // Setup mock data
+      await mockRelationshipRepo.save({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Both structural patterns',
+      });
+
+      const relationships = await patternService.getPatternRelationships('adapter');
+
+      expect(relationships).toHaveLength(1);
+      expect(relationships[0].sourcePatternId).toBe('adapter');
+    });
+
+    it('should cache results', async () => {
+      await mockRelationshipRepo.save({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Both structural patterns',
+      });
+
+      // First call
+      await patternService.getPatternRelationships('adapter');
+
+      // Second call should use cache
+      const spy = vi.spyOn(mockRelationshipRepo, 'findByPatternId');
+      await patternService.getPatternRelationships('adapter');
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getRelationshipsWithPatterns', () => {
+    it('should return relationships with pattern details', async () => {
+      await mockRelationshipRepo.save({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Both structural patterns',
+      });
+
+      const relationships = await patternService.getRelationshipsWithPatterns();
+
+      expect(relationships).toHaveLength(1);
+      expect(relationships[0].sourcePattern).toBeDefined();
+      expect(relationships[0].targetPattern).toBeDefined();
+    });
+
+    it('should apply filters', async () => {
+      await mockRelationshipRepo.save({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Both structural patterns',
+      });
+
+      await mockRelationshipRepo.save({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'singleton',
+        type: 'uses',
+        description: 'Adapter uses Singleton',
+      });
+
+      const relationships = await patternService.getRelationshipsWithPatterns({
+        type: 'related',
+      });
+
+      expect(relationships).toHaveLength(1);
+      expect(relationships[0].type).toBe('related');
+    });
+  });
+
+  describe('createRelationship', () => {
+    it('should create a new relationship', async () => {
+      const input = {
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related' as const,
+        description: 'Both are structural patterns',
+      };
+
+      const relationship = await patternService.createRelationship(input);
+
+      expect(relationship).toBeDefined();
+      expect(relationship.sourcePatternId).toBe('adapter');
+      expect(relationship.targetPatternId).toBe('facade');
+      expect(relationship.type).toBe('related');
+    });
+
+    it('should throw error when source pattern does not exist', async () => {
+      const input = {
+        sourcePatternId: 'nonexistent',
+        targetPatternId: 'facade',
+        type: 'related' as const,
+        description: 'Test relationship',
+      };
+
+      await expect(patternService.createRelationship(input)).rejects.toThrow(
+        'Source pattern nonexistent does not exist'
+      );
+    });
+
+    it('should throw error when target pattern does not exist', async () => {
+      const input = {
+        sourcePatternId: 'adapter',
+        targetPatternId: 'nonexistent',
+        type: 'related' as const,
+        description: 'Test relationship',
+      };
+
+      await expect(patternService.createRelationship(input)).rejects.toThrow(
+        'Target pattern nonexistent does not exist'
+      );
+    });
+
+    it('should invalidate caches after creation', async () => {
+      const input = {
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related' as const,
+        description: 'Test relationship',
+      };
+
+      await patternService.createRelationship(input);
+
+      // Check that cache delete was called
+      const deleteSpy = vi.spyOn(mockCache, 'delete');
+      expect(deleteSpy).toHaveBeenCalledWith('pattern_relationships_adapter');
+      expect(deleteSpy).toHaveBeenCalledWith('pattern_relationships_facade');
+    });
+  });
+
+  describe('updateRelationship', () => {
+    it('should update an existing relationship', async () => {
+      const created = await mockRelationshipRepo.save({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Original description',
+      });
+
+      const updateInput = {
+        id: created.id,
+        type: 'extends' as const,
+        description: 'Updated description',
+      };
+
+      const updated = await patternService.updateRelationship(created.id, updateInput);
+
+      expect(updated).toBeDefined();
+      expect(updated!.type).toBe('extends');
+      expect(updated!.description).toBe('Updated description');
+    });
+
+    it('should invalidate caches after update', async () => {
+      const created = await mockRelationshipRepo.save({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Original description',
+      });
+
+      const updateInput = {
+        id: created.id,
+        type: 'extends' as const,
+      };
+
+      await patternService.updateRelationship(created.id, updateInput);
+
+      const deleteSpy = vi.spyOn(mockCache, 'delete');
+      expect(deleteSpy).toHaveBeenCalledWith('pattern_relationships_adapter');
+      expect(deleteSpy).toHaveBeenCalledWith('pattern_relationships_facade');
+    });
+  });
+
+  describe('deleteRelationship', () => {
+    it('should delete a relationship', async () => {
+      await mockRelationshipRepo.save({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Test relationship',
+      });
+
+      const deleted = await patternService.deleteRelationship('adapter', 'facade');
+
+      expect(deleted).toBe(true);
+    });
+
+    it('should invalidate caches after deletion', async () => {
+      await mockRelationshipRepo.save({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Test relationship',
+      });
+
+      await patternService.deleteRelationship('adapter', 'facade');
+
+      const deleteSpy = vi.spyOn(mockCache, 'delete');
+      expect(deleteSpy).toHaveBeenCalledWith('pattern_relationships_adapter');
+      expect(deleteSpy).toHaveBeenCalledWith('pattern_relationships_facade');
+    });
+  });
+
+  describe('getPatternWithRelationships', () => {
+    it('should return pattern with relationships', async () => {
+      await mockRelationshipRepo.save({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Both structural patterns',
+      });
+
+      const result = await patternService.getPatternWithRelationships('adapter');
+
+      expect(result).toBeDefined();
+      expect(result!.pattern.id).toBe('adapter');
+      expect(result!.relationships).toHaveLength(1);
+      expect(result!.relatedPatterns).toHaveLength(1);
+    });
+
+    it('should return null when pattern does not exist', async () => {
+      const result = await patternService.getPatternWithRelationships('nonexistent');
+      expect(result).toBeNull();
+    });
+  });
+});

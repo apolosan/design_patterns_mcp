@@ -1,0 +1,24 @@
+{
+  "id": "structured-concurrency",
+  "name": "Structured Concurrency Pattern",
+  "category": "Concurrency",
+  "description": "Manages coroutine lifecycles with automatic cancellation and error propagation through structured scopes",
+  "when_to_use": "Complex async operations, resource management, error handling, nested coroutines",
+  "benefits": "Automatic cleanup, error propagation, lifecycle management, prevents resource leaks",
+  "drawbacks": "Requires suspend functions, coroutine scope management, hierarchical structure",
+  "use_cases": "API calls, file operations, database transactions, complex workflows",
+  "complexity": "Medium",
+  "tags": [
+    "concurrency",
+    "kotlin",
+    "lifecycle-management",
+    "error-handling",
+    "resource-management"
+  ],
+  "examples": {
+    "kotlin": {
+      "language": "kotlin",
+      "code": "import kotlinx.coroutines.*\n\nsuspend fun processUserData(userId: String) = coroutineScope {\n    val userData = async { fetchUser(userId) }\n    val preferences = async { fetchPreferences(userId) }\n    val history = async { fetchHistory(userId) }\n    \n    try {\n        val user = userData.await()\n        val prefs = preferences.await()\n        val hist = history.await()\n        \n        UserProfile(user, prefs, hist)\n    } catch (e: Exception) {\n        // All child coroutines cancelled automatically\n        logger.error(\"Failed to process user $userId\", e)\n        throw e\n    }\n}\n\nsuspend fun supervisorExample() = supervisorScope {\n    // Child failures don't cancel siblings\n    val job1 = async { riskyOperation1() }\n    val job2 = async { riskyOperation2() }\n    \n    try {\n        val result1 = job1.await()\n        val result2 = job2.await()\n        combineResults(result1, result2)\n    } catch (e: Exception) {\n        handlePartialFailure(e)\n    }\n}"
+    }
+  }
+}

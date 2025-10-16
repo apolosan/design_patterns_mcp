@@ -6,7 +6,13 @@
 import type { Pattern } from '../models/pattern.js';
 import type { PatternCategory } from '../models/pattern-category.js';
 import type { Implementation } from '../models/implementation.js';
-import type { Relationship } from '../models/relationship.js';
+import type {
+  Relationship,
+  CreateRelationshipInput,
+  UpdateRelationshipInput,
+  RelationshipFilters,
+  RelationshipWithPatterns,
+} from '../models/relationship.js';
 
 export interface SearchFilters {
   category?: string;
@@ -31,12 +37,12 @@ export interface PatternRepository {
   save(pattern: Pattern): Promise<Pattern>;
   update(id: string, pattern: Partial<Pattern>): Promise<Pattern | null>;
   delete(id: string): Promise<boolean>;
-  
+
   // Search operations
   findByCategory(category: string, limit?: number): Promise<Pattern[]>;
   findByTags(tags: string[], matchAll?: boolean): Promise<Pattern[]>;
   search(query: string, filters?: SearchFilters): Promise<SearchResult[]>;
-  
+
   // Bulk operations
   findByIds(ids: string[]): Promise<Pattern[]>;
   saveMany(patterns: Pattern[]): Promise<Pattern[]>;
@@ -68,14 +74,24 @@ export interface RelationshipRepository {
   findBySourceId(sourceId: string): Promise<Relationship[]>;
   findByTargetId(targetId: string): Promise<Relationship[]>;
   findByType(type: string): Promise<Relationship[]>;
-  save(relationship: Relationship): Promise<Relationship>;
+  findByPatternId(patternId: string): Promise<Relationship[]>;
+  findWithPatterns(filters?: RelationshipFilters): Promise<RelationshipWithPatterns[]>;
+  findById(id: string): Promise<Relationship | null>;
+  save(input: CreateRelationshipInput): Promise<Relationship>;
+  update(id: string, input: UpdateRelationshipInput): Promise<Relationship | null>;
   delete(sourceId: string, targetId: string): Promise<boolean>;
+  deleteById(id: string): Promise<boolean>;
   exists(sourceId: string, targetId: string): Promise<boolean>;
+  count(filters?: RelationshipFilters): Promise<number>;
 }
 
 export interface VectorRepository {
   saveEmbedding(id: string, embedding: Float32Array): Promise<void>;
-  findSimilar(embedding: Float32Array, limit: number, threshold?: number): Promise<Array<{id: string, score: number}>>;
+  findSimilar(
+    embedding: Float32Array,
+    limit: number,
+    threshold?: number
+  ): Promise<Array<{ id: string; score: number }>>;
   deleteEmbedding(id: string): Promise<boolean>;
   hasEmbedding(id: string): Promise<boolean>;
   rebuildIndex(): Promise<void>;

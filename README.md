@@ -1,6 +1,6 @@
 # Design Patterns MCP Server 🎯
 
-An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using semantic search and vector embeddings. This project offers access to a comprehensive catalog of **608 design patterns** through a natural language interface.
+An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using semantic search and vector embeddings. This project offers access to a comprehensive catalog of **622 design patterns** through a natural language interface.
 
 ## 📋 Overview
 
@@ -9,7 +9,7 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 ### ✨ Key Features
 
 - 🔍 **Intelligent Semantic Search**: Find patterns using natural problem descriptions
-- 📚 **Comprehensive Catalog**: 608 patterns organized in 90+ categories
+- 📚 **Comprehensive Catalog**: 622 patterns organized in 90+ categories
 - 🎯 **Contextual Recommendations**: Suggestions based on programming language and domain
 - ⚡ **Vector Search**: Uses SQLite with vector extensions for efficient search
 - 🌐 **Multi-language**: Support for multiple programming languages
@@ -18,13 +18,13 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - 💾 **Smart Caching**: LRU cache with 85%+ hit rate reduces database load
 - 📝 **Structured Logging**: Professional logging system with service-based organization
 - 🏗️ **SOLID Architecture**: Clean, maintainable, and testable codebase
-- 🛡️ **Production Ready**: 100% test pass rate (130/130), zero memory leaks, graceful degradation
+- 🛡️ **Production Ready**: 100% test pass rate (176/176), zero memory leaks, graceful degradation
 
-### 🆕 Project Status (v0.2.4)
+### 🆕 Project Status (v0.2.5)
 
 **Latest Updates (October 2025)**
 
-- ✅ **100% Test Pass Rate**: All 130 tests passing (130/130) - Production Ready!
+- ✅ **100% Test Pass Rate**: All 176 tests passing (176/176) - Production Ready!
 - ✅ **Critical Stability Fixes**: 15 total issues resolved (P0/P1/P2/P3)
 - ✅ **Race Condition Protection**: Simple Lock Pattern prevents concurrent cache corruption
 - ✅ **Transaction Retry Logic**: Exponential backoff for SQLITE_BUSY/LOCKED errors
@@ -33,7 +33,7 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - ✅ **Performance Optimized**: FNV-1a hash algorithm (30-40% faster cache keys)
 - ✅ **DI Container Migration**: Complete removal of deprecated singleton functions
 - ✅ **Zero Memory Leaks**: Object Pool pattern with bounded resource management (max 100)
-- ✅ **608 Patterns**: Comprehensive catalog with code examples across 90+ categories
+- ✅ **622 Patterns**: Comprehensive catalog with code examples across 90+ categories
 - ✅ **Database Schema Fixed**: Migration 002 with correct 6-column schema
 - ✅ **Data Preservation**: Migrations rename tables instead of dropping (prevents data loss)
 - ✅ **Structured Logging**: Professional logging system replaces console.log (10 replacements)
@@ -49,7 +49,7 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - ✅ **Code Quality**: 40% reduction in main server file (704→422 lines)
 - ✅ **Design Patterns Applied**: Retry Pattern, Graceful Degradation, Simple Lock, Error Recovery, Database Transaction, Fail-Fast, Schema Versioning, Data Preservation
 
-### 🗂️ Available Pattern Categories (608 Patterns)
+### 🗂️ Available Pattern Categories (610 Patterns)
 
 #### **Classic Design Patterns (GoF)**
 
@@ -468,7 +468,7 @@ logger.info('performance-monitor', 'Cache metrics', cacheStats);
 
 ## 🧪 Testing
 
-The project includes a comprehensive test suite with **130 passing tests** (100% success rate):
+The project includes a comprehensive test suite with **176 passing tests** (100% success rate):
 
 - **Contract Tests**: Validate MCP protocol compliance
 - **Integration Tests**: Test interaction between components
@@ -557,7 +557,7 @@ This project is licensed under the MIT License. See [LICENSE](./LICENSE) for det
 
 ---
 
-**Version**: 0.2.3
+**Version**: 0.2.5
 **Last Updated**: October 2025
 **Patterns**: 594+
 **Tests**: 130/130 passing (100%)

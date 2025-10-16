@@ -14,7 +14,7 @@ export interface EmbeddingStrategy {
   readonly name: string;
   readonly dimensions: number;
   readonly model: string;
-  
+
   generateEmbedding(text: string): Promise<EmbeddingVector>;
   batchGenerateEmbeddings(texts: string[]): Promise<EmbeddingVector[]>;
   isAvailable(): Promise<boolean>;
@@ -68,7 +68,7 @@ export class SimpleHashEmbeddingStrategy implements EmbeddingStrategy {
     let hash = 0;
     for (let i = 0; i < text.length; i++) {
       const char = text.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash);
@@ -88,19 +88,19 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
 
   async generateEmbedding(text: string): Promise<EmbeddingVector> {
     await this.initialize();
-    
+
     if (!this.pipeline) {
       throw new Error('Transformers.js pipeline not available');
     }
 
     try {
-      const response = await this.pipeline([text], { 
-        pooling: 'mean', 
-        normalize: true 
+      const response = await this.pipeline([text], {
+        pooling: 'mean',
+        normalize: true,
       });
-      
+
       const values = Array.from(response.data) as number[];
-      
+
       return {
         dimensions: this.dimensions,
         values,
@@ -108,27 +108,31 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
         normalized: true,
       };
     } catch (error) {
-      throw new Error(`Embedding generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Embedding generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   async batchGenerateEmbeddings(texts: string[]): Promise<EmbeddingVector[]> {
     await this.initialize();
-    
+
     if (!this.pipeline) {
       throw new Error('Transformers.js pipeline not available');
     }
 
     try {
-      const response = await this.pipeline(texts, { 
-        pooling: 'mean', 
-        normalize: true 
+      const response = await this.pipeline(texts, {
+        pooling: 'mean',
+        normalize: true,
       });
-      
+
       // Handle batch response
       const embeddings: EmbeddingVector[] = [];
       for (let i = 0; i < texts.length; i++) {
-        const values = Array.from(response.data.slice(i * this.dimensions, (i + 1) * this.dimensions)) as number[];
+        const values = Array.from(
+          response.data.slice(i * this.dimensions, (i + 1) * this.dimensions)
+        ) as number[];
         embeddings.push({
           dimensions: this.dimensions,
           values,
@@ -136,10 +140,12 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
           normalized: true,
         });
       }
-      
+
       return embeddings;
     } catch (error) {
-      throw new Error(`Batch embedding generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Batch embedding generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -158,7 +164,7 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
     try {
       // Dynamic import to avoid issues if @xenova/transformers is not installed
       const transformersModule = await import('@xenova/transformers').catch(() => null);
-      
+
       if (transformersModule) {
         this.pipeline = await transformersModule.pipeline(
           'feature-extraction',
@@ -167,7 +173,7 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
       } else {
         throw new Error('Transformers.js module not available');
       }
-      
+
       this.isInitialized = true;
     } catch (error) {
       console.warn('Transformers.js not available, will use fallback strategy');
@@ -209,7 +215,7 @@ export class OllamaEmbeddingStrategy implements EmbeddingStrategy {
       }
 
       const data = await response.json();
-      
+
       return {
         dimensions: data.embedding.length,
         values: data.embedding,
@@ -217,19 +223,21 @@ export class OllamaEmbeddingStrategy implements EmbeddingStrategy {
         normalized: false, // Ollama may not normalize by default
       };
     } catch (error) {
-      throw new Error(`Ollama embedding generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Ollama embedding generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   async batchGenerateEmbeddings(texts: string[]): Promise<EmbeddingVector[]> {
     // Ollama doesn't support batch processing, so we process sequentially
     const embeddings: EmbeddingVector[] = [];
-    
+
     for (const text of texts) {
       const embedding = await this.generateEmbedding(text);
       embeddings.push(embedding);
     }
-    
+
     return embeddings;
   }
 
@@ -239,13 +247,15 @@ export class OllamaEmbeddingStrategy implements EmbeddingStrategy {
         method: 'GET',
         signal: AbortSignal.timeout(5000), // 5 second timeout
       });
-      
+
       if (!response.ok) return false;
-      
+
       const data = await response.json();
-      return data.models?.some((model: any) => 
-        model.name.includes('all-minilm') || model.name.includes('embedding')
-      ) || false;
+      return (
+        data.models?.some(
+          (model: any) => model.name.includes('all-minilm') || model.name.includes('embedding')
+        ) || false
+      );
     } catch {
       return false;
     }

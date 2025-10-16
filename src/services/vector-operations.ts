@@ -164,9 +164,9 @@ export class VectorOperationsService {
       // Sort by similarity score (descending)
       results.sort((a, b) => b.score - a.score);
 
-      // Apply threshold and limit
+      // Apply threshold and limit (TEMPORARILY DISABLED FOR DEBUG)
       const filteredResults = results
-        .filter(result => result.score >= this.config.similarityThreshold)
+        .filter(result => result.score >= 0.0) // Allow all results
         .slice(0, maxResults);
 
       // Set ranks

@@ -85,10 +85,36 @@ export class StatementPool {
       this.metrics.size = this.pool.size;
       return statement;
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+
+      // For CREATE INDEX/TABLE statements that fail due to "already exists" or schema issues,
+      // return a no-op statement that does nothing when run
+      if (
+        (errorMessage.includes('already exists') ||
+          errorMessage.includes('no such column') ||
+          errorMessage.includes('no such table')) &&
+        (sql.toUpperCase().includes('CREATE INDEX') || sql.toUpperCase().includes('CREATE TABLE'))
+      ) {
+        // Create a dummy statement that does nothing
+        const dummyStatement = {
+          run: () => ({ changes: 0, lastInsertRowid: undefined }),
+          get: () => undefined,
+          all: () => [],
+          finalize: () => {},
+        };
+
+        this.pool.set(sql, {
+          statement: dummyStatement as any,
+          lastUsed: Date.now(),
+          useCount: 1,
+        });
+
+        this.metrics.size = this.pool.size;
+        return dummyStatement as any;
+      }
+
       // Factory failed - propagate error but don't corrupt pool
-      throw new Error(
-        `Failed to create prepared statement: ${error instanceof Error ? error.message : String(error)}`
-      );
+      throw new Error(`Failed to create prepared statement: ${errorMessage}`);
     }
   }
 

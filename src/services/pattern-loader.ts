@@ -36,6 +36,18 @@ interface PatternData {
     type: string;
     description: string;
   }>;
+  related_patterns?:
+    | string[]
+    | Array<{
+        patternId: string;
+        type: string;
+        description: string;
+      }>;
+  relationships?: Array<{
+    target_pattern_id: string;
+    type: string;
+    description: string;
+  }>;
   complexity: string;
   tags?: string[];
   createdAt?: string;
@@ -49,6 +61,12 @@ interface PatternFile {
 export class PatternLoaderService {
   private patternStorage: ReturnType<typeof getPatternStorageService> | null = null;
   private loadedPatterns = new Set<string>();
+  private pendingRelationships: Array<{
+    sourceId: string;
+    targetName: string;
+    type?: string;
+    description?: string;
+  }> = [];
 
   private getPatternStorage(): ReturnType<typeof getPatternStorageService> {
     if (!this.patternStorage) {
@@ -74,6 +92,12 @@ export class PatternLoaderService {
 
       const patterns: Pattern[] = [];
       const implementations: PatternImplementation[] = [];
+      const relationships: Array<{
+        sourceId: string;
+        targetName: string;
+        type?: string;
+        description?: string;
+      }> = [];
 
       for (const patternData of patternFile.patterns) {
         // Skip if already loaded
@@ -130,6 +154,42 @@ export class PatternLoaderService {
               explanation: impl.explanation,
             };
             implementations.push(implementation);
+          }
+        }
+
+        // Collect relationships for deferred processing
+        const relatedPatterns = patternData.relatedPatterns || patternData.related_patterns;
+        if (relatedPatterns) {
+          if (Array.isArray(relatedPatterns)) {
+            for (const rel of relatedPatterns) {
+              if (typeof rel === 'string') {
+                this.pendingRelationships.push({
+                  sourceId: patternData.id,
+                  targetName: rel,
+                  type: 'related',
+                  description: `Related to ${rel}`,
+                });
+              } else if (rel.patternId) {
+                this.pendingRelationships.push({
+                  sourceId: patternData.id,
+                  targetName: rel.patternId,
+                  type: rel.type || 'related',
+                  description: rel.description,
+                });
+              }
+            }
+          }
+        }
+
+        // Process relationships field (new format)
+        if (patternData.relationships) {
+          for (const rel of patternData.relationships) {
+            this.pendingRelationships.push({
+              sourceId: patternData.id,
+              targetName: rel.target_pattern_id,
+              type: rel.type || 'related',
+              description: rel.description,
+            });
           }
         }
 
@@ -258,6 +318,42 @@ export class PatternLoaderService {
           }
         }
 
+        // Collect relationships for deferred processing
+        const relatedPatterns = patternData.relatedPatterns || patternData.related_patterns;
+        if (relatedPatterns) {
+          if (Array.isArray(relatedPatterns)) {
+            for (const rel of relatedPatterns) {
+              if (typeof rel === 'string') {
+                this.pendingRelationships.push({
+                  sourceId: patternData.id,
+                  targetName: rel,
+                  type: 'related',
+                  description: `Related to ${rel}`,
+                });
+              } else if (rel.patternId) {
+                this.pendingRelationships.push({
+                  sourceId: patternData.id,
+                  targetName: rel.patternId,
+                  type: rel.type || 'related',
+                  description: rel.description,
+                });
+              }
+            }
+          }
+        }
+
+        // Process relationships field (new format)
+        if (patternData.relationships) {
+          for (const rel of patternData.relationships) {
+            this.pendingRelationships.push({
+              sourceId: patternData.id,
+              targetName: rel.target_pattern_id,
+              type: rel.type || 'related',
+              description: rel.description,
+            });
+          }
+        }
+
         this.loadedPatterns.add(patternData.id);
       }
     } catch (error) {
@@ -325,6 +421,9 @@ export class PatternLoaderService {
       }
     }
 
+    // Process all pending relationships now that all patterns are loaded
+    await this.processPendingRelationships();
+
     logger.info('pattern-loader', 'All pattern categories loaded successfully');
   }
 
@@ -361,10 +460,49 @@ export class PatternLoaderService {
   }
 
   /**
+   * Process all pending relationships after all patterns are loaded
+   */
+  private async processPendingRelationships(): Promise<void> {
+    if (this.pendingRelationships.length === 0) {
+      return;
+    }
+
+    logger.info(
+      'pattern-loader',
+      `Processing ${this.pendingRelationships.length} pending relationships...`
+    );
+
+    let processedCount = 0;
+    for (const rel of this.pendingRelationships) {
+      // Find target pattern ID by name
+      const targetPattern = await this.getPatternStorage().getPatternByName(rel.targetName);
+      if (targetPattern) {
+        await this.getPatternStorage().storeRelationship(
+          rel.sourceId,
+          targetPattern.id,
+          rel.type || 'related',
+          1.0,
+          rel.description
+        );
+        processedCount++;
+      } else {
+        logger.warn(
+          'pattern-loader',
+          `Target pattern not found: ${rel.targetName} (referenced by ${rel.sourceId})`
+        );
+      }
+    }
+
+    logger.info('pattern-loader', `Successfully processed ${processedCount} relationships`);
+    this.pendingRelationships = []; // Clear processed relationships
+  }
+
+  /**
    * Reset loading state (for testing)
    */
   reset(): void {
     this.loadedPatterns.clear();
+    this.pendingRelationships = [];
   }
 }
 

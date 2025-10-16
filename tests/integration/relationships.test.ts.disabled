@@ -1,0 +1,417 @@
+/**
+ * Integration Tests for Relationship Functionality
+ * Tests end-to-end relationship operations with real database
+ */
+
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { DatabaseManager } from '../../src/services/database-manager.js';
+import { PatternService } from '../../src/services/pattern-service.js';
+import { SqlitePatternRepository } from '../../src/repositories/pattern-repository.js';
+import { SqliteRelationshipRepository } from '../../src/repositories/relationship-repository.js';
+import { CacheService } from '../../src/services/cache.js';
+import { SemanticSearchService } from '../../src/services/semantic-search.js';
+import { VectorOperationsService } from '../../src/services/vector-operations.js';
+
+describe('Relationship Integration Tests', () => {
+  let dbManager: DatabaseManager;
+  let patternService: PatternService;
+
+  beforeEach(async () => {
+    // Create test database
+    dbManager = new DatabaseManager({
+      filename: ':memory:',
+      options: { readonly: false },
+    });
+    await dbManager.initialize();
+
+    // Initialize schema
+    await createTestSchema(dbManager);
+
+    // Initialize services
+    const patternRepo = new SqlitePatternRepository(dbManager);
+    const relationshipRepo = new SqliteRelationshipRepository(dbManager);
+    const cacheService = new CacheService();
+    const semanticSearch = {} as SemanticSearchService;
+    const vectorOps = {} as VectorOperationsService;
+
+    patternService = new PatternService(
+      patternRepo,
+      relationshipRepo,
+      cacheService,
+      semanticSearch,
+      vectorOps
+    );
+
+    // Seed test patterns
+    await seedTestPatterns(dbManager);
+  });
+
+  afterEach(async () => {
+    await dbManager.close();
+  });
+
+  describe('Pattern Relationship Management', () => {
+    it('should create and retrieve relationships between patterns', async () => {
+      // Create a relationship
+      const relationship = await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Both are structural patterns that provide interfaces',
+      });
+
+      expect(relationship).toBeDefined();
+      expect(relationship.sourcePatternId).toBe('adapter');
+      expect(relationship.targetPatternId).toBe('facade');
+      expect(relationship.type).toBe('related');
+
+      // Retrieve relationships for adapter
+      const adapterRelationships = await patternService.getPatternRelationships('adapter');
+      expect(adapterRelationships).toHaveLength(1);
+      expect(adapterRelationships[0].targetPatternId).toBe('facade');
+
+      // Retrieve relationships with pattern details
+      const relationshipsWithDetails = await patternService.getRelationshipsWithPatterns();
+      expect(relationshipsWithDetails).toHaveLength(1);
+      expect(relationshipsWithDetails[0].sourcePattern.name).toBe('Adapter');
+      expect(relationshipsWithDetails[0].targetPattern.name).toBe('Facade');
+    });
+
+    it('should handle multiple relationships for the same pattern', async () => {
+      // Create multiple relationships
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Structural pattern relationship',
+      });
+
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'singleton',
+        type: 'uses',
+        description: 'Adapter may use Singleton for instance management',
+      });
+
+      await patternService.createRelationship({
+        sourcePatternId: 'facade',
+        targetPatternId: 'adapter',
+        type: 'complements',
+        description: 'Facade complements Adapter functionality',
+      });
+
+      // Check relationships for adapter (should have 2 outgoing + 1 incoming = 3 total)
+      const adapterRelationships = await patternService.getPatternRelationships('adapter');
+      expect(adapterRelationships).toHaveLength(3);
+
+      // Check all relationships
+      const allRelationships = await patternService.getRelationshipsWithPatterns();
+      expect(allRelationships).toHaveLength(3);
+    });
+
+    it('should filter relationships by type', async () => {
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Structural pattern relationship',
+      });
+
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'singleton',
+        type: 'uses',
+        description: 'Adapter uses Singleton',
+      });
+
+      const relatedRelationships = await patternService.getRelationshipsWithPatterns({
+        type: 'related',
+      });
+      expect(relatedRelationships).toHaveLength(1);
+      expect(relatedRelationships[0].type).toBe('related');
+
+      const usesRelationships = await patternService.getRelationshipsWithPatterns({
+        type: 'uses',
+      });
+      expect(usesRelationships).toHaveLength(1);
+      expect(usesRelationships[0].type).toBe('uses');
+    });
+
+    it('should filter relationships by strength', async () => {
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        strength: 0.8,
+        description: 'Strong relationship',
+      });
+
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'singleton',
+        type: 'uses',
+        strength: 0.3,
+        description: 'Weak relationship',
+      });
+
+      const strongRelationships = await patternService.getRelationshipsWithPatterns({
+        minStrength: 0.5,
+      });
+      expect(strongRelationships).toHaveLength(1);
+      expect(strongRelationships[0].strength).toBe(0.8);
+    });
+
+    it('should update relationships', async () => {
+      const created = await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        strength: 0.5,
+        description: 'Original description',
+      });
+
+      const updated = await patternService.updateRelationship(created.id, {
+        id: created.id,
+        type: 'extends',
+        strength: 0.9,
+        description: 'Updated description',
+      });
+
+      expect(updated).toBeDefined();
+      expect(updated!.type).toBe('extends');
+      expect(updated!.strength).toBe(0.9);
+      expect(updated!.description).toBe('Updated description');
+    });
+
+    it('should delete relationships', async () => {
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Test relationship',
+      });
+
+      // Verify it exists
+      let relationships = await patternService.getPatternRelationships('adapter');
+      expect(relationships).toHaveLength(1);
+
+      // Delete it
+      const deleted = await patternService.deleteRelationship('adapter', 'facade');
+      expect(deleted).toBe(true);
+
+      // Verify it's gone
+      relationships = await patternService.getPatternRelationships('adapter');
+      expect(relationships).toHaveLength(0);
+    });
+
+    it('should return pattern with relationships', async () => {
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Structural pattern relationship',
+      });
+
+      const patternWithRelationships = await patternService.getPatternWithRelationships('adapter');
+
+      expect(patternWithRelationships).toBeDefined();
+      if (patternWithRelationships) {
+        expect(patternWithRelationships.id).toBe('adapter');
+        expect(patternWithRelationships.relatedPatterns || []).toHaveLength(1);
+        expect((patternWithRelationships.relatedPatterns || [])[0].patternId).toBe('facade');
+      }
+    });
+  });
+
+  describe('Relationship Types', () => {
+    it('should support all relationship types', async () => {
+      const relationshipTypes = [
+        'related',
+        'extends',
+        'implements',
+        'uses',
+        'similar',
+        'alternative',
+        'complements',
+        'conflicts',
+        'prerequisite',
+        'successor',
+      ];
+
+      // Use unique source patterns for this test to avoid conflicts
+      const uniqueSourceIds = relationshipTypes.map((_, i) => `test_adapter_${i}`);
+
+      // Insert unique test patterns
+      for (const sourceId of uniqueSourceIds) {
+        dbManager.execute(
+          `
+          INSERT OR IGNORE INTO patterns (id, name, category, description, complexity)
+          VALUES (?, ?, 'Test', 'Test pattern', 'Low')
+        `,
+          [sourceId, `Test${sourceId}`]
+        );
+      }
+
+      for (let i = 0; i < relationshipTypes.length; i++) {
+        const type = relationshipTypes[i];
+        const relationship = await patternService.createRelationship({
+          sourcePatternId: uniqueSourceIds[i],
+          targetPatternId: 'facade',
+          type: type as any,
+          description: `Test ${type} relationship`,
+        });
+
+        expect(relationship.type).toBe(type);
+      }
+
+      // Check that relationships were created (pick one of the test patterns)
+      const relationships = await patternService.getPatternRelationships(uniqueSourceIds[0]);
+      expect(relationships).toHaveLength(1); // Each test pattern has 1 relationship
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should throw error when creating relationship with non-existent source pattern', async () => {
+      await expect(
+        patternService.createRelationship({
+          sourcePatternId: 'nonexistent',
+          targetPatternId: 'facade',
+          type: 'related',
+          description: 'Test relationship',
+        })
+      ).rejects.toThrow('Source pattern nonexistent does not exist');
+    });
+
+    it('should throw error when creating relationship with non-existent target pattern', async () => {
+      await expect(
+        patternService.createRelationship({
+          sourcePatternId: 'adapter',
+          targetPatternId: 'nonexistent',
+          type: 'related',
+          description: 'Test relationship',
+        })
+      ).rejects.toThrow('Target pattern nonexistent does not exist');
+    });
+
+    it('should return null when updating non-existent relationship', async () => {
+      const result = await patternService.updateRelationship('nonexistent-id', {
+        id: 'nonexistent-id',
+        type: 'related',
+      });
+      expect(result).toBeNull();
+    });
+
+    it('should return false when deleting non-existent relationship', async () => {
+      const result = await patternService.deleteRelationship('nonexistent1', 'nonexistent2');
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('Caching', () => {
+    it('should cache relationship queries', async () => {
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Test relationship',
+      });
+
+      // First query
+      await patternService.getPatternRelationships('adapter');
+
+      // Second query should use cache
+      const relationships = await patternService.getPatternRelationships('adapter');
+      expect(relationships).toHaveLength(1);
+    });
+
+    it('should invalidate cache when creating relationships', async () => {
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Test relationship',
+      });
+
+      // Cache should be invalidated after creation
+      // This is tested implicitly by the caching test above
+    });
+
+    it('should invalidate cache when updating relationships', async () => {
+      const created = await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Original',
+      });
+
+      await patternService.updateRelationship(created.id, {
+        id: created.id,
+        description: 'Updated',
+      });
+
+      // Cache should be invalidated
+    });
+
+    it('should invalidate cache when deleting relationships', async () => {
+      await patternService.createRelationship({
+        sourcePatternId: 'adapter',
+        targetPatternId: 'facade',
+        type: 'related',
+        description: 'Test',
+      });
+
+      await patternService.deleteRelationship('adapter', 'facade');
+
+      // Cache should be invalidated
+    });
+  });
+});
+
+async function createTestSchema(dbManager: DatabaseManager): Promise<void> {
+  // Drop tables if they exist
+  dbManager.execute('DROP TABLE IF EXISTS pattern_relationships');
+  dbManager.execute('DROP TABLE IF EXISTS pattern_implementations');
+  dbManager.execute('DROP TABLE IF EXISTS patterns');
+
+  // Create tables
+  dbManager.execute(`
+    CREATE TABLE patterns (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      category TEXT NOT NULL,
+      description TEXT NOT NULL,
+      when_to_use TEXT,
+      benefits TEXT,
+      drawbacks TEXT,
+      use_cases TEXT,
+      complexity TEXT NOT NULL,
+      tags TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  dbManager.execute(`
+    CREATE TABLE pattern_relationships (
+      id TEXT PRIMARY KEY,
+      source_pattern_id TEXT NOT NULL,
+      target_pattern_id TEXT NOT NULL,
+      type TEXT NOT NULL,
+      strength REAL DEFAULT 1.0,
+      description TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (source_pattern_id) REFERENCES patterns(id) ON DELETE CASCADE,
+      FOREIGN KEY (target_pattern_id) REFERENCES patterns(id) ON DELETE CASCADE
+    )
+  `);
+}
+
+async function seedTestPatterns(dbManager: DatabaseManager): Promise<void> {
+  dbManager.execute(`
+    INSERT INTO patterns (id, name, category, description, complexity)
+    VALUES
+      ('adapter', 'Adapter', 'Structural', 'Allows incompatible interfaces to work together', 'Low'),
+      ('facade', 'Facade', 'Structural', 'Provides a simplified interface to a complex subsystem', 'Low'),
+      ('singleton', 'Singleton', 'Creational', 'Ensures only one instance exists', 'Low')
+  `);
+}

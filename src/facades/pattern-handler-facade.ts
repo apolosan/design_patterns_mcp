@@ -8,6 +8,7 @@ import type { PatternService } from '../services/pattern-service.js';
 import type { PatternMatcher } from '../services/pattern-matcher.js';
 import type { DatabaseManager } from '../services/database-manager.js';
 import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
+import { InputValidator } from '../utils/input-validation.js';
 
 export interface FindPatternsRequest {
   query: string;
@@ -42,12 +43,15 @@ export class PatternHandlerFacade {
    * Handle find_patterns tool request
    */
   async findPatterns(request: FindPatternsRequest) {
+    // Validate and sanitize inputs
+    const validatedArgs = InputValidator.validateFindPatternsArgs(request);
+
     const matchRequest = {
       id: crypto.randomUUID(),
-      query: request.query,
-      categories: request.categories || [],
-      maxResults: request.maxResults || 5,
-      programmingLanguage: request.programmingLanguage,
+      query: validatedArgs.query,
+      categories: validatedArgs.categories,
+      maxResults: validatedArgs.maxResults,
+      programmingLanguage: validatedArgs.programmingLanguage,
     };
 
     const recommendations = await this.patternMatcher.findMatchingPatterns(matchRequest);
@@ -76,13 +80,16 @@ export class PatternHandlerFacade {
    * Handle search_patterns tool request
    */
   async searchPatterns(request: SearchPatternsRequest) {
+    // Validate and sanitize inputs
+    const validatedArgs = InputValidator.validateSearchPatternsArgs(request);
+
     const results = await this.patternService.searchPatterns({
-      text: request.query,
+      text: validatedArgs.query,
       filters: request.filters || {},
       options: {
-        limit: request.limit || 10,
+        limit: validatedArgs.limit,
         includeMetadata: true,
-        searchType: request.searchType || 'hybrid',
+        searchType: validatedArgs.searchType as 'keyword' | 'semantic' | 'hybrid',
       },
     });
 
@@ -109,7 +116,10 @@ export class PatternHandlerFacade {
    * Handle get_pattern_details tool request
    */
   async getPatternDetails(request: PatternDetailsRequest) {
-    const details = await this.patternService.getPatternDetails(request.patternId);
+    // Validate and sanitize inputs
+    const validatedArgs = InputValidator.validateGetPatternDetailsArgs(request);
+
+    const details = await this.patternService.getPatternDetails(validatedArgs.patternId);
 
     if (!details) {
       // Try to find similar patterns
@@ -157,11 +167,10 @@ export class PatternHandlerFacade {
     let examplesText = '';
     if (details.examples) {
       try {
-        const examples = typeof details.examples === 'string' 
-          ? JSON.parse(details.examples) 
-          : details.examples;
+        const examples =
+          typeof details.examples === 'string' ? JSON.parse(details.examples) : details.examples;
         const exampleKeys = Object.keys(examples);
-        
+
         if (exampleKeys.length > 0) {
           examplesText = '\n\n**Code Examples:**\n';
           exampleKeys.forEach(lang => {
@@ -220,20 +229,22 @@ export class PatternHandlerFacade {
    * Handle count_patterns tool request
    */
   async countPatterns(request: CountPatternsRequest) {
+    // Validate and sanitize inputs
+    const validatedArgs = InputValidator.validateCountPatternsArgs(request);
+
     try {
-      const patterns = this.db.query('SELECT id, name, category FROM patterns ORDER BY category');
-      const total = patterns.length;
+      // Optimized query using SQL GROUP BY instead of JavaScript processing
+      const totalResult = this.db.queryOne<{ total: number }>(
+        'SELECT COUNT(*) as total FROM patterns'
+      );
+      const total = totalResult?.total || 0;
 
-      if (request.includeDetails) {
-        // Create category breakdown
-        const categoryBreakdown: { [key: string]: number } = {};
-        patterns.forEach(pattern => {
-          categoryBreakdown[pattern.category] = (categoryBreakdown[pattern.category] || 0) + 1;
-        });
-
-        const breakdown = Object.entries(categoryBreakdown)
-          .map(([category, count]) => ({ category, count }))
-          .sort((a, b) => b.count - a.count);
+      let breakdown: Array<{ category: string; count: number }> = [];
+      if (validatedArgs.includeDetails) {
+        // Use SQL aggregation for better performance
+        breakdown = this.db.query<{ category: string; count: number }>(
+          'SELECT category, COUNT(*) as count FROM patterns GROUP BY category ORDER BY count DESC'
+        );
 
         return {
           content: [

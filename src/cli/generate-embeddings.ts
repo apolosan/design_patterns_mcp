@@ -5,7 +5,10 @@
  */
 
 import { DatabaseManager, initializeDatabaseManager } from '../services/database-manager.js';
-import { VectorOperationsService, createVectorOperationsService } from '../services/vector-operations.js';
+import {
+  VectorOperationsService,
+  createVectorOperationsService,
+} from '../services/vector-operations.js';
 import { SemanticSearchService, createSemanticSearchService } from '../services/semantic-search.js';
 import { EmbeddingServiceAdapter } from '../adapters/embedding-service-adapter.js';
 import { getAvailableEmbeddingStrategies } from '../factories/embedding-factory.js';
@@ -18,9 +21,12 @@ async function main(): Promise<void> {
     // Check available strategies
     logger.info('generate-embeddings', 'Checking available embedding strategies...');
     const availableStrategies = await getAvailableEmbeddingStrategies();
-    
+
     for (const strategy of availableStrategies) {
-      logger.info('generate-embeddings', `Strategy: ${strategy.name} (${strategy.model}) - Available: ${strategy.available}`);
+      logger.info(
+        'generate-embeddings',
+        `Strategy: ${strategy.name} (${strategy.model}) - Available: ${strategy.available}`
+      );
     }
 
     // Initialize database
@@ -30,23 +36,29 @@ async function main(): Promise<void> {
         readonly: false,
         fileMustExist: false,
         timeout: 5000,
-        verbose: (message: string) => logger.debug('generate-embeddings', message)
-      }
+        verbose: (message: string) => logger.debug('generate-embeddings', message),
+      },
     };
 
     const dbManager = await initializeDatabaseManager(dbConfig);
-    
-    // Initialize embedding adapter with strategy pattern
+
+    // Initialize embedding adapter with SAME strategy as SemanticSearch (simple-hash)
+    // This ensures consistency between database embeddings and query embeddings
     const embeddingAdapter = new EmbeddingServiceAdapter({
       cacheEnabled: false, // Disable cache for bulk generation
       batchSize: 20, // Process in larger batches
       retryAttempts: 3,
       retryDelay: 1000,
+      preferredStrategy: 'simple-hash', // Match SemanticSearch strategy to fix MCP search issue
+      fallbackToSimple: true,
     });
 
     await embeddingAdapter.initialize();
     const strategyInfo = embeddingAdapter.getStrategyInfo();
-    logger.info('generate-embeddings', `Using strategy: ${strategyInfo?.name} (${strategyInfo?.model})`);
+    logger.info(
+      'generate-embeddings',
+      `Using strategy: ${strategyInfo?.name} (${strategyInfo?.model})`
+    );
 
     // Get all patterns
     const patterns = dbManager.query<{ id: string; name: string; description: string }>(
@@ -81,43 +93,50 @@ async function main(): Promise<void> {
     `);
 
     // Validate schema integrity (Fail-Fast Pattern)
-    const schemaInfo = dbManager.query<{ name: string }>(
-      `PRAGMA table_info(pattern_embeddings)`
-    );
-    
-    const expectedColumns = new Set(['pattern_id', 'embedding', 'model', 'strategy', 'dimensions', 'created_at']);
+    const schemaInfo = dbManager.query<{ name: string }>(`PRAGMA table_info(pattern_embeddings)`);
+
+    const expectedColumns = new Set([
+      'pattern_id',
+      'embedding',
+      'model',
+      'strategy',
+      'dimensions',
+      'created_at',
+    ]);
     const actualColumns = new Set(schemaInfo.map(col => col.name));
-    
-    if (expectedColumns.size !== actualColumns.size || 
-        ![...expectedColumns].every(col => actualColumns.has(col))) {
+
+    if (
+      expectedColumns.size !== actualColumns.size ||
+      ![...expectedColumns].every(col => actualColumns.has(col))
+    ) {
       const missing = [...expectedColumns].filter(col => !actualColumns.has(col));
       const extra = [...actualColumns].filter(col => !expectedColumns.has(col));
-      
+
       throw new Error(
         `Schema mismatch for pattern_embeddings table!\n` +
-        `Expected columns: ${[...expectedColumns].join(', ')}\n` +
-        `Actual columns: ${[...actualColumns].join(', ')}\n` +
-        `Missing columns: ${missing.join(', ') || 'none'}\n` +
-        `Extra columns: ${extra.join(', ') || 'none'}\n` +
-        `This usually means migrations need to be re-run. Try: npm run migrate`
+          `Expected columns: ${[...expectedColumns].join(', ')}\n` +
+          `Actual columns: ${[...actualColumns].join(', ')}\n` +
+          `Missing columns: ${missing.join(', ') || 'none'}\n` +
+          `Extra columns: ${extra.join(', ') || 'none'}\n` +
+          `This usually means migrations need to be re-run. Try: npm run migrate`
       );
     }
-    
+
     logger.info('generate-embeddings', '✓ Schema validation passed - all required columns present');
 
     // Store embeddings with strategy information
     for (let i = 0; i < patterns.length; i++) {
       const patternId = patternIds[i];
       const embedding = embeddings[i];
-      
+
       dbManager.execute(
         'INSERT OR REPLACE INTO pattern_embeddings (pattern_id, embedding, model, strategy, dimensions) VALUES (?, ?, ?, ?, ?)',
         [
-          patternId, 
-          JSON.stringify(embedding), 
+          patternId,
+          JSON.stringify(embedding),
           strategyInfo?.model || 'unknown',
           strategyInfo?.name || 'unknown',
-          embedding.length
+          embedding.length,
         ]
       );
 
@@ -126,7 +145,10 @@ async function main(): Promise<void> {
       }
     }
 
-    logger.info('generate-embeddings', `Successfully generated and stored embeddings for ${embeddings.length} patterns`);
+    logger.info(
+      'generate-embeddings',
+      `Successfully generated and stored embeddings for ${embeddings.length} patterns`
+    );
 
     // Verify embeddings
     const storedCount = dbManager.queryOne<{ count: number }>(
@@ -137,16 +159,21 @@ async function main(): Promise<void> {
       'SELECT strategy, model, COUNT(*) as count FROM pattern_embeddings GROUP BY strategy, model'
     );
 
-    logger.info('generate-embeddings', `Verification: ${storedCount?.count || 0} embeddings stored`);
+    logger.info(
+      'generate-embeddings',
+      `Verification: ${storedCount?.count || 0} embeddings stored`
+    );
     for (const stat of strategyStats) {
-      logger.info('generate-embeddings', `  ${stat.strategy} (${stat.model}): ${stat.count} embeddings`);
+      logger.info(
+        'generate-embeddings',
+        `  ${stat.strategy} (${stat.model}): ${stat.count} embeddings`
+      );
     }
 
     // Close database
     await dbManager.close();
 
     logger.info('generate-embeddings', 'Embedding generation completed successfully!');
-
   } catch (error) {
     console.error('❌ Embedding generation failed:', error);
     process.exit(1);

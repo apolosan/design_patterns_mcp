@@ -32,7 +32,7 @@
         "Social media sentiment analysis",
         "A/B testing with large user bases"
       ],
-      "related_patterns": ["Data Partitioning", "Data Streaming", "Feature Engineering Pipeline"],
+      "related_patterns": ["data-partitioning", "data-streaming", "feature-engineering-pipeline"],
       "complexity": "Low",
       "tags": ["data-engineering", "sampling", "scalability", "preprocessing", "big-data"],
       "code_examples": [
@@ -80,7 +80,7 @@
         "Video frame-by-frame analysis",
         "Financial tick data processing"
       ],
-      "related_patterns": ["Data Sampling", "Real-Time Inference", "Load Balancing"],
+      "related_patterns": ["data-sampling", "real-time-inference", "load-balancing"],
       "complexity": "Medium",
       "tags": ["streaming", "data-engineering", "scalability", "real-time", "big-data"],
       "code_examples": [
@@ -128,7 +128,7 @@
         "Scientific simulations and research",
         "Traffic pattern analysis at city scale"
       ],
-      "related_patterns": ["Model Parallelism", "Data Partitioning", "Load Balancing"],
+      "related_patterns": ["Model Parallelism", "data-partitioning", "load-balancing"],
       "complexity": "Very High",
       "tags": ["distributed-computing", "training", "scalability", "deep-learning", "parallelism"],
       "code_examples": [
@@ -180,7 +180,7 @@
         "Real-time analytics platforms",
         "Gaming backend servers"
       ],
-      "related_patterns": ["Load Balancing", "Circuit Breaker", "Health Check"],
+      "related_patterns": ["load-balancing", "circuit-breaker", "health-check"],
       "complexity": "High",
       "tags": ["auto-scaling", "infrastructure", "cloud", "scalability", "kubernetes"],
       "code_examples": [

@@ -63,40 +63,41 @@ export const TOKENS = {
   DATABASE_MANAGER: Symbol('DatabaseManager'),
   CONTAINER: Symbol('Container'),
   CACHE_SERVICE: Symbol('CacheService'),
-  
+
   // Pattern services
   PATTERN_REPOSITORY: Symbol('PatternRepository'),
+  RELATIONSHIP_REPOSITORY: Symbol('RelationshipRepository'),
   PATTERN_SERVICE: Symbol('PatternService'),
   PATTERN_MATCHER: Symbol('PatternMatcher'),
   PATTERN_ANALYZER: Symbol('PatternAnalyzer'),
   PATTERN_STORAGE: Symbol('PatternStorage'),
-  
+
   // Search services
   SEARCH_STRATEGY: Symbol('SearchStrategy'),
   SEMANTIC_SEARCH: Symbol('SemanticSearch'),
   KEYWORD_SEARCH: Symbol('KeywordSearch'),
   HYBRID_SEARCH: Symbol('HybridSearch'),
-  
+
   // Vector services
   VECTOR_OPERATIONS: Symbol('VectorOperations'),
   EMBEDDING_SERVICE: Symbol('EmbeddingService'),
-  
+
   // External services
   LLM_ADAPTER: Symbol('LLMAdapter'),
   LLM_BRIDGE: Symbol('LLMBridge'),
-  
+
   // Configuration
   DATABASE_CONFIG: Symbol('DatabaseConfig'),
   SEARCH_CONFIG: Symbol('SearchConfig'),
   SERVER_CONFIG: Symbol('ServerConfig'),
-  
+
   // Factories
   SERVICE_FACTORY: Symbol('ServiceFactory'),
   SEARCH_STRATEGY_FACTORY: Symbol('SearchStrategyFactory'),
-  
+
   // Migration & Seeding
   MIGRATION_MANAGER: Symbol('MigrationManager'),
   PATTERN_SEEDER: Symbol('PatternSeeder'),
 } as const;
 
-export type ServiceToken = typeof TOKENS[keyof typeof TOKENS];
+export type ServiceToken = (typeof TOKENS)[keyof typeof TOKENS];

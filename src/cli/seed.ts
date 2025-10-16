@@ -31,6 +31,9 @@ async function main(): Promise<void> {
 
     logger.info('seed', 'Starting pattern seeding...');
 
+    // Reset loader state for clean seeding
+    patternLoader.reset();
+
     // Load all pattern categories
     await patternLoader.loadAllPatternCategories();
 

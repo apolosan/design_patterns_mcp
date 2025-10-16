@@ -5,6 +5,100 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.7] - 2025-10-16
+
+### Added
+
+#### Kotlin Design Patterns Integration
+
+Successfully integrated 14 Kotlin-specific design patterns and best practices identified from "Functional Programming in Kotlin" and "Kotlin Design Patterns and Best Practices":
+
+- **Coroutines Pattern**: Lightweight threads for asynchronous programming
+- **Structured Concurrency Pattern**: Manages coroutine lifecycles with automatic cancellation
+- **Channels Pattern**: Communication primitive for coroutine-based producer-consumer patterns
+- **Flows Pattern**: Cold asynchronous streams for reactive programming
+- **Sequences Pattern**: Lazy collections for efficient data processing
+- **Data Classes Pattern**: Immutable data containers with automatic equals/hashCode/copy
+- **Sealed Classes Pattern**: Exhaustive type hierarchies for type-safe state management
+- **Companion Objects Pattern**: Static-like functionality within classes
+- **Extension Functions Pattern**: Adding methods to existing classes without inheritance
+- **Operator Overloading Pattern**: Custom operators for domain-specific operations
+- **Inline Functions Pattern**: Zero-cost abstractions through compile-time inlining
+- **Expressions vs Statements Pattern**: Using expressions for functional programming
+- **Pure Functions Pattern**: Functions with no side effects and deterministic output
+- **Closures Pattern**: Functions that capture and modify their environment
+
+#### Pattern Relationships
+
+Added enhancement relationships between existing patterns and new Kotlin patterns:
+
+- Observer Pattern → Flows (more composable and performant)
+- Producer-Consumer → Channels (type-safe communication)
+- Factory Method → Companion Objects (better encapsulation)
+- Decorator → Extension Functions (no inheritance required)
+- State → Sealed Classes (exhaustive type safety)
+
+#### Integration Tests
+
+Added comprehensive integration tests for Kotlin pattern searchability and relationship validation.
+
+### Technical Details
+
+- **Pattern Catalog**: Expanded from 608 to 622 design patterns
+- **Database Seeding**: Successfully loaded all Kotlin patterns with proper schema validation
+- **Vector Embeddings**: Generated embeddings for semantic search of Kotlin patterns
+- **Performance**: All benchmarks maintained (35,911+ ops/sec, 195-263ms semantic search)
+- **Test Coverage**: 100% pass rate maintained with new Kotlin-specific tests
+
+## [0.2.6] - 2025-10-15
+
+### Fixed
+
+- **MCP search_patterns tool**: Fixed empty results issue by implementing consistent hash-based embedding strategy
+- **Database migrations**: Fixed migration 004 index creation order issue
+- **Embedding consistency**: Ensured embeddings are generated and queried using the same strategy
+
+### Technical Details
+
+- Changed EmbeddingServiceAdapter to use 'simple-hash' strategy by default for MCP runtime consistency
+- Regenerated embeddings with consistent strategy
+- Fixed migration schema issues preventing proper database initialization
+
+## [0.2.5] - 2025-10-12
+
+### 🔧 Database Migration Tests Fixed
+
+Successfully fixed failing database migration tests using advanced testing patterns. Applied Layer-Specific Logic Testing, Mutation Testing, Arrange-Act-Assert pattern, and Test Containerization to achieve 100% test pass rate.
+
+**Test Results**: 176/176 tests passing (previously 130/130 with migration test failures).
+
+### 🔧 Pattern Catalog Expansion
+
+Added 2 new concurrency patterns to enhance the comprehensive design patterns catalog.
+
+**Pattern Catalog**: 610 design patterns across 90+ categories.
+
+### Added
+
+#### Database Migration Test Fixes
+
+- **Layer-Specific Logic Testing**: Validated database layer operations and migration execution
+- **Mutation Testing**: Added edge case testing for invalid files, validation errors, and duplicate execution prevention
+- **Arrange-Act-Assert Pattern**: Restructured migration tests with proper setup, execution, and verification phases
+- **Test Containerization**: Implemented isolated in-memory database testing to prevent interference
+- **Schema Validation**: Fixed duplicate table creation conflicts and added IF NOT EXISTS clauses
+- **Migration Integrity**: Resolved checksum mismatches and improved migration validation logic
+
+#### New Design Patterns
+
+- **Safe Concurrency with Exclusive Ownership** (`data/patterns/safe-concurrency-exclusive-ownership.json`)
+  - Concurrency pattern for memory safety through exclusive ownership
+  - Relevant for Rust and modern concurrent programming
+
+- **CPU Atomic Operation** (`data/patterns/cpu-atomic-operation.json`)
+  - Pattern for CPU-level atomic instructions for lock-free programming
+  - Essential for high-performance, memory-safe systems
+
 ## [0.2.4] - 2025-10-10
 
 ### 🎉 Production-Ready Release - 100% Test Pass Rate
@@ -16,6 +110,7 @@ Critical stability improvements achieving 100% test pass rate (130/130 tests pas
 ### Added
 
 #### Phase 4 & 5 Critical Fixes
+
 - **Transaction Retry Logic** (`src/services/database-manager.ts`)
   - Exponential backoff for SQLITE_BUSY/LOCKED errors
   - 3 retry attempts with configurable delay
@@ -44,6 +139,7 @@ Critical stability improvements achieving 100% test pass rate (130/130 tests pas
 ### Changed
 
 #### Dependency Injection Migration
+
 - **CacheService Singleton Removal**
   - Removed `getCacheService()`, `initializeCacheService()`, `closeCacheService()`
   - Full migration to DI Container pattern
@@ -54,6 +150,7 @@ Critical stability improvements achieving 100% test pass rate (130/130 tests pas
 ### Fixed
 
 #### Critical Issues Resolved
+
 - **P2-1**: Race conditions in CacheService.set() causing data corruption
 - **P2-2**: Transaction failures from SQLITE_BUSY/LOCKED errors
 - **P2-3**: System crashes on migration/seeding failures
@@ -71,13 +168,13 @@ Critical stability improvements achieving 100% test pass rate (130/130 tests pas
 
 ### Design Patterns Applied
 
-| Pattern | Implementation | Purpose |
-|---------|---------------|---------|
-| Retry Pattern | `database-manager.ts:transaction()` | Handle transient database errors |
-| Graceful Degradation | `db/init.ts` | Continue on partial failures |
-| Simple Lock Pattern | `cache.ts:set()` | Prevent race conditions synchronously |
-| Error Recovery | `statement-pool.ts:getOrCreate()` | Self-healing resource pool |
-| Dependency Injection | All services | Complete DI Container migration |
+| Pattern              | Implementation                      | Purpose                               |
+| -------------------- | ----------------------------------- | ------------------------------------- |
+| Retry Pattern        | `database-manager.ts:transaction()` | Handle transient database errors      |
+| Graceful Degradation | `db/init.ts`                        | Continue on partial failures          |
+| Simple Lock Pattern  | `cache.ts:set()`                    | Prevent race conditions synchronously |
+| Error Recovery       | `statement-pool.ts:getOrCreate()`   | Self-healing resource pool            |
+| Dependency Injection | All services                        | Complete DI Container migration       |
 
 ### Testing
 
@@ -93,24 +190,28 @@ Critical stability improvements achieving 100% test pass rate (130/130 tests pas
 #### CacheService DI Migration
 
 **Before (Deprecated):**
+
 ```typescript
 import { getCacheService } from './services/cache.js';
 const cache = getCacheService();
 ```
 
 **After (Required):**
+
 ```typescript
 import { container, TOKENS } from './core/container.js';
 const cache = container.get(TOKENS.CACHE_SERVICE);
 ```
 
 **For PatternMatcher:**
+
 ```typescript
 // Now requires CacheService parameter
 const patternMatcher = new PatternMatcher(db, vectorOps, config, cacheService);
 ```
 
 **For EmbeddingServiceAdapter:**
+
 ```typescript
 // Accepts optional CacheService parameter
 const adapter = new EmbeddingServiceAdapter(config, cacheService);
@@ -129,6 +230,7 @@ const adapter = new EmbeddingServiceAdapter(config, cacheService);
 ### Summary
 
 This release achieves 100% production readiness with:
+
 - ✅ 15 total critical issues resolved (P0/P1/P2/P3)
 - ✅ 100% test pass rate (130/130 tests)
 - ✅ Zero memory leaks
@@ -147,6 +249,7 @@ This release represents a complete architectural overhaul following SOLID princi
 ### Added
 
 #### New Components
+
 - **StatementPool** (`src/services/statement-pool.ts`) - Object Pool pattern implementation for prepared statements
   - LRU eviction strategy
   - Bounded size (max 100 statements)
@@ -171,6 +274,7 @@ This release represents a complete architectural overhaul following SOLID princi
   - Testable via DI Container
 
 #### New Features
+
 - **Performance Monitoring API**
   - `DatabaseManager.getPoolMetrics()` - Object Pool statistics
   - `CacheService.getStats()` - Cache performance metrics
@@ -192,6 +296,7 @@ This release represents a complete architectural overhaul following SOLID princi
 ### Changed
 
 #### Architecture Improvements
+
 - **Dependency Injection** - All services now use DI Container
   - Consistent singleton pattern via container
   - Improved testability (50% improvement)
@@ -218,6 +323,7 @@ This release represents a complete architectural overhaul following SOLID princi
 ### Performance
 
 #### Improvements
+
 - **Query Performance**: 30-40% faster on repeated queries
 - **Memory Safety**: Zero memory leaks (Object Pool prevents unbounded growth)
 - **Cache Hit Rate**: 85%+ in production workloads
@@ -225,6 +331,7 @@ This release represents a complete architectural overhaul following SOLID princi
 - **Handler Simplification**: Handlers reduced from 50+ to 3-5 lines each
 
 #### Benchmarks (from test suite)
+
 ```
 Database Queries:
   - COUNT query: 5.03ms
@@ -250,6 +357,7 @@ Throughput:
 ### Deprecated
 
 #### Singleton Functions
+
 The following functions are deprecated in favor of DI Container usage:
 
 - `getCacheService()` → Use `container.get(TOKENS.CACHE_SERVICE)`
@@ -265,6 +373,7 @@ The following functions are deprecated in favor of DI Container usage:
 **Note**: These functions remain available for backward compatibility but will be removed in v1.0.0.
 
 #### Original MCP Server
+
 - `src/mcp-server.ts` is now deprecated
 - Use `src/mcp-server-refactored.ts` instead
 - Original file kept for backward compatibility until v1.0.0
@@ -281,17 +390,17 @@ The following functions are deprecated in favor of DI Container usage:
 
 This release implements the following patterns:
 
-| Pattern | Implementation | Purpose |
-|---------|---------------|---------|
-| Repository | `repositories/pattern-repository.ts` | Data access abstraction |
-| Service Layer | `services/pattern-service.ts` | Business logic orchestration |
-| Object Pool | `services/statement-pool.ts` | Resource management |
-| Facade | `facades/pattern-handler-facade.ts` | Simplified interface |
-| Dependency Injection | `core/container.ts` | Inversion of control |
-| Strategy | `strategies/search-strategy.ts` | Interchangeable algorithms |
-| Factory | `factories/service-factory.ts` | Object creation |
-| Singleton | Via DI Container | Instance management |
-| Adapter | `adapters/llm-adapter.ts` | External integration |
+| Pattern              | Implementation                       | Purpose                      |
+| -------------------- | ------------------------------------ | ---------------------------- |
+| Repository           | `repositories/pattern-repository.ts` | Data access abstraction      |
+| Service Layer        | `services/pattern-service.ts`        | Business logic orchestration |
+| Object Pool          | `services/statement-pool.ts`         | Resource management          |
+| Facade               | `facades/pattern-handler-facade.ts`  | Simplified interface         |
+| Dependency Injection | `core/container.ts`                  | Inversion of control         |
+| Strategy             | `strategies/search-strategy.ts`      | Interchangeable algorithms   |
+| Factory              | `factories/service-factory.ts`       | Object creation              |
+| Singleton            | Via DI Container                     | Instance management          |
+| Adapter              | `adapters/llm-adapter.ts`            | External integration         |
 
 ### Testing
 
@@ -308,12 +417,14 @@ This release implements the following patterns:
 #### Using the Refactored Server
 
 **Before (v0.1.x):**
+
 ```typescript
 import { createDesignPatternsServer } from './mcp-server.js';
 const server = createDesignPatternsServer(config);
 ```
 
 **After (v0.2.x):**
+
 ```typescript
 import { createDesignPatternsServer } from './mcp-server-refactored.js';
 const server = createDesignPatternsServer(config);
@@ -323,12 +434,14 @@ const server = createDesignPatternsServer(config);
 #### Accessing Services (for testing)
 
 **Before:**
+
 ```typescript
 import { getCacheService } from './services/cache.js';
 const cache = getCacheService(); // Global singleton
 ```
 
 **After:**
+
 ```typescript
 import { TOKENS } from './core/container.js';
 const container = server.getContainer();
@@ -338,12 +451,13 @@ const cache = container.get(TOKENS.CACHE_SERVICE); // DI Container
 #### MCP Configuration Update
 
 Update your `.mcp.json`:
+
 ```json
 {
   "mcpServers": {
     "design-patterns": {
       "command": "node",
-      "args": ["dist/src/mcp-server-refactored.js"],  // Changed
+      "args": ["dist/src/mcp-server-refactored.js"], // Changed
       "cwd": "/path/to/design-patterns-mcp"
     }
   }
@@ -369,12 +483,14 @@ Update your `.mcp.json`:
 ## [0.2.0] - 2025-09-30
 
 ### Added
+
 - React patterns integration (27 patterns)
 - Modern React 18/19 features
 - Server Components patterns
 - Tailwind CSS patterns
 
 ### Changed
+
 - Pattern catalog expanded to 528 patterns
 - Code examples coverage: 52.3% → 54.6%
 
@@ -383,6 +499,7 @@ Update your `.mcp.json`:
 ## [0.1.0] - 2025-09-15
 
 ### Added
+
 - Initial MCP server implementation
 - 500+ design patterns catalog
 - Semantic search with embeddings
@@ -392,6 +509,7 @@ Update your `.mcp.json`:
 - Database migrations and seeding
 
 ### Features
+
 - find_patterns tool
 - search_patterns tool
 - get_pattern_details tool

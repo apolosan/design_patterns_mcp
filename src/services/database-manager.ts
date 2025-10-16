@@ -94,7 +94,11 @@ export class DatabaseManager {
         this.db = null;
         logger.info('database-manager', 'Database connection closed successfully');
       } catch (error) {
-        logger.error('database-manager', 'Failed to close database properly', error instanceof Error ? error : new Error(String(error)));
+        logger.error(
+          'database-manager',
+          'Failed to close database properly',
+          error instanceof Error ? error : new Error(String(error))
+        );
         throw error;
       }
     }
@@ -208,7 +212,7 @@ export class DatabaseManager {
     }
 
     let lastError: Error | null = null;
-    
+
     for (let attempt = 0; attempt < maxRetries; attempt++) {
       try {
         this.db.run('BEGIN TRANSACTION');
@@ -217,32 +221,36 @@ export class DatabaseManager {
         return result;
       } catch (error) {
         this.db.run('ROLLBACK');
-        
+
         const errorMsg = error instanceof Error ? error.message : String(error);
-        const isTransient = errorMsg.includes('BUSY') || 
-                           errorMsg.includes('LOCKED') ||
-                           errorMsg.includes('database is locked');
-        
+        const isTransient =
+          errorMsg.includes('BUSY') ||
+          errorMsg.includes('LOCKED') ||
+          errorMsg.includes('database is locked');
+
         if (isTransient && attempt < maxRetries - 1) {
           // Transient error - wait and retry with exponential backoff
           const waitTime = retryDelay * Math.pow(2, attempt);
-          logger.warn('database-manager', `Transaction failed (attempt ${attempt + 1}/${maxRetries}), retrying in ${waitTime}ms...`);
-          
+          logger.warn(
+            'database-manager',
+            `Transaction failed (attempt ${attempt + 1}/${maxRetries}), retrying in ${waitTime}ms...`
+          );
+
           // Synchronous sleep for retry delay
           const start = Date.now();
           while (Date.now() - start < waitTime) {
             // Busy wait (not ideal but works for small delays)
           }
-          
+
           lastError = error instanceof Error ? error : new Error(String(error));
           continue;
         }
-        
+
         // Non-transient error or max retries exceeded
         throw error;
       }
     }
-    
+
     throw lastError || new Error('Transaction failed after all retries');
   }
 
@@ -410,6 +418,38 @@ export class DatabaseManager {
       throw new Error('Database not initialized');
     }
     return this.db.prepare(sql);
+  }
+
+  /**
+   * Execute DDL statements (CREATE, ALTER, DROP) directly without prepared statements
+   * DDL statements cannot be prepared and reused like DML statements
+   */
+  execDDL(sql: string): void {
+    if (!this.db) {
+      throw new Error('Database not initialized');
+    }
+
+    const startTime = Date.now();
+
+    try {
+      // Execute DDL directly - split into individual statements
+      const statements = sql
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+
+      for (const statement of statements) {
+        if (statement.length > 0) {
+          this.db.exec(statement);
+        }
+      }
+
+      const executionTime = Date.now() - startTime;
+      this.updateQueryMetrics(sql, executionTime);
+    } catch (error) {
+      console.error('DDL execution failed:', sql, error);
+      throw error;
+    }
   }
 
   /**

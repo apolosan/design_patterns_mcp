@@ -1,0 +1,18 @@
+{
+  "id": "coroutines",
+  "name": "Coroutines Pattern",
+  "category": "Concurrency",
+  "description": "Lightweight threads for asynchronous programming that can be suspended and resumed",
+  "when_to_use": "Non-blocking I/O, concurrent tasks, structured concurrency, UI responsiveness",
+  "benefits": "Efficient concurrency, structured lifecycle management, cancellation support, resource efficiency",
+  "drawbacks": "Learning curve, debugging complexity, requires suspend functions",
+  "use_cases": "Network requests, background processing, data streaming, UI updates",
+  "complexity": "Medium",
+  "tags": ["concurrency", "asynchronous", "kotlin", "suspend", "lightweight-threads"],
+  "examples": {
+    "kotlin": {
+      "language": "kotlin",
+      "code": "import kotlinx.coroutines.*\n\nsuspend fun fetchUserData(userId: String): User = coroutineScope {\n    val profile = async { api.fetchProfile(userId) }\n    val friends = async { api.fetchFriends(userId) }\n    \n    User(profile.await(), friends.await())\n}\n\nsuspend fun processUserActions(userId: String) = coroutineScope {\n    try {\n        val userData = async { fetchUser(userId) }\n        val actions = async { fetchActions(userId) }\n        \n        process(userData.await(), actions.await())\n    } catch (e: Exception) {\n        // Automatic cancellation of both coroutines\n        logger.error(\"Failed to process user $userId\", e)\n        throw e\n    }\n}\n\nfun main() = runBlocking {\n    val result = fetchUserData(\"123\")\n    println(result)\n}"
+    }
+  }
+}

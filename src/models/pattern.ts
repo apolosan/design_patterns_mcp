@@ -79,6 +79,9 @@ export interface Pattern {
   /** Related patterns and relationships */
   relatedPatterns?: PatternRelationship[];
 
+  /** Raw related patterns from JSON (string array or object array) */
+  related_patterns?: string[] | PatternRelationship[];
+
   /** Implementation complexity level */
   complexity: string;
 

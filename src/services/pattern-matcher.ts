@@ -96,7 +96,7 @@ export class PatternMatcher {
     this.config = config;
     this.patternAnalyzer = new PatternAnalyzer();
     this.cache = cache || new CacheService();
-    
+
     // Initialize embedding adapter with the same strategy pattern used for generation
     this.embeddingAdapter = new EmbeddingServiceAdapter({
       cacheEnabled: true,
@@ -181,7 +181,7 @@ export class PatternMatcher {
         minUsageCount: 0,
       });
 
-      return searchResults.map(result => ({
+      const matches = searchResults.map(result => ({
         pattern: {
           id: result.patternId,
           name: result.pattern?.name || 'Unknown Pattern',
@@ -196,6 +196,8 @@ export class PatternMatcher {
           finalScore: result.score,
         },
       }));
+
+      return matches;
     } catch (error) {
       structuredLogger.error('pattern-matcher', 'Semantic search failed', error as Error);
       return [];
@@ -208,11 +210,6 @@ export class PatternMatcher {
   private async keywordSearch(request: PatternRequest): Promise<MatchResult[]> {
     try {
       const queryWords = this.tokenizeQuery(request.query);
-      structuredLogger.debug('pattern-matcher', 'Keyword search', {
-        query: request.query,
-        words: queryWords,
-        categories: request.categories,
-      });
       const matches: MatchResult[] = [];
 
       // Build SQL query
@@ -227,7 +224,6 @@ export class PatternMatcher {
         params.push(...request.categories);
       }
 
-      structuredLogger.debug('pattern-matcher', 'Keyword search SQL', { sql, params });
       const patterns = this.db.query<{
         id: string;
         name: string;
@@ -236,9 +232,6 @@ export class PatternMatcher {
         complexity: string;
         tags: string;
       }>(sql, params);
-      structuredLogger.debug('pattern-matcher', 'Keyword search results', {
-        patternCount: patterns.length,
-      });
 
       for (const pattern of patterns) {
         const score = this.calculateKeywordScore(queryWords, pattern);
@@ -385,17 +378,15 @@ export class PatternMatcher {
 
       // Use the embedding adapter to generate query embedding with the same strategy
       const embedding = await this.embeddingAdapter.generateEmbedding(query);
-      
-      structuredLogger.debug('pattern-matcher', 'Generated query embedding', {
-        queryLength: query.length,
-        embeddingDimensions: embedding.length,
-        strategy: this.embeddingAdapter.getStrategyInfo()?.name
-      });
 
       return embedding;
     } catch (error) {
-      structuredLogger.error('pattern-matcher', 'Failed to generate query embedding', error as Error);
-      
+      structuredLogger.error(
+        'pattern-matcher',
+        'Failed to generate query embedding',
+        error as Error
+      );
+
       // Fallback to simple hash-based embedding if the adapter fails
       return this.generateFallbackEmbedding(query);
     }

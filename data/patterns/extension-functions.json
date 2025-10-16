@@ -1,0 +1,18 @@
+{
+  "id": "extension-functions",
+  "name": "Extension Functions Pattern",
+  "category": "Structural",
+  "description": "Adding methods to existing classes without inheritance or modification",
+  "when_to_use": "Utility functions, DSL creation, API enhancement, retrofitting functionality",
+  "benefits": "Clean syntax, no inheritance required, composable, type-safe",
+  "drawbacks": "Discovery issues, naming conflicts, performance overhead, no override",
+  "use_cases": "String utilities, collection extensions, DSLs, API enhancements",
+  "complexity": "Low",
+  "tags": ["kotlin", "extension", "utility", "dsl", "retrofit"],
+  "examples": {
+    "kotlin": {
+      "language": "kotlin",
+      "code": "// String extensions\nfun String.isValidEmail(): Boolean {\n    return contains(\"@\") && contains(\".\")\n}\n\nfun String.toSlug(): String {\n    return lowercase()\n        .replace(Regex(\"[^a-z0-9\\\\s-]\"), \"\")\n        .replace(Regex(\"\\\\s+\"), \"-\")\n        .trim('-')\n}\n\n// Usage\nval email = \"user@example.com\"\nif (email.isValidEmail()) {\n    val slug = email.toSlug() // \"user-example-com\"\n}\n\n// Collection extensions\nfun <T> List<T>.second(): T? = if (size >= 2) this[1] else null\n\nfun <T> List<T>.splitBy(predicate: (T) -> Boolean): Pair<List<T>, List<T>> {\n    val matching = mutableListOf<T>()\n    val nonMatching = mutableListOf<T>()\n    \n    for (item in this) {\n        if (predicate(item)) {\n            matching.add(item)\n        } else {\n            nonMatching.add(item)\n        }\n    }\n    \n    return Pair(matching, nonMatching)\n}\n\n// Usage\nval numbers = listOf(1, 2, 3, 4, 5, 6)\nval second = numbers.second() // 2\nval (even, odd) = numbers.splitBy { it % 2 == 0 }\n\n// Generic extensions\ninline fun <T> T.applyIf(condition: Boolean, block: T.() -> T): T {\n    return if (condition) block() else this\n}\n\nfun <T> T?.ifNull(default: T): T = this ?: default\n\n// Usage\nval config = Config().applyIf(isProduction) {\n    host = \"prod.example.com\"\n    port = 443\n}\n\nval name = user.name.ifNull(\"Unknown\")\n\n// DSL with extensions\nclass HtmlBuilder {\n    private val elements = mutableListOf<String>()\n    \n    fun head(block: HeadBuilder.() -> Unit) {\n        val builder = HeadBuilder()\n        builder.block()\n        elements.add(\"<head>${builder.build()}</head>\")\n    }\n    \n    fun body(block: BodyBuilder.() -> Unit) {\n        val builder = BodyBuilder()\n        builder.block()\n        elements.add(\"<body>${builder.build()}</body>\")\n    }\n    \n    fun build() = elements.joinToString(\"\")\n}\n\nclass HeadBuilder {\n    private var title = \"\"\n    fun title(text: String) { title = text }\n    fun build() = \"<title>$title</title>\"\n}\n\nclass BodyBuilder {\n    private val elements = mutableListOf<String>()\n    fun h1(text: String) { elements.add(\"<h1>$text</h1>\") }\n    fun p(text: String) { elements.add(\"<p>$text</p>\") }\n    fun build() = elements.joinToString(\"\")\n}\n\nfun html(block: HtmlBuilder.() -> Unit): String {\n    val builder = HtmlBuilder()\n    builder.block()\n    return \"<html>${builder.build()}</html>\"\n}\n\n// Usage\nval page = html {\n    head {\n        title(\"My Page\")\n    }\n    body {\n        h1(\"Welcome\")\n        p(\"Hello world\")\n    }\n}"
+    }
+  }
+}

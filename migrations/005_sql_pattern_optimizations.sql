@@ -23,9 +23,10 @@ CREATE INDEX IF NOT EXISTS idx_patterns_with_examples
 
 -- JSON Path Index Pattern: Enable fast JSON querying
 -- Optimizes: JSON_EXTRACT queries on metadata
-CREATE INDEX IF NOT EXISTS idx_patterns_metadata_complexity 
-  ON patterns(json_extract(metadata, '$.complexity'))
-  WHERE metadata IS NOT NULL;
+-- Note: metadata column not present in current schema, skipping index creation
+-- CREATE INDEX IF NOT EXISTS idx_patterns_metadata_complexity
+--   ON patterns(json_extract(metadata, '$.complexity'))
+--   WHERE metadata IS NOT NULL;
 
 -- Full-Text Search Preparation: Index for text search on description
 -- Benefits: Faster LIKE queries and potential FTS upgrade

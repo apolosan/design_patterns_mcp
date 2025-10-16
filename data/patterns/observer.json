@@ -8,15 +8,18 @@
   "drawbacks": "Memory leaks\nUnexpected updates\nPerformance",
   "use_cases": "MVC/MVP patterns\nEvent systems\nReactive programming",
   "complexity": "Low",
-  "tags": [
-    "behavioral",
-    "events",
-    "publish-subscribe"
-  ],
+  "tags": ["behavioral", "events", "publish-subscribe"],
   "examples": {
     "typescript": {
       "language": "typescript",
       "code": "interface Observer {\n  update(data: any): void;\n}\n\nclass Subject {\n  private observers: Observer[] = [];\n  attach(obs: Observer) { this.observers.push(obs); }\n  notify(data: any) { this.observers.forEach(o => o.update(data)); }\n}\n\nclass ConcreteObserver implements Observer {\n  constructor(private name: string) {}\n  update(data: any) {\n    console.log(`${this.name} received: ${data}`);\n  }\n}\n\n// Usage: notify multiple objects\nconst subject = new Subject();\nsubject.attach(new ConcreteObserver('A'));\nsubject.notify('Event!');"
     }
-  }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "flows",
+      "type": "enhances",
+      "description": "Flows provide a more composable and reactive approach to the Observer pattern with built-in backpressure and cancellation support"
+    }
+  ]
 }

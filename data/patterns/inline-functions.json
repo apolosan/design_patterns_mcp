@@ -1,0 +1,18 @@
+{
+  "id": "inline-functions",
+  "name": "Inline Functions Pattern",
+  "category": "Performance",
+  "description": "Zero-cost abstractions through compile-time inlining of function calls",
+  "when_to_use": "Performance-critical code, higher-order functions, generics, lambdas",
+  "benefits": "Zero overhead, type safety, performance, reified generics",
+  "drawbacks": "Code size increase, debugging complexity, cannot be overridden",
+  "use_cases": "Generic functions, lambdas, performance optimization, type checking",
+  "complexity": "Medium",
+  "tags": ["kotlin", "performance", "inline", "zero-cost", "reified-generics"],
+  "examples": {
+    "kotlin": {
+      "language": "kotlin",
+      "code": "// Basic inline function\ninline fun measureTime(block: () -> Unit) {\n    val start = System.nanoTime()\n    block()\n    val end = System.nanoTime()\n    println(\"Time: ${(end - start) / 1_000_000}ms\")\n}\n\n// Usage - no function call overhead\nmeasureTime {\n    expensiveOperation()\n}\n\n// Inline with generics and reification\ninline fun <reified T> isType(value: Any): Boolean {\n    return value is T\n}\n\ninline fun <reified T> List<Any>.filterIsInstance(): List<T> {\n    return filter { it is T }.map { it as T }\n}\n\n// Usage\nval mixedList = listOf(\"hello\", 42, 3.14, \"world\")\nval strings = mixedList.filterIsInstance<String>() // [\"hello\", \"world\"]\nval numbers = mixedList.filterIsInstance<Number>() // [42, 3.14]\n\n// Inline lambda capture\ninline fun repeat(times: Int, action: (Int) -> Unit) {\n    for (i in 0 until times) {\n        action(i)\n    }\n}\n\n// Usage - lambda is inlined, no object creation\nrepeat(5) { index ->\n    println(\"Iteration $index\")\n}\n\n// Crossinline for non-local returns\ninline fun withLock(lock: Lock, crossinline block: () -> Unit) {\n    lock.lock()\n    try {\n        block()\n    } finally {\n        lock.unlock()\n    }\n}\n\n// Usage\nwithLock(myLock) {\n    // Can use return, break, continue\n    if (someCondition) return\n    doWork()\n}\n\n// Noinline for specific parameters\ninline fun processItems(\n    items: List<String>,\n    noinline transform: (String) -> String,\n    filter: (String) -> Boolean\n) {\n    items\n        .filter(filter) // filter lambda inlined\n        .map(transform) // transform lambda not inlined (stored as reference)\n        .forEach { println(it) }\n}\n\n// Performance comparison\nclass PerformanceTest {\n    // Non-inline version\n    fun measureNonInline(block: () -> Unit): Long {\n        val start = System.nanoTime()\n        block()\n        return System.nanoTime() - start\n    }\n    \n    // Inline version\n    inline fun measureInline(block: () -> Unit): Long {\n        val start = System.nanoTime()\n        block()\n        return System.nanoTime() - start\n    }\n}\n\n// Inline higher-order functions\ninline fun <T, R> Iterable<T>.mapNotNull(transform: (T) -> R?): List<R> {\n    return mapNotNullTo(ArrayList(), transform)\n}\n\ninline fun <T, R> Iterable<T>.flatMap(transform: (T) -> Iterable<R>): List<R> {\n    return flatMapTo(ArrayList(), transform)\n}\n\n// Usage\nval numbers = listOf(1, 2, 3, null, 5)\nval doubled = numbers.mapNotNull { it?.times(2) } // [2, 4, 6, 10]\n\n// Inline with function types\ninline operator fun <T> ((T) -> Boolean).not(): (T) -> Boolean {\n    return { !this(it) }\n}\n\n// Usage\nval isEven = { n: Int -> n % 2 == 0 }\nval isOdd = !isEven // Inlined negation\n\nval odds = (1..10).filter(isOdd) // [1, 3, 5, 7, 9]"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "companion-objects",
+  "name": "Companion Objects Pattern",
+  "category": "Creational",
+  "description": "Static-like functionality within classes for factory methods, constants, and utilities",
+  "when_to_use": "Factory methods, constants, utility functions, singleton behavior",
+  "benefits": "Encapsulation, type safety, inheritance support, access to private members",
+  "drawbacks": "Singleton behavior, testing complexity, potential memory leaks",
+  "use_cases": "Factory patterns, constants, caching, serialization",
+  "complexity": "Low",
+  "tags": ["kotlin", "factory", "singleton", "static", "encapsulation"],
+  "examples": {
+    "kotlin": {
+      "language": "kotlin",
+      "code": "class DatabaseConnection private constructor(val url: String) {\n    \n    companion object {\n        private val connections = mutableMapOf<String, DatabaseConnection>()\n        \n        fun getConnection(url: String): DatabaseConnection {\n            return connections.getOrPut(url) {\n                DatabaseConnection(url).apply { connect() }\n            }\n        }\n        \n        const val DEFAULT_TIMEOUT = 5000\n        \n        fun createInMemory(): DatabaseConnection {\n            return DatabaseConnection(\"jdbc:sqlite::memory:\").apply { connect() }\n        }\n    }\n    \n    private fun connect() { /* connection logic */ }\n    \n    fun executeQuery(query: String): ResultSet { /* implementation */ }\n}\n\n// Usage\nval conn1 = DatabaseConnection.getConnection(\"jdbc:sqlite:db.db\")\nval conn2 = DatabaseConnection.getConnection(\"jdbc:sqlite:db.db\") // Same instance\nval memoryDb = DatabaseConnection.createInMemory()\n\n// Named companion object\nclass JsonParser {\n    companion object Factory {\n        fun fromJson(json: String): JsonParser {\n            return JsonParser().apply { parse(json) }\n        }\n        \n        fun fromFile(file: File): JsonParser {\n            return fromJson(file.readText())\n        }\n    }\n    \n    private fun parse(json: String) { /* parsing logic */ }\n}\n\n// Usage\nval parser1 = JsonParser.fromJson(\"{\"key\": \"value\"}\")\nval parser2 = JsonParser.fromFile(File(\"config.json\"))\n\n// Companion object implementing interface\ninterface ConfigFactory<T> {\n    fun create(): T\n    fun createFromFile(path: String): T\n}\n\nclass AppConfig private constructor(val settings: Map<String, Any>) {\n    \n    companion object : ConfigFactory<AppConfig> {\n        override fun create(): AppConfig {\n            return AppConfig(mapOf(\"debug\" to false, \"timeout\" to 30))\n        }\n        \n        override fun createFromFile(path: String): AppConfig {\n            val file = File(path)\n            val settings = /* parse file */\n            return AppConfig(settings)\n        }\n    }\n}\n\n// Constants and utilities\nclass MathUtils {\n    companion object {\n        const val PI = 3.14159\n        const val E = 2.71828\n        \n        fun factorial(n: Int): Long {\n            return if (n <= 1) 1 else n * factorial(n - 1)\n        }\n        \n        fun gcd(a: Int, b: Int): Int {\n            return if (b == 0) a else gcd(b, a % b)\n        }\n    }\n}\n\n// Usage\nval area = MathUtils.PI * radius * radius\nval fact = MathUtils.factorial(5)\nval divisor = MathUtils.gcd(48, 18)"
+    }
+  }
+}

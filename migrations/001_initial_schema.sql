@@ -3,7 +3,7 @@
 
 -- UP
 -- Create patterns table
-CREATE TABLE patterns (
+CREATE TABLE IF NOT EXISTS patterns (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   category TEXT NOT NULL,
@@ -14,12 +14,13 @@ CREATE TABLE patterns (
   use_cases TEXT,
   complexity TEXT NOT NULL,
   tags TEXT,
+  examples TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create pattern_implementations table
-CREATE TABLE pattern_implementations (
+CREATE TABLE IF NOT EXISTS pattern_implementations (
   id TEXT PRIMARY KEY,
   pattern_id TEXT NOT NULL,
   language TEXT NOT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE pattern_implementations (
 );
 
 -- Create pattern_relationships table
-CREATE TABLE pattern_relationships (
+CREATE TABLE IF NOT EXISTS pattern_relationships (
   id TEXT PRIMARY KEY,
   source_pattern_id TEXT NOT NULL,
   target_pattern_id TEXT NOT NULL,
@@ -45,7 +46,7 @@ CREATE TABLE pattern_relationships (
 );
 
 -- Create user_preferences table
-CREATE TABLE user_preferences (
+CREATE TABLE IF NOT EXISTS user_preferences (
   user_id TEXT PRIMARY KEY,
   preferences TEXT NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

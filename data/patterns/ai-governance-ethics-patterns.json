@@ -7,29 +7,13 @@
       "description": "Systematically identifies, measures, and reduces bias in AI systems",
       "problem": "AI models trained on biased data produce discriminatory outcomes",
       "solution": "Implement bias detection and mitigation strategies",
-      "when_to_use": [
-        "Training AI models for decision-making systems"
-      ],
-      "benefits": [
-        "Fair outcomes",
-        "Regulatory compliance"
-      ],
-      "drawbacks": [
-        "Increased complexity"
-      ],
-      "use_cases": [
-        "Hiring systems",
-        "Loan approval"
-      ],
-      "related_patterns": [
-        "Fairness Pattern"
-      ],
+      "when_to_use": ["Training AI models for decision-making systems"],
+      "benefits": ["Fair outcomes", "Regulatory compliance"],
+      "drawbacks": ["Increased complexity"],
+      "use_cases": ["Hiring systems", "Loan approval"],
+      "related_patterns": ["fairness-pattern"],
       "complexity": "High",
-      "tags": [
-        "ai-governance",
-        "ethics",
-        "bias"
-      ],
+      "tags": ["ai-governance", "ethics", "bias"],
       "code_examples": [
         {
           "language": "python",
@@ -44,29 +28,13 @@
       "description": "Ensures AI systems provide equitable outcomes across demographic groups",
       "problem": "AI systems can perpetuate societal inequalities",
       "solution": "Integrate fairness metrics and constraints into ML pipelines",
-      "when_to_use": [
-        "Building decision-making AI systems"
-      ],
-      "benefits": [
-        "Equitable treatment",
-        "Regulatory compliance"
-      ],
-      "drawbacks": [
-        "Accuracy-fairness trade-offs"
-      ],
-      "use_cases": [
-        "Automated hiring",
-        "Credit scoring"
-      ],
-      "related_patterns": [
-        "Bias Mitigation Pattern"
-      ],
+      "when_to_use": ["Building decision-making AI systems"],
+      "benefits": ["Equitable treatment", "Regulatory compliance"],
+      "drawbacks": ["Accuracy-fairness trade-offs"],
+      "use_cases": ["Automated hiring", "Credit scoring"],
+      "related_patterns": ["bias-mitigation"],
       "complexity": "High",
-      "tags": [
-        "ai-governance",
-        "ethics",
-        "fairness"
-      ],
+      "tags": ["ai-governance", "ethics", "fairness"],
       "code_examples": [
         {
           "language": "python",
@@ -81,28 +49,13 @@
       "description": "Makes AI model decisions transparent and understandable",
       "problem": "Complex AI models act as black boxes",
       "solution": "Implement interpretability techniques like SHAP values",
-      "when_to_use": [
-        "High-stakes decision-making systems"
-      ],
-      "benefits": [
-        "Increased transparency",
-        "Easier debugging"
-      ],
-      "drawbacks": [
-        "Computational overhead"
-      ],
-      "use_cases": [
-        "Financial risk assessment",
-        "Medical diagnosis"
-      ],
-      "related_patterns": [
-        "Bias Mitigation Pattern"
-      ],
+      "when_to_use": ["High-stakes decision-making systems"],
+      "benefits": ["Increased transparency", "Easier debugging"],
+      "drawbacks": ["Computational overhead"],
+      "use_cases": ["Financial risk assessment", "Medical diagnosis"],
+      "related_patterns": ["bias-mitigation"],
       "complexity": "Medium",
-      "tags": [
-        "ai-governance",
-        "interpretability"
-      ],
+      "tags": ["ai-governance", "interpretability"],
       "code_examples": [
         {
           "language": "python",
@@ -117,30 +70,13 @@
       "description": "Implements privacy-preserving techniques in AI systems",
       "problem": "AI systems require access to sensitive personal data",
       "solution": "Apply federated learning and differential privacy",
-      "when_to_use": [
-        "Processing sensitive data",
-        "Multi-party AI"
-      ],
-      "benefits": [
-        "Enhanced privacy",
-        "Regulatory compliance"
-      ],
-      "drawbacks": [
-        "Increased complexity"
-      ],
-      "use_cases": [
-        "Healthcare models",
-        "Financial risk assessment"
-      ],
-      "related_patterns": [
-        "Bias Mitigation Pattern"
-      ],
+      "when_to_use": ["Processing sensitive data", "Multi-party AI"],
+      "benefits": ["Enhanced privacy", "Regulatory compliance"],
+      "drawbacks": ["Increased complexity"],
+      "use_cases": ["Healthcare models", "Financial risk assessment"],
+      "related_patterns": ["bias-mitigation"],
       "complexity": "High",
-      "tags": [
-        "ai-governance",
-        "privacy",
-        "security"
-      ],
+      "tags": ["ai-governance", "privacy", "security"],
       "code_examples": [
         {
           "language": "python",
@@ -155,30 +91,13 @@
       "description": "Establishes comprehensive governance frameworks for AI systems",
       "problem": "AI systems lack standardized governance",
       "solution": "Implement governance framework with policies and monitoring",
-      "when_to_use": [
-        "Large-scale AI development",
-        "High-risk applications"
-      ],
-      "benefits": [
-        "Regulatory compliance",
-        "Risk mitigation"
-      ],
-      "drawbacks": [
-        "High implementation complexity"
-      ],
-      "use_cases": [
-        "Financial AI systems",
-        "Healthcare applications"
-      ],
-      "related_patterns": [
-        "Bias Mitigation Pattern"
-      ],
+      "when_to_use": ["Large-scale AI development", "High-risk applications"],
+      "benefits": ["Regulatory compliance", "Risk mitigation"],
+      "drawbacks": ["High implementation complexity"],
+      "use_cases": ["Financial AI systems", "Healthcare applications"],
+      "related_patterns": ["bias-mitigation"],
       "complexity": "High",
-      "tags": [
-        "ai-governance",
-        "ethics",
-        "compliance"
-      ],
+      "tags": ["ai-governance", "ethics", "compliance"],
       "code_examples": [
         {
           "language": "python",

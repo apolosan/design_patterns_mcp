@@ -8,15 +8,31 @@
   "drawbacks": "Code complexity\nPerformance overhead",
   "use_cases": "API integration\nLegacy system wrapping\nData format conversion",
   "complexity": "Low",
-  "tags": [
-    "structural",
-    "wrapper",
-    "compatibility"
-  ],
+  "tags": ["structural", "wrapper", "compatibility"],
   "examples": {
     "typescript": {
       "language": "typescript",
       "code": "class LegacyPrinter {\n  printOldFormat(text: string) {\n    console.log(`[OLD] ${text}`);\n  }\n}\n\ninterface ModernPrinter {\n  print(text: string): void;\n}\n\nclass PrinterAdapter implements ModernPrinter {\n  constructor(private legacy: LegacyPrinter) {}\n  \n  print(text: string) {\n    this.legacy.printOldFormat(text);\n  }\n}\n\n// Usage: make incompatible interfaces work together\nconst adapter: ModernPrinter = new PrinterAdapter(new LegacyPrinter());\nadapter.print('Hello');"
     }
-  }
+  },
+  "relationships": [
+    {
+      "targetPatternId": "facade",
+      "type": "related",
+      "strength": 0.8,
+      "description": "Both are structural patterns that provide interface adaptation"
+    },
+    {
+      "targetPatternId": "decorator",
+      "type": "similar",
+      "strength": 0.6,
+      "description": "Both use wrapper/composition approaches"
+    },
+    {
+      "targetPatternId": "proxy",
+      "type": "similar",
+      "strength": 0.5,
+      "description": "Both act as intermediaries between client and implementation"
+    }
+  ]
 }

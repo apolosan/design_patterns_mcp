@@ -41,7 +41,7 @@ class DesignPatternsMCPServer {
   private db: DatabaseManager;
   private vectorOps: VectorOperationsService;
   private patternMatcher: PatternMatcher;
-  private semanticSearch: SemanticSearchService;
+  private semanticSearch!: SemanticSearchService;
   private llmBridge: LLMBridgeService | null = null;
   private migrationManager: MigrationManager;
   private patternSeeder: PatternSeeder;
@@ -79,21 +79,12 @@ class DesignPatternsMCPServer {
 
     this.patternMatcher = new PatternMatcher(this.db, this.vectorOps, {
       maxResults: 5,
-      minConfidence: 0.3,
+      minConfidence: 0.1,
       useSemanticSearch: true,
       useKeywordSearch: true,
       useHybridSearch: true,
       semanticWeight: 0.7,
       keywordWeight: 0.3,
-    }, cacheService);
-
-    this.semanticSearch = new SemanticSearchService(this.db, this.vectorOps, {
-      modelName: 'all-MiniLM-L6-v2',
-      maxResults: 50,
-      similarityThreshold: 0.3,
-      contextWindow: 1000,
-      useQueryExpansion: false,
-      useReRanking: true,
     });
 
     if (config.enableLLM) {
@@ -426,7 +417,7 @@ class DesignPatternsMCPServer {
       try {
         const examples = JSON.parse(pattern.examples);
         const exampleKeys = Object.keys(examples);
-        
+
         if (exampleKeys.length > 0) {
           examplesText = '\n\n**Code Examples:**\n';
           exampleKeys.forEach(lang => {
@@ -474,7 +465,9 @@ class DesignPatternsMCPServer {
   private async handleCountPatterns(args: any): Promise<any> {
     try {
       // OPTIMIZATION: Use COUNT instead of loading all rows
-      const totalResult = this.db.queryOne<{ total: number }>('SELECT COUNT(*) as total FROM patterns');
+      const totalResult = this.db.queryOne<{ total: number }>(
+        'SELECT COUNT(*) as total FROM patterns'
+      );
       const total = totalResult?.total || 0;
 
       if (args.includeDetails) {

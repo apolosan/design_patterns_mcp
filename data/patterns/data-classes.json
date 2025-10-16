@@ -1,0 +1,18 @@
+{
+  "id": "data-classes",
+  "name": "Data Classes Pattern",
+  "category": "Creational",
+  "description": "Immutable data containers with automatic equals, hashCode, copy, and toString methods",
+  "when_to_use": "Value objects, DTOs, configuration objects, domain models",
+  "benefits": "Immutability, automatic methods, concise syntax, destructuring support",
+  "drawbacks": "Limited inheritance, no custom logic in auto-generated methods, compilation overhead",
+  "use_cases": "API responses, configuration, domain entities, data transfer",
+  "complexity": "Low",
+  "tags": ["kotlin", "immutable", "value-objects", "dto", "destructuring"],
+  "examples": {
+    "kotlin": {
+      "language": "kotlin",
+      "code": "data class User(\n    val id: String,\n    val name: String,\n    val email: String,\n    val createdAt: Instant = Instant.now(),\n    val isActive: Boolean = true\n)\n\n// Automatic features\ndata class Point(val x: Int, val y: Int) {\n    // Custom methods allowed\n    fun distanceTo(other: Point): Double {\n        val dx = (x - other.x).toDouble()\n        val dy = (y - other.y).toDouble()\n        return sqrt(dx * dx + dy * dy)\n    }\n}\n\n// Usage examples\nval user1 = User(\"1\", \"John\", \"john@example.com\")\nval user2 = user1.copy(name = \"Jane\") // Immutable update\n\n// Destructuring\nval (id, name, email, createdAt, isActive) = user1\n\n// Structural equality\nval user3 = User(\"1\", \"John\", \"john@example.com\")\nprintln(user1 == user3) // true - compares by value\n\n// Component functions\nprintln(user1.component1()) // \"1\" (id)\nprintln(user1.component2()) // \"John\" (name)\n\n// Copy with modifications\nval updatedUser = user1.copy(\n    email = \"jane@example.com\",\n    isActive = false\n)\n\n// Data class inheritance (limited)\nsealed class Response\n\ndata class Success<T>(val data: T) : Response()\ndata class Error(val message: String, val code: Int) : Response()\n\n// Smart casting with when\nfun handleResponse(response: Response) {\n    when (response) {\n        is Success -> println(\"Data: ${response.data}\")\n        is Error -> println(\"Error: ${response.message}\")\n    }\n}"
+    }
+  }
+}

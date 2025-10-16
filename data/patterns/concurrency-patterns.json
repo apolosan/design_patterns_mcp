@@ -22,7 +22,14 @@
       "drawbacks": ["Buffer management", "Synchronization complexity", "Memory overhead"],
       "use_cases": ["Data pipelines", "Event processing", "Streaming systems"],
       "complexity": "Medium",
-      "tags": ["concurrency", "buffering", "streaming"]
+      "tags": ["concurrency", "buffering", "streaming"],
+      "relationships": [
+        {
+          "target_pattern_id": "channels",
+          "type": "enhances",
+          "description": "Channels provide a more type-safe and coroutine-aware implementation of the Producer-Consumer pattern with built-in backpressure"
+        }
+      ]
     },
     {
       "id": "monitor-object",

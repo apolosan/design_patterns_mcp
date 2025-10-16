@@ -12,11 +12,12 @@ import { SemanticSearchService } from '../services/semantic-search.js';
 import { VectorOperationsService } from '../services/vector-operations.js';
 import { LLMBridgeService } from '../services/llm-bridge.js';
 import { SqlitePatternRepository } from '../repositories/pattern-repository.js';
-import { 
-  KeywordSearchStrategy, 
-  SemanticSearchStrategy, 
+import { SqliteRelationshipRepository } from '../repositories/relationship-repository.js';
+import {
+  KeywordSearchStrategy,
+  SemanticSearchStrategy,
   HybridSearchStrategy,
-  SearchStrategy 
+  SearchStrategy,
 } from '../strategies/search-strategy.js';
 import { DefaultServiceFactory } from '../factories/service-factory.js';
 import { MCPToolsHandler } from '../lib/mcp-tools.js';
@@ -151,13 +152,14 @@ export class MCPServerBuilder {
     // Set defaults
     this.serverConfig.name = this.serverConfig.name || 'design-patterns-mcp';
     this.serverConfig.version = this.serverConfig.version || '1.0.0';
-    this.serverConfig.description = this.serverConfig.description || 
+    this.serverConfig.description =
+      this.serverConfig.description ||
       'MCP server providing intelligent design pattern recommendations';
     this.serverConfig.logLevel = this.serverConfig.logLevel || 'info';
-    
+
     this.searchConfig.strategy = this.searchConfig.strategy || 'hybrid';
     this.searchConfig.maxResults = this.searchConfig.maxResults || 10;
-    this.searchConfig.similarityThreshold = this.searchConfig.similarityThreshold || 0.3;
+    this.searchConfig.similarityThreshold = this.searchConfig.similarityThreshold || 0.1;
   }
 
   private async registerServices(): Promise<void> {
@@ -185,6 +187,12 @@ export class MCPServerBuilder {
       return new SqlitePatternRepository(dbManager);
     });
 
+    // Register Relationship Repository
+    this.container.registerSingleton(TOKENS.RELATIONSHIP_REPOSITORY, () => {
+      const dbManager = this.container.get<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+      return new SqliteRelationshipRepository(dbManager);
+    });
+
     // Register Vector Operations
     this.container.registerSingleton(TOKENS.VECTOR_OPERATIONS, () => {
       const dbManager = this.container.get<DatabaseManager>(TOKENS.DATABASE_MANAGER);
@@ -193,7 +201,7 @@ export class MCPServerBuilder {
         dimensions: 384, // MiniLM-L6-v2 dimensions
         similarityThreshold: this.searchConfig.similarityThreshold || 0.3,
         maxResults: this.searchConfig.maxResults || 10,
-        cacheEnabled: true
+        cacheEnabled: true,
       };
       return new VectorOperationsService(dbManager, vectorConfig);
     });
@@ -208,7 +216,7 @@ export class MCPServerBuilder {
         similarityThreshold: this.searchConfig.similarityThreshold || 0.3,
         contextWindow: 512,
         useQueryExpansion: false,
-        useReRanking: false
+        useReRanking: false,
       });
     });
 
@@ -229,8 +237,8 @@ export class MCPServerBuilder {
       const dbManager = this.container.get<DatabaseManager>(TOKENS.DATABASE_MANAGER);
       const searchStrategy = this.container.get<SearchStrategy>(TOKENS.SEARCH_STRATEGY);
       const repository = this.container.get<SqlitePatternRepository>(TOKENS.PATTERN_REPOSITORY);
-      
-      const llmBridge = this.container.has(TOKENS.LLM_BRIDGE) 
+
+      const llmBridge = this.container.has(TOKENS.LLM_BRIDGE)
         ? this.container.get<LLMBridgeService>(TOKENS.LLM_BRIDGE)
         : undefined;
 
@@ -238,11 +246,13 @@ export class MCPServerBuilder {
       return new PatternMatcher(dbManager, vectorOps, {
         maxResults: this.searchConfig.maxResults || 10,
         minConfidence: this.searchConfig.similarityThreshold || 0.3,
-        useSemanticSearch: this.searchConfig.strategy === 'semantic' || this.searchConfig.strategy === 'hybrid',
-        useKeywordSearch: this.searchConfig.strategy === 'keyword' || this.searchConfig.strategy === 'hybrid',
+        useSemanticSearch:
+          this.searchConfig.strategy === 'semantic' || this.searchConfig.strategy === 'hybrid',
+        useKeywordSearch:
+          this.searchConfig.strategy === 'keyword' || this.searchConfig.strategy === 'hybrid',
         useHybridSearch: this.searchConfig.strategy === 'hybrid',
         semanticWeight: this.searchConfig.hybridWeights?.semantic || 0.7,
-        keywordWeight: this.searchConfig.hybridWeights?.keyword || 0.3
+        keywordWeight: this.searchConfig.hybridWeights?.keyword || 0.3,
       });
     });
   }
@@ -253,18 +263,18 @@ export class MCPServerBuilder {
     switch (this.searchConfig.strategy) {
       case 'keyword':
         return new KeywordSearchStrategy(repository);
-      
+
       case 'semantic': {
         const semanticSearch = this.container.get<SemanticSearchService>(TOKENS.SEMANTIC_SEARCH);
         return new SemanticSearchStrategy(semanticSearch, repository);
       }
-      
+
       case 'hybrid':
       default: {
         const semanticSearch = this.container.get<SemanticSearchService>(TOKENS.SEMANTIC_SEARCH);
         const keywordStrategy = new KeywordSearchStrategy(repository);
         const semanticStrategy = new SemanticSearchStrategy(semanticSearch, repository);
-        
+
         const weights = this.searchConfig.hybridWeights || { keyword: 0.4, semantic: 0.6 };
         return new HybridSearchStrategy(
           keywordStrategy,
@@ -286,8 +296,8 @@ export class MCPServerBuilder {
       {
         capabilities: {
           tools: {},
-          resources: {}
-        }
+          resources: {},
+        },
       }
     );
 
@@ -301,12 +311,15 @@ export class MCPServerBuilder {
       patternMatcher: patternMatcher as any, // TODO: Add proper adapter
       semanticSearch: {} as any, // TODO: Add semantic search
       databaseManager: dbManager as any, // TODO: Add proper adapter
-      preferences: new Map()
+      preferences: new Map(),
     });
+    // Get actual pattern count
+    const patternCount = await repository.count();
+
     const resourcesHandler = new MCPResourcesHandler({
       databaseManager: dbManager as any, // TODO: Add proper adapter
       serverVersion: this.serverConfig.version || '1.0.0',
-      totalPatterns: 0 // TODO: Get actual count
+      totalPatterns: patternCount,
     });
 
     // Register tool and resource handlers
@@ -318,7 +331,7 @@ export class MCPServerBuilder {
       name: this.serverConfig.name,
       version: this.serverConfig.version,
       searchStrategy: this.searchConfig.strategy,
-      llmEnabled: !!this.llmConfig.provider && this.llmConfig.provider !== 'none'
+      llmEnabled: !!this.llmConfig.provider && this.llmConfig.provider !== 'none',
     });
 
     return server;
@@ -330,7 +343,7 @@ export class MCPServerBuilder {
   async buildAndStart(): Promise<void> {
     const server = await this.build();
     const transport = new StdioServerTransport();
-    
+
     await server.connect(transport);
     logger.info('ServerBuilder', 'MCP Server started with stdio transport');
   }
@@ -342,16 +355,16 @@ export class MCPServerBuilder {
     return new MCPServerBuilder()
       .withDatabase({
         filename: './data/design-patterns.db',
-        options: { readonly: false, fileMustExist: false }
+        options: { readonly: false, fileMustExist: false },
       })
       .withSearch({
         strategy: 'hybrid',
         maxResults: 10,
-        similarityThreshold: 0.3
+        similarityThreshold: 0.3,
       })
       .withServerConfig({
         logLevel: 'debug',
-        enableCache: true
+        enableCache: true,
       });
   }
 
@@ -362,18 +375,18 @@ export class MCPServerBuilder {
     return new MCPServerBuilder()
       .withDatabase({
         filename: process.env.DB_PATH || '/var/lib/design-patterns/patterns.db',
-        options: { readonly: true, fileMustExist: true }
+        options: { readonly: true, fileMustExist: true },
       })
       .withSearch({
         strategy: 'hybrid',
         maxResults: 20,
-        similarityThreshold: 0.4
+        similarityThreshold: 0.4,
       })
       .withServerConfig({
         logLevel: 'info',
         enableCache: true,
         cacheSize: 1000,
-        cacheTTL: 3600
+        cacheTTL: 3600,
       });
   }
 }

@@ -48,8 +48,19 @@ export class PatternSeeder {
           allPatterns.push(pattern);
 
           // Collect relationships for later insertion
-          if (pattern.relatedPatterns) {
-            for (const rel of pattern.relatedPatterns) {
+          const relatedPatterns = pattern.relatedPatterns || pattern.related_patterns;
+          const relationships = pattern.relationships;
+
+          // Process legacy relatedPatterns format
+          if (relatedPatterns) {
+            for (const rel of relatedPatterns) {
+              allRelationships.push({ sourceId: pattern.id, relationship: rel, filename: file });
+            }
+          }
+
+          // Process new relationships format
+          if (relationships) {
+            for (const rel of relationships) {
               allRelationships.push({ sourceId: pattern.id, relationship: rel, filename: file });
             }
           }
@@ -83,21 +94,23 @@ export class PatternSeeder {
       // Fourth pass: Insert all relationships (after all patterns exist)
       this.db.transaction(() => {
         for (const { sourceId, relationship } of allRelationships) {
-          // Check if target pattern exists before inserting relationship
-          const targetPatternId = relationship.patternId || relationship.targetPatternId;
-          const targetExists = this.db.queryOne('SELECT id FROM patterns WHERE id = ?', [
-            targetPatternId,
-          ]);
-
-          if (targetExists) {
+          // Handle both string and object formats for relationships
+          if (typeof relationship === 'string') {
+            // String format: relationship is the target pattern name
             const relInserted = this.insertRelationship(sourceId, relationship);
             if (relInserted) {
               totalRelationships++;
             }
-          } else {
-            console.warn(
-              `Skipping relationship from ${sourceId} to ${targetPatternId} - target pattern does not exist`
-            );
+          } else if (relationship && typeof relationship === 'object') {
+            // Object format: extract target pattern name
+            const targetPatternName =
+              relationship.patternId || relationship.targetPatternId || relationship.name;
+            if (targetPatternName) {
+              const relInserted = this.insertRelationship(sourceId, targetPatternName);
+              if (relInserted) {
+                totalRelationships++;
+              }
+            }
           }
         }
       });
@@ -180,8 +193,9 @@ export class PatternSeeder {
           patternsInserted++;
 
           // Collect relationships for later insertion
-          if (pattern.relatedPatterns) {
-            for (const rel of pattern.relatedPatterns) {
+          const relatedPatterns = pattern.relatedPatterns || pattern.related_patterns;
+          if (relatedPatterns) {
+            for (const rel of relatedPatterns) {
               allRelationships.push({ sourceId: pattern.id, relationship: rel });
             }
           }
@@ -207,9 +221,23 @@ export class PatternSeeder {
     // Third pass: Insert relationships (after all patterns exist)
     this.db.transaction(() => {
       for (const { sourceId, relationship } of allRelationships) {
-        const relInserted = this.insertRelationship(sourceId, relationship);
-        if (relInserted) {
-          relationshipsInserted++;
+        // Handle both string and object formats for relationships
+        if (typeof relationship === 'string') {
+          // String format: relationship is the target pattern name
+          const relInserted = this.insertRelationship(sourceId, relationship);
+          if (relInserted) {
+            relationshipsInserted++;
+          }
+        } else if (relationship && typeof relationship === 'object') {
+          // Object format: extract target pattern name
+          const targetPatternName =
+            relationship.patternId || relationship.targetPatternId || relationship.name;
+          if (targetPatternName) {
+            const relInserted = this.insertRelationship(sourceId, targetPatternName);
+            if (relInserted) {
+              relationshipsInserted++;
+            }
+          }
         }
       }
     });
@@ -300,8 +328,71 @@ export class PatternSeeder {
    */
   private insertRelationship(sourcePatternId: string, relationship: any): boolean {
     try {
+      let targetPatternId: string;
+      let type: string;
+      let strength: number;
+      let description: string;
+
+      // Handle different relationship formats
+      if (typeof relationship === 'string') {
+        // Legacy format: relationship is target pattern name
+        targetPatternId = relationship;
+        type = 'related';
+        strength = 1.0;
+        description = `Related to ${relationship}`;
+      } else if (relationship && typeof relationship === 'object') {
+        // New format: relationship is an object
+        targetPatternId =
+          relationship.targetPatternId || relationship.patternId || relationship.name;
+        type = relationship.type || 'related';
+        strength = relationship.strength || 1.0;
+        description = relationship.description || `Related to ${targetPatternId}`;
+      } else {
+        console.warn(`Invalid relationship format for pattern ${sourcePatternId}:`, relationship);
+        return false;
+      }
+
+      // Find target pattern ID by name if needed
+      let actualTargetId: string;
+      if (typeof targetPatternId === 'string' && targetPatternId.length > 0) {
+        // Check if it's already an ID (assume IDs don't contain spaces and are lowercase)
+        const isId = /^[a-z0-9_-]+$/.test(targetPatternId) && !targetPatternId.includes(' ');
+
+        if (!isId) {
+          // It's a pattern name, find the ID
+          const targetPattern = this.db.queryOne<{ id: string }>(
+            'SELECT id FROM patterns WHERE name = ?',
+            [targetPatternId]
+          );
+
+          if (!targetPattern) {
+            console.warn(
+              `Target pattern not found: ${targetPatternId} (referenced by ${sourcePatternId})`
+            );
+            return false;
+          }
+          actualTargetId = targetPattern.id;
+        } else {
+          // Assume it's already an ID
+          actualTargetId = targetPatternId;
+        }
+      } else {
+        console.warn(`Invalid targetPatternId for pattern ${sourcePatternId}:`, targetPatternId);
+        return false;
+      }
+
+      // Check if relationship already exists
+      const existing = this.db.queryOne(
+        'SELECT id FROM pattern_relationships WHERE source_pattern_id = ? AND target_pattern_id = ?',
+        [sourcePatternId, actualTargetId]
+      );
+
+      if (existing) {
+        return false; // Skip duplicate
+      }
+
       const sql = `
-        INSERT OR REPLACE INTO pattern_relationships (
+        INSERT INTO pattern_relationships (
           id, source_pattern_id, target_pattern_id, type,
           strength, description, created_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -310,10 +401,10 @@ export class PatternSeeder {
       const params = [
         crypto.randomUUID(),
         sourcePatternId,
-        relationship.patternId || relationship.targetPatternId || '',
-        relationship.type || 'related',
-        relationship.strength || 1.0,
-        relationship.description || '',
+        actualTargetId,
+        type,
+        strength,
+        description,
         new Date().toISOString(),
       ];
 

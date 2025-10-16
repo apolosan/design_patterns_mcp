@@ -1,0 +1,18 @@
+{
+  "id": "flows",
+  "name": "Flows Pattern",
+  "category": "Reactive",
+  "description": "Cold asynchronous streams for reactive programming with composable operations",
+  "when_to_use": "Data streams, reactive programming, complex transformations, UI updates",
+  "benefits": "Composable, lazy evaluation, backpressure, cancellation, type safety",
+  "drawbacks": "Complexity, performance overhead for simple cases, learning curve",
+  "use_cases": "UI updates, data processing pipelines, network streams, event handling",
+  "complexity": "Medium",
+  "tags": ["reactive", "kotlin", "streams", "asynchronous", "composable"],
+  "examples": {
+    "kotlin": {
+      "language": "kotlin",
+      "code": "import kotlinx.coroutines.flow.*\n\nfun getUserActions(): Flow<UserAction> = flow {\n    database.getUserActions().forEach { action ->\n        emit(action)\n        delay(100) // Rate limiting\n    }\n}\n\nsuspend fun processUserActions() {\n    getUserActions()\n        .filter { it.type == \"click\" }\n        .map { it.toAnalyticsEvent() }\n        .debounce(500) // Wait for pause in events\n        .collect { event ->\n            analytics.track(event)\n        }\n}\n\n// Flow operators\nval processedData = dataFlow\n    .onEach { log(\"Processing: $it\") }\n    .filter { it.isValid }\n    .transform { value ->\n        emit(value)\n        emit(value * 2) // Multiple emissions\n    }\n    .catch { e ->\n        logError(e)\n        emit(defaultValue)\n    }\n    .flowOn(Dispatchers.IO) // Change context\n    .buffer(10) // Buffer for backpressure\n\n// StateFlow for state management\nclass ViewModel {\n    private val _uiState = MutableStateFlow<UiState>(Loading)\n    val uiState: StateFlow<UiState> = _uiState\n    \n    fun loadData() {\n        viewModelScope.launch {\n            _uiState.value = Loading\n            try {\n                val data = repository.fetchData()\n                _uiState.value = Success(data)\n            } catch (e: Exception) {\n                _uiState.value = Error(e)\n            }\n        }\n    }\n}"
+    }
+  }
+}

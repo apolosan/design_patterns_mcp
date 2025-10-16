@@ -121,4 +121,75 @@ describe('Pattern Searchability Tests', () => {
       expect(tags.length).toBeGreaterThan(0);
     });
   });
+
+  it('should have Kotlin patterns searchable', async () => {
+    const kotlinPatterns = [
+      'Coroutines Pattern',
+      'Structured Concurrency Pattern',
+      'Channels Pattern',
+      'Flows Pattern',
+      'Sequences Pattern',
+      'Data Classes Pattern',
+      'Sealed Classes Pattern',
+      'Companion Objects Pattern',
+      'Extension Functions Pattern',
+      'Operator Overloading Pattern',
+      'Inline Functions Pattern',
+      'Expressions vs Statements Pattern',
+      'Pure Functions Pattern',
+      'Closures Pattern',
+    ];
+
+    for (const patternName of kotlinPatterns) {
+      const pattern = db.queryOne('SELECT id, name, category FROM patterns WHERE name = ?', [
+        patternName,
+      ]);
+      expect(pattern).toBeDefined();
+      expect(pattern?.name).toBe(patternName);
+      expect(pattern?.category).toBeDefined();
+    }
+  });
+
+  it('should have Kotlin pattern relationships', async () => {
+    const kotlinRelationships = db.query(`
+      SELECT pr.source_pattern_id, pr.target_pattern_id, pr.type, pr.description
+      FROM pattern_relationships pr
+      WHERE pr.target_pattern_id IN ('flows', 'channels', 'companion-objects', 'extension-functions', 'sealed-classes')
+    `);
+
+    expect(kotlinRelationships.length).toBeGreaterThan(0);
+
+    // Check specific relationships
+    const observerFlows = kotlinRelationships.find(
+      r => r.source_pattern_id === 'observer' && r.target_pattern_id === 'flows'
+    );
+    expect(observerFlows).toBeDefined();
+    expect(observerFlows?.type).toBe('enhances');
+    expect(observerFlows?.description).toContain('Flows provide a more composable');
+
+    const producerConsumerChannels = kotlinRelationships.find(
+      r => r.source_pattern_id === 'producer-consumer' && r.target_pattern_id === 'channels'
+    );
+    expect(producerConsumerChannels).toBeDefined();
+    expect(producerConsumerChannels?.type).toBe('enhances');
+  });
+
+  it('should support Kotlin-specific keyword search', async () => {
+    // Test searching for Kotlin-specific terms
+    const kotlinTerms = [
+      'coroutines',
+      'flows',
+      'sealed classes',
+      'data classes',
+      'extension functions',
+    ];
+
+    for (const term of kotlinTerms) {
+      const patterns = db.query(
+        'SELECT name FROM patterns WHERE name LIKE ? OR description LIKE ?',
+        [`%${term}%`, `%${term}%`]
+      );
+      expect(patterns.length).toBeGreaterThan(0);
+    }
+  });
 });

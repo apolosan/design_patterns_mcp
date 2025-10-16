@@ -1,0 +1,18 @@
+{
+  "id": "sequences",
+  "name": "Sequences Pattern",
+  "category": "Functional",
+  "description": "Lazy collections for efficient data processing with deferred evaluation",
+  "when_to_use": "Large datasets, chained operations, memory efficiency, infinite streams",
+  "benefits": "Lazy evaluation, memory efficient, composable, supports infinite sequences",
+  "drawbacks": "Single-threaded, no parallel processing, terminal operation required",
+  "use_cases": "Data transformation pipelines, filtering large datasets, infinite series",
+  "complexity": "Low",
+  "tags": ["functional", "kotlin", "lazy-evaluation", "collections", "memory-efficient"],
+  "examples": {
+    "kotlin": {
+      "language": "kotlin",
+      "code": "// Generate infinite sequence\nval fibonacci = generateSequence(Pair(0, 1)) { (a, b) -> Pair(b, a + b) }\n    .map { it.first }\n    .take(10)\n    .toList() // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]\n\n// Process large file lazily\nfun processLargeFile(file: File): Sequence<String> = sequence {\n    file.useLines { lines ->\n        lines.forEach { line ->\n            if (line.isNotBlank()) {\n                yield(line.trim())\n            }\n        }\n    }\n}\n\n// Usage with chaining\nval processedLines = processLargeFile(File(\"large.txt\"))\n    .filter { it.length > 10 }\n    .map { it.uppercase() }\n    .take(100) // Only processes first 100 matching lines\n    .toList()\n\n// Sequence vs List performance\nval numbers = (1..1_000_000).asSequence()\n    .filter { it % 2 == 0 }\n    .map { it * it }\n    .take(10)\n    .toList() // Only processes 20 elements total\n\n// Custom sequence operations\nfun <T> Sequence<T>.windowed(size: Int): Sequence<List<T>> = sequence {\n    val iterator = iterator()\n    val buffer = ArrayDeque<T>(size)\n    \n    while (iterator.hasNext()) {\n        buffer.addLast(iterator.next())\n        if (buffer.size == size) {\n            yield(buffer.toList())\n            buffer.removeFirst()\n        }\n    }\n}\n\nval slidingWindows = listOf(1, 2, 3, 4, 5).asSequence()\n    .windowed(3)\n    .toList() // [[1, 2, 3], [2, 3, 4], [3, 4, 5]]"
+    }
+  }
+}

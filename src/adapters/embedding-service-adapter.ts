@@ -14,6 +14,8 @@ export interface EmbeddingServiceConfig {
   batchSize?: number;
   retryAttempts?: number;
   retryDelay?: number;
+  preferredStrategy?: 'transformers' | 'ollama' | 'simple-hash';
+  fallbackToSimple?: boolean;
 }
 
 /**
@@ -26,20 +28,23 @@ export class EmbeddingServiceAdapter {
   private cache: CacheService;
 
   constructor(config: EmbeddingServiceConfig = {}, cache?: CacheService) {
-    this.config = {
+    const defaultConfig = {
       cacheEnabled: true,
       cacheTTL: 3600000, // 1 hour
       batchSize: 10,
       retryAttempts: 3,
       retryDelay: 1000,
-      ...config,
+      preferredStrategy: 'simple-hash' as const,
+      fallbackToSimple: true,
     };
+
+    this.config = { ...defaultConfig, ...config };
 
     this.cache = cache || new CacheService();
 
     this.factory = EmbeddingStrategyFactory.getInstance({
-      preferredStrategy: 'transformers',
-      fallbackToSimple: true,
+      preferredStrategy: this.config.preferredStrategy,
+      fallbackToSimple: this.config.fallbackToSimple,
       enableLogging: true,
     });
   }
@@ -52,7 +57,11 @@ export class EmbeddingServiceAdapter {
       this.strategy = await this.factory.createStrategy();
       structuredLogger.info('embedding-adapter', `Initialized with ${this.strategy.name} strategy`);
     } catch (error) {
-      structuredLogger.error('embedding-adapter', 'Failed to initialize embedding strategy', error as Error);
+      structuredLogger.error(
+        'embedding-adapter',
+        'Failed to initialize embedding strategy',
+        error as Error
+      );
       throw error;
     }
   }
@@ -75,7 +84,7 @@ export class EmbeddingServiceAdapter {
 
     // Generate new embedding with retry logic
     const embedding = await this.generateWithRetry(text);
-    
+
     // Cache the result
     if (this.config.cacheEnabled) {
       this.cache.setEmbeddings(text, embedding.values, this.config.cacheTTL);
@@ -135,7 +144,7 @@ export class EmbeddingServiceAdapter {
    */
   getStrategyInfo(): { name: string; model: string; dimensions: number } | null {
     if (!this.strategy) return null;
-    
+
     return {
       name: this.strategy.name,
       model: this.strategy.model,
@@ -154,14 +163,16 @@ export class EmbeddingServiceAdapter {
         return false;
       }
     }
-    
+
     return this.strategy ? await this.strategy.isAvailable() : false;
   }
 
   /**
    * Get available strategies status
    */
-  async getAvailableStrategies(): Promise<Array<{ name: string; available: boolean; model: string }>> {
+  async getAvailableStrategies(): Promise<
+    Array<{ name: string; available: boolean; model: string }>
+  > {
     return this.factory.getAvailableStrategies();
   }
 
@@ -171,7 +182,7 @@ export class EmbeddingServiceAdapter {
   async switchStrategy(strategyType: 'transformers' | 'ollama' | 'simple-hash'): Promise<void> {
     try {
       const newStrategy = await this.factory.createSpecificStrategy(strategyType);
-      
+
       if (!newStrategy || !(await newStrategy.isAvailable())) {
         throw new Error(`Strategy ${strategyType} is not available`);
       }
@@ -179,7 +190,11 @@ export class EmbeddingServiceAdapter {
       this.strategy = newStrategy;
       structuredLogger.info('embedding-adapter', `Switched to ${strategyType} strategy`);
     } catch (error) {
-      structuredLogger.error('embedding-adapter', `Failed to switch to ${strategyType} strategy`, error as Error);
+      structuredLogger.error(
+        'embedding-adapter',
+        `Failed to switch to ${strategyType} strategy`,
+        error as Error
+      );
       throw error;
     }
   }
@@ -192,30 +207,40 @@ export class EmbeddingServiceAdapter {
         return await this.strategy!.generateEmbedding(text);
       } catch (error) {
         lastError = error as Error;
-        structuredLogger.warn('embedding-adapter', `Embedding generation attempt ${attempt} failed`, error as Error);
-        
+        structuredLogger.warn(
+          'embedding-adapter',
+          `Embedding generation attempt ${attempt} failed`,
+          error as Error
+        );
+
         if (attempt < this.config.retryAttempts) {
           await this.delay(this.config.retryDelay * attempt); // Exponential backoff
         }
       }
     }
 
-    throw new Error(`Embedding generation failed after ${this.config.retryAttempts} attempts: ${lastError?.message}`);
+    throw new Error(
+      `Embedding generation failed after ${this.config.retryAttempts} attempts: ${lastError?.message}`
+    );
   }
 
   private async processBatches(texts: string[]): Promise<number[][]> {
     const results: number[][] = [];
-    
+
     for (let i = 0; i < texts.length; i += this.config.batchSize) {
       const batch = texts.slice(i, i + this.config.batchSize);
-      
+
       try {
         const batchEmbeddings = await this.strategy!.batchGenerateEmbeddings(batch);
         results.push(...batchEmbeddings.map(e => e.values));
       } catch (error) {
         // Fallback to individual processing if batch fails
-        structuredLogger.warn('embedding-adapter', 'Batch processing failed, falling back to individual processing', error as Error);
-        
+        structuredLogger.warn(
+          'embedding-adapter',
+          'Batch processing failed, falling back to individual processing',
+          error as Error
+        );
+
         for (const text of batch) {
           const embedding = await this.generateWithRetry(text);
           results.push(embedding.values);
@@ -234,6 +259,8 @@ export class EmbeddingServiceAdapter {
 /**
  * Factory function to create a configured adapter
  */
-export function createEmbeddingServiceAdapter(config?: EmbeddingServiceConfig): EmbeddingServiceAdapter {
+export function createEmbeddingServiceAdapter(
+  config?: EmbeddingServiceConfig
+): EmbeddingServiceAdapter {
   return new EmbeddingServiceAdapter(config);
 }

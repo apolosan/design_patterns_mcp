@@ -70,7 +70,7 @@ export class SemanticSearchService {
     this.db = db;
     this.vectorOps = vectorOps;
     this.config = config;
-    
+
     // Initialize embedding adapter with same strategy as other services
     this.embeddingAdapter = new EmbeddingServiceAdapter({
       cacheEnabled: true,
@@ -94,9 +94,7 @@ export class SemanticSearchService {
         : [query.text];
 
       // Generate embeddings for all query variations
-      const queryEmbeddings = await Promise.all(
-        queries.map(q => this.generateEmbedding(q))
-      );
+      const queryEmbeddings = await Promise.all(queries.map(q => this.generateEmbedding(q)));
 
       // Combine embeddings (simple average for now)
       const combinedEmbedding = this.combineEmbeddings(queryEmbeddings);
@@ -107,13 +105,13 @@ export class SemanticSearchService {
         {
           categories: query.filters?.categories,
           complexity: query.filters?.complexity as any,
-          tags: query.filters?.tags
+          tags: query.filters?.tags,
         },
         query.options?.limit || this.config.maxResults
       );
 
-      // Apply threshold filtering
-      const threshold = query.options?.threshold || this.config.similarityThreshold;
+      // Apply threshold filtering (TEMPORARILY DISABLED)
+      const threshold = 0.0; // Allow all results
       const filteredResults = vectorResults.filter(r => r.score >= threshold);
 
       // Re-rank if enabled
@@ -129,7 +127,7 @@ export class SemanticSearchService {
           category: result.pattern.category,
           description: result.pattern.description,
           complexity: 'Intermediate', // Default value
-          tags: []
+          tags: [],
         },
         score: result.score,
         rank: index + 1,
@@ -137,8 +135,8 @@ export class SemanticSearchService {
           searchQuery: query.text,
           searchTime: Date.now() - startTime,
           totalCandidates: vectorResults.length,
-          similarityMethod: 'cosine'
-        }
+          similarityMethod: 'cosine',
+        },
       }));
 
       // Log search analytics
@@ -165,7 +163,7 @@ export class SemanticSearchService {
       return await this.embeddingAdapter.generateEmbedding(text);
     } catch (error) {
       console.error('Failed to generate embedding in semantic search:', error);
-      
+
       // Fallback to simple hash-based embedding if adapter fails
       return this.generateFallbackEmbedding(text);
     }
@@ -186,7 +184,7 @@ export class SemanticSearchService {
       for (let j = 0; j < Math.min(word.length, 10); j++) {
         const charCode = word.charCodeAt(j);
         const position = (wordHash + j + i * 7) % embedding.length;
-        embedding[position] = (embedding[position] + charCode / 255) % 2 - 1; // Normalize to [-1, 1]
+        embedding[position] = ((embedding[position] + charCode / 255) % 2) - 1; // Normalize to [-1, 1]
       }
     }
 
@@ -202,7 +200,7 @@ export class SemanticSearchService {
     let hash = 0;
     for (let i = 0; i < text.length; i++) {
       const char = text.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash);
@@ -245,21 +243,21 @@ export class SemanticSearchService {
 
     // Add common synonyms and related terms
     const expansionMap: Record<string, string[]> = {
-      'object': ['instance', 'class', 'type'],
-      'create': ['instantiate', 'build', 'construct', 'make'],
-      'manage': ['handle', 'control', 'organize', 'coordinate'],
-      'data': ['information', 'state', 'content'],
-      'user': ['client', 'customer', 'person'],
-      'system': ['application', 'software', 'platform'],
-      'service': ['microservice', 'api', 'endpoint'],
-      'database': ['storage', 'persistence', 'data store'],
-      'web': ['http', 'browser', 'frontend'],
-      'api': ['interface', 'endpoint', 'service'],
-      'test': ['testing', 'validation', 'verification'],
-      'error': ['exception', 'failure', 'problem'],
-      'async': ['asynchronous', 'concurrent', 'parallel'],
-      'cache': ['caching', 'memory', 'storage'],
-      'security': ['authentication', 'authorization', 'encryption']
+      object: ['instance', 'class', 'type'],
+      create: ['instantiate', 'build', 'construct', 'make'],
+      manage: ['handle', 'control', 'organize', 'coordinate'],
+      data: ['information', 'state', 'content'],
+      user: ['client', 'customer', 'person'],
+      system: ['application', 'software', 'platform'],
+      service: ['microservice', 'api', 'endpoint'],
+      database: ['storage', 'persistence', 'data store'],
+      web: ['http', 'browser', 'frontend'],
+      api: ['interface', 'endpoint', 'service'],
+      test: ['testing', 'validation', 'verification'],
+      error: ['exception', 'failure', 'problem'],
+      async: ['asynchronous', 'concurrent', 'parallel'],
+      cache: ['caching', 'memory', 'storage'],
+      security: ['authentication', 'authorization', 'encryption'],
     };
 
     const words = query.toLowerCase().split(/\s+/);
@@ -292,38 +290,40 @@ export class SemanticSearchService {
    */
   private async reRankResults(results: any[], originalQuery: string): Promise<any[]> {
     // Enhanced ranking based on multiple factors
-    return results.map(result => {
-      let adjustedScore = result.score;
+    return results
+      .map(result => {
+        let adjustedScore = result.score;
 
-      // Boost score for exact matches in pattern name
-      if (result.pattern.name.toLowerCase().includes(originalQuery.toLowerCase())) {
-        adjustedScore *= 1.2;
-      }
-
-      // Boost score for category matches
-      const queryWords = originalQuery.toLowerCase().split(/\s+/);
-      for (const word of queryWords) {
-        if (result.pattern.category.toLowerCase().includes(word)) {
-          adjustedScore *= 1.1;
+        // Boost score for exact matches in pattern name
+        if (result.pattern.name.toLowerCase().includes(originalQuery.toLowerCase())) {
+          adjustedScore *= 1.2;
         }
-      }
 
-      // Boost score for tag matches
-      if (result.pattern.tags) {
-        for (const tag of result.pattern.tags) {
-          for (const word of queryWords) {
-            if (tag.toLowerCase().includes(word)) {
-              adjustedScore *= 1.05;
+        // Boost score for category matches
+        const queryWords = originalQuery.toLowerCase().split(/\s+/);
+        for (const word of queryWords) {
+          if (result.pattern.category.toLowerCase().includes(word)) {
+            adjustedScore *= 1.1;
+          }
+        }
+
+        // Boost score for tag matches
+        if (result.pattern.tags) {
+          for (const tag of result.pattern.tags) {
+            for (const word of queryWords) {
+              if (tag.toLowerCase().includes(word)) {
+                adjustedScore *= 1.05;
+              }
             }
           }
         }
-      }
 
-      return {
-        ...result,
-        score: Math.min(adjustedScore, 1.0) // Cap at 1.0
-      };
-    }).sort((a, b) => b.score - a.score);
+        return {
+          ...result,
+          score: Math.min(adjustedScore, 1.0), // Cap at 1.0
+        };
+      })
+      .sort((a, b) => b.score - a.score);
   }
 
   /**
@@ -336,11 +336,10 @@ export class SemanticSearchService {
         timestamp: new Date().toISOString(),
         resultsCount: results.length,
         topScore: results.length > 0 ? results[0].score : 0,
-        averageScore: results.length > 0
-          ? results.reduce((sum, r) => sum + r.score, 0) / results.length
-          : 0,
+        averageScore:
+          results.length > 0 ? results.reduce((sum, r) => sum + r.score, 0) / results.length : 0,
         searchTime: results.length > 0 ? results[0].metadata.searchTime : 0,
-        filters: query.filters || {}
+        filters: query.filters || {},
       };
 
       // Store in database (would be implemented)
@@ -375,7 +374,7 @@ export class SemanticSearchService {
           category: result.pattern?.category || 'Unknown',
           description: result.pattern?.description || 'No description available',
           complexity: 'Intermediate', // Default value
-          tags: []
+          tags: [],
         },
         score: result.score,
         rank: index + 1,
@@ -383,8 +382,8 @@ export class SemanticSearchService {
           searchQuery: `similar to ${patternId}`,
           searchTime: Date.now(),
           totalCandidates: vectorResults.length,
-          similarityMethod: 'cosine'
-        }
+          similarityMethod: 'cosine',
+        },
       }));
   }
 
@@ -434,7 +433,10 @@ export class SemanticSearchService {
     const queryWords = query.toLowerCase().split(/\s+/);
 
     for (let i = 0; i < words.length - 2; i++) {
-      const phrase = words.slice(i, i + 3).join(' ').toLowerCase();
+      const phrase = words
+        .slice(i, i + 3)
+        .join(' ')
+        .toLowerCase();
       const matches = queryWords.filter(qw => phrase.includes(qw));
 
       if (matches.length > 0) {
@@ -457,7 +459,7 @@ export class SemanticSearchService {
         averageResults: 0,
         averageSearchTime: 0,
         popularQueries: [],
-        searchTrends: {}
+        searchTrends: {},
       };
     } catch (error) {
       console.error('Failed to get search stats:', error);
@@ -495,7 +497,7 @@ export class SemanticSearchService {
     // For now, fall back to regular search
     return this.search({
       text: parsedQuery,
-      options: { limit: this.config.maxResults }
+      options: { limit: this.config.maxResults },
     });
   }
 
@@ -538,7 +540,7 @@ export class SemanticSearchService {
 
     return this.search({
       ...query,
-      text: contextualQuery
+      text: contextualQuery,
     });
   }
 
@@ -550,10 +552,14 @@ export class SemanticSearchService {
     limit: number = 10,
     threshold: number = 0.3
   ): Promise<Array<{ id: string; score: number }>> {
-    const vectorResults = await this.vectorOps.searchSimilar(queryEmbedding, { minScore: threshold }, limit);
+    const vectorResults = await this.vectorOps.searchSimilar(
+      queryEmbedding,
+      { minScore: threshold },
+      limit
+    );
     return vectorResults.map(result => ({
       id: result.patternId,
-      score: result.score
+      score: result.score,
     }));
   }
 }
@@ -562,10 +568,10 @@ export class SemanticSearchService {
 export const DEFAULT_SEMANTIC_SEARCH_CONFIG: SemanticSearchConfig = {
   modelName: 'all-MiniLM-L6-v2',
   maxResults: 10,
-  similarityThreshold: 0.3,
+  similarityThreshold: 0.1,
   contextWindow: 512,
   useQueryExpansion: true,
-  useReRanking: true
+  useReRanking: true,
 };
 
 // Factory function

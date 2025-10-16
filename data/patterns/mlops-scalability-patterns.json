@@ -33,7 +33,7 @@
         "Microservices architecture",
         "Content delivery"
       ],
-      "related_patterns": ["Auto-Scaling", "Circuit Breaker", "Health Check"],
+      "related_patterns": ["auto-scaling", "circuit-breaker", "health-check"],
       "complexity": "Medium",
       "tags": ["load-balancing", "infrastructure", "scalability", "availability", "nginx"],
       "code_examples": [
@@ -80,7 +80,7 @@
         "User data sharding",
         "Log aggregation systems"
       ],
-      "related_patterns": ["Data Streaming", "Data Sampling", "Distributed Training"],
+      "related_patterns": ["data-streaming", "data-sampling", "distributed-training"],
       "complexity": "High",
       "tags": ["partitioning", "sharding", "distributed", "scalability", "data-engineering"],
       "code_examples": [
@@ -127,7 +127,7 @@
         "Distributed caching",
         "Message queue reliability"
       ],
-      "related_patterns": ["Circuit Breaker", "Retry", "Health Check", "Load Balancing"],
+      "related_patterns": ["circuit-breaker", "retry-pattern", "health-check", "load-balancing"],
       "complexity": "Very High",
       "tags": ["fault-tolerance", "reliability", "availability", "resilience", "redundancy"],
       "code_examples": [

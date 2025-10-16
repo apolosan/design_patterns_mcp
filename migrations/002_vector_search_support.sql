@@ -3,7 +3,7 @@
 
 -- UP
 -- Create vector embeddings table (using regular table since sqlite-vec is not available with sql.js)
-CREATE TABLE pattern_embeddings (
+CREATE TABLE IF NOT EXISTS pattern_embeddings (
   pattern_id TEXT PRIMARY KEY,
   embedding TEXT NOT NULL,
   model TEXT NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE pattern_embeddings (
 );
 
 -- Create search queries table for analytics
-CREATE TABLE search_queries (
+CREATE TABLE IF NOT EXISTS search_queries (
   id TEXT PRIMARY KEY,
   query TEXT NOT NULL,
   user_id TEXT,
@@ -23,7 +23,7 @@ CREATE TABLE search_queries (
 );
 
 -- Create pattern usage analytics table
-CREATE TABLE pattern_usage (
+CREATE TABLE IF NOT EXISTS pattern_usage (
   id TEXT PRIMARY KEY,
   pattern_id TEXT NOT NULL,
   user_id TEXT,

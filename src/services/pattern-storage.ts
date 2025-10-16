@@ -47,7 +47,9 @@ export class PatternStorageService {
       Array.isArray(pattern.when_to_use) ? pattern.when_to_use.join(',') : '',
       Array.isArray(pattern.benefits) ? pattern.benefits.join(',') : '',
       Array.isArray(pattern.drawbacks) ? pattern.drawbacks.join(',') : '',
-      Array.isArray(pattern.use_cases) ? pattern.use_cases.join(',') : (pattern.useCases || []).join(','),
+      Array.isArray(pattern.use_cases)
+        ? pattern.use_cases.join(',')
+        : (pattern.useCases || []).join(','),
       pattern.complexity,
       Array.isArray(pattern.tags) ? pattern.tags.join(',') : '',
       pattern.examples ? JSON.stringify(pattern.examples) : null,
@@ -68,11 +70,47 @@ export class PatternStorageService {
   }
 
   /**
+   * Store a pattern relationship
+   */
+  async storeRelationship(
+    sourceId: string,
+    targetId: string,
+    type: string = 'related',
+    strength: number = 1.0,
+    description?: string
+  ): Promise<void> {
+    const sql = `
+      INSERT OR REPLACE INTO pattern_relationships
+      (id, source_pattern_id, target_pattern_id, type, strength, description, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+    `;
+
+    const params = [
+      `${sourceId}-${targetId}-${type}`, // Simple ID generation
+      sourceId,
+      targetId,
+      type,
+      strength,
+      description || `Related to ${targetId}`,
+    ];
+
+    this.db.execute(sql, params);
+  }
+
+  /**
    * Get pattern by ID
    */
   async getPattern(id: string): Promise<Pattern | null> {
     const sql = 'SELECT * FROM patterns WHERE id = ?';
     return this.db.queryOne<Pattern>(sql, [id]);
+  }
+
+  /**
+   * Get pattern by name
+   */
+  async getPatternByName(name: string): Promise<Pattern | null> {
+    const sql = 'SELECT * FROM patterns WHERE id = ?';
+    return this.db.queryOne<Pattern>(sql, [name]);
   }
 
   /**

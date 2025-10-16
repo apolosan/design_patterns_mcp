@@ -4,10 +4,10 @@
 
 -- UP
 -- Add examples column to patterns table (JSON format for multiple language examples)
-ALTER TABLE patterns ADD COLUMN examples TEXT;
+-- ALTER TABLE patterns ADD COLUMN examples TEXT; -- Column already exists in updated schema
 
 -- Create index for patterns with examples
-CREATE INDEX idx_patterns_has_examples ON patterns(id) WHERE examples IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_patterns_has_examples ON patterns(id) WHERE examples IS NOT NULL;
 
 -- Create a new table for structured code examples (normalized approach)
 CREATE TABLE IF NOT EXISTS pattern_code_examples (

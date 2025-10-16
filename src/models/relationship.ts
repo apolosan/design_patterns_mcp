@@ -1,125 +1,83 @@
 /**
- * PatternRelationship Model Interface
- * Represents relationships between patterns
+ * Relationship Model Interface
+ * Represents relationships between design patterns
  */
 
 export type RelationshipType =
-  | 'complementary'
-  | 'alternative'
-  | 'prerequisite'
-  | 'follows'
-  | 'conflicts'
+  | 'related'
   | 'extends'
   | 'implements'
-  | 'related';
+  | 'uses'
+  | 'similar'
+  | 'alternative'
+  | 'complements'
+  | 'conflicts'
+  | 'prerequisite'
+  | 'successor';
 
 export interface Relationship {
-  /** Type of relationship */
-  type: RelationshipType;
-  /** Related pattern ID */
-  patternId: string;
-  /** Description of the relationship */
-  description: string;
-  /** Strength of relationship (0.0-1.0) */
-  strength?: number;
-  /** Creation timestamp */
-  createdAt?: Date;
-}
+  /** Unique relationship identifier */
+  id: string;
 
-export interface PatternRelationship {
+  /** Source pattern ID */
+  sourcePatternId: string;
+
+  /** Target pattern ID */
+  targetPatternId: string;
+
   /** Type of relationship */
   type: RelationshipType;
 
-  /** Related pattern ID */
-  patternId: string;
+  /** Strength of relationship (0.0 to 1.0) */
+  strength: number;
 
-  /** Description of the relationship */
+  /** Human-readable description */
   description: string;
 
-  /** Strength of relationship (0.0-1.0) */
-  strength?: number;
-
   /** Creation timestamp */
-  createdAt?: Date;
+  createdAt: Date;
 }
 
 /**
  * Relationship creation input
  */
-export interface CreatePatternRelationshipInput {
-  fromPatternId: string;
-  toPatternId: string;
+export interface CreateRelationshipInput {
+  sourcePatternId: string;
+  targetPatternId: string;
   type: RelationshipType;
-  description: string;
   strength?: number;
+  description: string;
 }
 
 /**
  * Relationship update input
  */
-export interface UpdatePatternRelationshipInput extends Partial<CreatePatternRelationshipInput> {
-  id: number;
+export interface UpdateRelationshipInput extends Partial<CreateRelationshipInput> {
+  id: string;
 }
 
 /**
- * Relationship with full pattern details
+ * Relationship filters for queries
  */
-export interface RelationshipWithPatterns extends PatternRelationship {
-  fromPattern: {
+export interface RelationshipFilters {
+  sourcePatternId?: string;
+  targetPatternId?: string;
+  type?: RelationshipType;
+  minStrength?: number;
+}
+
+/**
+ * Relationship with pattern details
+ */
+export interface RelationshipWithPatterns extends Relationship {
+  sourcePattern: {
     id: string;
     name: string;
     category: string;
   };
-  toPattern: {
+  targetPattern: {
     id: string;
     name: string;
     category: string;
   };
-}
-
-/**
- * Relationship graph node
- */
-export interface RelationshipNode {
-  patternId: string;
-  patternName: string;
-  category: string;
-  relationships: PatternRelationship[];
-  centrality?: number;
-}
-
-/**
- * Relationship graph
- */
-export interface RelationshipGraph {
-  nodes: RelationshipNode[];
-  edges: Array<{
-    from: string;
-    to: string;
-    type: RelationshipType;
-    strength: number;
-  }>;
-}
-
-/**
- * Relationship analysis result
- */
-export interface RelationshipAnalysis {
-  patternId: string;
-  complementaryPatterns: PatternRelationship[];
-  alternativePatterns: PatternRelationship[];
-  prerequisitePatterns: PatternRelationship[];
-  conflictingPatterns: PatternRelationship[];
-  centralityScore: number;
-  clusterId?: string;
-}
-
-/**
- * Relationship validation result
- */
-export interface RelationshipValidation {
-  isValid: boolean;
-  issues: string[];
-  suggestions: string[];
-  bidirectionalCheck: boolean;
 }

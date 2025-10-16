@@ -121,9 +121,7 @@ describe('Pattern Matching with Semantic Search', () => {
       throw new Error(`Failed to seed patterns: ${result.message}`);
     }
 
-    // Debug: Check what patterns were seeded
-    const allPatterns = dbManager.query('SELECT name, category FROM patterns LIMIT 10');
-    console.log('Seeded patterns:', allPatterns);
+    // Debug logging removed for cleaner test output
 
     // Initialize vector operations
     vectorOps = createVectorOperationsService(dbManager);

@@ -1,280 +1,342 @@
 {
   "patterns": [
-  {
-    "id": "singleton",
-    "name": "Singleton",
-    "category": "Creational",
-    "description": "Ensures a class has only one instance and provides global access to it",
-    "when_to_use": ["Need single instance globally", "Database connections", "Configuration managers", "Resource pools"],
-    "benefits": ["Controlled access", "Reduced namespace pollution", "Permits refinement of operations"],
-    "drawbacks": ["Testing difficulty", "Tight coupling", "Hidden dependencies", "Thread safety concerns"],
-    "use_cases": ["Database connections", "Logger instances", "Configuration objects", "Thread pools"],
-    "complexity": "Low",
-    "tags": ["creational", "single-instance", "global-state"]
-  },
-  {
-    "id": "factory-method",
-    "name": "Factory Method",
-    "category": "Creational",
-    "description": "Defines an interface for creating objects without specifying their exact classes",
-    "when_to_use": ["Subclass decides which class to instantiate", "Unknown object types at compile time", "Centralize object creation"],
-    "benefits": ["Loose coupling", "Code reusability", "Flexibility in object creation"],
-    "drawbacks": ["Increased complexity", "Requires subclassing"],
-    "use_cases": ["UI element creation", "Database driver instantiation", "Plugin systems"],
-    "complexity": "Medium",
-    "tags": ["creational", "factory", "polymorphism"]
-  },
-  {
-    "id": "abstract-factory",
-    "name": "Abstract Factory",
-    "category": "Creational",
-    "description": "Creates families of related objects without specifying their concrete classes",
-    "when_to_use": ["Multiple product families", "Platform-specific implementations", "Related object creation"],
-    "benefits": ["Product consistency", "Easy product family exchange", "Isolation of concrete classes"],
-    "drawbacks": ["Complex to implement", "Difficult to extend"],
-    "use_cases": ["Cross-platform UI", "Database abstraction layers", "Game engine renderers"],
-    "complexity": "High",
-    "tags": ["creational", "factory", "families"]
-  },
-  {
-    "id": "builder",
-    "name": "Builder",
-    "category": "Creational",
-    "description": "Constructs complex objects step by step, separating construction from representation",
-    "when_to_use": ["Complex object construction", "Multiple representations", "Step-by-step creation"],
-    "benefits": ["Fine control over construction", "Code reusability", "Immutable objects"],
-    "drawbacks": ["Code duplication", "Increased complexity"],
-    "use_cases": ["SQL query builders", "UI component builders", "Configuration builders"],
-    "complexity": "Medium",
-    "tags": ["creational", "builder", "fluent-interface"]
-  },
-  {
-    "id": "prototype",
-    "name": "Prototype",
-    "category": "Creational",
-    "description": "Creates new objects by cloning existing instances",
-    "when_to_use": ["Object creation is expensive", "Similar objects needed", "Runtime type determination"],
-    "benefits": ["Reduced subclassing", "Dynamic object creation", "Performance improvement"],
-    "drawbacks": ["Deep vs shallow copy issues", "Cloning complexity"],
-    "use_cases": ["Game object spawning", "Document templates", "Cell division simulation"],
-    "complexity": "Low",
-    "tags": ["creational", "cloning", "prototype"]
-  },
-  {
-    "id": "adapter",
-    "name": "Adapter",
-    "category": "Structural",
-    "description": "Allows incompatible interfaces to work together",
-    "when_to_use": ["Legacy code integration", "Third-party library integration", "Interface mismatch"],
-    "benefits": ["Reuse existing code", "Decoupling", "Flexibility"],
-    "drawbacks": ["Code complexity", "Performance overhead"],
-    "use_cases": ["API integration", "Legacy system wrapping", "Data format conversion"],
-    "complexity": "Low",
-    "tags": ["structural", "wrapper", "compatibility"]
-  },
-  {
-    "id": "bridge",
-    "name": "Bridge",
-    "category": "Structural",
-    "description": "Separates abstraction from implementation allowing both to vary independently",
-    "when_to_use": ["Multiple implementations", "Runtime binding", "Avoid permanent binding"],
-    "benefits": ["Platform independence", "Extensibility", "Hide implementation details"],
-    "drawbacks": ["Increased complexity", "Indirection"],
-    "use_cases": ["Graphics rendering", "Database drivers", "UI themes"],
-    "complexity": "Medium",
-    "tags": ["structural", "decoupling", "abstraction"]
-  },
-  {
-    "id": "composite",
-    "name": "Composite",
-    "category": "Structural",
-    "description": "Composes objects into tree structures to represent part-whole hierarchies",
-    "when_to_use": ["Tree structures", "Uniform treatment", "Recursive structures"],
-    "benefits": ["Simplified client code", "Easy to add new components", "Recursive composition"],
-    "drawbacks": ["Can make design overly general", "Type safety issues"],
-    "use_cases": ["File systems", "UI component trees", "Organization charts"],
-    "complexity": "Medium",
-    "tags": ["structural", "tree", "hierarchy"]
-  },
-  {
-    "id": "decorator",
-    "name": "Decorator",
-    "category": "Structural",
-    "description": "Adds new functionality to objects dynamically without altering their structure",
-    "when_to_use": ["Add responsibilities dynamically", "Avoid subclass explosion", "Flexible alternative to inheritance"],
-    "benefits": ["Single Responsibility", "Open/Closed principle", "Runtime decoration"],
-    "drawbacks": ["Many small objects", "Debugging difficulty"],
-    "use_cases": ["Stream processing", "UI component enhancement", "Middleware pipelines"],
-    "complexity": "Medium",
-    "tags": ["structural", "wrapper", "enhancement"]
-  },
-  {
-    "id": "facade",
-    "name": "Facade",
-    "category": "Structural",
-    "description": "Provides a simplified interface to a complex subsystem",
-    "when_to_use": ["Complex subsystems", "Decoupling", "API simplification"],
-    "benefits": ["Simplified interface", "Reduced dependencies", "Layering"],
-    "drawbacks": ["Can become god object", "Limits functionality"],
-    "use_cases": ["API gateways", "Service layers", "Library wrappers"],
-    "complexity": "Low",
-    "tags": ["structural", "simplification", "interface"]
-  },
-  {
-    "id": "flyweight",
-    "name": "Flyweight",
-    "category": "Structural",
-    "description": "Shares objects efficiently to support large numbers of fine-grained objects",
-    "when_to_use": ["Large number of objects", "Memory constraints", "Shared state"],
-    "benefits": ["Memory efficiency", "Performance improvement", "Shared state management"],
-    "drawbacks": ["Runtime costs", "Complexity"],
-    "use_cases": ["Text editors", "Game particle systems", "String interning"],
-    "complexity": "High",
-    "tags": ["structural", "optimization", "memory"]
-  },
-  {
-    "id": "proxy",
-    "name": "Proxy",
-    "category": "Structural",
-    "description": "Provides a placeholder or surrogate for another object to control access",
-    "when_to_use": ["Access control", "Lazy initialization", "Remote objects"],
-    "benefits": ["Security", "Performance", "Separation of concerns"],
-    "drawbacks": ["Response time", "Complexity"],
-    "use_cases": ["Virtual proxies", "Protection proxies", "Remote proxies"],
-    "complexity": "Medium",
-    "tags": ["structural", "proxy", "access-control"]
-  },
-  {
-    "id": "chain-of-responsibility",
-    "name": "Chain of Responsibility",
-    "category": "Behavioral",
-    "description": "Passes requests along a chain of handlers until one handles it",
-    "when_to_use": ["Multiple handlers", "Dynamic handler assignment", "Decoupling"],
-    "benefits": ["Reduced coupling", "Flexibility", "Single Responsibility"],
-    "drawbacks": ["No guarantee of handling", "Performance concerns"],
-    "use_cases": ["Event handling", "Middleware chains", "Approval workflows"],
-    "complexity": "Medium",
-    "tags": ["behavioral", "chain", "delegation"]
-  },
-  {
-    "id": "command",
-    "name": "Command",
-    "category": "Behavioral",
-    "description": "Encapsulates requests as objects, allowing parameterization and queuing",
-    "when_to_use": ["Undo/redo", "Queuing operations", "Logging"],
-    "benefits": ["Decoupling", "Undo support", "Macro recording"],
-    "drawbacks": ["Increased number of classes", "Complexity"],
-    "use_cases": ["Undo/redo", "Macro recording", "Message queues"],
-    "complexity": "Medium",
-    "tags": ["behavioral", "encapsulation", "request"]
-  },
-  {
-    "id": "iterator",
-    "name": "Iterator",
-    "category": "Behavioral",
-    "description": "Provides sequential access to elements without exposing underlying representation",
-    "when_to_use": ["Sequential access", "Hide internal structure", "Multiple traversal algorithms"],
-    "benefits": ["Single Responsibility", "Parallel iteration", "Simplified collections"],
-    "drawbacks": ["Overkill for simple collections", "Synchronization issues"],
-    "use_cases": ["Collection traversal", "Database cursors", "File reading"],
-    "complexity": "Low",
-    "tags": ["behavioral", "traversal", "collection"]
-  },
-  {
-    "id": "mediator",
-    "name": "Mediator",
-    "category": "Behavioral",
-    "description": "Defines how a set of objects interact through a central mediator",
-    "when_to_use": ["Complex communication", "Reusable components", "Decoupling"],
-    "benefits": ["Reduced dependencies", "Reusability", "Simplified maintenance"],
-    "drawbacks": ["God object risk", "Complexity"],
-    "use_cases": ["Chat rooms", "Air traffic control", "UI component communication"],
-    "complexity": "Medium",
-    "tags": ["behavioral", "communication", "decoupling"]
-  },
-  {
-    "id": "memento",
-    "name": "Memento",
-    "category": "Behavioral",
-    "description": "Captures and restores object state without violating encapsulation",
-    "when_to_use": ["Undo/redo", "Snapshots", "State rollback"],
-    "benefits": ["Encapsulation preserved", "Simple undo", "State recovery"],
-    "drawbacks": ["Memory overhead", "Caretaker complexity"],
-    "use_cases": ["Text editors", "Game save states", "Transaction rollback"],
-    "complexity": "Medium",
-    "tags": ["behavioral", "state", "snapshot"]
-  },
-  {
-    "id": "observer",
-    "name": "Observer",
-    "category": "Behavioral",
-    "description": "Defines one-to-many dependency between objects for automatic notification",
-    "when_to_use": ["Event handling", "Model-View patterns", "Distributed events"],
-    "benefits": ["Loose coupling", "Dynamic relationships", "Broadcast communication"],
-    "drawbacks": ["Memory leaks", "Unexpected updates", "Performance"],
-    "use_cases": ["MVC/MVP patterns", "Event systems", "Reactive programming"],
-    "complexity": "Low",
-    "tags": ["behavioral", "events", "publish-subscribe"]
-  },
-  {
-    "id": "state",
-    "name": "State",
-    "category": "Behavioral",
-    "description": "Allows object to alter behavior when internal state changes",
-    "when_to_use": ["State-dependent behavior", "Replace conditionals", "State machines"],
-    "benefits": ["Single Responsibility", "Open/Closed", "Explicit states"],
-    "drawbacks": ["Increased classes", "State transition complexity"],
-    "use_cases": ["TCP connections", "UI components", "Game character states"],
-    "complexity": "Medium",
-    "tags": ["behavioral", "state-machine", "polymorphism"]
-  },
-  {
-    "id": "strategy",
-    "name": "Strategy",
-    "category": "Behavioral",
-    "description": "Defines family of algorithms and makes them interchangeable",
-    "when_to_use": ["Multiple algorithms", "Runtime selection", "Avoid conditionals"],
-    "benefits": ["Algorithm families", "Runtime switching", "Open/Closed"],
-    "drawbacks": ["Client awareness", "Increased objects"],
-    "use_cases": ["Sorting algorithms", "Payment processing", "Compression strategies"],
-    "complexity": "Low",
-    "tags": ["behavioral", "algorithm", "encapsulation"]
-  },
-  {
-    "id": "template-method",
-    "name": "Template Method",
-    "category": "Behavioral",
-    "description": "Defines skeleton of algorithm in base class, subclasses override specific steps",
-    "when_to_use": ["Common algorithm structure", "Invariant parts", "Code reuse"],
-    "benefits": ["Code reuse", "Control inversion", "Flexibility"],
-    "drawbacks": ["Limited by inheritance", "Maintenance issues"],
-    "use_cases": ["Data processing pipelines", "Game loops", "Framework hooks"],
-    "complexity": "Low",
-    "tags": ["behavioral", "inheritance", "algorithm"]
-  },
-  {
-    "id": "visitor",
-    "name": "Visitor",
-    "category": "Behavioral",
-    "description": "Separates algorithms from objects on which they operate",
-    "when_to_use": ["Operations on object structures", "Add operations without changing classes", "Double dispatch"],
-    "benefits": ["Single Responsibility", "Open/Closed", "Accumulating state"],
-    "drawbacks": ["Breaking encapsulation", "Difficult element addition"],
-    "use_cases": ["Compiler AST", "Document processing", "Object serialization"],
-    "complexity": "High",
-    "tags": ["behavioral", "double-dispatch", "separation"]
-  },
-  {
-    "id": "interpreter",
-    "name": "Interpreter",
-    "category": "Behavioral",
-    "description": "Defines grammar representation and interpreter for a language",
-    "when_to_use": ["Simple grammars", "Domain-specific languages", "Expression evaluation"],
-    "benefits": ["Easy to extend", "Easy to implement", "Separation of concerns"],
-    "drawbacks": ["Complex grammars difficult", "Performance issues"],
-    "use_cases": ["Regular expressions", "SQL parsing", "Configuration languages"],
-    "complexity": "High",
-    "tags": ["behavioral", "language", "grammar"]
-  }
+    {
+      "id": "singleton",
+      "name": "Singleton",
+      "category": "Creational",
+      "description": "Ensures a class has only one instance and provides global access to it",
+      "when_to_use": [
+        "Need single instance globally",
+        "Database connections",
+        "Configuration managers",
+        "Resource pools"
+      ],
+      "benefits": [
+        "Controlled access",
+        "Reduced namespace pollution",
+        "Permits refinement of operations"
+      ],
+      "drawbacks": [
+        "Testing difficulty",
+        "Tight coupling",
+        "Hidden dependencies",
+        "Thread safety concerns"
+      ],
+      "use_cases": [
+        "Database connections",
+        "Logger instances",
+        "Configuration objects",
+        "Thread pools"
+      ],
+      "complexity": "Low",
+      "tags": ["creational", "single-instance", "global-state"]
+    },
+    {
+      "id": "factory-method",
+      "name": "Factory Method",
+      "category": "Creational",
+      "description": "Defines an interface for creating objects without specifying their exact classes",
+      "when_to_use": [
+        "Subclass decides which class to instantiate",
+        "Unknown object types at compile time",
+        "Centralize object creation"
+      ],
+      "benefits": ["Loose coupling", "Code reusability", "Flexibility in object creation"],
+      "drawbacks": ["Increased complexity", "Requires subclassing"],
+      "use_cases": ["UI element creation", "Database driver instantiation", "Plugin systems"],
+      "complexity": "Medium",
+      "tags": ["creational", "factory", "polymorphism"]
+    },
+    {
+      "id": "abstract-factory",
+      "name": "Abstract Factory",
+      "category": "Creational",
+      "description": "Creates families of related objects without specifying their concrete classes",
+      "when_to_use": [
+        "Multiple product families",
+        "Platform-specific implementations",
+        "Related object creation"
+      ],
+      "benefits": [
+        "Product consistency",
+        "Easy product family exchange",
+        "Isolation of concrete classes"
+      ],
+      "drawbacks": ["Complex to implement", "Difficult to extend"],
+      "use_cases": ["Cross-platform UI", "Database abstraction layers", "Game engine renderers"],
+      "complexity": "High",
+      "tags": ["creational", "factory", "families"]
+    },
+    {
+      "id": "builder",
+      "name": "Builder",
+      "category": "Creational",
+      "description": "Constructs complex objects step by step, separating construction from representation",
+      "when_to_use": [
+        "Complex object construction",
+        "Multiple representations",
+        "Step-by-step creation"
+      ],
+      "benefits": ["Fine control over construction", "Code reusability", "Immutable objects"],
+      "drawbacks": ["Code duplication", "Increased complexity"],
+      "use_cases": ["SQL query builders", "UI component builders", "Configuration builders"],
+      "complexity": "Medium",
+      "tags": ["creational", "builder", "fluent-interface"]
+    },
+    {
+      "id": "prototype",
+      "name": "Prototype",
+      "category": "Creational",
+      "description": "Creates new objects by cloning existing instances",
+      "when_to_use": [
+        "Object creation is expensive",
+        "Similar objects needed",
+        "Runtime type determination"
+      ],
+      "benefits": ["Reduced subclassing", "Dynamic object creation", "Performance improvement"],
+      "drawbacks": ["Deep vs shallow copy issues", "Cloning complexity"],
+      "use_cases": ["Game object spawning", "Document templates", "Cell division simulation"],
+      "complexity": "Low",
+      "tags": ["creational", "cloning", "prototype"]
+    },
+    {
+      "id": "adapter",
+      "name": "Adapter",
+      "category": "Structural",
+      "description": "Allows incompatible interfaces to work together",
+      "when_to_use": [
+        "Legacy code integration",
+        "Third-party library integration",
+        "Interface mismatch"
+      ],
+      "benefits": ["Reuse existing code", "Decoupling", "Flexibility"],
+      "drawbacks": ["Code complexity", "Performance overhead"],
+      "use_cases": ["API integration", "Legacy system wrapping", "Data format conversion"],
+      "complexity": "Low",
+      "tags": ["structural", "wrapper", "compatibility"]
+    },
+    {
+      "id": "bridge",
+      "name": "Bridge",
+      "category": "Structural",
+      "description": "Separates abstraction from implementation allowing both to vary independently",
+      "when_to_use": ["Multiple implementations", "Runtime binding", "Avoid permanent binding"],
+      "benefits": ["Platform independence", "Extensibility", "Hide implementation details"],
+      "drawbacks": ["Increased complexity", "Indirection"],
+      "use_cases": ["Graphics rendering", "Database drivers", "UI themes"],
+      "complexity": "Medium",
+      "tags": ["structural", "decoupling", "abstraction"]
+    },
+    {
+      "id": "composite",
+      "name": "Composite",
+      "category": "Structural",
+      "description": "Composes objects into tree structures to represent part-whole hierarchies",
+      "when_to_use": ["Tree structures", "Uniform treatment", "Recursive structures"],
+      "benefits": ["Simplified client code", "Easy to add new components", "Recursive composition"],
+      "drawbacks": ["Can make design overly general", "Type safety issues"],
+      "use_cases": ["File systems", "UI component trees", "Organization charts"],
+      "complexity": "Medium",
+      "tags": ["structural", "tree", "hierarchy"]
+    },
+    {
+      "id": "decorator",
+      "name": "Decorator",
+      "category": "Structural",
+      "description": "Adds new functionality to objects dynamically without altering their structure",
+      "when_to_use": [
+        "Add responsibilities dynamically",
+        "Avoid subclass explosion",
+        "Flexible alternative to inheritance"
+      ],
+      "benefits": ["Single Responsibility", "Open/Closed principle", "Runtime decoration"],
+      "drawbacks": ["Many small objects", "Debugging difficulty"],
+      "use_cases": ["Stream processing", "UI component enhancement", "Middleware pipelines"],
+      "complexity": "Medium",
+      "tags": ["structural", "wrapper", "enhancement"]
+    },
+    {
+      "id": "facade",
+      "name": "Facade",
+      "category": "Structural",
+      "description": "Provides a simplified interface to a complex subsystem",
+      "when_to_use": ["Complex subsystems", "Decoupling", "API simplification"],
+      "benefits": ["Simplified interface", "Reduced dependencies", "Layering"],
+      "drawbacks": ["Can become god object", "Limits functionality"],
+      "use_cases": ["API gateways", "Service layers", "Library wrappers"],
+      "complexity": "Low",
+      "tags": ["structural", "simplification", "interface"]
+    },
+    {
+      "id": "flyweight",
+      "name": "Flyweight",
+      "category": "Structural",
+      "description": "Shares objects efficiently to support large numbers of fine-grained objects",
+      "when_to_use": ["Large number of objects", "Memory constraints", "Shared state"],
+      "benefits": ["Memory efficiency", "Performance improvement", "Shared state management"],
+      "drawbacks": ["Runtime costs", "Complexity"],
+      "use_cases": ["Text editors", "Game particle systems", "String interning"],
+      "complexity": "High",
+      "tags": ["structural", "optimization", "memory"]
+    },
+    {
+      "id": "proxy",
+      "name": "Proxy",
+      "category": "Structural",
+      "description": "Provides a placeholder or surrogate for another object to control access",
+      "when_to_use": ["Access control", "Lazy initialization", "Remote objects"],
+      "benefits": ["Security", "Performance", "Separation of concerns"],
+      "drawbacks": ["Response time", "Complexity"],
+      "use_cases": ["Virtual proxies", "Protection proxies", "Remote proxies"],
+      "complexity": "Medium",
+      "tags": ["structural", "proxy", "access-control"]
+    },
+    {
+      "id": "chain-of-responsibility",
+      "name": "Chain of Responsibility",
+      "category": "Behavioral",
+      "description": "Passes requests along a chain of handlers until one handles it",
+      "when_to_use": ["Multiple handlers", "Dynamic handler assignment", "Decoupling"],
+      "benefits": ["Reduced coupling", "Flexibility", "Single Responsibility"],
+      "drawbacks": ["No guarantee of handling", "Performance concerns"],
+      "use_cases": ["Event handling", "Middleware chains", "Approval workflows"],
+      "complexity": "Medium",
+      "tags": ["behavioral", "chain", "delegation"]
+    },
+    {
+      "id": "command",
+      "name": "Command",
+      "category": "Behavioral",
+      "description": "Encapsulates requests as objects, allowing parameterization and queuing",
+      "when_to_use": ["Undo/redo", "Queuing operations", "Logging"],
+      "benefits": ["Decoupling", "Undo support", "Macro recording"],
+      "drawbacks": ["Increased number of classes", "Complexity"],
+      "use_cases": ["Undo/redo", "Macro recording", "Message queues"],
+      "complexity": "Medium",
+      "tags": ["behavioral", "encapsulation", "request"]
+    },
+    {
+      "id": "iterator",
+      "name": "Iterator",
+      "category": "Behavioral",
+      "description": "Provides sequential access to elements without exposing underlying representation",
+      "when_to_use": [
+        "Sequential access",
+        "Hide internal structure",
+        "Multiple traversal algorithms"
+      ],
+      "benefits": ["Single Responsibility", "Parallel iteration", "Simplified collections"],
+      "drawbacks": ["Overkill for simple collections", "Synchronization issues"],
+      "use_cases": ["Collection traversal", "Database cursors", "File reading"],
+      "complexity": "Low",
+      "tags": ["behavioral", "traversal", "collection"]
+    },
+    {
+      "id": "mediator",
+      "name": "Mediator",
+      "category": "Behavioral",
+      "description": "Defines how a set of objects interact through a central mediator",
+      "when_to_use": ["Complex communication", "Reusable components", "Decoupling"],
+      "benefits": ["Reduced dependencies", "Reusability", "Simplified maintenance"],
+      "drawbacks": ["God object risk", "Complexity"],
+      "use_cases": ["Chat rooms", "Air traffic control", "UI component communication"],
+      "complexity": "Medium",
+      "tags": ["behavioral", "communication", "decoupling"]
+    },
+    {
+      "id": "memento",
+      "name": "Memento",
+      "category": "Behavioral",
+      "description": "Captures and restores object state without violating encapsulation",
+      "when_to_use": ["Undo/redo", "Snapshots", "State rollback"],
+      "benefits": ["Encapsulation preserved", "Simple undo", "State recovery"],
+      "drawbacks": ["Memory overhead", "Caretaker complexity"],
+      "use_cases": ["Text editors", "Game save states", "Transaction rollback"],
+      "complexity": "Medium",
+      "tags": ["behavioral", "state", "snapshot"]
+    },
+    {
+      "id": "observer",
+      "name": "Observer",
+      "category": "Behavioral",
+      "description": "Defines one-to-many dependency between objects for automatic notification",
+      "when_to_use": ["Event handling", "Model-View patterns", "Distributed events"],
+      "benefits": ["Loose coupling", "Dynamic relationships", "Broadcast communication"],
+      "drawbacks": ["Memory leaks", "Unexpected updates", "Performance"],
+      "use_cases": ["MVC/MVP patterns", "Event systems", "Reactive programming"],
+      "complexity": "Low",
+      "tags": ["behavioral", "events", "publish-subscribe"],
+      "relationships": [
+        {
+          "target_pattern_id": "flows",
+          "type": "enhances",
+          "description": "Flows provide a more composable and reactive approach to the Observer pattern with built-in backpressure and cancellation support"
+        }
+      ]
+    },
+    {
+      "id": "state",
+      "name": "State",
+      "category": "Behavioral",
+      "description": "Allows object to alter behavior when internal state changes",
+      "when_to_use": ["State-dependent behavior", "Replace conditionals", "State machines"],
+      "benefits": ["Single Responsibility", "Open/Closed", "Explicit states"],
+      "drawbacks": ["Increased classes", "State transition complexity"],
+      "use_cases": ["TCP connections", "UI components", "Game character states"],
+      "complexity": "Medium",
+      "tags": ["behavioral", "state-machine", "polymorphism"]
+    },
+    {
+      "id": "strategy",
+      "name": "Strategy",
+      "category": "Behavioral",
+      "description": "Defines family of algorithms and makes them interchangeable",
+      "when_to_use": ["Multiple algorithms", "Runtime selection", "Avoid conditionals"],
+      "benefits": ["Algorithm families", "Runtime switching", "Open/Closed"],
+      "drawbacks": ["Client awareness", "Increased objects"],
+      "use_cases": ["Sorting algorithms", "Payment processing", "Compression strategies"],
+      "complexity": "Low",
+      "tags": ["behavioral", "algorithm", "encapsulation"]
+    },
+    {
+      "id": "template-method",
+      "name": "Template Method",
+      "category": "Behavioral",
+      "description": "Defines skeleton of algorithm in base class, subclasses override specific steps",
+      "when_to_use": ["Common algorithm structure", "Invariant parts", "Code reuse"],
+      "benefits": ["Code reuse", "Control inversion", "Flexibility"],
+      "drawbacks": ["Limited by inheritance", "Maintenance issues"],
+      "use_cases": ["Data processing pipelines", "Game loops", "Framework hooks"],
+      "complexity": "Low",
+      "tags": ["behavioral", "inheritance", "algorithm"]
+    },
+    {
+      "id": "visitor",
+      "name": "Visitor",
+      "category": "Behavioral",
+      "description": "Separates algorithms from objects on which they operate",
+      "when_to_use": [
+        "Operations on object structures",
+        "Add operations without changing classes",
+        "Double dispatch"
+      ],
+      "benefits": ["Single Responsibility", "Open/Closed", "Accumulating state"],
+      "drawbacks": ["Breaking encapsulation", "Difficult element addition"],
+      "use_cases": ["Compiler AST", "Document processing", "Object serialization"],
+      "complexity": "High",
+      "tags": ["behavioral", "double-dispatch", "separation"]
+    },
+    {
+      "id": "interpreter",
+      "name": "Interpreter",
+      "category": "Behavioral",
+      "description": "Defines grammar representation and interpreter for a language",
+      "when_to_use": ["Simple grammars", "Domain-specific languages", "Expression evaluation"],
+      "benefits": ["Easy to extend", "Easy to implement", "Separation of concerns"],
+      "drawbacks": ["Complex grammars difficult", "Performance issues"],
+      "use_cases": ["Regular expressions", "SQL parsing", "Configuration languages"],
+      "complexity": "High",
+      "tags": ["behavioral", "language", "grammar"]
+    }
   ]
 }
