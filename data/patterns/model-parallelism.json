@@ -1,0 +1,23 @@
+{
+  "id": "model-parallelism",
+  "name": "Model Parallelism",
+  "category": "Distributed Computing",
+  "description": "Technique for distributing a large machine learning model across multiple devices or nodes for training and inference",
+  "when_to_use": "Models too large for single device memory\nMulti-GPU or distributed training\nLarge-scale neural networks\nHigh-performance computing",
+  "benefits": "Handles larger models\nUtilizes multiple devices\nScalable training\nEfficient resource usage",
+  "drawbacks": "Communication overhead\nComplex implementation\nSynchronization challenges\nHardware dependency",
+  "use_cases": "Large language models\nComputer vision models\nDistributed training pipelines\nCloud-based AI training",
+  "complexity": "High",
+  "tags": [
+    "distributed-computing",
+    "parallel-training",
+    "multi-gpu",
+    "scalability"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Model parallelism example for distributed training\ninterface ModelPartition {\n  forward(input: any): any;\n  backward(gradients: any): any;\n}\n\nclass DistributedModel {\n  private partitions: ModelPartition[];\n  private devices: string[];\n\n  constructor(partitions: ModelPartition[], devices: string[]) {\n    this.partitions = partitions;\n    this.devices = devices;\n  }\n\n  async forward(input: any): Promise<any> {\n    let currentInput = input;\n    \n    for (const partition of this.partitions) {\n      // Distribute computation across devices\n      currentInput = await this.executeOnDevice(partition, currentInput);\n    }\n    \n    return currentInput;\n  }\n\n  private async executeOnDevice(partition: ModelPartition, input: any): Promise<any> {\n    // Simulate device execution\n    return partition.forward(input);\n  }\n\n  async backward(gradients: any): Promise<any> {\n    let currentGradients = gradients;\n    \n    // Backward pass in reverse order\n    for (let i = this.partitions.length - 1; i >= 0; i--) {\n      currentGradients = await this.partitions[i].backward(currentGradients);\n    }\n    \n    return currentGradients;\n  }\n}"
+    }
+  }
+}

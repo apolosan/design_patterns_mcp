@@ -3,7 +3,7 @@
  * Represents a user's request for pattern recommendations
  */
 
-export type ComplexityPreference = 'Simple' | 'Any' | 'Advanced';
+type ComplexityPreference = 'Simple' | 'Any' | 'Advanced';
 
 export interface PatternRequest {
   /** Unique request identifier */
@@ -43,7 +43,7 @@ export interface PatternRequest {
 /**
  * Request creation input
  */
-export interface CreatePatternRequestInput {
+interface CreatePatternRequestInput {
   query: string;
   codeContext?: string;
   programmingLanguage?: string;
@@ -57,7 +57,7 @@ export interface CreatePatternRequestInput {
 /**
  * Request processing context
  */
-export interface RequestProcessingContext {
+interface RequestProcessingContext {
   request: PatternRequest;
   startTime: Date;
   searchTerms: string[];
@@ -68,7 +68,7 @@ export interface RequestProcessingContext {
 /**
  * Code analysis result from code context
  */
-export interface CodeAnalysisResult {
+interface CodeAnalysisResult {
   detectedLanguage: string;
   identifiedPatterns: string[];
   complexity: 'Low' | 'Medium' | 'High';
@@ -79,7 +79,7 @@ export interface CodeAnalysisResult {
 /**
  * Request validation result
  */
-export interface RequestValidationResult {
+interface RequestValidationResult {
   isValid: boolean;
   errors: string[];
   warnings: string[];
@@ -89,7 +89,7 @@ export interface RequestValidationResult {
 /**
  * Request processing statistics
  */
-export interface RequestStats {
+interface RequestStats {
   totalRequests: number;
   averageProcessingTime: number;
   popularQueries: Array<{

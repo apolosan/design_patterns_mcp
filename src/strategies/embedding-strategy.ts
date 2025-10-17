@@ -99,7 +99,17 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
         normalize: true,
       });
 
-      const values = Array.from(response.data) as number[];
+      const data = response.data as unknown;
+      if (!Array.isArray(data) && !(data instanceof Float32Array)) {
+        throw new Error('Invalid embedding data: expected array or Float32Array of numbers');
+      }
+
+      const arrayData = Array.isArray(data) ? data : Array.from(data);
+      if (!arrayData.every((v: unknown) => typeof v === 'number')) {
+        throw new Error('Invalid embedding data: expected array of numbers');
+      }
+
+      const values = arrayData;
 
       return {
         dimensions: this.dimensions,
@@ -127,12 +137,19 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
         normalize: true,
       });
 
+      const data = response.data as unknown;
+      if (!Array.isArray(data) && !(data instanceof Float32Array)) {
+        throw new Error('Invalid embedding data: expected array or Float32Array of numbers');
+      }
+
+      const embeddingData = Array.isArray(data)
+        ? (data as number[])
+        : Array.from(data);
+
       // Handle batch response
       const embeddings: EmbeddingVector[] = [];
       for (let i = 0; i < texts.length; i++) {
-        const values = Array.from(
-          response.data.slice(i * this.dimensions, (i + 1) * this.dimensions)
-        ) as number[];
+        const values = embeddingData.slice(i * this.dimensions, (i + 1) * this.dimensions);
         embeddings.push({
           dimensions: this.dimensions,
           values,

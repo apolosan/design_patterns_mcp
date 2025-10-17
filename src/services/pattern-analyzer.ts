@@ -3,7 +3,7 @@
  * Analyzes code snippets to detect design patterns and suggest improvements
  */
 
-export interface DetectedPattern {
+interface DetectedPattern {
   pattern: string;
   category: string;
   confidence: number;
@@ -15,7 +15,7 @@ export interface DetectedPattern {
   indicators: string[];
 }
 
-export interface CodeAnalysisResult {
+interface CodeAnalysisResult {
   identifiedPatterns: DetectedPattern[];
   suggestedPatterns: {
     pattern: string;

@@ -1,6 +1,6 @@
 {
   "name": "design-patterns-mcp",
-  "version": "0.2.8",
+  "version": "0.2.10",
   "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 622+ patterns using semantic search and vector embeddings",
   "main": "dist/mcp-server.js",
   "module": "dist/mcp-server.js",
@@ -44,7 +44,7 @@
     "lint": "eslint src/**/*.ts tests/**/*.ts",
     "lint:fix": "eslint src/**/*.ts tests/**/*.ts --fix",
     "typecheck": "tsc --noEmit",
-    "db:setup": "npm run build && npm run migrate && npm run seed && npm run generate-embeddings && npm run setup-relationships",
+    "db:setup": "npm run build && npm run migrate && npm run seed && npm run generate-embeddings && npm run setup-relationships && rm :memory:*",
     "migrate": "npm run build && node dist/src/cli/migrate.js",
     "seed": "npm run build && node dist/src/cli/seed.js",
     "setup-relationships": "npm run build && node dist/src/cli/setup-relationships.js",
@@ -139,15 +139,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.0",
-    "@types/express": "^5.0.3",
     "@xenova/transformers": "^2.17.2",
-    "better-sqlite3": "^12.2.0",
-    "commander": "^14.0.1",
-    "dotenv": "^16.3.1",
-    "express": "^5.1.0",
-    "sql.js": "^1.13.0",
-    "sqlite-vec": "^0.1.1-alpha.14",
-    "winston": "^3.11.0"
+    "sql.js": "^1.13.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.9",
@@ -157,13 +150,6 @@
     "@vitest/coverage-v8": "^1.1.0",
     "bun-types": "latest",
     "eslint": "^8.0.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-node": "^11.1.0",
-    "husky": "^9.0.0",
-    "lint-staged": "^15.0.0",
-    "prettier": "^3.0.0",
-    "rimraf": "^5.0.0",
     "typescript": "^5.3.0",
     "vitest": "^1.1.0"
   }

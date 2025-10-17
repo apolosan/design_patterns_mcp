@@ -9,7 +9,7 @@ import fs from 'fs';
 import { logger } from './logger.js';
 import { StatementPool } from './statement-pool.js';
 
-export interface DatabaseConfig {
+interface DatabaseConfig {
   filename: string;
   options?: {
     readonly?: boolean;
@@ -457,7 +457,7 @@ export class DatabaseManager {
    */
 }
 
-export interface DatabaseStats {
+interface DatabaseStats {
   filename: string;
   pageCount: number;
   pageSize: number;
@@ -470,7 +470,7 @@ export interface DatabaseStats {
   indexes: string[];
 }
 
-export interface HealthCheckResult {
+interface HealthCheckResult {
   healthy: boolean;
   error?: string;
   stats?: DatabaseStats;
@@ -502,10 +502,36 @@ export async function initializeDatabaseManager(config: DatabaseConfig): Promise
     await databaseManager.close();
   }
 
-  databaseManager = new DatabaseManager(config);
-  await databaseManager.initialize();
+  // Retry pattern for database corruption recovery
+  let retryCount = 0;
+  const maxRetries = 3;
 
-  return databaseManager;
+  while (retryCount < maxRetries) {
+    try {
+      databaseManager = new DatabaseManager(config);
+      await databaseManager.initialize();
+      break; // Success, exit retry loop
+    } catch (error) {
+      retryCount++;
+      if (databaseManager) {
+        try {
+          await databaseManager.close();
+        } catch (closeError) {
+          // Ignore close errors during retry
+        }
+        databaseManager = null;
+      }
+
+      if (retryCount >= maxRetries) {
+        throw error; // Max retries reached, rethrow
+      }
+
+      // Wait before retry (exponential backoff)
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 100));
+    }
+  }
+
+  return databaseManager!;
 }
 
 /**

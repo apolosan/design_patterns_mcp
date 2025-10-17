@@ -4,7 +4,7 @@
  * Supports pattern search results, embeddings, and frequently accessed data
  */
 
-export interface CacheEntry<T = any> {
+interface CacheEntry<T = any> {
   data: T;
   timestamp: number;
   ttl: number;
@@ -12,13 +12,13 @@ export interface CacheEntry<T = any> {
   lastAccessed: number;
 }
 
-export interface CacheConfig {
+interface CacheConfig {
   maxSize: number;
   defaultTTL: number;
   enableMetrics: boolean;
 }
 
-export interface CacheMetrics {
+interface CacheMetrics {
   hits: number;
   misses: number;
   evictions: number;

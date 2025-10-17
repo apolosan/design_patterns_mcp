@@ -8,55 +8,103 @@ import {
   ReadResourceRequest,
   ListResourcesRequest,
 } from '@modelcontextprotocol/sdk/types.js';
-import { Pattern } from '../models/pattern.js';
-import { PatternCategory } from '../models/pattern-category.js';
+
+interface ResourceResponse {
+  contents: Array<{
+    uri: string;
+    mimeType: string;
+    text: string;
+  }>;
+}
+import { Pattern, PatternCategory } from '../models/pattern.js';
 import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
 
 // Import real service interfaces
 import { DatabaseManager as RealDatabaseManager } from '../services/database-manager.js';
 
 // Adapter interface to match MCP expectations
+export interface SupportedLanguage {
+  language: string;
+  count: number;
+}
+
+export interface ServerStats {
+  totalPatterns: number;
+  totalCategories: number;
+  avgResponseTime: number;
+  totalRequests: number;
+  cacheHitRate: number;
+}
+
 export interface DatabaseManager {
   getAllPatterns(): Promise<Pattern[]>;
   getPatternById(id: string): Promise<Pattern | null>;
   getPatternCategories(): Promise<PatternCategory[]>;
-  getSupportedLanguages(): Promise<any[]>;
-  getServerStats(): Promise<any>;
+  getSupportedLanguages(): Promise<SupportedLanguage[]>;
+  getServerStats(): Promise<ServerStats>;
 }
 
 // Adapter class to bridge real service with MCP interface
 export class DatabaseManagerAdapter implements DatabaseManager {
   constructor(private realDatabaseManager: RealDatabaseManager) {}
 
-  async getAllPatterns(): Promise<Pattern[]> {
-    const rows = this.realDatabaseManager.query(`
+  getAllPatterns(): Promise<Pattern[]> {
+    const rows = this.realDatabaseManager.query<{
+      id: string;
+      name: string;
+      category: string;
+      description: string;
+      when_to_use: string;
+      benefits: string;
+      drawbacks: string;
+      use_cases: string;
+      complexity: string;
+      tags: string;
+      created_at: string;
+      updated_at: string;
+    }>(`
       SELECT id, name, category, description, when_to_use, benefits, drawbacks, use_cases, complexity, tags, created_at, updated_at
       FROM patterns
       ORDER BY name
     `);
 
-    return rows.map(row => ({
-      id: row.id,
-      name: row.name,
-      category: row.category,
-      description: row.description,
-      problem: row.description, // Use description as the problem statement
-      solution: 'See description for solution details', // Default solution text
-      when_to_use: parseArrayProperty(row.when_to_use, 'when_to_use'),
-      benefits: parseArrayProperty(row.benefits, 'benefits'),
-      drawbacks: parseArrayProperty(row.drawbacks, 'drawbacks'),
-      use_cases: parseArrayProperty(row.use_cases, 'use_cases'),
-      implementations: [], // Would need to fetch from pattern_implementations table
-      relatedPatterns: [], // Would need to fetch from pattern_relationships table
-      complexity: row.complexity,
-      tags: parseTags(row.tags),
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at),
-    }));
+    return Promise.resolve(
+      rows.map(row => ({
+        id: row.id,
+        name: row.name,
+        category: row.category,
+        description: row.description,
+        problem: row.description, // Use description as the problem statement
+        solution: 'See description for solution details', // Default solution text
+        when_to_use: parseArrayProperty(row.when_to_use, 'when_to_use'),
+        benefits: parseArrayProperty(row.benefits, 'benefits'),
+        drawbacks: parseArrayProperty(row.drawbacks, 'drawbacks'),
+        use_cases: parseArrayProperty(row.use_cases, 'use_cases'),
+        implementations: [], // Would need to fetch from pattern_implementations table
+        relatedPatterns: [], // Would need to fetch from pattern_relationships table
+        complexity: row.complexity,
+        tags: parseTags(row.tags),
+        createdAt: new Date(row.created_at),
+        updatedAt: new Date(row.updated_at),
+      }))
+    );
   }
 
   async getPatternById(id: string): Promise<Pattern | null> {
-    const row = this.realDatabaseManager.queryOne(
+    const row = this.realDatabaseManager.queryOne<{
+      id: string;
+      name: string;
+      category: string;
+      description: string;
+      when_to_use: string;
+      benefits: string;
+      drawbacks: string;
+      use_cases: string;
+      complexity: string;
+      tags: string;
+      created_at: string;
+      updated_at: string;
+    }>(
       `
       SELECT id, name, category, description, when_to_use, benefits, drawbacks, use_cases, complexity, tags, created_at, updated_at
       FROM patterns
@@ -65,9 +113,9 @@ export class DatabaseManagerAdapter implements DatabaseManager {
       [id]
     );
 
-    if (!row) return null;
+    if (!row) return Promise.resolve(null);
 
-    return {
+    return Promise.resolve({
       id: row.id,
       name: row.name,
       category: row.category,
@@ -84,63 +132,66 @@ export class DatabaseManagerAdapter implements DatabaseManager {
       tags: parseTags(row.tags),
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
-    };
+    });
   }
 
-  async getPatternCategories(): Promise<PatternCategory[]> {
-    const rows = this.realDatabaseManager.query(`
+  async getPatternCategories(): Promise<any[]> {
+    const rows = this.realDatabaseManager.query<{
+      category: string;
+      pattern_count: number;
+    }>(`
       SELECT category, COUNT(*) as pattern_count
       FROM patterns
       GROUP BY category
       ORDER BY category
     `);
 
-    return rows.map((row, index) => ({
-      id: index + 1,
-      name: row.category,
-      description: `${row.category} design patterns`,
-      patternCount: row.pattern_count,
-      typicalUseCases: this.getTypicalUseCases(row.category),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }));
+    return Promise.resolve(
+      rows.map((row, index) => ({
+        id: index + 1,
+        name: row.category,
+        description: `${row.category} design patterns`,
+        patternCount: row.pattern_count,
+        typicalUseCases: this.getTypicalUseCases(row.category),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }))
+    );
   }
 
-  async getSupportedLanguages(): Promise<any[]> {
+  async getSupportedLanguages(): Promise<SupportedLanguage[]> {
     // Return static list for now - could be made dynamic
-    return [
+    return Promise.resolve([
       {
         language: 'typescript',
-        display_name: 'TypeScript',
-        implementation_count: 150,
-        supported_features: ['classes', 'interfaces', 'generics'],
+        count: 150,
       },
       {
         language: 'javascript',
-        display_name: 'JavaScript',
-        implementation_count: 120,
-        supported_features: ['classes', 'prototypes', 'closures'],
+        count: 120,
       },
       {
         language: 'python',
-        display_name: 'Python',
-        implementation_count: 100,
-        supported_features: ['classes', 'decorators', 'metaclasses'],
+        count: 100,
       },
-    ];
+    ]);
   }
 
-  async getServerStats(): Promise<any> {
+  async getServerStats(): Promise<ServerStats> {
     const patternCount = this.realDatabaseManager.queryOne<{ count: number }>(
       'SELECT COUNT(*) as count FROM patterns'
     );
+    const categoryCount = this.realDatabaseManager.queryOne<{ count: number }>(
+      'SELECT COUNT(DISTINCT category) as count FROM patterns'
+    );
 
-    return {
+    return Promise.resolve({
+      totalPatterns: patternCount?.count ?? 0,
+      totalCategories: categoryCount?.count ?? 0,
       avgResponseTime: 150,
       totalRequests: 0, // Would need to track this
       cacheHitRate: 0.85,
-      totalPatterns: patternCount?.count || 0,
-    };
+    });
   }
 
   private getTypicalUseCases(category: string): string {
@@ -213,7 +264,7 @@ export class MCPResourcesHandler {
   /**
    * Handle resource read requests
    */
-  async handleResourceRead(request: ReadResourceRequest): Promise<any> {
+  async handleResourceRead(request: ReadResourceRequest): Promise<ResourceResponse> {
     const { uri } = request.params;
 
     if (uri === 'patterns') {
@@ -235,7 +286,7 @@ export class MCPResourcesHandler {
   /**
    * Handle patterns resource
    */
-  private async handlePatternsResource(): Promise<any> {
+  private async handlePatternsResource(): Promise<ResourceResponse> {
     try {
       const patterns = await this.config.databaseManager.getAllPatterns();
 
@@ -251,7 +302,7 @@ export class MCPResourcesHandler {
                 category: pattern.category,
                 description: pattern.description,
                 complexity: pattern.complexity,
-                popularity: pattern.popularity || null,
+                popularity: pattern.popularity ?? null,
                 tags: pattern.tags,
                 createdAt: pattern.createdAt.toISOString(),
                 updatedAt: pattern.updatedAt.toISOString(),
@@ -272,7 +323,7 @@ export class MCPResourcesHandler {
   /**
    * Handle specific pattern resource
    */
-  private async handlePatternResource(patternId: string): Promise<any> {
+  private async handlePatternResource(patternId: string): Promise<ResourceResponse> {
     try {
       const pattern = await this.config.databaseManager.getPatternById(patternId);
 
@@ -328,11 +379,11 @@ export class MCPResourcesHandler {
   /**
    * Handle categories resource
    */
-  private async handleCategoriesResource(): Promise<any> {
+  private async handleCategoriesResource(): Promise<ResourceResponse> {
     try {
       const categories = await this.config.databaseManager.getPatternCategories();
 
-      const categoriesWithStats = categories.map(category => ({
+      const categoriesWithStats = categories.map((category: any) => ({
         category: category.name,
         pattern_count: category.patternCount,
         description: category.description,
@@ -363,7 +414,7 @@ export class MCPResourcesHandler {
   /**
    * Handle languages resource
    */
-  private async handleLanguagesResource(): Promise<any> {
+  private async handleLanguagesResource(): Promise<ResourceResponse> {
     try {
       const languages = await this.config.databaseManager.getSupportedLanguages();
 
@@ -434,7 +485,7 @@ export class MCPResourcesHandler {
   /**
    * Handle server info resource
    */
-  private async handleServerInfoResource(): Promise<any> {
+  private async handleServerInfoResource(): Promise<ResourceResponse> {
     try {
       const stats = await this.config.databaseManager.getServerStats();
 
@@ -490,7 +541,7 @@ export class MCPResourcesHandler {
   /**
    * Handle resource list requests
    */
-  async handleResourceList(request: ListResourcesRequest): Promise<any> {
+  async handleResourceList(_request: ListResourcesRequest): Promise<{ resources: any[] }> {
     try {
       const resources = this.getResources();
 

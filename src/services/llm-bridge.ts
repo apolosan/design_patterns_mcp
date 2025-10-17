@@ -5,7 +5,7 @@
 import { DatabaseManager } from './database-manager.js';
 import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
 
-export interface LLMConfig {
+interface LLMConfig {
   provider: 'openai' | 'anthropic' | 'ollama' | 'local';
   model: string;
   apiKey?: string;
@@ -15,7 +15,7 @@ export interface LLMConfig {
   timeout: number;
 }
 
-export interface LLMRequest {
+interface LLMRequest {
   prompt: string;
   context?: any;
   examples?: string[];
@@ -23,7 +23,7 @@ export interface LLMRequest {
   format?: 'json' | 'text' | 'markdown';
 }
 
-export interface LLMResponse {
+interface LLMResponse {
   content: string;
   usage?: {
     promptTokens: number;
@@ -38,7 +38,7 @@ export interface LLMResponse {
   };
 }
 
-export interface PatternAnalysisRequest {
+interface PatternAnalysisRequest {
   codeSnippet?: string;
   problemDescription: string;
   programmingLanguage?: string;
@@ -49,7 +49,7 @@ export interface PatternAnalysisRequest {
   };
 }
 
-export interface PatternAnalysisResponse {
+interface PatternAnalysisResponse {
   detectedPatterns: Array<{
     name: string;
     confidence: number;
@@ -364,7 +364,7 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
   /**
    * Call OpenAI API
    */
-  private async callOpenAI(request: LLMRequest): Promise<LLMResponse> {
+  private async callOpenAI(_request: LLMRequest): Promise<LLMResponse> {
     // Placeholder implementation
     return {
       content: 'OpenAI response placeholder',
@@ -385,7 +385,7 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
   /**
    * Call Anthropic API
    */
-  private async callAnthropic(request: LLMRequest): Promise<LLMResponse> {
+  private async callAnthropic(_request: LLMRequest): Promise<LLMResponse> {
     // Placeholder implementation
     return {
       content: 'Anthropic response placeholder',
@@ -406,7 +406,7 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
   /**
    * Call Ollama API
    */
-  private async callOllama(request: LLMRequest): Promise<LLMResponse> {
+  private async callOllama(_request: LLMRequest): Promise<LLMResponse> {
     // Placeholder implementation
     return {
       content: 'Ollama response placeholder',
@@ -427,7 +427,7 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
   /**
    * Call local model
    */
-  private async callLocal(request: LLMRequest): Promise<LLMResponse> {
+  private async callLocal(_request: LLMRequest): Promise<LLMResponse> {
     // Placeholder implementation
     return {
       content: 'Local model response placeholder',
@@ -617,7 +617,7 @@ class ${patternName}Example {
   }> {
     try {
       // Test LLM with a simple request
-      const testResponse = await this.callLLM({
+      await this.callLLM({
         prompt: 'Hello, this is a test.',
         format: 'text',
       });
@@ -641,7 +641,7 @@ class ${patternName}Example {
 }
 
 // Default configuration
-export const DEFAULT_LLM_CONFIG: LLMConfig = {
+const DEFAULT_LLM_CONFIG: LLMConfig = {
   provider: 'ollama',
   model: 'llama2',
   temperature: 0.7,
@@ -650,7 +650,7 @@ export const DEFAULT_LLM_CONFIG: LLMConfig = {
 };
 
 // Factory function
-export function createLLMBridgeService(
+function createLLMBridgeService(
   db: DatabaseManager,
   config?: Partial<LLMConfig>
 ): LLMBridgeService {

@@ -19,7 +19,7 @@ export interface PatternImplementation {
   created_at?: string;
 }
 
-export interface PatternEmbedding {
+interface PatternEmbedding {
   pattern_id: string;
   embedding: number[];
   model: string;

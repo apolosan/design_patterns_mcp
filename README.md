@@ -1,6 +1,6 @@
 # Design Patterns MCP Server 🎯
 
-An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using semantic search and vector embeddings. This project offers access to a comprehensive catalog of **622 design patterns** through a natural language interface.
+An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using semantic search and vector embeddings. This project offers access to a comprehensive catalog of **627 design patterns** through a natural language interface.
 
 ## 📋 Overview
 
@@ -9,7 +9,7 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 ### ✨ Key Features
 
 - 🔍 **Intelligent Semantic Search**: Find patterns using natural problem descriptions
-- 📚 **Comprehensive Catalog**: 622 patterns organized in 90+ categories
+- 📚 **Comprehensive Catalog**: 627 patterns organized in 90+ categories
 - 🎯 **Contextual Recommendations**: Suggestions based on programming language and domain
 - ⚡ **Vector Search**: Uses SQLite with vector extensions for efficient search
 - 🌐 **Multi-language**: Support for multiple programming languages
@@ -18,13 +18,17 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - 💾 **Smart Caching**: LRU cache with 85%+ hit rate reduces database load
 - 📝 **Structured Logging**: Professional logging system with service-based organization
 - 🏗️ **SOLID Architecture**: Clean, maintainable, and testable codebase
-- 🛡️ **Production Ready**: High test pass rate (212/212), zero memory leaks, graceful degradation
+- 🛡️ **Production Ready**: High test pass rate (219/219), zero memory leaks, graceful degradation
 
-### 🆕 Project Status (v0.2.8)
+### 🆕 Project Status (v0.2.10)
 
 **Latest Updates (October 2025)**
 
-- ✅ **High Test Pass Rate**: 212 out of 212 tests passing (212/212) - Production Ready!
+- ✅ **100% Test Pass Rate**: 219 out of 219 tests passing (100%) - Production Ready!
+- ✅ **TypeScript Errors Fixed**: All build errors resolved, full TypeScript compilation passing
+- ✅ **Critical Bug Fix**: find_patterns tool now returns recommendations correctly (was returning 0)
+- ✅ **Code Sanitization**: Removed unused files and optimized codebase for maintainability
+- ✅ **Pattern Matching Fix**: Improved weighted scoring in PatternMatcher with score normalization (0-1 range)
 - ✅ **Critical Stability Fixes**: 15 total issues resolved (P0/P1/P2/P3)
 - ✅ **Race Condition Protection**: Simple Lock Pattern prevents concurrent cache corruption
 - ✅ **Transaction Retry Logic**: Exponential backoff for SQLITE_BUSY/LOCKED errors
@@ -33,8 +37,8 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - ✅ **Performance Optimized**: FNV-1a hash algorithm (30-40% faster cache keys)
 - ✅ **DI Container Migration**: Complete removal of deprecated singleton functions
 - ✅ **Zero Memory Leaks**: Object Pool pattern with bounded resource management (max 100)
-- ✅ **622 Patterns**: Comprehensive catalog with code examples across 90+ categories
-- ✅ **Database Schema Fixed**: Migration 002 with correct 6-column schema
+- ✅ **627 Patterns**: Comprehensive catalog with code examples across 90+ categories
+- ✅ **Database Schema Fixed**: Migration system stable with proper table creation
 - ✅ **Data Preservation**: Migrations rename tables instead of dropping (prevents data loss)
 - ✅ **Structured Logging**: Professional logging system replaces console.log (10 replacements)
 - ✅ **Build & TypeCheck**: All compilation checks passing
@@ -49,29 +53,31 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - ✅ **Code Quality**: 40% reduction in main server file (704→422 lines)
 - ✅ **Design Patterns Applied**: Retry Pattern, Graceful Degradation, Simple Lock, Error Recovery, Database Transaction, Fail-Fast, Schema Versioning, Data Preservation
 
-### 🗂️ Available Pattern Categories (622 Patterns)
+### 🗂️ Available Pattern Categories (627 Patterns)
 
 #### **Classic Design Patterns (GoF)**
 
-- **Creational** (5): Factory, Builder, Singleton, Prototype, Abstract Factory
-- **Structural** (8): Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy
-- **Behavioral** (11): Observer, Strategy, Command, State, Chain of Responsibility, Iterator, Mediator, Memento, Template Method, Visitor, Interpreter
+- **Creational** (8): Factory, Builder, Singleton, Prototype, Abstract Factory
+- **Structural** (10): Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy
+- **Behavioral** (16): Observer, Strategy, Command, State, Chain of Responsibility, Iterator, Mediator, Memento, Template Method, Visitor, Interpreter
 
-#### **Architectural & Enterprise** (59 patterns)
+#### **Architectural & Enterprise** (56 patterns)
 
-- **Architectural** (16): MVC, MVP, MVVM, Clean Architecture, Hexagonal, Layered, Event-Driven
+- **Architectural** (15): MVC, MVP, MVVM, Clean Architecture, Hexagonal, Layered, Event-Driven
 - **Enterprise** (24): Repository, Unit of Work, Service Layer, Dependency Injection
-- **Domain-Driven Design** (19): Aggregate, Value Object, Entity, Domain Event, Bounded Context
+- **Domain-Driven Design** (17): Aggregate, Value Object, Entity, Domain Event, Bounded Context
 
-#### **Microservices & Cloud** (38 patterns)
+#### **Microservices & Cloud** (39 patterns)
 
-- **Microservices** (23): Circuit Breaker, Event Sourcing, CQRS, Saga, Service Mesh
+- **Microservices** (22): Circuit Breaker, Event Sourcing, CQRS, Saga, Service Mesh
 - **Cloud-Native** (14): Auto-scaling, Load Balancing, Service Discovery
 - **Serverless** (1): Function as a Service patterns
+- **DevOps** (1): CI/CD patterns
+- **Infrastructure** (1): IaC patterns
 
 #### **Data Engineering & Management** (54 patterns)
 
-- **Data Access** (11): Active Record, Data Mapper, Query Object
+- **Data Access** (10): Active Record, Data Mapper, Query Object
 - **Data Engineering** (4): ETL, Data Pipeline, Stream Processing
 - **Data Storage** (3): Partitioning, Sharding, Replication
 - **Data Quality** (3): Validation, Cleansing, Monitoring
@@ -82,11 +88,14 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - **Data Observability** (3): Monitoring, Alerting, Logging
 - **Data Value** (5): Monetization, Governance, Quality Metrics
 - **Data Management** (4): Lifecycle, Archival, Retention
+- **Big Data Analysis** (5): Distributed Computing patterns
 
-#### **AI/ML & MLOps** (39 patterns)
+#### **AI/ML & MLOps** (46 patterns)
 
 - **AI/ML** (38): Model Training, RAG, Few-Shot Learning, Fine-Tuning, Inference Optimization
 - **MLOps** (1): Model Deployment, Monitoring, A/B Testing
+- **Machine Learning** (3): Model Compression, Knowledge Distillation, Model Parallelism
+- **AI Governance** (5): Ethics, Bias Mitigation, Interpretability
 
 #### **React Patterns** (27 patterns)
 
@@ -107,19 +116,19 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 
 #### **Blockchain & Web3** (115 patterns)
 
-- **DeFi Protocols**: AMM (4), Lending (4), Stablecoin (3), Yield (2), Derivatives (2), Vault (2), Tokenomics (1)
-- **NFT Patterns** (13): Minting, Marketplace, Metadata
+- **DeFi Protocols**: AMM (6), Lending (10), Stablecoin (2), Yield (1), Derivatives (2), Vault (2), Tokenomics (3)
+- **NFT Patterns** (14): Minting, Marketplace, Metadata
 - **NFT Royalty** (2): EIP-2981, Custom royalties
 - **NFT Storage** (1): IPFS, Arweave integration
-- **Smart Contract**: Security (5), Upgradeability (3), Access Control (3), Factory (2), Gas Optimization (5)
-- **DAO Patterns**: Governance (9), Treasury (2)
+- **Smart Contract**: Security (6), Upgradeability (1), Access Control (3), Factory (2), Gas Optimization (5)
+- **DAO Patterns**: Governance (11), Treasury (2)
 - **Cross-Chain** (8): Bridge, Relay, Atomic Swap
-- **Layer 2**: Scaling (6), Data Availability (1)
+- **Layer 2**: Scaling (7), Data Availability (1)
 - **Account Abstraction** (5): ERC-4337, Session Keys
 - **MEV** (3): Protection, Extraction, Ordering
 - **Privacy** (2): Zero-Knowledge (3), Stealth Addresses
 - **Real World Assets** (3): Tokenization, Oracle integration
-- **Token Economics** (2): Vesting, Distribution
+- **Token Economics** (3): Vesting, Distribution
 - **Restaking** (2): EigenLayer patterns
 - **Sustainable Blockchain** (3): Energy efficiency
 - **Modular Blockchain** (1): Celestia, Avail
@@ -127,28 +136,28 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - **Web3 Frontend** (8): Wallet connection, Transaction handling
 - **AI & Blockchain** (2): AI + Web3 integration
 
-#### **Performance & Optimization** (25 patterns)
+#### **Performance & Optimization** (24 patterns)
 
-- **Performance** (21): Caching, Lazy Loading, Object Pool, Connection Pooling
+- **Performance** (20): Caching, Lazy Loading, Object Pool, Connection Pooling
 - **Caching** (4): Cache-Aside, Write-Through, Read-Through
 
-#### **Concurrency & Reactive** (37 patterns)
+#### **Concurrency & Reactive** (45 patterns)
 
-- **Concurrency** (20): Producer-Consumer, Thread Pool, Actor Model, Lock-Free
-- **Reactive** (17): Observer, Publisher-Subscriber, Reactive Streams, Backpressure
+- **Concurrency** (27): Producer-Consumer, Thread Pool, Actor Model, Lock-Free
+- **Reactive** (18): Observer, Publisher-Subscriber, Reactive Streams, Backpressure
 
-#### **Integration & Messaging** (23 patterns)
+#### **Integration & Messaging** (21 patterns)
 
-- **Integration** (20): Message Queue, Event Bus, API Gateway, ESB
+- **Integration** (18): Message Queue, Event Bus, API Gateway, ESB
 - **Messaging** (3): Publish-Subscribe, Point-to-Point
 
-#### **Testing & Quality** (15 patterns)
+#### **Testing & Quality** (20 patterns)
 
-- **Testing** (15): Test Double, Page Object, Builder Pattern for tests, Contract Testing
+- **Testing** (20): Test Double, Page Object, Builder Pattern for tests, Contract Testing
 
-#### **Development Practices** (30 patterns)
+#### **Development Practices** (40 patterns)
 
-- **Functional** (22): Monads, Functors, Higher-Order Functions, Immutability
+- **Functional** (26): Monads, Functors, Higher-Order Functions, Immutability
 - **Error Management** (7): Exception Handling, Retry, Circuit Breaker
 - **Idempotency** (7): Idempotent Operations, Request Deduplication
 
@@ -166,9 +175,9 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 
 - **Embedded Systems** (5): State Machine, Table-Driven State Machine, Circular Buffer, Watchdog Timer, Interrupt Service Routine
 
-#### **Security** (16 patterns)
+#### **Security** (21 patterns)
 
-- **Security** (16): Authentication, Authorization, Data Protection, OWASP Top 10
+- **Security** (21): Authentication, Authorization, Data Protection, OWASP Top 10
 
 #### **Storage & Infrastructure** (5 patterns)
 
@@ -468,7 +477,7 @@ logger.info('performance-monitor', 'Cache metrics', cacheStats);
 
 ## 🧪 Testing
 
-The project includes a comprehensive test suite with **176 passing tests** (100% success rate):
+The project includes a comprehensive test suite with **219 passing tests** (100% success rate):
 
 - **Contract Tests**: Validate MCP protocol compliance
 - **Integration Tests**: Test interaction between components
@@ -557,10 +566,10 @@ This project is licensed under the MIT License. See [LICENSE](./LICENSE) for det
 
 ---
 
-**Version**: 0.2.8
-**Last Updated**: October 2025
-**Patterns**: 622
-**Tests**: 212/212 passing (98.1%)
-**Status**: Production Ready
-**Architecture**: SOLID + Design Patterns
-**Logging**: Structured Logger implemented
+- **Version**: 0.2.10
+- **Last Updated**: October 2025
+- **Patterns**: 627
+- **Tests**: 219/219 passing (100%)
+- **Status**: Production Ready
+- **Architecture**: SOLID + Design Patterns
+- **Logging**: Structured Logger implemented

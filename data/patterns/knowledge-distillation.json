@@ -1,0 +1,23 @@
+{
+  "id": "knowledge-distillation",
+  "name": "Knowledge Distillation",
+  "category": "Machine Learning",
+  "description": "Technique to transfer knowledge from a large, complex model (teacher) to a smaller, simpler model (student) for efficient deployment",
+  "when_to_use": "Need for model compression\nEdge device deployment\nReduced inference time\nMaintaining model accuracy",
+  "benefits": "Smaller model size\nFaster inference\nLower computational requirements\nRetained performance",
+  "drawbacks": "Requires training two models\nPotential accuracy loss\nComplex hyperparameter tuning",
+  "use_cases": "Mobile applications\nIoT devices\nReal-time systems\nResource-constrained environments",
+  "complexity": "High",
+  "tags": [
+    "machine-learning",
+    "model-compression",
+    "transfer-learning",
+    "edge-ai"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Simplified knowledge distillation example\ninterface TeacherModel {\n  predict(input: number[]): number[];\n}\n\ninterface StudentModel {\n  predict(input: number[]): number[];\n  train(teacherOutputs: number[][], labels: number[]): void;\n}\n\nclass DistillationTrainer {\n  constructor(private teacher: TeacherModel, private student: StudentModel) {}\n\n  distill(trainingData: number[][], labels: number[]): void {\n    const softTargets = trainingData.map(input => this.teacher.predict(input));\n    \n    // Train student to match teacher's soft outputs\n    this.student.train(softTargets, labels);\n  }\n\n  // Temperature scaling for softer probabilities\n  applyTemperature(logits: number[], temperature: number): number[] {\n    return logits.map(logit => Math.exp(logit / temperature) / \n      logits.reduce((sum, l) => sum + Math.exp(l / temperature), 0));\n  }\n}"
+    }
+  }
+}

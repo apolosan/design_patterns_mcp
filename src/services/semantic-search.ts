@@ -7,7 +7,7 @@ import { VectorOperationsService } from './vector-operations';
 import { EmbeddingServiceAdapter } from '../adapters/embedding-service-adapter.js';
 import { logger } from './logger.js';
 
-export interface SemanticSearchConfig {
+interface SemanticSearchConfig {
   modelName: string;
   maxResults: number;
   similarityThreshold: number;
@@ -16,7 +16,7 @@ export interface SemanticSearchConfig {
   useReRanking: boolean;
 }
 
-export interface SearchQuery {
+interface SearchQuery {
   text: string;
   filters?: {
     categories?: string[];
@@ -30,7 +30,7 @@ export interface SearchQuery {
   };
 }
 
-export interface SearchResult {
+interface SearchResult {
   patternId: string;
   pattern: {
     name: string;
@@ -50,7 +50,7 @@ export interface SearchResult {
   };
 }
 
-export interface QueryExpansionResult {
+interface QueryExpansionResult {
   originalQuery: string;
   expandedQueries: string[];
   expansionReason: string;
@@ -404,7 +404,6 @@ export class SemanticSearchService {
 
       for (const pattern of patterns) {
         // Extract relevant phrases from name and description
-        const nameWords = pattern.name.split(/\s+/);
         const descWords = pattern.description.split(/\s+/);
 
         // Add pattern name as suggestion
@@ -489,7 +488,7 @@ export class SemanticSearchService {
   /**
    * Advanced search with boolean operators
    */
-  async advancedSearch(query: string, operators: any): Promise<SearchResult[]> {
+  async advancedSearch(query: string, _operators: any): Promise<SearchResult[]> {
     // Parse boolean query (AND, OR, NOT)
     const parsedQuery = this.parseBooleanQuery(query);
 
@@ -565,7 +564,7 @@ export class SemanticSearchService {
 }
 
 // Default configuration
-export const DEFAULT_SEMANTIC_SEARCH_CONFIG: SemanticSearchConfig = {
+const DEFAULT_SEMANTIC_SEARCH_CONFIG: SemanticSearchConfig = {
   modelName: 'all-MiniLM-L6-v2',
   maxResults: 10,
   similarityThreshold: 0.1,
@@ -575,7 +574,7 @@ export const DEFAULT_SEMANTIC_SEARCH_CONFIG: SemanticSearchConfig = {
 };
 
 // Factory function
-export function createSemanticSearchService(
+function createSemanticSearchService(
   db: DatabaseManager,
   vectorOps: VectorOperationsService,
   config?: Partial<SemanticSearchConfig>

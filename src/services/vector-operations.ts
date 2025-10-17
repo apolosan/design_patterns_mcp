@@ -13,7 +13,7 @@ import {
 } from '../models/vector.js';
 import { logger } from './logger.js';
 
-export interface VectorConfig {
+interface VectorConfig {
   model: EmbeddingModel;
   dimensions: number;
   similarityThreshold: number;
@@ -562,7 +562,7 @@ export class VectorOperationsService {
 }
 
 // Default configuration
-export const DEFAULT_VECTOR_CONFIG: VectorConfig = {
+const DEFAULT_VECTOR_CONFIG: VectorConfig = {
   model: 'all-MiniLM-L6-v2',
   dimensions: 384,
   similarityThreshold: 0.3,

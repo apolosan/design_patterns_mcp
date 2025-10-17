@@ -12,7 +12,7 @@ import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
 import { EmbeddingServiceAdapter } from '../adapters/embedding-service-adapter.js';
 
 // Define CodeAnalysisResult interface locally since it's not exported in compiled JS
-export interface CodeAnalysisResult {
+interface CodeAnalysisResult {
   identifiedPatterns: {
     pattern: string;
     category: string;
@@ -37,7 +37,7 @@ export interface CodeAnalysisResult {
   }[];
 }
 
-export interface PatternMatcherConfig {
+interface PatternMatcherConfig {
   maxResults: number;
   minConfidence: number;
   useSemanticSearch: boolean;
@@ -48,7 +48,7 @@ export interface PatternMatcherConfig {
 }
 
 // Local interfaces for pattern matching
-export interface PatternSummary {
+interface PatternSummary {
   id: string;
   name: string;
   category: string;
@@ -57,7 +57,7 @@ export interface PatternSummary {
   tags?: string[];
 }
 
-export interface PatternRequest {
+interface PatternRequest {
   id: string;
   query: string;
   categories?: string[];
@@ -65,7 +65,7 @@ export interface PatternRequest {
   programmingLanguage?: string;
 }
 
-export interface MatchResult {
+interface MatchResult {
   pattern: PatternSummary;
   confidence: number;
   matchType: 'semantic' | 'keyword' | 'hybrid';
@@ -323,49 +323,67 @@ export class PatternMatcher {
   }
 
   /**
-   * Combine semantic and keyword matches using hybrid scoring
-   */
-  private combineMatches(matches: MatchResult[]): MatchResult[] {
-    const patternMap = new Map<string, MatchResult[]>();
+    * Combine semantic and keyword matches using hybrid scoring
+    */
+   private combineMatches(matches: MatchResult[]): MatchResult[] {
+     // Create a map of patterns for O(1) lookup
+     const patternsById = new Map<string, any>();
+     // Note: We need to get all patterns to build this map
+     // For now, we'll use a simplified approach
 
-    // Group matches by pattern
-    for (const match of matches) {
-      const existing = patternMap.get(match.pattern.id) || [];
-      existing.push(match);
-      patternMap.set(match.pattern.id, existing);
-    }
+     const patternMap = new Map<string, MatchResult[]>();
 
-    // Combine scores for each pattern
-    const combinedMatches: MatchResult[] = [];
+     // Group matches by pattern
+     for (const match of matches) {
+       const existing = patternMap.get(match.pattern.id) || [];
+       existing.push(match);
+       patternMap.set(match.pattern.id, existing);
+     }
 
-    for (const [patternId, patternMatches] of patternMap) {
-      const semanticMatch = patternMatches.find(m => m.matchType === 'semantic');
-      const keywordMatch = patternMatches.find(m => m.matchType === 'keyword');
+     // Combine scores for each pattern
+     const combinedMatches: MatchResult[] = [];
 
-      const semanticScore = semanticMatch?.metadata.semanticScore || 0;
-      const keywordScore = keywordMatch?.metadata.keywordScore || 0;
+     for (const [, patternMatches] of patternMap) {
+       const semanticMatch = patternMatches.find(m => m.matchType === 'semantic');
+       const keywordMatch = patternMatches.find(m => m.matchType === 'keyword');
 
-      const finalScore =
-        (this.config.semanticWeight * semanticScore + this.config.keywordWeight * keywordScore) /
-        (this.config.semanticWeight + this.config.keywordWeight);
+       const semanticScore = semanticMatch?.metadata.semanticScore || 0;
+       const keywordScore = keywordMatch?.metadata.keywordScore || 0;
 
-      const reasons = [...(semanticMatch?.reasons || []), ...(keywordMatch?.reasons || [])];
+       // Improved weighted scoring - avoid division by zero and handle cases where one score is missing
+       let finalScore = 0;
+       if (semanticScore > 0 && keywordScore > 0) {
+         // Both scores available - use weighted average
+         finalScore = (this.config.semanticWeight * semanticScore + this.config.keywordWeight * keywordScore) /
+                      (this.config.semanticWeight + this.config.keywordWeight);
+       } else if (semanticScore > 0) {
+         // Only semantic score - use it directly
+         finalScore = semanticScore;
+       } else if (keywordScore > 0) {
+         // Only keyword score - use it directly
+         finalScore = keywordScore;
+       }
 
-      combinedMatches.push({
-        pattern: patternMatches[0].pattern,
-        confidence: finalScore,
-        matchType: 'hybrid' as const,
-        reasons,
-        metadata: {
-          semanticScore,
-          keywordScore,
-          finalScore,
-        },
-      });
-    }
+       // Ensure final score is normalized between 0 and 1
+       finalScore = Math.min(Math.max(finalScore, 0), 1);
 
-    return combinedMatches;
-  }
+       const reasons = [...(semanticMatch?.reasons || []), ...(keywordMatch?.reasons || [])];
+
+       combinedMatches.push({
+         pattern: patternMatches[0].pattern,
+         confidence: finalScore,
+         matchType: 'hybrid' as const,
+         reasons,
+         metadata: {
+           semanticScore,
+           keywordScore,
+           finalScore,
+         },
+       });
+     }
+
+     return combinedMatches;
+   }
 
   /**
    * Build pattern recommendations from matches
@@ -551,7 +569,6 @@ export class PatternMatcher {
    */
   private generateKeywordReasons(queryWords: string[], pattern: any): string[] {
     const reasons: string[] = [];
-    const patternText = `${pattern.name} ${pattern.description}`.toLowerCase();
 
     for (const word of queryWords) {
       if (pattern.name.toLowerCase().includes(word)) {
@@ -698,7 +715,7 @@ export class PatternMatcher {
   /**
    * Extract project context from request
    */
-  private extractProjectContext(request: PatternRequest): any {
+  private extractProjectContext(_request: PatternRequest): any {
     // Simplified context extraction
     return {
       size: 'medium',
@@ -711,7 +728,7 @@ export class PatternMatcher {
   /**
    * Extract team context from request
    */
-  private extractTeamContext(request: PatternRequest): any {
+  private extractTeamContext(_request: PatternRequest): any {
     // Simplified context extraction
     return {
       size: 'medium',
@@ -729,7 +746,7 @@ export class PatternMatcher {
 }
 
 // Default configuration
-export const DEFAULT_PATTERN_MATCHER_CONFIG: PatternMatcherConfig = {
+const DEFAULT_PATTERN_MATCHER_CONFIG: PatternMatcherConfig = {
   maxResults: 5,
   minConfidence: 0.3,
   useSemanticSearch: true,

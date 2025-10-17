@@ -218,20 +218,9 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
     return this.findById(id);
   }
 
-  async delete(sourceId: string, targetId: string): Promise<boolean> {
-    // Check if relationship exists before deletion
-    const existsBefore = await this.exists(sourceId, targetId);
-    if (!existsBefore) {
-      return false;
-    }
-
-    const sql =
-      'DELETE FROM pattern_relationships WHERE source_pattern_id = ? AND target_pattern_id = ?';
-    this.db.run(sql, [sourceId, targetId]);
-
-    // Verify deletion
-    const existsAfter = await this.exists(sourceId, targetId);
-    return !existsAfter;
+  async delete(id: string): Promise<void> {
+    const sql = 'DELETE FROM pattern_relationships WHERE id = ?';
+    this.db.run(sql, [id]);
   }
 
   async deleteById(id: string): Promise<boolean> {
@@ -294,5 +283,28 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
 
     const result = this.db.queryOne(sql, params) as { count: number };
     return result.count;
+  }
+
+  async create(relationship: any): Promise<any> {
+    const sql = `
+      INSERT INTO pattern_relationships (source_pattern_id, target_pattern_id, relationship_type, strength, description)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    this.db.run(sql, [
+      relationship.sourcePatternId,
+      relationship.targetPatternId,
+      relationship.relationshipType,
+      relationship.strength,
+      relationship.description,
+    ]);
+
+    const lastId = this.db.queryOne<{ id: string }>('SELECT last_insert_rowid() as id');
+    return this.findById(lastId?.id || '');
+  }
+
+  async findAll(): Promise<any[]> {
+    const sql = 'SELECT * FROM pattern_relationships ORDER BY created_at DESC';
+    const rows = this.db.query(sql);
+    return rows.map(row => this.mapRowToRelationship(row));
   }
 }

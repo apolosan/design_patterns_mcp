@@ -3,7 +3,7 @@
  * Provides consistent logging across all services with multiple output formats
  */
 
-export enum LogLevel {
+enum LogLevel {
   DEBUG = 0,
   INFO = 1,
   WARN = 2,
@@ -11,7 +11,7 @@ export enum LogLevel {
   FATAL = 4
 }
 
-export interface LogEntry {
+interface LogEntry {
   timestamp: string;
   level: LogLevel;
   service: string;
@@ -22,7 +22,7 @@ export interface LogEntry {
   duration?: number;
 }
 
-export interface LoggerConfig {
+interface LoggerConfig {
   level: LogLevel;
   format: 'json' | 'text';
   enableConsole: boolean;
@@ -315,7 +315,7 @@ class ChildLogger extends Logger {
 }
 
 // Default configuration
-export const DEFAULT_LOGGER_CONFIG: LoggerConfig = {
+const DEFAULT_LOGGER_CONFIG: LoggerConfig = {
   level: LogLevel.INFO,
   format: 'text',
   enableConsole: true,
@@ -326,7 +326,7 @@ export const DEFAULT_LOGGER_CONFIG: LoggerConfig = {
 };
 
 // Factory function
-export function createLogger(config?: Partial<LoggerConfig>): Logger {
+function createLogger(config?: Partial<LoggerConfig>): Logger {
   const finalConfig = { ...DEFAULT_LOGGER_CONFIG, ...config };
   return new Logger(finalConfig);
 }

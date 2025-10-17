@@ -3,7 +3,7 @@
  * Provides sample patterns for integration tests
  */
 
-export interface MockPattern {
+interface MockPattern {
   id: string;
   name: string;
   category: string;
@@ -78,7 +78,7 @@ export function getMockPatternsByCategory(category: string): MockPattern[] {
   return MOCK_PATTERNS.filter(p => p.category === category);
 }
 
-export function getMockPatternById(id: string): MockPattern | undefined {
+function getMockPatternById(id: string): MockPattern | undefined {
   return MOCK_PATTERNS.find(p => p.id === id);
 }
 

@@ -1,98 +1,74 @@
 /**
  * Repository Interfaces
- * Defines contracts for data access layer following Repository Pattern
+ * Defines contracts for data access layer
  */
 
-import type { Pattern } from '../models/pattern.js';
-import type { PatternCategory } from '../models/pattern-category.js';
-import type { Implementation } from '../models/implementation.js';
-import type {
-  Relationship,
-  CreateRelationshipInput,
-  UpdateRelationshipInput,
-  RelationshipFilters,
-  RelationshipWithPatterns,
-} from '../models/relationship.js';
-
 export interface SearchFilters {
+  query?: string;
   category?: string;
-  tags?: string[];
+  categories?: string[];
+  programmingLanguage?: string;
   complexity?: string;
-  language?: string;
+  tags?: string[];
   limit?: number;
   offset?: number;
 }
 
 export interface SearchResult {
-  pattern: Pattern;
+  pattern: any;
   score: number;
   highlights?: string[];
 }
 
 export interface PatternRepository {
-  // Basic CRUD operations
-  findById(id: string): Promise<Pattern | null>;
-  findByName(name: string): Promise<Pattern | null>;
-  findAll(filters?: SearchFilters): Promise<Pattern[]>;
-  save(pattern: Pattern): Promise<Pattern>;
-  update(id: string, pattern: Partial<Pattern>): Promise<Pattern | null>;
-  delete(id: string): Promise<boolean>;
-
-  // Search operations
-  findByCategory(category: string, limit?: number): Promise<Pattern[]>;
-  findByTags(tags: string[], matchAll?: boolean): Promise<Pattern[]>;
-  search(query: string, filters?: SearchFilters): Promise<SearchResult[]>;
-
-  // Bulk operations
-  findByIds(ids: string[]): Promise<Pattern[]>;
-  saveMany(patterns: Pattern[]): Promise<Pattern[]>;
-  count(filters?: SearchFilters): Promise<number>;
+  findById(id: string): Promise<any>;
+  findByCategory(category: string): Promise<any[]>;
+  search(filters: SearchFilters): Promise<SearchResult[]>;
+  findAll(): Promise<any[]>;
+  count(): Promise<number>;
+  countByCategory(): Promise<Record<string, number>>;
+  create(pattern: any): Promise<any>;
+  update(id: string, pattern: any): Promise<any>;
+  delete(id: string): Promise<void>;
+  findByIds(ids: string[]): Promise<any[]>;
+  findByTags(tags: string[]): Promise<any[]>;
   exists(id: string): Promise<boolean>;
+  save(pattern: any): Promise<any>;
 }
 
-export interface CategoryRepository {
-  findAll(): Promise<PatternCategory[]>;
-  findById(id: string): Promise<PatternCategory | null>;
-  findByName(name: string): Promise<PatternCategory | null>;
-  save(category: PatternCategory): Promise<PatternCategory>;
-  update(id: string, category: Partial<PatternCategory>): Promise<PatternCategory | null>;
-  delete(id: string): Promise<boolean>;
-  getPatternCount(categoryId: string): Promise<number>;
+export interface PatternSearchResult {
+  pattern: any;
+  score: number;
+  highlights?: string[];
 }
 
-export interface ImplementationRepository {
-  findByPatternId(patternId: string): Promise<Implementation[]>;
-  findByLanguage(language: string): Promise<Implementation[]>;
-  findById(id: string): Promise<Implementation | null>;
-  save(implementation: Implementation): Promise<Implementation>;
-  update(id: string, implementation: Partial<Implementation>): Promise<Implementation | null>;
-  delete(id: string): Promise<boolean>;
-  deleteByPatternId(patternId: string): Promise<number>;
+interface CategoryRepository {
+  findAll(): Promise<any[]>;
+  findById(id: string): Promise<any>;
+  create(category: any): Promise<any>;
+  update(id: string, category: any): Promise<any>;
+  delete(id: string): Promise<void>;
+}
+
+interface ImplementationRepository {
+  findByPatternId(patternId: string): Promise<any[]>;
+  findById(id: string): Promise<any>;
+  create(implementation: any): Promise<any>;
+  update(id: string, implementation: any): Promise<any>;
+  delete(id: string): Promise<void>;
+}
+
+interface VectorRepository {
+  findSimilar(embedding: number[], limit: number): Promise<any[]>;
+  storeEmbedding(patternId: string, embedding: number[]): Promise<void>;
+  deleteEmbedding(patternId: string): Promise<void>;
 }
 
 export interface RelationshipRepository {
-  findBySourceId(sourceId: string): Promise<Relationship[]>;
-  findByTargetId(targetId: string): Promise<Relationship[]>;
-  findByType(type: string): Promise<Relationship[]>;
-  findByPatternId(patternId: string): Promise<Relationship[]>;
-  findWithPatterns(filters?: RelationshipFilters): Promise<RelationshipWithPatterns[]>;
-  findById(id: string): Promise<Relationship | null>;
-  save(input: CreateRelationshipInput): Promise<Relationship>;
-  update(id: string, input: UpdateRelationshipInput): Promise<Relationship | null>;
-  delete(sourceId: string, targetId: string): Promise<boolean>;
-  deleteById(id: string): Promise<boolean>;
-  exists(sourceId: string, targetId: string): Promise<boolean>;
-  count(filters?: RelationshipFilters): Promise<number>;
-}
-
-export interface VectorRepository {
-  saveEmbedding(id: string, embedding: Float32Array): Promise<void>;
-  findSimilar(
-    embedding: Float32Array,
-    limit: number,
-    threshold?: number
-  ): Promise<Array<{ id: string; score: number }>>;
-  deleteEmbedding(id: string): Promise<boolean>;
-  hasEmbedding(id: string): Promise<boolean>;
-  rebuildIndex(): Promise<void>;
+  findByPatternId(patternId: string): Promise<any[]>;
+  findById(id: string): Promise<any>;
+  create(relationship: any): Promise<any>;
+  update(id: string, relationship: any): Promise<any>;
+  delete(id: string): Promise<void>;
+  findAll(): Promise<any[]>;
 }

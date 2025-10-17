@@ -4,13 +4,13 @@
  * Uses LRU (Least Recently Used) eviction strategy
  */
 
-export interface PooledStatement {
+interface PooledStatement {
   statement: any;
   lastUsed: number;
   useCount: number;
 }
 
-export interface StatementPoolConfig {
+interface StatementPoolConfig {
   maxSize: number;
   enableMetrics: boolean;
 }

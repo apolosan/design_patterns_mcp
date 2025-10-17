@@ -4,17 +4,12 @@
  * Creates vector embeddings for all patterns in the database using best available strategy
  */
 
-import { DatabaseManager, initializeDatabaseManager } from '../services/database-manager.js';
-import {
-  VectorOperationsService,
-  createVectorOperationsService,
-} from '../services/vector-operations.js';
-import { SemanticSearchService, createSemanticSearchService } from '../services/semantic-search.js';
+import { initializeDatabaseManager } from '../services/database-manager.js';
 import { EmbeddingServiceAdapter } from '../adapters/embedding-service-adapter.js';
 import { getAvailableEmbeddingStrategies } from '../factories/embedding-factory.js';
 import { logger } from '../services/logger.js';
 
-async function main(): Promise<void> {
+export async function main(): Promise<void> {
   try {
     logger.info('generate-embeddings', 'Starting embedding generation with strategy pattern...');
 
@@ -134,8 +129,8 @@ async function main(): Promise<void> {
         [
           patternId,
           JSON.stringify(embedding),
-          strategyInfo?.model || 'unknown',
-          strategyInfo?.name || 'unknown',
+          strategyInfo?.model ?? 'unknown',
+          strategyInfo?.name ?? 'unknown',
           embedding.length,
         ]
       );
@@ -161,7 +156,7 @@ async function main(): Promise<void> {
 
     logger.info(
       'generate-embeddings',
-      `Verification: ${storedCount?.count || 0} embeddings stored`
+      `Verification: ${storedCount?.count ?? 0} embeddings stored`
     );
     for (const stat of strategyStats) {
       logger.info(
@@ -174,13 +169,16 @@ async function main(): Promise<void> {
     await dbManager.close();
 
     logger.info('generate-embeddings', 'Embedding generation completed successfully!');
-  } catch (error) {
-    console.error('❌ Embedding generation failed:', error);
-    process.exit(1);
-  }
+   } catch (error) {
+     console.error('❌ Embedding generation failed:', error);
+     throw error;
+   }
 }
 
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
+  main().catch(error => {
+    console.error('Error:', error);
+    process.exit(1);
+  });
 }

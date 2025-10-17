@@ -93,7 +93,6 @@ describe('Performance Tests', () => {
       const totalTime = endTime - startTime;
       const avgTime = totalTime / concurrentQueries;
 
-
       expect(avgTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_DB_QUERY_TIME_MS);
       expect(results).toHaveLength(concurrentQueries);
       results.forEach(result => {
@@ -112,18 +111,16 @@ describe('Performance Tests', () => {
       const firstEnd = performance.now();
       const firstTime = firstEnd - firstStart;
 
-      // Subsequent executions (prepared statement reuse)
-      const subsequentTimes: number[] = [];
-      for (let i = 0; i < iterations; i++) {
-        const start = performance.now();
-        databaseManager.query(sql, [`pattern_${i + 1}`]);
-        const end = performance.now();
-        subsequentTimes.push(end - start);
-      }
+       // Subsequent executions (prepared statement reuse)
+       const subsequentTimes: number[] = [];
+       for (let i = 0; i < iterations; i++) {
+         const start = performance.now();
+         databaseManager.query(sql, ['test_pattern']); // Use same parameter for reuse
+         const end = performance.now();
+         subsequentTimes.push(end - start);
+       }
 
       const avgSubsequentTime = subsequentTimes.reduce((sum, time) => sum + time, 0) / iterations;
-      const improvement = ((firstTime - avgSubsequentTime) / firstTime) * 100;
-
 
       expect(avgSubsequentTime).toBeLessThan(firstTime);
       expect(avgSubsequentTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_DB_QUERY_TIME_MS);
@@ -143,10 +140,9 @@ describe('Performance Tests', () => {
 
       // Test cache get performance
       const getStart = performance.now();
-      const retrieved = cacheService.get(testKey);
+      cacheService.get(testKey);
       const getEnd = performance.now();
       const getTime = getEnd - getStart;
-
     });
 
     it('should handle cache hits and misses efficiently', () => {
@@ -180,7 +176,6 @@ describe('Performance Tests', () => {
       const avgHitTime = hitTime / iterations;
       const avgMissTime = missTime / iterations;
 
-
       // Cache hits might not always be faster than misses for very small operations
       // The important thing is both are reasonably fast
       expect(avgHitTime).toBeLessThan(1); // Reasonable hit time
@@ -212,7 +207,6 @@ describe('Performance Tests', () => {
       const endTime = performance.now();
       const totalTime = endTime - startTime;
       const avgTime = totalTime / operations;
-
 
       expect(avgTime).toBeLessThan(0.1); // Should maintain fast performance
       expect(totalTime).toBeLessThan(100); // Should complete quickly
@@ -251,7 +245,6 @@ describe('Performance Tests', () => {
       const memoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed;
       const memoryIncreaseMB = memoryIncrease / (1024 * 1024);
 
-
       expect(memoryIncreaseMB).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_MEMORY_USAGE_MB);
       expect(finalMemory.heapUsed).toBeLessThan(
         PERFORMANCE_THRESHOLDS.MAX_MEMORY_USAGE_MB * 1024 * 1024
@@ -282,7 +275,6 @@ describe('Performance Tests', () => {
       const actualDuration = performance.now() - startTime;
       const actualOPS = operationCount / (actualDuration / 1000);
 
-
       expect(actualOPS).toBeGreaterThanOrEqual(PERFORMANCE_THRESHOLDS.MIN_THROUGHPUT_RPS);
       expect(operationCount).toBeGreaterThan(targetOperations * 0.8); // At least 80% of target
     });
@@ -293,7 +285,6 @@ describe('Performance Tests', () => {
       const memoryUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
       const uptime = process.uptime();
-
 
       // Basic resource checks
       expect(memoryUsage.heapUsed).toBeGreaterThan(0);
@@ -330,7 +321,6 @@ describe('Performance Tests', () => {
         const endTime = performance.now();
         const responseTime = endTime - startTime;
 
-
         expect(responseTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_RESPONSE_TIME_MS);
         expect(result.length).toBeGreaterThan(0);
       }
@@ -352,7 +342,6 @@ describe('Performance Tests', () => {
       const endTime = performance.now();
       const totalTime = endTime - startTime;
       const avgTime = totalTime / concurrentRequests;
-
 
       expect(avgTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_RESPONSE_TIME_MS);
       expect(results.length).toBe(concurrentRequests);
@@ -381,8 +370,6 @@ describe('Performance Tests', () => {
 
       const avgTime = times.reduce((a, b) => a + b, 0) / times.length;
       const maxTime = Math.max(...times);
-      const minTime = Math.min(...times);
-
 
       expect(avgTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_RESPONSE_TIME_MS);
       expect(maxTime).toBeLessThan(PERFORMANCE_THRESHOLDS.MAX_RESPONSE_TIME_MS * 1.5); // Allow some variance
@@ -409,7 +396,6 @@ describe('Performance Tests', () => {
         ...options,
       });
       const time2 = performance.now() - startTime2;
-
 
       // Results should be identical
       expect(result1.length).toBe(result2.length);

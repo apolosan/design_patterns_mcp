@@ -1,0 +1,23 @@
+{
+  "id": "data-preprocessing",
+  "name": "Data Preprocessing",
+  "category": "Machine Learning",
+  "description": "Techniques for cleaning, transforming, and preparing raw data for machine learning models",
+  "when_to_use": "Raw data with noise or missing values\nInconsistent data formats\nNeed for feature scaling or normalization\nData integration from multiple sources",
+  "benefits": "Improved model accuracy\nReduced training time\nBetter generalization\nCleaner data insights",
+  "drawbacks": "Can be time-consuming\nMay lose information\nRequires domain knowledge",
+  "use_cases": "Feature engineering\nData cleaning pipelines\nETL processes\nMachine learning workflows",
+  "complexity": "Medium",
+  "tags": [
+    "machine-learning",
+    "data-cleaning",
+    "feature-engineering",
+    "etl"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "interface DataPreprocessor {\n  clean(data: any[]): any[];\n  normalize(data: any[]): any[];\n  handleMissingValues(data: any[]): any[];\n}\n\nclass MLDataPreprocessor implements DataPreprocessor {\n  clean(data: any[]): any[] {\n    // Remove duplicates, outliers\n    return data.filter(item => this.isValid(item));\n  }\n\n  normalize(data: any[]): any[] {\n    // Min-max scaling or z-score normalization\n    return data.map(item => this.scaleFeatures(item));\n  }\n\n  handleMissingValues(data: any[]): any[] {\n    // Impute or remove missing values\n    return data.map(item => this.imputeMissing(item));\n  }\n\n  private isValid(item: any): boolean {\n    return item && typeof item === 'object';\n  }\n\n  private scaleFeatures(item: any): any {\n    // Normalization logic\n    return item;\n  }\n\n  private imputeMissing(item: any): any {\n    // Imputation logic\n    return item;\n  }\n}"
+    }
+  }
+}

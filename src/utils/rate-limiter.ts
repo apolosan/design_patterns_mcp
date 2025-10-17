@@ -6,14 +6,14 @@
 
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 
-export interface RateLimitConfig {
+interface RateLimitConfig {
   maxRequestsPerMinute: number;
   maxRequestsPerHour: number;
   maxConcurrentRequests: number;
   burstLimit: number;
 }
 
-export interface RateLimitState {
+interface RateLimitState {
   tokens: number;
   lastRefill: number;
   concurrentRequests: number;
@@ -162,7 +162,7 @@ export class RateLimiter {
 /**
  * Middleware function for rate limiting MCP tool calls
  */
-export function withRateLimit<T extends any[], R>(
+function withRateLimit<T extends any[], R>(
   fn: (...args: T) => Promise<R>,
   keyFn: (...args: T) => string,
   rateLimiter?: RateLimiter

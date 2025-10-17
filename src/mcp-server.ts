@@ -63,13 +63,6 @@ class DesignPatternsMCPServer {
       },
     });
 
-    // Initialize cache service (using direct instantiation instead of deprecated singleton)
-    const cacheService = new CacheService({
-      maxSize: 1000,
-      defaultTTL: 3600000, // 1 hour
-      enableMetrics: config.logLevel === 'debug',
-    });
-
     // Initialize services
     this.vectorOps = new VectorOperationsService(this.db, {
       model: 'all-MiniLM-L6-v2',
@@ -77,6 +70,16 @@ class DesignPatternsMCPServer {
       similarityThreshold: 0.3,
       maxResults: 10,
       cacheEnabled: true,
+    });
+
+    // Initialize semantic search service
+    this.semanticSearch = new SemanticSearchService(this.db, this.vectorOps, {
+      modelName: 'all-MiniLM-L6-v2',
+      maxResults: 10,
+      similarityThreshold: 0.3,
+      contextWindow: 512,
+      useQueryExpansion: false,
+      useReRanking: true,
     });
 
     this.patternMatcher = new PatternMatcher(this.db, this.vectorOps, {

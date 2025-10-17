@@ -8,7 +8,7 @@ import { logger } from './logger.js';
 import fs from 'fs';
 import path from 'path';
 
-export interface SeederConfig {
+interface SeederConfig {
   patternsPath: string;
   batchSize: number;
   skipExisting: boolean;
@@ -552,7 +552,7 @@ export class PatternSeeder {
   }
 }
 
-export interface SeederResult {
+interface SeederResult {
   success: boolean;
   message: string;
   patternsInserted?: number;
@@ -566,13 +566,13 @@ export interface SeederResult {
   totalRelationships?: number;
 }
 
-export interface BatchResult {
+interface BatchResult {
   patternsInserted: number;
   implementationsInserted: number;
   relationshipsInserted: number;
 }
 
-export interface SeederStats {
+interface SeederStats {
   totalPatterns: number;
   totalImplementations: number;
   totalRelationships: number;
@@ -580,13 +580,13 @@ export interface SeederStats {
   implementationsByLanguage: Array<{ language: string; count: number }>;
 }
 
-export interface ValidationResult {
+interface ValidationResult {
   valid: boolean;
   errors: string[];
 }
 
 // Default seeder configuration
-export const DEFAULT_SEEDER_CONFIG: SeederConfig = {
+const DEFAULT_SEEDER_CONFIG: SeederConfig = {
   patternsPath: './src/data/patterns',
   batchSize: 10,
   skipExisting: true,

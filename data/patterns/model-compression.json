@@ -1,0 +1,23 @@
+{
+  "id": "model-compression",
+  "name": "Model Compression",
+  "category": "Machine Learning",
+  "description": "Techniques to reduce the size of neural network models while maintaining performance, including pruning, quantization, and low-rank factorization",
+  "when_to_use": "Large model deployment\nLimited storage or memory\nFaster inference requirements\nEdge computing scenarios",
+  "benefits": "Reduced model size\nFaster inference\nLower memory usage\nMaintained accuracy",
+  "drawbacks": "Potential accuracy loss\nIncreased training complexity\nHardware-specific optimizations",
+  "use_cases": "Mobile applications\nEmbedded systems\nCloud inference optimization\nReal-time AI systems",
+  "complexity": "High",
+  "tags": [
+    "machine-learning",
+    "model-optimization",
+    "pruning",
+    "quantization"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Model compression techniques example\ninterface CompressionTechnique {\n  compress(model: any): any;\n  decompress(compressedModel: any): any;\n}\n\nclass PruningCompression implements CompressionTechnique {\n  compress(model: any): any {\n    // Remove weights below threshold\n    return this.pruneWeights(model);\n  }\n\n  decompress(compressedModel: any): any {\n    // Restore model structure\n    return compressedModel;\n  }\n\n  private pruneWeights(model: any): any {\n    // Pruning logic: set small weights to zero\n    return model;\n  }\n}\n\nclass QuantizationCompression implements CompressionTechnique {\n  compress(model: any): any {\n    // Reduce precision (e.g., float32 to int8)\n    return this.quantizeWeights(model);\n  }\n\n  decompress(compressedModel: any): any {\n    // Dequantize for inference\n    return compressedModel;\n  }\n\n  private quantizeWeights(model: any): any {\n    // Quantization logic\n    return model;\n  }\n}"
+    }
+  }
+}

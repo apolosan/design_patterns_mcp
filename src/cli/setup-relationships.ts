@@ -36,7 +36,7 @@ async function main() {
     logger.info('setup-relationships', 'Database initialized');
 
     // Create pattern_relationships table if it doesn't exist
-    await createRelationshipsTable(dbManager);
+    createRelationshipsTable(dbManager);
 
     // Process and load relationship data from pattern files
     await loadRelationships(patternLoader);
@@ -55,7 +55,7 @@ async function main() {
 /**
  * Create pattern_relationships table with proper schema
  */
-async function createRelationshipsTable(dbManager: DatabaseManager): Promise<void> {
+function createRelationshipsTable(dbManager: DatabaseManager): void {
   logger.info('setup-relationships', 'Ensuring pattern_relationships table exists...');
 
   const createTableSQL = `
@@ -130,7 +130,7 @@ process.on('uncaughtException', error => {
   process.exit(1);
 });
 
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason, _promise) => {
   logger.error('setup-relationships', 'Unhandled rejection', reason as Error);
   console.error('❌ Unhandled rejection:', reason);
   process.exit(1);
@@ -142,7 +142,11 @@ main()
     logger.info('setup-relationships', 'Relationships setup completed successfully');
   })
   .catch(error => {
-    logger.error('setup-relationships', 'Main function failed', error);
+    logger.error(
+      'setup-relationships',
+      'Main function failed',
+      error instanceof Error ? error : new Error(String(error))
+    );
     console.error('❌ Setup failed:', error);
     process.exit(1);
   });

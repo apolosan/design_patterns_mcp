@@ -6,7 +6,7 @@
 /**
  * Implementation guidance for the recommended pattern
  */
-export interface ImplementationGuidance {
+interface ImplementationGuidance {
   language: string;
   codeSnippet: string;
   explanation: string;
@@ -16,7 +16,7 @@ export interface ImplementationGuidance {
 /**
  * Alternative pattern suggestion
  */
-export interface AlternativePattern {
+interface AlternativePattern {
   id: string;
   name: string;
   category: string;
@@ -27,7 +27,7 @@ export interface AlternativePattern {
 /**
  * Context information for the recommendation
  */
-export interface RecommendationContext {
+interface RecommendationContext {
   projectContext: string;
   teamContext: string;
   technologyFit: {
@@ -105,7 +105,7 @@ export interface PatternRecommendation {
 /**
  * Recommendation creation input
  */
-export interface CreatePatternRecommendationInput {
+interface CreatePatternRecommendationInput {
   requestId: string;
   patternId: string;
   score: number;
@@ -122,7 +122,7 @@ export interface CreatePatternRecommendationInput {
 /**
  * Recommendation with full pattern data
  */
-export interface PatternRecommendationWithPattern extends PatternRecommendation {
+interface PatternRecommendationWithPattern extends PatternRecommendation {
   pattern: {
     id: string;
     name: string;
@@ -136,7 +136,7 @@ export interface PatternRecommendationWithPattern extends PatternRecommendation 
 /**
  * Recommendation scoring components
  */
-export interface RecommendationScore {
+interface RecommendationScore {
   semantic: number;
   keyword: number;
   context?: number;
@@ -147,7 +147,7 @@ export interface RecommendationScore {
 /**
  * Recommendation ranking result
  */
-export interface RecommendationRanking {
+interface RecommendationRanking {
   recommendations: PatternRecommendation[];
   totalFound: number;
   processingTime: number;
@@ -157,7 +157,7 @@ export interface RecommendationRanking {
 /**
  * Recommendation validation result
  */
-export interface RecommendationValidation {
+interface RecommendationValidation {
   isValid: boolean;
   scoreRange: { min: number; max: number };
   confidenceThreshold: number;
@@ -167,7 +167,7 @@ export interface RecommendationValidation {
 /**
  * Batch recommendation result
  */
-export interface BatchRecommendationResult {
+interface BatchRecommendationResult {
   requestId: string;
   recommendations: PatternRecommendation[];
   metadata: {

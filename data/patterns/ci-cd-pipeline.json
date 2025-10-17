@@ -1,0 +1,23 @@
+{
+  "id": "ci-cd-pipeline",
+  "name": "CI/CD Pipeline",
+  "category": "DevOps",
+  "description": "Continuous Integration and Continuous Delivery pipeline for automating software build, test, and deployment processes",
+  "when_to_use": "Frequent code changes\nNeed for automated testing\nRapid deployment requirements\nTeam collaboration on code",
+  "benefits": "Faster release cycles\nReduced manual errors\nAutomated quality checks\nEarly bug detection",
+  "drawbacks": "Initial setup complexity\nRequires infrastructure\nLearning curve for teams",
+  "use_cases": "Web application deployment\nMicroservices architecture\nMobile app releases\nCloud-native applications",
+  "complexity": "Medium",
+  "tags": [
+    "devops",
+    "automation",
+    "deployment",
+    "testing"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Example CI/CD pipeline configuration (GitHub Actions)\nname: CI/CD Pipeline\n\non:\n  push:\n    branches: [ main ]\n  pull_request:\n    branches: [ main ]\n\njobs:\n  build-and-test:\n    runs-on: ubuntu-latest\n    steps:\n    - uses: actions/checkout@v2\n    - name: Setup Node.js\n      uses: actions/setup-node@v2\n      with:\n        node-version: '16'\n    - name: Install dependencies\n      run: npm ci\n    - name: Run tests\n      run: npm test\n    - name: Build application\n      run: npm run build\n    - name: Deploy to staging\n      if: github.ref == 'refs/heads/main'\n      run: echo 'Deploy to staging environment'"
+    }
+  }
+}

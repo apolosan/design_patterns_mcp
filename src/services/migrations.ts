@@ -7,7 +7,7 @@ import { logger } from './logger.js';
 import fs from 'fs';
 import path from 'path';
 
-export interface Migration {
+interface Migration {
   id: string;
   name: string;
   up: string;
@@ -15,7 +15,7 @@ export interface Migration {
   createdAt: Date;
 }
 
-export interface MigrationRecord {
+interface MigrationRecord {
   id: string;
   name: string;
   executedAt: Date;
@@ -1186,7 +1186,7 @@ export class MigrationManager {
   }
 }
 
-export interface MigrationOptions {
+interface MigrationOptions {
   validateFirst?: boolean;
   continueOnError?: boolean;
   maxRetries?: number;
@@ -1196,13 +1196,13 @@ export interface MigrationOptions {
   skipFailedMigrations?: boolean;
 }
 
-export interface MigrationFailure {
+interface MigrationFailure {
   migration: string;
   error: Error;
   timestamp: Date;
 }
 
-export interface MigrationResult {
+interface MigrationResult {
   success: boolean;
   message: string;
   executed?: MigrationRecord[];
@@ -1211,7 +1211,7 @@ export interface MigrationResult {
   error?: Error;
 }
 
-export interface MigrationStatus {
+interface MigrationStatus {
   total: number;
   executed: number;
   pending: number;
@@ -1219,13 +1219,13 @@ export interface MigrationStatus {
   nextPending: Migration | null;
 }
 
-export interface ValidationResult {
+interface ValidationResult {
   valid: boolean;
   errors: string[];
   warnings?: string[];
 }
 
-export interface MigrationHealthStatus {
+interface MigrationHealthStatus {
   totalMigrations: number;
   executedMigrations: number;
   pendingMigrations: number;
@@ -1236,33 +1236,33 @@ export interface MigrationHealthStatus {
   issues: string[];
 }
 
-export interface ChecksumResolutionOptions {
+interface ChecksumResolutionOptions {
   forceUpdate?: boolean;
   skipValidation?: boolean;
 }
 
-export interface ResolutionResult {
+interface ResolutionResult {
   success: boolean;
   message: string;
   expectedChecksum?: string;
   actualChecksum?: string;
 }
 
-export interface DryRunMigrationResult {
+interface DryRunMigrationResult {
   migration: string;
   valid: boolean;
   errors: string[];
   checksum: string;
 }
 
-export interface DryRunResult {
+interface DryRunResult {
   success: boolean;
   message: string;
   migrations: DryRunMigrationResult[];
 }
 
 // Initial schema migration
-export const INITIAL_SCHEMA_MIGRATION: Migration = {
+const INITIAL_SCHEMA_MIGRATION: Migration = {
   id: '001',
   name: 'initial_schema',
   up: `
@@ -1335,7 +1335,7 @@ export const INITIAL_SCHEMA_MIGRATION: Migration = {
 };
 
 // Vector search migration
-export const VECTOR_SEARCH_MIGRATION: Migration = {
+const VECTOR_SEARCH_MIGRATION: Migration = {
   id: '002',
   name: 'vector_search_support',
   up: `

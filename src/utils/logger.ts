@@ -7,7 +7,7 @@
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 
-export enum LogLevel {
+enum LogLevel {
   DEBUG = 0,
   INFO = 1,
   WARN = 2,
@@ -15,7 +15,7 @@ export enum LogLevel {
   FATAL = 4,
 }
 
-export interface StructuredLogEntry {
+interface StructuredLogEntry {
   timestamp: string;
   level: string;
   service: string;
@@ -46,7 +46,7 @@ export interface StructuredLogEntry {
   context?: Record<string, any>;
 }
 
-export interface LoggerConfig {
+interface LoggerConfig {
   level: LogLevel;
   format: 'json' | 'text' | 'pretty';
   enableConsole: boolean;
@@ -585,7 +585,7 @@ class ChildStructuredLogger extends StructuredLogger {
 }
 
 // Default configuration
-export const DEFAULT_STRUCTURED_LOGGER_CONFIG: LoggerConfig = {
+const DEFAULT_STRUCTURED_LOGGER_CONFIG: LoggerConfig = {
   level: LogLevel.INFO,
   format: 'json',
   enableConsole: true,
@@ -601,7 +601,7 @@ export const DEFAULT_STRUCTURED_LOGGER_CONFIG: LoggerConfig = {
 };
 
 // Factory function
-export function createStructuredLogger(config?: Partial<LoggerConfig>): StructuredLogger {
+function createStructuredLogger(config?: Partial<LoggerConfig>): StructuredLogger {
   const finalConfig = { ...DEFAULT_STRUCTURED_LOGGER_CONFIG, ...config };
   return new StructuredLogger(finalConfig);
 }

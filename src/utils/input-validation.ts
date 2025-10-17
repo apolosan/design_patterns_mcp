@@ -6,13 +6,13 @@
 
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 
-export interface ValidationResult {
+interface ValidationResult {
   valid: boolean;
   errors: string[];
   sanitized?: any;
 }
 
-export interface ValidationOptions {
+interface ValidationOptions {
   maxLength?: number;
   minLength?: number;
   pattern?: RegExp;

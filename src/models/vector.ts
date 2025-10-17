@@ -42,7 +42,7 @@ export interface PatternVector {
 /**
  * Vector creation input
  */
-export interface CreatePatternVectorInput {
+interface CreatePatternVectorInput {
   patternId: string;
   embedding: number[];
   embeddingModel: string;
@@ -52,7 +52,7 @@ export interface CreatePatternVectorInput {
 /**
  * Vector update input
  */
-export interface UpdatePatternVectorInput extends Partial<CreatePatternVectorInput> {
+interface UpdatePatternVectorInput extends Partial<CreatePatternVectorInput> {
   patternId: string;
 }
 
@@ -76,7 +76,7 @@ export interface VectorSearchResult {
 /**
  * Batch vector operation result
  */
-export interface BatchVectorResult {
+interface BatchVectorResult {
   processed: number;
   failed: number;
   errors: string[];
@@ -86,7 +86,7 @@ export interface BatchVectorResult {
 /**
  * Vector similarity search options
  */
-export interface VectorSearchOptions {
+interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
   includeEmbeddings?: boolean;
@@ -96,7 +96,7 @@ export interface VectorSearchOptions {
 /**
  * Embedding generation configuration
  */
-export interface EmbeddingConfig {
+interface EmbeddingConfig {
   model: string;
   dimensions: number;
   normalize: boolean;
@@ -121,7 +121,7 @@ export interface VectorStats {
 /**
  * Vector validation result
  */
-export interface VectorValidation {
+interface VectorValidation {
   isValid: boolean;
   dimension: number;
   normalized: boolean;
@@ -131,7 +131,7 @@ export interface VectorValidation {
 /**
  * Similarity computation result
  */
-export interface SimilarityResult {
+interface SimilarityResult {
   patternId: string;
   similarity: number;
   distance: number;

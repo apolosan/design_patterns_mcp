@@ -87,5 +87,8 @@ async function main(): Promise<void> {
 
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
+  main().catch(error => {
+    console.error('Error:', error);
+    process.exit(1);
+  });
 }

@@ -8,7 +8,7 @@ import { EmbeddingStrategyFactory } from '../factories/embedding-factory.js';
 import { CacheService } from '../services/cache.js';
 import { structuredLogger } from '../utils/logger.js';
 
-export interface EmbeddingServiceConfig {
+interface EmbeddingServiceConfig {
   cacheEnabled?: boolean;
   cacheTTL?: number;
   batchSize?: number;
@@ -40,7 +40,7 @@ export class EmbeddingServiceAdapter {
 
     this.config = { ...defaultConfig, ...config };
 
-    this.cache = cache || new CacheService();
+    this.cache = cache ?? new CacheService();
 
     this.factory = EmbeddingStrategyFactory.getInstance({
       preferredStrategy: this.config.preferredStrategy,
@@ -133,7 +133,7 @@ export class EmbeddingServiceAdapter {
 
     // Build final results array in original order
     for (let i = 0; i < texts.length; i++) {
-      results[i] = cachedResults.get(i)!;
+      results[i] = cachedResults.get(i) as number[];
     }
 
     return results;
@@ -181,7 +181,7 @@ export class EmbeddingServiceAdapter {
    */
   async switchStrategy(strategyType: 'transformers' | 'ollama' | 'simple-hash'): Promise<void> {
     try {
-      const newStrategy = await this.factory.createSpecificStrategy(strategyType);
+      const newStrategy = this.factory.createSpecificStrategy(strategyType);
 
       if (!newStrategy || !(await newStrategy.isAvailable())) {
         throw new Error(`Strategy ${strategyType} is not available`);
@@ -200,11 +200,15 @@ export class EmbeddingServiceAdapter {
   }
 
   private async generateWithRetry(text: string): Promise<EmbeddingVector> {
+    if (!this.strategy) {
+      throw new Error('Embedding strategy not initialized');
+    }
+
     let lastError: Error | null = null;
 
     for (let attempt = 1; attempt <= this.config.retryAttempts; attempt++) {
       try {
-        return await this.strategy!.generateEmbedding(text);
+        return await this.strategy.generateEmbedding(text);
       } catch (error) {
         lastError = error as Error;
         structuredLogger.warn(
@@ -225,13 +229,17 @@ export class EmbeddingServiceAdapter {
   }
 
   private async processBatches(texts: string[]): Promise<number[][]> {
+    if (!this.strategy) {
+      throw new Error('Embedding strategy not initialized');
+    }
+
     const results: number[][] = [];
 
     for (let i = 0; i < texts.length; i += this.config.batchSize) {
       const batch = texts.slice(i, i + this.config.batchSize);
 
       try {
-        const batchEmbeddings = await this.strategy!.batchGenerateEmbeddings(batch);
+        const batchEmbeddings = await this.strategy.batchGenerateEmbeddings(batch);
         results.push(...batchEmbeddings.map(e => e.values));
       } catch (error) {
         // Fallback to individual processing if batch fails
@@ -256,11 +264,4 @@ export class EmbeddingServiceAdapter {
   }
 }
 
-/**
- * Factory function to create a configured adapter
- */
-export function createEmbeddingServiceAdapter(
-  config?: EmbeddingServiceConfig
-): EmbeddingServiceAdapter {
-  return new EmbeddingServiceAdapter(config);
-}
+// Note: createEmbeddingServiceAdapter function removed as it was unused

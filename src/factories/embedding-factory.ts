@@ -3,14 +3,14 @@
  * Creates appropriate embedding strategies based on configuration and availability
  */
 
-import { 
-  EmbeddingStrategy, 
-  SimpleHashEmbeddingStrategy, 
-  TransformersEmbeddingStrategy, 
-  OllamaEmbeddingStrategy 
+import {
+  EmbeddingStrategy,
+  SimpleHashEmbeddingStrategy,
+  TransformersEmbeddingStrategy,
+  OllamaEmbeddingStrategy,
 } from '../strategies/embedding-strategy.js';
 
-export interface EmbeddingFactoryConfig {
+interface EmbeddingFactoryConfig {
   preferredStrategy?: 'transformers' | 'ollama' | 'simple-hash';
   ollamaBaseUrl?: string;
   fallbackToSimple?: boolean;
@@ -46,22 +46,20 @@ export class EmbeddingStrategyFactory {
    */
   async createStrategy(): Promise<EmbeddingStrategy> {
     const cacheKey = `${this.config.preferredStrategy}_${this.config.ollamaBaseUrl}`;
-    
+
     // Return cached strategy if available
-    if (this.strategies.has(cacheKey)) {
-      const strategy = this.strategies.get(cacheKey)!;
-      if (await strategy.isAvailable()) {
-        return strategy;
-      } else {
-        // Remove unavailable strategy from cache
-        this.strategies.delete(cacheKey);
-      }
+    const cachedStrategy = this.strategies.get(cacheKey);
+    if (cachedStrategy && (await cachedStrategy.isAvailable())) {
+      return cachedStrategy;
+    } else if (cachedStrategy) {
+      // Remove unavailable strategy from cache
+      this.strategies.delete(cacheKey);
     }
 
     // Try preferred strategy first
-    let strategy = await this.tryCreatePreferredStrategy();
-    
-    if (strategy && await strategy.isAvailable()) {
+    let strategy = this.tryCreatePreferredStrategy();
+
+    if (strategy && (await strategy.isAvailable())) {
       this.strategies.set(cacheKey, strategy);
       this.log(`Using ${strategy.name} embedding strategy`);
       return strategy;
@@ -69,11 +67,11 @@ export class EmbeddingStrategyFactory {
 
     // Fallback chain
     const fallbackStrategies = this.getFallbackOrder();
-    
+
     for (const strategyType of fallbackStrategies) {
-      strategy = await this.createSpecificStrategy(strategyType);
-      
-      if (strategy && await strategy.isAvailable()) {
+      strategy = this.createSpecificStrategy(strategyType);
+
+      if (strategy && (await strategy.isAvailable())) {
         this.strategies.set(cacheKey, strategy);
         this.log(`Falling back to ${strategy.name} embedding strategy`);
         return strategy;
@@ -94,17 +92,17 @@ export class EmbeddingStrategyFactory {
   /**
    * Create specific strategy by type
    */
-  async createSpecificStrategy(type: string): Promise<EmbeddingStrategy | null> {
+  createSpecificStrategy(type: string): EmbeddingStrategy | null {
     switch (type) {
       case 'transformers':
         return new TransformersEmbeddingStrategy();
-      
+
       case 'ollama':
         return new OllamaEmbeddingStrategy(this.config.ollamaBaseUrl);
-      
+
       case 'simple-hash':
         return new SimpleHashEmbeddingStrategy();
-      
+
       default:
         return null;
     }
@@ -113,7 +111,9 @@ export class EmbeddingStrategyFactory {
   /**
    * Get all available strategies with their status
    */
-  async getAvailableStrategies(): Promise<Array<{ name: string; available: boolean; model: string }>> {
+  async getAvailableStrategies(): Promise<
+    Array<{ name: string; available: boolean; model: string }>
+  > {
     const strategies = [
       new TransformersEmbeddingStrategy(),
       new OllamaEmbeddingStrategy(this.config.ollamaBaseUrl),
@@ -121,7 +121,7 @@ export class EmbeddingStrategyFactory {
     ];
 
     const results = await Promise.all(
-      strategies.map(async (strategy) => ({
+      strategies.map(async strategy => ({
         name: strategy.name,
         available: await strategy.isAvailable(),
         model: strategy.model,
@@ -146,16 +146,16 @@ export class EmbeddingStrategyFactory {
     this.clearCache(); // Clear cache when config changes
   }
 
-  private async tryCreatePreferredStrategy(): Promise<EmbeddingStrategy | null> {
+  private tryCreatePreferredStrategy(): EmbeddingStrategy | null {
     if (!this.config.preferredStrategy) return null;
-    
+
     return this.createSpecificStrategy(this.config.preferredStrategy);
   }
 
   private getFallbackOrder(): string[] {
     const { preferredStrategy } = this.config;
     const allStrategies = ['transformers', 'ollama', 'simple-hash'];
-    
+
     // Remove preferred strategy from fallbacks to avoid duplication
     return allStrategies.filter(s => s !== preferredStrategy);
   }
@@ -167,18 +167,14 @@ export class EmbeddingStrategyFactory {
   }
 }
 
-/**
- * Convenience function to get a strategy instance
- */
-export async function createEmbeddingStrategy(config?: EmbeddingFactoryConfig): Promise<EmbeddingStrategy> {
-  const factory = EmbeddingStrategyFactory.getInstance(config);
-  return factory.createStrategy();
-}
+// Note: createEmbeddingStrategy function removed as it was unused
 
 /**
  * Convenience function to check available strategies
  */
-export async function getAvailableEmbeddingStrategies(config?: EmbeddingFactoryConfig): Promise<Array<{ name: string; available: boolean; model: string }>> {
+export async function getAvailableEmbeddingStrategies(
+  config?: EmbeddingFactoryConfig
+): Promise<Array<{ name: string; available: boolean; model: string }>> {
   const factory = EmbeddingStrategyFactory.getInstance(config);
   return factory.getAvailableStrategies();
 }
