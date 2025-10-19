@@ -23,10 +23,10 @@
     }
   },
   "bin": {
-    "design-patterns-mcp": "./dist/mcp-server.js",
-    "design-patterns-migrate": "./dist/migrate.js",
-    "design-patterns-seed": "./dist/seed.js",
-    "design-patterns-embeddings": "./dist/generate-embeddings.js"
+    "design-patterns-mcp": "./dist/src/mcp-server.js",
+    "design-patterns-migrate": "./dist/src/cli/migrate.js",
+    "design-patterns-seed": "./dist/src/cli/seed.js",
+    "design-patterns-embeddings": "./dist/src/cli/generate-embeddings.js"
   },
   "files": [
     "dist",
@@ -36,8 +36,10 @@
   ],
   "type": "module",
   "scripts": {
+    "prepare": "npm run build",
     "build": "tsc && npm run build:copy-data",
     "build:copy-data": "cp -r data dist/ 2>/dev/null || mkdir -p dist/data",
+    "postbuild": "chmod +x dist/src/mcp-server.js dist/src/cli/*.js 2>/dev/null || true",
     "start": "npm run build && node dist/src/mcp-server.js",
     "dev": "bun --hot src/mcp-server.ts",
     "test": "vitest run",
@@ -52,12 +54,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/design-patterns-mcp.git"
+    "url": "https://github.com/apolosan/design_patterns_mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/your-org/design-patterns-mcp/issues"
+    "url": "https://github.com/apolosan/design_patterns_mcp/issues"
   },
-  "homepage": "https://github.com/your-org/design-patterns-mcp#readme",
+  "homepage": "https://github.com/apolosan/design_patterns_mcp#readme",
   "keywords": [
     "design-patterns",
     "mcp",
