@@ -16,6 +16,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Ensures type safety while preserving error information for logging
   - Build now passes without TypeScript compilation errors
 
+#### Test Suite Expansion
+
+- **Comprehensive Test Coverage**: Expanded test suite from 219 to 243 tests (100% pass rate maintained)
+- **Additional Test Cases**: Added comprehensive validation for edge cases, error handling, and integration scenarios
+- **Performance Tests**: Enhanced performance validation with more thorough benchmarks
+- **Contract Tests**: Improved MCP protocol compliance testing
+
+#### Code Quality Improvements
+
+- **Type Safety**: Enhanced type consistency across logging operations
+- **Error Handling**: Maintained error information while fixing type compatibility
+- **Test Reliability**: Improved test stability and reduced flakiness
+
+### Technical Details
+
+- **Build Status**: ✅ TypeScript compilation passing
+- **Test Status**: 243/243 tests passing (100% success rate)
+- **Pattern Catalog**: 661 design patterns available
+- **Zero Breaking Changes**: Fix maintains backward compatibility
+
+## [0.3.0] - 2025-12-11
+
+### Fixed
+
+#### TypeScript Compilation Errors
+
+- **Embedding Service Adapter**: Fixed TypeScript errors in `src/adapters/embedding-service-adapter.ts` where `Error` objects were being incorrectly passed to `structuredLogger.warn()` method
+  - Lines 217 and 249: Converted `Error` objects to proper `Record<string, unknown>` format with `{ message: error.message, stack: error.stack }`
+  - Ensures type safety while preserving error information for logging
+  - Build now passes without TypeScript compilation errors
+
 #### Code Quality Improvements
 
 - **Type Safety**: Enhanced type consistency across logging operations
