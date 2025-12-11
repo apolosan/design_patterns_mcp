@@ -1,0 +1,18 @@
+{
+  "id": "micro-frontend-pattern",
+  "name": "Micro Frontend Pattern",
+  "category": "UI Architecture",
+  "description": "An architectural style where independently deliverable frontend applications are composed into a greater whole",
+  "when_to_use": "Large applications, multiple teams, independent deployments, technology diversity",
+  "benefits": "Independent deployment, technology flexibility, team autonomy, scalability",
+  "drawbacks": "Complexity in integration, potential duplication, consistency challenges",
+  "use_cases": "Large enterprise applications, e-commerce platforms, banking applications",
+  "complexity": "High",
+  "tags": ["architecture", "microservices", "frontend", "scalability", "team-autonomy"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Micro Frontend Shell Application\nimport React, { Suspense } from 'react';\n\nconst ProductApp = React.lazy(() => import('product-app/App'));\nconst UserApp = React.lazy(() => import('user-app/App'));\nconst CartApp = React.lazy(() => import('cart-app/App'));\n\ninterface MicroFrontendProps {\n  name: string;\n  host: string;\n  document?: Document;\n  window?: Window;\n}\n\nfunction MicroFrontend({ name, host, document, window }: MicroFrontendProps) {\n  return (\n    <div id={name}>\n      <Suspense fallback={<div>Loading {name}...</div>}>\n        {/* Dynamic import and rendering of micro frontend */}\n      </Suspense>\n    </div>\n  );\n}\n\nfunction App() {\n  return (\n    <div className=\"app-shell\">\n      <header>Company Header</header>\n      <nav>Navigation</nav>\n      <main>\n        <MicroFrontend name=\"products\" host=\"http://localhost:3001\" />\n        <MicroFrontend name=\"users\" host=\"http://localhost:3002\" />\n        <MicroFrontend name=\"cart\" host=\"http://localhost:3003\" />\n      </main>\n      <footer>Company Footer</footer>\n    </div>\n  );\n}\n\n// Module Federation (Webpack 5)\n// webpack.config.js for shell\nmodule.exports = {\n  plugins: [\n    new ModuleFederationPlugin({\n      name: 'shell',\n      remotes: {\n        'product-app': 'productApp@http://localhost:3001/remoteEntry.js',\n        'user-app': 'userApp@http://localhost:3002/remoteEntry.js',\n        'cart-app': 'cartApp@http://localhost:3003/remoteEntry.js',\n      },\n    }),\n  ],\n};"
+    }
+  }
+}

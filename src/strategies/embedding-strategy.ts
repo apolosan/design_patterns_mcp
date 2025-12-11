@@ -30,7 +30,7 @@ export class SimpleHashEmbeddingStrategy implements EmbeddingStrategy {
 
   async generateEmbedding(text: string): Promise<EmbeddingVector> {
     const words = text.toLowerCase().split(/\s+/);
-    const embedding = new Array(this.dimensions).fill(0);
+    const embedding: number[] = new Array(this.dimensions).fill(0);
 
     // Improved hash-based algorithm
     for (let i = 0; i < words.length; i++) {
@@ -48,12 +48,12 @@ export class SimpleHashEmbeddingStrategy implements EmbeddingStrategy {
     const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     const normalizedValues = embedding.map(val => val / (norm || 1));
 
-    return {
+    return Promise.resolve({
       dimensions: this.dimensions,
       values: normalizedValues,
       model: this.model,
       normalized: true,
-    };
+    });
   }
 
   async batchGenerateEmbeddings(texts: string[]): Promise<EmbeddingVector[]> {
@@ -61,7 +61,7 @@ export class SimpleHashEmbeddingStrategy implements EmbeddingStrategy {
   }
 
   async isAvailable(): Promise<boolean> {
-    return true; // Always available as fallback
+    return Promise.resolve(true); // Always available as fallback
   }
 
   private simpleHash(text: string): number {
@@ -83,7 +83,10 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
   readonly dimensions = 384;
   readonly model = 'all-MiniLM-L6-v2';
 
-  private pipeline: any = null;
+  private pipeline: {
+    (texts: string[], options?: Record<string, unknown>): Promise<{ data: number[] | Float32Array }>;
+    (text: string, options?: Record<string, unknown>): Promise<{ data: number[] | Float32Array }>;
+  } | null = null;
   private isInitialized = false;
 
   async generateEmbedding(text: string): Promise<EmbeddingVector> {
@@ -105,7 +108,7 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
       }
 
       const arrayData = Array.isArray(data) ? data : Array.from(data);
-      if (!arrayData.every((v: unknown) => typeof v === 'number')) {
+      if (!arrayData.every((v) => typeof v === 'number')) {
         throw new Error('Invalid embedding data: expected array of numbers');
       }
 
@@ -231,7 +234,7 @@ export class OllamaEmbeddingStrategy implements EmbeddingStrategy {
         throw new Error(`Ollama API error: ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as { embedding: number[] };
 
       return {
         dimensions: data.embedding.length,
@@ -267,10 +270,10 @@ export class OllamaEmbeddingStrategy implements EmbeddingStrategy {
 
       if (!response.ok) return false;
 
-      const data = await response.json();
+      const data = await response.json() as { models?: { name: string }[] };
       return (
         data.models?.some(
-          (model: any) => model.name.includes('all-minilm') || model.name.includes('embedding')
+          (model: { name: string }) => model.name.includes('all-minilm') || model.name.includes('embedding')
         ) || false
       );
     } catch {

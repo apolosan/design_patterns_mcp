@@ -214,7 +214,7 @@ export class EmbeddingServiceAdapter {
         structuredLogger.warn(
           'embedding-adapter',
           `Embedding generation attempt ${attempt} failed`,
-          error as Error
+          { message: (error as Error).message, stack: (error as Error).stack }
         );
 
         if (attempt < this.config.retryAttempts) {
@@ -246,7 +246,7 @@ export class EmbeddingServiceAdapter {
         structuredLogger.warn(
           'embedding-adapter',
           'Batch processing failed, falling back to individual processing',
-          error as Error
+          { message: (error as Error).message, stack: (error as Error).stack }
         );
 
         for (const text of batch) {

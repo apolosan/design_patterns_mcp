@@ -5,6 +5,7 @@
 import { DatabaseManager } from './database-manager';
 import { VectorOperationsService } from './vector-operations';
 import { EmbeddingServiceAdapter } from '../adapters/embedding-service-adapter.js';
+import { VectorSearchResult } from '../models/vector.js';
 import { logger } from './logger.js';
 
 interface SemanticSearchConfig {
@@ -20,7 +21,7 @@ interface SearchQuery {
   text: string;
   filters?: {
     categories?: string[];
-    complexity?: string[];
+    complexity?: string;
     tags?: string[];
   };
   options?: {
@@ -50,10 +51,18 @@ interface SearchResult {
   };
 }
 
-interface QueryExpansionResult {
-  originalQuery: string;
-  expandedQueries: string[];
-  expansionReason: string;
+interface SearchStats {
+  totalSearches: number;
+  averageResults: number;
+  averageSearchTime: number;
+  popularQueries: string[];
+  searchTrends: Record<string, number>;
+}
+
+interface UserPreferences {
+  preferredCategories?: string[];
+  preferredComplexity?: string;
+  preferredTags?: string[];
 }
 
 export class SemanticSearchService {
@@ -90,7 +99,7 @@ export class SemanticSearchService {
     try {
       // Expand query if enabled
       const queries = this.config.useQueryExpansion
-        ? await this.expandQuery(query.text)
+        ? this.expandQuery(query.text)
         : [query.text];
 
       // Generate embeddings for all query variations
@@ -104,10 +113,10 @@ export class SemanticSearchService {
         combinedEmbedding,
         {
           categories: query.filters?.categories,
-          complexity: query.filters?.complexity as any,
+          complexity: query.filters?.complexity,
           tags: query.filters?.tags,
         },
-        query.options?.limit || this.config.maxResults
+        query.options?.limit ?? this.config.maxResults
       );
 
       // Apply threshold filtering (TEMPORARILY DISABLED)
@@ -116,18 +125,18 @@ export class SemanticSearchService {
 
       // Re-rank if enabled
       const finalResults = this.config.useReRanking
-        ? await this.reRankResults(filteredResults, query.text)
+        ? this.reRankResults(filteredResults, query.text)
         : filteredResults;
 
       // Convert to SearchResult format
       const searchResults: SearchResult[] = finalResults.map((result, index) => ({
         patternId: result.patternId,
         pattern: {
-          name: result.pattern.name,
-          category: result.pattern.category,
-          description: result.pattern.description,
+          name: result.pattern!.name,
+          category: result.pattern!.category,
+          description: result.pattern!.description,
           complexity: 'Intermediate', // Default value
-          tags: [],
+          tags: result.pattern!.tags || [],
         },
         score: result.score,
         rank: index + 1,
@@ -140,7 +149,7 @@ export class SemanticSearchService {
       }));
 
       // Log search analytics
-      await this.logSearchAnalytics(query, searchResults);
+      this.logSearchAnalytics(query, searchResults);
 
       return searchResults;
     } catch (error) {
@@ -174,7 +183,7 @@ export class SemanticSearchService {
    */
   private generateFallbackEmbedding(text: string): number[] {
     const words = text.toLowerCase().split(/\s+/);
-    const embedding = new Array(384).fill(0); // Match all-MiniLM-L6-v2 dimensions
+    const embedding = Array.from({ length: 384 }, () => 0); // Match all-MiniLM-L6-v2 dimensions
 
     // Create a simple hash-based embedding
     for (let i = 0; i < words.length; i++) {
@@ -189,8 +198,8 @@ export class SemanticSearchService {
     }
 
     // Normalize the embedding
-    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
-    return embedding.map(val => val / (norm || 1));
+    const norm = Math.sqrt(embedding.reduce((sum: number, val: number) => sum + val * val, 0));
+    return embedding.map((val: number) => val / (norm || 1));
   }
 
   /**
@@ -219,7 +228,7 @@ export class SemanticSearchService {
     }
 
     const dimensions = embeddings[0].length;
-    const combined = new Array(dimensions).fill(0);
+    const combined = Array.from({ length: dimensions }, () => 0);
 
     // Average the embeddings
     for (const embedding of embeddings) {
@@ -238,7 +247,7 @@ export class SemanticSearchService {
   /**
    * Expand query with related terms
    */
-  private async expandQuery(query: string): Promise<string[]> {
+  private expandQuery(query: string): string[] {
     const expansions: string[] = [query];
 
     // Add common synonyms and related terms
@@ -288,28 +297,28 @@ export class SemanticSearchService {
   /**
    * Re-rank search results using additional criteria
    */
-  private async reRankResults(results: any[], originalQuery: string): Promise<any[]> {
+  private reRankResults(results: VectorSearchResult[], originalQuery: string): VectorSearchResult[] {
     // Enhanced ranking based on multiple factors
     return results
       .map(result => {
         let adjustedScore = result.score;
 
         // Boost score for exact matches in pattern name
-        if (result.pattern.name.toLowerCase().includes(originalQuery.toLowerCase())) {
+        if (result.pattern!.name.toLowerCase().includes(originalQuery.toLowerCase())) {
           adjustedScore *= 1.2;
         }
 
         // Boost score for category matches
         const queryWords = originalQuery.toLowerCase().split(/\s+/);
         for (const word of queryWords) {
-          if (result.pattern.category.toLowerCase().includes(word)) {
+          if (result.pattern!.category.toLowerCase().includes(word)) {
             adjustedScore *= 1.1;
           }
         }
 
         // Boost score for tag matches
-        if (result.pattern.tags) {
-          for (const tag of result.pattern.tags) {
+        if (result.pattern!.tags) {
+          for (const tag of result.pattern!.tags) {
             for (const word of queryWords) {
               if (tag.toLowerCase().includes(word)) {
                 adjustedScore *= 1.05;
@@ -329,7 +338,7 @@ export class SemanticSearchService {
   /**
    * Log search analytics
    */
-  private async logSearchAnalytics(query: SearchQuery, results: SearchResult[]): Promise<void> {
+  private logSearchAnalytics(query: SearchQuery, results: SearchResult[]): void {
     try {
       const analytics = {
         query: query.text,
@@ -339,7 +348,7 @@ export class SemanticSearchService {
         averageScore:
           results.length > 0 ? results.reduce((sum, r) => sum + r.score, 0) / results.length : 0,
         searchTime: results.length > 0 ? results[0].metadata.searchTime : 0,
-        filters: query.filters || {},
+        filters: query.filters ?? {},
       };
 
       // Store in database (would be implemented)
@@ -353,7 +362,7 @@ export class SemanticSearchService {
    * Find similar patterns by pattern ID
    */
   async findSimilarPatterns(patternId: string, limit?: number): Promise<SearchResult[]> {
-    const embedding = await this.vectorOps.getEmbedding(patternId);
+    const embedding = this.vectorOps.getEmbedding(patternId);
 
     if (!embedding) {
       throw new Error(`No embedding found for pattern: ${patternId}`);
@@ -362,7 +371,7 @@ export class SemanticSearchService {
     const vectorResults = await this.vectorOps.searchSimilar(
       embedding,
       { excludePatterns: [patternId] },
-      limit || this.config.maxResults
+      limit ?? this.config.maxResults
     );
 
     return vectorResults
@@ -370,9 +379,9 @@ export class SemanticSearchService {
       .map((result, index) => ({
         patternId: result.patternId,
         pattern: {
-          name: result.pattern?.name || 'Unknown Pattern',
-          category: result.pattern?.category || 'Unknown',
-          description: result.pattern?.description || 'No description available',
+          name: result.pattern?.name ?? 'Unknown Pattern',
+          category: result.pattern?.category ?? 'Unknown',
+          description: result.pattern?.description ?? 'No description available',
           complexity: 'Intermediate', // Default value
           tags: [],
         },
@@ -390,7 +399,7 @@ export class SemanticSearchService {
   /**
    * Get search suggestions based on partial query
    */
-  async getSearchSuggestions(partialQuery: string, limit: number = 5): Promise<string[]> {
+  getSearchSuggestions(partialQuery: string, limit: number = 5): string[] {
     try {
       // Get patterns that match the partial query
       const patterns = this.db.query<{ name: string; description: string }>(
@@ -449,7 +458,7 @@ export class SemanticSearchService {
   /**
    * Get search statistics
    */
-  async getSearchStats(): Promise<any> {
+  getSearchStats(): SearchStats {
     try {
       // This would query search analytics from database
       // For now, return mock stats
@@ -488,7 +497,7 @@ export class SemanticSearchService {
   /**
    * Advanced search with boolean operators
    */
-  async advancedSearch(query: string, _operators: any): Promise<SearchResult[]> {
+  async advancedSearch(query: string, _operators: Record<string, unknown>): Promise<SearchResult[]> {
     // Parse boolean query (AND, OR, NOT)
     const parsedQuery = this.parseBooleanQuery(query);
 
@@ -516,8 +525,8 @@ export class SemanticSearchService {
     query: SearchQuery,
     context: {
       previousSearches?: string[];
-      userPreferences?: any;
-      sessionHistory?: any[];
+      userPreferences?: UserPreferences;
+      sessionHistory?: string[];
     }
   ): Promise<SearchResult[]> {
     let contextualQuery = query.text;
@@ -532,7 +541,7 @@ export class SemanticSearchService {
     if (context.userPreferences) {
       // Adjust search based on user preferences
       if (context.userPreferences.preferredCategories) {
-        query.filters = query.filters || {};
+        query.filters = query.filters ?? {};
         query.filters.categories = context.userPreferences.preferredCategories;
       }
     }
@@ -563,22 +572,7 @@ export class SemanticSearchService {
   }
 }
 
-// Default configuration
-const DEFAULT_SEMANTIC_SEARCH_CONFIG: SemanticSearchConfig = {
-  modelName: 'all-MiniLM-L6-v2',
-  maxResults: 10,
-  similarityThreshold: 0.1,
-  contextWindow: 512,
-  useQueryExpansion: true,
-  useReRanking: true,
-};
+
 
 // Factory function
-function createSemanticSearchService(
-  db: DatabaseManager,
-  vectorOps: VectorOperationsService,
-  config?: Partial<SemanticSearchConfig>
-): SemanticSearchService {
-  const finalConfig = { ...DEFAULT_SEMANTIC_SEARCH_CONFIG, ...config };
-  return new SemanticSearchService(db, vectorOps, finalConfig);
-}
+

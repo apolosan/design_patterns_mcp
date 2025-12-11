@@ -4,8 +4,28 @@
  * Uses LRU (Least Recently Used) eviction strategy
  */
 
+// Minimal interface for sql.js Statement
+interface SqlJsStatement {
+  run(params?: readonly unknown[]): { insertId?: number; changes?: number };
+  step(): boolean;
+  getAsObject(): Record<string, unknown>;
+  bind(params: readonly unknown[]): void;
+  reset(): void;
+  freemem(): void;
+  safeIntegers?(): void;
+  free?(): void;
+}
+
+// Dummy statement for error recovery
+interface DummyStatement {
+  run: () => { changes: number; lastInsertRowid?: undefined };
+  get: () => undefined;
+  all: () => never[];
+  finalize: () => void;
+}
+
 interface PooledStatement {
-  statement: any;
+  statement: SqlJsStatement;
   lastUsed: number;
   useCount: number;
 }
@@ -36,7 +56,7 @@ export class StatementPool {
 
   constructor(config: Partial<StatementPoolConfig> = {}) {
     this.config = {
-      maxSize: config.maxSize || 100,
+      maxSize: config.maxSize ?? 100,
       enableMetrics: config.enableMetrics ?? true,
     };
   }
@@ -44,7 +64,7 @@ export class StatementPool {
   /**
    * Get or create a prepared statement (with error recovery)
    */
-  getOrCreate(sql: string, factory: () => any): any {
+  getOrCreate(sql: string, factory: () => SqlJsStatement): SqlJsStatement {
     const pooled = this.pool.get(sql);
 
     if (pooled) {
@@ -96,7 +116,7 @@ export class StatementPool {
         (sql.toUpperCase().includes('CREATE INDEX') || sql.toUpperCase().includes('CREATE TABLE'))
       ) {
         // Create a dummy statement that does nothing
-        const dummyStatement = {
+        const dummyStatement: DummyStatement = {
           run: () => ({ changes: 0, lastInsertRowid: undefined }),
           get: () => undefined,
           all: () => [],
@@ -104,13 +124,13 @@ export class StatementPool {
         };
 
         this.pool.set(sql, {
-          statement: dummyStatement as any,
+          statement: dummyStatement as unknown as SqlJsStatement,
           lastUsed: Date.now(),
           useCount: 1,
         });
 
         this.metrics.size = this.pool.size;
-        return dummyStatement as any;
+        return dummyStatement as unknown as SqlJsStatement;
       }
 
       // Factory failed - propagate error but don't corrupt pool
@@ -147,7 +167,7 @@ export class StatementPool {
    */
   clear(): void {
     // Free all statements
-    for (const [_, pooled] of this.pool) {
+    for (const [, pooled] of this.pool) {
       if (pooled.statement && typeof pooled.statement.free === 'function') {
         pooled.statement.free();
       }

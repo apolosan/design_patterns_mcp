@@ -1,0 +1,18 @@
+{
+  "id": "parallel-asynchronous-operation-patterns",
+  "name": "Parallel Asynchronous Operation Patterns",
+  "category": "Async/Event-Driven",
+  "description": "Patterns for executing multiple asynchronous operations concurrently to improve performance",
+  "when_to_use": "Multiple independent async operations, data fetching, API calls, I/O operations",
+  "benefits": "Improved performance, reduced total execution time, better resource utilization",
+  "drawbacks": "Error handling complexity, resource contention, potential race conditions",
+  "use_cases": "Batch API calls, parallel data fetching, concurrent file operations",
+  "complexity": "Medium",
+  "tags": ["async", "parallel", "performance", "concurrency", "promise"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Promise.all for parallel execution\nasync function fetchUserData(userIds: number[]): Promise<User[]> {\n  const promises = userIds.map(id => \n    fetch(`/api/users/${id}`).then(res => res.json())\n  );\n  \n  return Promise.all(promises);\n}\n\n// Usage\nconst userIds = [1, 2, 3, 4, 5];\nconst users = await fetchUserData(userIds);\n\n// Promise.allSettled for handling partial failures\nasync function fetchWithFallback(urls: string[]): Promise<any[]> {\n  const promises = urls.map(url => \n    fetch(url).then(res => res.json()).catch(() => null)\n  );\n  \n  const results = await Promise.allSettled(promises);\n  return results.map(result => \n    result.status === 'fulfilled' ? result.value : null\n  );\n}\n\n// Concurrent but limited parallelism\nfunction concurrentLimit<T>(\n  tasks: (() => Promise<T>)[] , \n  limit: number\n): Promise<T[]> {\n  return new Promise((resolve, reject) => {\n    const results: T[] = [];\n    let running = 0;\n    let index = 0;\n    \n    function next() {\n      if (index >= tasks.length) {\n        if (running === 0) resolve(results);\n        return;\n      }\n      \n      const currentIndex = index++;\n      running++;\n      \n      tasks[currentIndex]().then(result => {\n        results[currentIndex] = result;\n        running--;\n        next();\n      }).catch(reject);\n    }\n    \n    // Start initial batch\n    for (let i = 0; i < Math.min(limit, tasks.length); i++) {\n      next();\n    }\n  });\n}\n\n// Usage with rate limiting\nconst tasks = urls.map(url => () => fetch(url).then(r => r.json()));\nconst results = await concurrentLimit(tasks, 3); // Max 3 concurrent requests"
+    }
+  }
+}

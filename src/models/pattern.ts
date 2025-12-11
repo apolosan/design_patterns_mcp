@@ -3,8 +3,6 @@
  * Core domain models for design patterns
  */
 
-type PatternComplexity = 'low' | 'medium' | 'high';
-
 export type PatternCategory =
   | 'creational'
   | 'structural'
@@ -73,54 +71,15 @@ export interface Pattern {
   examples?: string | PatternExamples;
   popularity?: number;
   relatedPatterns?: Pattern[];
-  related_patterns?: any[];
-  structure?: string;
-  participants?: string[];
-  collaborations?: string[];
-  consequences?: string[];
-  implementation?: string;
-  useCases?: string[];
-  alsoKnownAs?: string[];
-  metadata?: Record<string, any>;
+   related_patterns?: string[];
+   structure?: string;
+   participants?: string[];
+   collaborations?: string[];
+   consequences?: string[];
+   implementation?: string;
+   useCases?: string[];
+   alsoKnownAs?: string[];
+   metadata?: Record<string, unknown>;
 }
 
-interface CreatePatternInput {
-  name: string;
-  category: string;
-  description: string;
-  problem: string;
-  solution: string;
-  when_to_use?: string[];
-  benefits?: string[];
-  drawbacks?: string[];
-  use_cases?: string[];
-  complexity?: PatternComplexity;
-  tags?: string[];
-}
 
-interface UpdatePatternInput {
-  name?: string;
-  category?: string;
-  description?: string;
-  problem?: string;
-  solution?: string;
-  when_to_use?: string[];
-  benefits?: string[];
-  drawbacks?: string[];
-  use_cases?: string[];
-  complexity?: PatternComplexity;
-  tags?: string[];
-}
-
-interface PatternFilters {
-  category?: string;
-  complexity?: PatternComplexity;
-  tags?: string[];
-  programmingLanguage?: string;
-}
-
-interface PatternSearchResult {
-  pattern: Pattern;
-  score: number;
-  highlights?: string[];
-}

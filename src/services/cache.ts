@@ -4,7 +4,7 @@
  * Supports pattern search results, embeddings, and frequently accessed data
  */
 
-interface CacheEntry<T = any> {
+interface CacheEntry<T = unknown> {
   data: T;
   timestamp: number;
   ttl: number;
@@ -50,7 +50,7 @@ export class CacheService {
   /**
    * Get cached value by key
    */
-  get<T = any>(key: string): T | null {
+  get<T = unknown>(key: string): T | null {
     const entry = this.cache.get(key);
 
     if (!entry) {
@@ -76,7 +76,7 @@ export class CacheService {
   /**
    * Set cached value with optional TTL (Thread-safe with simple lock)
    */
-  set<T = any>(key: string, data: T, ttl?: number): void {
+  set<T = unknown>(key: string, data: T, ttl?: number): void {
     // Simple lock to prevent concurrent modifications to same key
     if (this.setInProgress.has(key)) {
       return; // Skip if already being set
@@ -88,7 +88,7 @@ export class CacheService {
       const entry: CacheEntry<T> = {
         data,
         timestamp: Date.now(),
-        ttl: ttl || this.config.defaultTTL,
+        ttl: ttl ?? this.config.defaultTTL,
         accessCount: 0,
         lastAccessed: Date.now(),
       };
@@ -235,7 +235,7 @@ export class CacheService {
   /**
    * Estimate size of cached data (rough approximation)
    */
-  private estimateSize(data: any): number {
+  private estimateSize(data: unknown): number {
     try {
       const jsonString = JSON.stringify(data);
       return jsonString.length;
@@ -248,7 +248,7 @@ export class CacheService {
    * Fast hash function for objects (FNV-1a algorithm)
    * Much faster than JSON.stringify for cache key generation
    */
-  private hashObject(obj: any): string {
+  private hashObject(obj: unknown): string {
     const str = typeof obj === 'string' ? obj : JSON.stringify(obj);
     let hash = 2166136261; // FNV offset basis
     
@@ -263,24 +263,24 @@ export class CacheService {
   /**
    * Get or set pattern (convenience method for pattern caching)
    */
-  getPattern(patternId: string): any {
+  getPattern(patternId: string): unknown {
     return this.get(`pattern:${patternId}`);
   }
 
-  setPattern(patternId: string, pattern: any, ttl?: number): void {
+  setPattern(patternId: string, pattern: unknown, ttl?: number): void {
     this.set(`pattern:${patternId}`, pattern, ttl);
   }
 
   /**
    * Get or set search results (convenience method for search caching)
    */
-  getSearchResults(query: string, options?: any): any {
-    const optionsHash = this.hashObject(options || {});
+  getSearchResults(query: string, options?: unknown): unknown {
+    const optionsHash = this.hashObject(options ?? {});
     const key = `search:${query}:${optionsHash}`;
     return this.get(key);
   }
 
-  setSearchResults(query: string, options: any, results: any, ttl?: number): void {
+  setSearchResults(query: string, options: unknown, results: unknown, ttl?: number): void {
     // Use fast hash for options instead of JSON.stringify for better performance
     const optionsHash = this.hashObject(options || {});
     const key = `search:${query}:${optionsHash}`;

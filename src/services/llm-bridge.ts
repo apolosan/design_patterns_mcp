@@ -4,6 +4,7 @@
  */
 import { DatabaseManager } from './database-manager.js';
 import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
+import type { Pattern } from '../models/pattern.js';
 
 interface LLMConfig {
   provider: 'openai' | 'anthropic' | 'ollama' | 'local';
@@ -15,9 +16,22 @@ interface LLMConfig {
   timeout: number;
 }
 
+interface UserContext {
+  projectType?: string;
+  experienceLevel?: 'beginner' | 'intermediate' | 'expert';
+  preferredLanguages?: string[];
+  teamSize?: number;
+  projectComplexity?: 'simple' | 'medium' | 'complex';
+  timeConstraints?: string;
+  budget?: string;
+  existingPatterns?: string[];
+  domain?: string;
+  requirements?: string[];
+}
+
 interface LLMRequest {
   prompt: string;
-  context?: any;
+  context?: UserContext;
   examples?: string[];
   constraints?: string[];
   format?: 'json' | 'text' | 'markdown';
@@ -36,6 +50,25 @@ interface LLMResponse {
     processingTime: number;
     timestamp: Date;
   };
+}
+
+interface PatternRecommendation {
+  patternName: string;
+  confidence: number;
+  reasoning: string;
+  benefits?: string[];
+  drawbacks?: string[];
+  useCases?: string[];
+  tags?: string[];
+  enhanced?: boolean;
+}
+
+interface LLMEnhancement {
+  patternName: string;
+  additionalBenefits?: string[];
+  additionalDrawbacks?: string[];
+  additionalUseCases?: string[];
+  enhancedReasoning?: string;
 }
 
 interface PatternAnalysisRequest {
@@ -86,11 +119,14 @@ export class LLMBridgeService {
       const prompt = this.buildAnalysisPrompt(request);
       const llmRequest: LLMRequest = {
         prompt,
-        context: request,
+        context: request.context ? {
+          existingPatterns: request.context.existingPatterns,
+          requirements: request.context.constraints,
+        } : undefined,
         format: 'json',
       };
 
-      const response = await this.callLLM(llmRequest);
+      const response = await Promise.resolve(this.callLLM(llmRequest));
       return this.parseAnalysisResponse(response.content);
     } catch (error) {
       console.error('Pattern analysis failed:', error);
@@ -104,13 +140,13 @@ export class LLMBridgeService {
   async generateImplementationGuidance(
     patternName: string,
     language: string,
-    context?: any
+    context?: UserContext
   ): Promise<string> {
     try {
-      const pattern = await this.getPatternInfo(patternName);
+      const pattern = this.getPatternInfo(patternName);
       const prompt = this.buildImplementationPrompt(pattern, language, context);
 
-      const response = await this.callLLM({ prompt, format: 'markdown' });
+      const response = await Promise.resolve(this.callLLM({ prompt, format: 'markdown' }));
       return response.content;
     } catch (error) {
       console.error('Implementation guidance generation failed:', error);
@@ -127,11 +163,11 @@ export class LLMBridgeService {
     context?: string
   ): Promise<string> {
     try {
-      const patternInfo1 = await this.getPatternInfo(pattern1);
-      const patternInfo2 = await this.getPatternInfo(pattern2);
+      const patternInfo1 = this.getPatternInfo(pattern1);
+      const patternInfo2 = this.getPatternInfo(pattern2);
 
       const prompt = this.buildRelationshipPrompt(patternInfo1, patternInfo2, context);
-      const response = await this.callLLM({ prompt, format: 'markdown' });
+      const response = await Promise.resolve(this.callLLM({ prompt, format: 'markdown' }));
 
       return response.content;
     } catch (error) {
@@ -149,10 +185,10 @@ export class LLMBridgeService {
     scenario: string
   ): Promise<{ code: string; explanation: string }> {
     try {
-      const pattern = await this.getPatternInfo(patternName);
+      const pattern = this.getPatternInfo(patternName);
       const prompt = this.buildCodeExamplePrompt(pattern, language, scenario);
 
-      const response = await this.callLLM({ prompt, format: 'markdown' });
+      const response = await Promise.resolve(this.callLLM({ prompt, format: 'markdown' }));
 
       return this.parseCodeExampleResponse(response.content);
     } catch (error) {
@@ -164,12 +200,12 @@ export class LLMBridgeService {
   /**
    * Enhance pattern recommendations with LLM insights
    */
-  async enhanceRecommendations(baseRecommendations: any[], userContext: any): Promise<any[]> {
+  async enhanceRecommendations(baseRecommendations: PatternRecommendation[], userContext: UserContext): Promise<PatternRecommendation[]> {
     try {
       const prompt = this.buildEnhancementPrompt(baseRecommendations, userContext);
-      const response = await this.callLLM({ prompt, format: 'json' });
+      const response = await Promise.resolve(this.callLLM({ prompt, format: 'json' }));
 
-      const enhancements = JSON.parse(response.content);
+      const enhancements = JSON.parse(response.content) as LLMEnhancement[];
       return this.mergeEnhancements(baseRecommendations, enhancements);
     } catch (error) {
       console.error('Recommendation enhancement failed:', error);
@@ -231,7 +267,7 @@ Focus on practical, implementable recommendations with clear reasoning.`;
   /**
    * Build implementation guidance prompt
    */
-  private buildImplementationPrompt(pattern: any, language: string, context?: any): string {
+  private buildImplementationPrompt(pattern: Partial<Pattern>, language: string, context?: UserContext): string {
     return `
 You are an expert software engineer providing detailed implementation guidance for the ${pattern.name} design pattern.
 
@@ -258,7 +294,7 @@ Format your response in clear, actionable markdown with code examples where appr
   /**
    * Build relationship explanation prompt
    */
-  private buildRelationshipPrompt(pattern1: any, pattern2: any, context?: string): string {
+  private buildRelationshipPrompt(pattern1: Partial<Pattern>, pattern2: Partial<Pattern>, context?: string): string {
     return `
 You are an expert software architect explaining the relationship between two design patterns.
 
@@ -284,7 +320,7 @@ Provide practical examples and clear guidance for developers.`;
   /**
    * Build code example prompt
    */
-  private buildCodeExamplePrompt(pattern: any, language: string, scenario: string): string {
+  private buildCodeExamplePrompt(pattern: Partial<Pattern>, language: string, scenario: string): string {
     return `
 You are an expert software engineer creating a practical code example for the ${pattern.name} design pattern.
 
@@ -307,7 +343,7 @@ The example should be production-ready and demonstrate best practices for the ${
   /**
    * Build enhancement prompt
    */
-  private buildEnhancementPrompt(recommendations: any[], userContext: any): string {
+  private buildEnhancementPrompt(recommendations: PatternRecommendation[], userContext: UserContext): string {
     return `
 You are an AI assistant enhancing design pattern recommendations with additional insights.
 
@@ -331,7 +367,7 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
   /**
    * Call LLM with request
    */
-  private async callLLM(request: LLMRequest): Promise<LLMResponse> {
+  private callLLM(request: LLMRequest): LLMResponse {
     const startTime = Date.now();
 
     try {
@@ -339,16 +375,16 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
 
       switch (this.config.provider) {
         case 'openai':
-          response = await this.callOpenAI(request);
+          response = this.callOpenAI(request);
           break;
         case 'anthropic':
-          response = await this.callAnthropic(request);
+          response = this.callAnthropic(request);
           break;
         case 'ollama':
-          response = await this.callOllama(request);
+          response = this.callOllama(request);
           break;
         default:
-          response = await this.callLocal(request);
+          response = this.callLocal(request);
       }
 
       response.metadata.processingTime = Date.now() - startTime;
@@ -364,7 +400,7 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
   /**
    * Call OpenAI API
    */
-  private async callOpenAI(_request: LLMRequest): Promise<LLMResponse> {
+  private callOpenAI(_request: LLMRequest): LLMResponse {
     // Placeholder implementation
     return {
       content: 'OpenAI response placeholder',
@@ -385,7 +421,7 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
   /**
    * Call Anthropic API
    */
-  private async callAnthropic(_request: LLMRequest): Promise<LLMResponse> {
+  private callAnthropic(_request: LLMRequest): LLMResponse {
     // Placeholder implementation
     return {
       content: 'Anthropic response placeholder',
@@ -406,7 +442,7 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
   /**
    * Call Ollama API
    */
-  private async callOllama(_request: LLMRequest): Promise<LLMResponse> {
+  private callOllama(_request: LLMRequest): LLMResponse {
     // Placeholder implementation
     return {
       content: 'Ollama response placeholder',
@@ -427,7 +463,7 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
   /**
    * Call local model
    */
-  private async callLocal(_request: LLMRequest): Promise<LLMResponse> {
+  private callLocal(_request: LLMRequest): LLMResponse {
     // Placeholder implementation
     return {
       content: 'Local model response placeholder',
@@ -450,7 +486,8 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
    */
   private parseAnalysisResponse(content: string): PatternAnalysisResponse {
     try {
-      return JSON.parse(content);
+      const parsed = JSON.parse(content) as PatternAnalysisResponse;
+      return parsed;
     } catch (error) {
       console.error('Failed to parse LLM response:', error);
       return this.getFallbackAnalysis({ problemDescription: 'Unknown' });
@@ -479,7 +516,8 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
   /**
    * Get pattern information from database
    */
-  private async getPatternInfo(patternName: string): Promise<any> {
+  private getPatternInfo(patternName: string): Partial<Pattern> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const pattern = this.db.queryOne('SELECT * FROM patterns WHERE name = ?', [patternName]);
 
     if (!pattern) {
@@ -490,20 +528,36 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
       };
     }
 
+    // Type guard for database result
+    const isDatabasePattern = (obj: unknown): obj is Record<string, unknown> => {
+      return typeof obj === 'object' && obj !== null;
+    };
+
+    if (!isDatabasePattern(pattern)) {
+      return {
+        name: patternName,
+        category: 'Unknown',
+        description: 'Invalid pattern data',
+      };
+    }
+
+    // Safe property access - pattern is already validated as Record<string, unknown>
+    const safePattern = pattern;
+
     return {
-      ...pattern,
-      when_to_use: parseArrayProperty(pattern.when_to_use, 'when_to_use'),
-      benefits: parseArrayProperty(pattern.benefits, 'benefits'),
-      drawbacks: parseArrayProperty(pattern.drawbacks, 'drawbacks'),
-      use_cases: parseArrayProperty(pattern.use_cases, 'use_cases'),
-      tags: parseTags(pattern.tags),
+      ...safePattern,
+      when_to_use: parseArrayProperty(String(safePattern.when_to_use || ''), 'when_to_use'),
+      benefits: parseArrayProperty(String(safePattern.benefits || ''), 'benefits'),
+      drawbacks: parseArrayProperty(String(safePattern.drawbacks || ''), 'drawbacks'),
+      use_cases: parseArrayProperty(String(safePattern.use_cases || ''), 'use_cases'),
+      tags: parseTags(String(safePattern.tags || '')),
     };
   }
 
   /**
    * Get fallback analysis when LLM fails
    */
-  private getFallbackAnalysis(request: PatternAnalysisRequest): PatternAnalysisResponse {
+  private getFallbackAnalysis(_request: PatternAnalysisRequest): PatternAnalysisResponse {
     return {
       detectedPatterns: [],
       recommendations: [
@@ -596,13 +650,21 @@ class ${patternName}Example {
   /**
    * Merge LLM enhancements with base recommendations
    */
-  private mergeEnhancements(baseRecommendations: any[], enhancements: any[]): any[] {
+  private mergeEnhancements(baseRecommendations: PatternRecommendation[], enhancements: LLMEnhancement[]): PatternRecommendation[] {
     // Simple merge - in production, implement more sophisticated merging
-    return baseRecommendations.map((rec, index) => ({
-      ...rec,
-      ...enhancements[index],
-      enhanced: true,
-    }));
+    return baseRecommendations.map((rec, index) => {
+      const enhancement = enhancements[index];
+      if (!enhancement) return rec;
+
+      return {
+        ...rec,
+        benefits: [...(rec.benefits ?? []), ...(enhancement.additionalBenefits ?? [])],
+        drawbacks: [...(rec.drawbacks ?? []), ...(enhancement.additionalDrawbacks ?? [])],
+        useCases: [...(rec.useCases ?? []), ...(enhancement.additionalUseCases ?? [])],
+        reasoning: enhancement.enhancedReasoning ?? rec.reasoning,
+        enhanced: true,
+      };
+    });
   }
 
   /**
@@ -617,10 +679,10 @@ class ${patternName}Example {
   }> {
     try {
       // Test LLM with a simple request
-      await this.callLLM({
+      await Promise.resolve(this.callLLM({
         prompt: 'Hello, this is a test.',
         format: 'text',
-      });
+      }));
 
       return {
         healthy: true,
@@ -640,20 +702,6 @@ class ${patternName}Example {
   }
 }
 
-// Default configuration
-const DEFAULT_LLM_CONFIG: LLMConfig = {
-  provider: 'ollama',
-  model: 'llama2',
-  temperature: 0.7,
-  maxTokens: 2000,
-  timeout: 30000,
-};
 
-// Factory function
-function createLLMBridgeService(
-  db: DatabaseManager,
-  config?: Partial<LLMConfig>
-): LLMBridgeService {
-  const finalConfig = { ...DEFAULT_LLM_CONFIG, ...config };
-  return new LLMBridgeService(db, finalConfig);
-}
+
+

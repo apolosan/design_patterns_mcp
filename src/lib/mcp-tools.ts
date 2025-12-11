@@ -15,6 +15,24 @@ import { PatternMatcher as RealPatternMatcher } from '../services/pattern-matche
 import { SemanticSearchService } from '../services/semantic-search.js';
 import { DatabaseManager as RealDatabaseManager } from '../services/database-manager.js';
 
+
+
+// Import type guards
+import {
+  SuggestPatternArgs,
+  isSuggestPatternArgs,
+  SearchPatternsArgs,
+  isSearchPatternsArgs,
+  AnalyzeCodeArgs,
+  isAnalyzeCodeArgs,
+  GetConfigArgs,
+  isGetConfigArgs,
+  SetConfigArgs,
+  isSetConfigArgs,
+  CountPatternsArgs,
+  isCountPatternsArgs
+} from '../types/mcp-args.js';
+
 // Common filter types
 export interface PatternFilters {
   categories?: string[];
@@ -58,6 +76,21 @@ export interface PatternRecommendation {
   implementation?: string;
   alternatives?: Pattern[];
   context?: string;
+}
+
+export interface MCPToolsConfig {
+   patternMatcher: PatternMatcher;
+   semanticSearch: SemanticSearch;
+   databaseManager: DatabaseManager;
+   patternService: PatternService;
+   preferences: Map<string, UserPreference>;
+ }
+
+export interface PatternService {
+  getPatternById(id: string): Promise<Pattern | null>;
+  getAllPatterns(): Promise<Pattern[]>;
+  savePattern(pattern: Pattern): Promise<void>;
+  updatePattern(id: string, updates: Partial<Pattern>): Promise<void>;
 }
 
 export interface CodeAnalysisResult {
@@ -112,80 +145,47 @@ export interface ServerStats {
   cacheHitRate: number;
 }
 
-export interface CodeAnalysisResult {
-  patterns: Array<{
-    name: string;
-    confidence: number;
-    location?: string;
-    description?: string;
-  }>;
-  suggestions: Array<{
-    type: string;
-    message: string;
-    severity: 'info' | 'warning' | 'error';
-  }>;
-  summary: string;
-}
-
-export interface SearchResult {
-  pattern: Pattern;
-  score: number;
-  highlights?: string[];
-}
-
-export interface CategoryInfo {
+// Database row types
+interface PatternRow {
+  id: string;
   name: string;
-  count: number;
-  description?: string;
+  category: string;
+  description: string;
+  complexity: string;
+  tags: string;
 }
 
-export interface LanguageInfo {
-  language: string;
-  count: number;
+interface FullPatternRow {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  problem: string;
+  solution: string;
+  when_to_use: string;
+  benefits: string;
+  drawbacks: string;
+  use_cases: string;
+  complexity: string;
+  tags: string;
+  created_at: string;
+  updated_at: string;
 }
 
-export interface ServerStats {
-  totalPatterns: number;
-  totalCategories: number;
-  avgResponseTime: number;
-  totalRequests: number;
-  cacheHitRate: number;
+interface CategoryRow {
+  category: string;
+  pattern_count: number;
 }
 
-// Adapter interfaces to match MCP expectations
-export interface PatternMatcher {
-  findSimilarPatterns(request: PatternRequest): Promise<PatternRecommendation[]>;
-  analyzeCode(code: string, language: string): Promise<CodeAnalysisResult>;
-}
 
-export interface SemanticSearch {
-  search(
-    query: string,
-    options?: { limit?: number; filters?: PatternFilters }
-  ): Promise<SearchResult[]>;
-}
-
-export interface DatabaseManager {
-  searchPatterns(
-    query: string,
-    options?: { limit?: number; filters?: PatternFilters }
-  ): Promise<SearchResult[]>;
-  updatePattern(id: string, updates: Partial<Pattern>): Promise<void>;
-  savePattern(pattern: Pattern): Promise<void>;
-  getAllPatterns(): Promise<Pattern[]>;
-  getPatternById(id: string): Promise<Pattern | null>;
-  getPatternCategories(): Promise<CategoryInfo[]>;
-  getSupportedLanguages(): Promise<LanguageInfo[]>;
-  getServerStats(): Promise<ServerStats>;
-}
 
 export interface MCPToolsConfig {
-   patternMatcher: PatternMatcher;
-   semanticSearch: SemanticSearch;
-   databaseManager: DatabaseManager;
-   patternService: unknown; // TODO: Define PatternService interface
-   preferences: Map<string, UserPreference>;
- }
+    patternMatcher: PatternMatcher;
+    semanticSearch: SemanticSearch;
+    databaseManager: DatabaseManager;
+    patternService: PatternService;
+    preferences: Map<string, UserPreference>;
+  }
 
 // Adapter classes to bridge real services with MCP interfaces
 export class PatternMatcherAdapter implements PatternMatcher {
@@ -228,12 +228,12 @@ export class PatternMatcherAdapter implements PatternMatcher {
 export class SemanticSearchAdapter implements SemanticSearch {
   constructor(private realSemanticSearch: SemanticSearchService) {}
 
-  async search(query: string, options?: { categoryFilter?: string[]; limit?: number }): Promise<any[]> {
+  async search(query: string, options?: { categoryFilter?: string[]; limit?: number }): Promise<SearchResult[]> {
     const searchQuery = {
       text: query,
       filters: options?.categoryFilter ? { categories: options.categoryFilter } : undefined,
       options: {
-        limit: options?.limit || 10,
+        limit: options?.limit ?? 10,
         includeMetadata: true,
       },
     };
@@ -241,12 +241,26 @@ export class SemanticSearchAdapter implements SemanticSearch {
     const results = await this.realSemanticSearch.search(searchQuery);
 
     return results.map(result => ({
-      id: result.patternId,
-      name: result.pattern.name,
-      category: result.pattern.category,
-      description: result.pattern.description,
+      pattern: {
+        id: result.patternId || '',
+        name: result.pattern.name,
+        category: result.pattern.category,
+        description: result.pattern.description,
+        problem: '',
+        solution: '',
+        when_to_use: [],
+        benefits: [],
+        drawbacks: [],
+        use_cases: [],
+        implementations: [],
+        relatedPatterns: [],
+        complexity: result.pattern.complexity || 'Intermediate',
+        tags: result.pattern.tags || [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
       score: result.score,
-      matchType: 'semantic',
+      highlights: [],
     }));
   }
 }
@@ -254,29 +268,43 @@ export class SemanticSearchAdapter implements SemanticSearch {
 export class DatabaseManagerAdapter implements DatabaseManager {
   constructor(private realDatabaseManager: RealDatabaseManager) {}
 
-  async searchPatterns(query: string, options?: { limit?: number }): Promise<any[]> {
+  async searchPatterns(query: string, options?: { limit?: number; filters?: PatternFilters }): Promise<SearchResult[]> {
     // Simple keyword search implementation
-    const patterns = this.realDatabaseManager.query(
+    const patterns = this.realDatabaseManager.query<PatternRow>(
       `
       SELECT id, name, category, description, complexity, tags
       FROM patterns
       WHERE name LIKE ? OR description LIKE ? OR category LIKE ?
       LIMIT ?
     `,
-      [`%${query}%`, `%${query}%`, `%${query}%`, options?.limit || 10]
+      [`%${query}%`, `%${query}%`, `%${query}%`, options?.limit ?? 10]
     );
 
-    return patterns.map(pattern => ({
-      id: pattern.id,
-      name: pattern.name,
-      category: pattern.category,
-      description: pattern.description,
+    return Promise.resolve(patterns.map(pattern => ({
+      pattern: {
+        id: pattern.id,
+        name: pattern.name,
+        category: pattern.category,
+        description: pattern.description,
+        problem: pattern.description || '',
+        solution: pattern.description || '',
+        when_to_use: [],
+        benefits: [],
+        drawbacks: [],
+        use_cases: [],
+        implementations: [],
+        relatedPatterns: [],
+        complexity: pattern.complexity || 'Intermediate',
+        tags: parseTags(pattern.tags),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
       score: 0.8, // Default score for keyword matches
-      matchType: 'keyword',
-    }));
+      highlights: [],
+    })));
   }
 
-  async updatePattern(id: string, updates: Record<string, unknown>): Promise<void> {
+  async updatePattern(id: string, updates: Partial<Pattern>): Promise<void> {
     // Build dynamic update query
     const fields = Object.keys(updates);
     const values = Object.values(updates);
@@ -286,6 +314,7 @@ export class DatabaseManagerAdapter implements DatabaseManager {
       `UPDATE patterns SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
       [...values, id]
     );
+    return Promise.resolve();
   }
 
   async savePattern(pattern: Pattern): Promise<void> {
@@ -308,16 +337,17 @@ export class DatabaseManagerAdapter implements DatabaseManager {
     ];
 
     this.realDatabaseManager.execute(sql, params);
+    return Promise.resolve();
   }
 
   async getAllPatterns(): Promise<Pattern[]> {
-    const rows = this.realDatabaseManager.query(`
+    const rows = this.realDatabaseManager.query<FullPatternRow>(`
       SELECT id, name, category, description, when_to_use, benefits, drawbacks, use_cases, complexity, tags, created_at, updated_at
       FROM patterns
       ORDER BY name
     `);
 
-    return rows.map(row => ({
+    const result = rows.map(row => ({
       id: row.id,
       name: row.name,
       category: row.category,
@@ -335,10 +365,12 @@ export class DatabaseManagerAdapter implements DatabaseManager {
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
     }));
+    return Promise.resolve(result);
+    return Promise.resolve(result);
   }
 
   async getPatternById(id: string): Promise<Pattern | null> {
-    const row = this.realDatabaseManager.queryOne(
+    const row = this.realDatabaseManager.queryOne<FullPatternRow>(
       `
       SELECT id, name, category, description, problem, solution, when_to_use, benefits, drawbacks, use_cases, complexity, tags, created_at, updated_at
       FROM patterns
@@ -347,9 +379,9 @@ export class DatabaseManagerAdapter implements DatabaseManager {
       [id]
     );
 
-    if (!row) return null;
+    if (!row) return Promise.resolve(null);
 
-    return {
+    return Promise.resolve({
       id: row.id,
       name: row.name,
       category: row.category,
@@ -366,26 +398,26 @@ export class DatabaseManagerAdapter implements DatabaseManager {
       tags: parseTags(row.tags),
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
-    };
+    });
   }
 
   async getPatternCategories(): Promise<CategoryInfo[]> {
-    const rows = this.realDatabaseManager.query(`
+    const rows = this.realDatabaseManager.query<CategoryRow>(`
       SELECT category, COUNT(*) as pattern_count
       FROM patterns
       GROUP BY category
       ORDER BY category
     `);
 
-    return rows.map(row => ({
+    return Promise.resolve(rows.map(row => ({
       name: row.category,
       count: row.pattern_count,
-    }));
+    })));
   }
 
   async getSupportedLanguages(): Promise<LanguageInfo[]> {
     // Return static list for now - could be made dynamic
-    return [
+    return Promise.resolve([
       {
         language: 'typescript',
         count: 150,
@@ -398,7 +430,7 @@ export class DatabaseManagerAdapter implements DatabaseManager {
         language: 'python',
         count: 100,
       },
-    ];
+    ]);
   }
 
   async getServerStats(): Promise<ServerStats> {
@@ -406,13 +438,13 @@ export class DatabaseManagerAdapter implements DatabaseManager {
       'SELECT COUNT(*) as count FROM patterns'
     );
 
-    return {
-      totalPatterns: patternCount?.count || 0,
+    return Promise.resolve({
+      totalPatterns: patternCount?.count ?? 0,
       totalCategories: 20, // Would need to calculate this
       avgResponseTime: 150,
       totalRequests: 0,
       cacheHitRate: 0.85,
-    };
+    });
   }
 
   private getTypicalUseCases(category: string): string {
@@ -880,29 +912,47 @@ export class MCPToolsHandler {
    * Handle list tools request
    */
   async handleListTools(): Promise<{ tools: Tool[] }> {
-    return {
+    return Promise.resolve({
       tools: this.getTools(),
-    };
+    });
   }
 
   /**
    * Handle tool calls
    */
-  async handleToolCall(request: CallToolRequest): Promise<any> {
+  async handleToolCall(request: CallToolRequest): Promise<Record<string, unknown>> {
     const { name, arguments: args } = request.params;
 
     switch (name) {
       case 'suggest_pattern':
+        if (!isSuggestPatternArgs(args)) {
+          throw new Error('Invalid arguments for suggest_pattern tool');
+        }
         return await this.handleSuggestPattern(args);
       case 'search_patterns':
+        if (!isSearchPatternsArgs(args)) {
+          throw new Error('Invalid arguments for search_patterns tool');
+        }
         return await this.handleSearchPatterns(args);
       case 'analyze_code':
+        if (!isAnalyzeCodeArgs(args)) {
+          throw new Error('Invalid arguments for analyze_code tool');
+        }
         return await this.handleAnalyzeCode(args);
       case 'get_config':
+        if (!isGetConfigArgs(args)) {
+          throw new Error('Invalid arguments for get_config tool');
+        }
         return await this.handleGetConfig(args);
       case 'set_config':
+        if (!isSetConfigArgs(args)) {
+          throw new Error('Invalid arguments for set_config tool');
+        }
         return await this.handleSetConfig(args);
       case 'count_patterns':
+        if (!isCountPatternsArgs(args)) {
+          throw new Error('Invalid arguments for count_patterns tool');
+        }
         return await this.handleCountPatterns(args);
       default:
         throw new Error(`Unknown tool: ${name}`);
@@ -912,7 +962,11 @@ export class MCPToolsHandler {
   /**
    * Handle suggest_pattern tool
    */
-  private async handleSuggestPattern(args: any): Promise<any> {
+  private async handleSuggestPattern(args: SuggestPatternArgs): Promise<Record<string, unknown>> {
+    if (!args) {
+      throw new Error('Arguments are required');
+    }
+
     // Validate input
     if (!args.query || typeof args.query !== 'string' || args.query.length < 10) {
       throw new Error('Query must be at least 10 characters long');
@@ -928,7 +982,7 @@ export class MCPToolsHandler {
       query: args.query,
       codeContext: args.code_context,
       programmingLanguage: args.programming_language,
-      maxResults: args.max_results || 5,
+      maxResults: args.max_results ?? 5,
       includeExamples: args.include_examples !== false,
       categoryFilter: args.category_filter,
       timestamp: new Date(),
@@ -980,7 +1034,7 @@ export class MCPToolsHandler {
   /**
    * Handle analyze_code tool
    */
-  private async handleAnalyzeCode(args: any): Promise<any> {
+  private async handleAnalyzeCode(args: AnalyzeCodeArgs): Promise<Record<string, unknown>> {
     // Validate input
     if (!args.code || typeof args.code !== 'string' || args.code.length < 10) {
       throw new Error('Code must be at least 10 characters long');
@@ -996,11 +1050,11 @@ export class MCPToolsHandler {
 
       return {
         language: args.language,
-        identified_patterns: analysis.identifiedPatterns || analysis.patterns || [],
-        suggested_patterns: analysis.suggestedPatterns || [],
-        improvements: analysis.improvements || analysis.suggestions || [],
-        summary: analysis.summary || 'Analysis completed',
-        analysis_type: args.analysis_type || 'both',
+        identified_patterns: analysis.identifiedPatterns ?? analysis.patterns ?? [],
+        suggested_patterns: analysis.suggestedPatterns ?? [],
+        improvements: analysis.improvements ?? analysis.suggestions ?? [],
+        summary: analysis.summary ?? 'Analysis completed',
+        analysis_type: args.analysis_type ?? 'both',
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
@@ -1013,40 +1067,40 @@ export class MCPToolsHandler {
   /**
    * Handle search_patterns tool
    */
-  private async handleSearchPatterns(args: any): Promise<any> {
+  private async handleSearchPatterns(args: SearchPatternsArgs): Promise<Record<string, unknown>> {
     // Validate input
     if (!args.query || typeof args.query !== 'string' || args.query.length < 2) {
       throw new Error('Query must be at least 2 characters long');
     }
 
-    const searchType = args.search_type || 'hybrid';
-    const limit = Math.min(args.limit || 10, 50);
+    const searchType = args.search_type ?? 'hybrid';
+    const limit = Math.min(args.limit ?? 10, 50);
 
     try {
-      let results: any[];
+      let results: SearchResult[];
 
       if (searchType === 'semantic') {
         // Use semantic search
         results = await this.config.semanticSearch.search(args.query, {
           limit,
-          filters: args.category_filter ? { categories: [args.category_filter] } : undefined,
+          filters: args.category_filter ? { categories: args.category_filter } : undefined,
         });
       } else if (searchType === 'keyword') {
         // Use keyword search
         results = await this.config.databaseManager.searchPatterns(args.query, {
           limit,
-          filters: args.category_filter ? { categories: [args.category_filter] } : undefined,
+          filters: args.category_filter ? { categories: args.category_filter } : undefined,
         });
       } else {
         // Hybrid search
         const semanticResults = await this.config.semanticSearch.search(args.query, {
           limit: Math.ceil(limit / 2),
-          filters: args.category_filter ? { categories: [args.category_filter] } : undefined,
+          filters: args.category_filter ? { categories: args.category_filter } : undefined,
         });
 
         const keywordResults = await this.config.databaseManager.searchPatterns(args.query, {
           limit: Math.ceil(limit / 2),
-          filters: args.category_filter ? { categories: [args.category_filter] } : undefined,
+          filters: args.category_filter ? { categories: args.category_filter } : undefined,
         });
 
         // Merge and deduplicate results
@@ -1070,11 +1124,11 @@ export class MCPToolsHandler {
   /**
    * Handle get_config tool
    */
-  private async handleGetConfig(args: any): Promise<any> {
-    const category = args.category || 'all';
+  private async handleGetConfig(args: GetConfigArgs): Promise<Record<string, unknown>> {
+    const category = args.category ?? 'all';
 
     try {
-      const config: any = {};
+      const config: Record<string, unknown> = {};
 
       if (category === 'all') {
         // Return all configuration
@@ -1082,7 +1136,7 @@ export class MCPToolsHandler {
           if (!config[pref.category]) {
             config[pref.category] = {};
           }
-          config[pref.category][key] = pref.settingValue;
+          (config[pref.category] as Record<string, unknown>)[key] = pref.settingValue;
         }
       } else {
         // Return specific category
@@ -1093,11 +1147,11 @@ export class MCPToolsHandler {
         }
       }
 
-      return {
+      return Promise.resolve({
         configuration: config,
         category,
         timestamp: new Date().toISOString(),
-      };
+      });
     } catch (error) {
       throw new Error(
         `Configuration retrieval failed: ${error instanceof Error ? error.message : String(error)}`
@@ -1108,7 +1162,7 @@ export class MCPToolsHandler {
   /**
    * Handle set_config tool
    */
-  private async handleSetConfig(args: any): Promise<any> {
+  private async handleSetConfig(args: SetConfigArgs): Promise<Record<string, unknown>> {
     if (!args.settings || typeof args.settings !== 'object') {
       throw new Error('Settings must be a valid object');
     }
@@ -1135,12 +1189,12 @@ export class MCPToolsHandler {
         updatedSettings.push(key);
       }
 
-      return {
+      return Promise.resolve({
         success: true,
         updated_settings: updatedSettings,
         category: args.category,
         timestamp: new Date().toISOString(),
-      };
+      });
     } catch (error) {
       throw new Error(
         `Configuration update failed: ${error instanceof Error ? error.message : String(error)}`
@@ -1151,7 +1205,7 @@ export class MCPToolsHandler {
   /**
    * Handle count_patterns tool
    */
-  private async handleCountPatterns(args: any): Promise<any> {
+  private async handleCountPatterns(args: CountPatternsArgs): Promise<Record<string, unknown>> {
     try {
       // Get all patterns to count them
       const patterns = await this.config.databaseManager.getAllPatterns();
@@ -1201,23 +1255,23 @@ export class MCPToolsHandler {
   /**
    * Merge search results from different sources
    */
-  private mergeSearchResults(semanticResults: any[], keywordResults: any[], limit: number): any[] {
+  private mergeSearchResults(semanticResults: SearchResult[], keywordResults: SearchResult[], limit: number): SearchResult[] {
     const seen = new Set<string>();
-    const merged: any[] = [];
+    const merged: SearchResult[] = [];
 
     // Add semantic results first
     for (const result of semanticResults) {
-      if (!seen.has(result.id) && merged.length < limit) {
-        seen.add(result.id);
-        merged.push({ ...result, matchType: 'semantic' });
+      if (!seen.has(result.pattern.id) && merged.length < limit) {
+        seen.add(result.pattern.id);
+        merged.push(result);
       }
     }
 
     // Add keyword results
     for (const result of keywordResults) {
-      if (!seen.has(result.id) && merged.length < limit) {
-        seen.add(result.id);
-        merged.push({ ...result, matchType: 'keyword' });
+      if (!seen.has(result.pattern.id) && merged.length < limit) {
+        seen.add(result.pattern.id);
+        merged.push(result);
       }
     }
 

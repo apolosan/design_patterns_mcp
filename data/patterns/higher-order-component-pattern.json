@@ -1,0 +1,18 @@
+{
+  "id": "higher-order-component-pattern",
+  "name": "Higher-Order Component (HOC) Pattern",
+  "category": "UI Architecture",
+  "description": "A function that takes a component and returns a new component with additional props or behavior",
+  "when_to_use": "Cross-cutting concerns, component reuse, adding functionality without modifying original component",
+  "benefits": "Code reuse, separation of concerns, composability",
+  "drawbacks": "Wrapper hell, prop collision issues, complexity in debugging",
+  "use_cases": "Authentication, logging, data fetching, styling, error boundaries",
+  "complexity": "Medium",
+  "tags": ["react", "hoc", "component-composition", "code-reuse"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "interface WithLoadingProps {\n  isLoading: boolean;\n}\n\nfunction withLoading<P extends object>(\n  Component: React.ComponentType<P>\n) {\n  return function WithLoadingComponent(props: P & WithLoadingProps) {\n    const { isLoading, ...restProps } = props;\n    \n    if (isLoading) {\n      return <div>Loading...</div>;\n    }\n    \n    return <Component {...(restProps as P)} />;\n  };\n}\n\n// Usage\ninterface UserProfileProps {\n  name: string;\n  email: string;\n}\n\nconst UserProfile = ({ name, email }: UserProfileProps) => (\n  <div>\n    <h1>{name}</h1>\n    <p>{email}</p>\n  </div>\n);\n\nconst UserProfileWithLoading = withLoading(UserProfile);\n\n// In parent component\n<UserProfileWithLoading \n  name=\"John Doe\" \n  email=\"john@example.com\" \n  isLoading={false} \n/>"
+    }
+  }
+}

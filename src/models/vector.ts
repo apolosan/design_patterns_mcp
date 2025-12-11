@@ -39,22 +39,9 @@ export interface PatternVector {
   updatedAt?: Date;
 }
 
-/**
- * Vector creation input
- */
-interface CreatePatternVectorInput {
-  patternId: string;
-  embedding: number[];
-  embeddingModel: string;
-  textHash: string;
-}
 
-/**
- * Vector update input
- */
-interface UpdatePatternVectorInput extends Partial<CreatePatternVectorInput> {
-  patternId: string;
-}
+
+
 
 /**
  * Vector search result
@@ -69,40 +56,14 @@ export interface VectorSearchResult {
     name: string;
     category: string;
     description: string;
+    tags: string[];
   };
   embedding?: number[];
 }
 
-/**
- * Batch vector operation result
- */
-interface BatchVectorResult {
-  processed: number;
-  failed: number;
-  errors: string[];
-  processingTime: number;
-}
 
-/**
- * Vector similarity search options
- */
-interface VectorSearchOptions {
-  limit?: number;
-  threshold?: number;
-  includeEmbeddings?: boolean;
-  normalize?: boolean;
-}
 
-/**
- * Embedding generation configuration
- */
-interface EmbeddingConfig {
-  model: string;
-  dimensions: number;
-  normalize: boolean;
-  batchSize: number;
-  textFields: string[];
-}
+
 
 /**
  * Vector database statistics
@@ -118,22 +79,5 @@ export interface VectorStats {
   averageSimilarity: number;
 }
 
-/**
- * Vector validation result
- */
-interface VectorValidation {
-  isValid: boolean;
-  dimension: number;
-  normalized: boolean;
-  issues: string[];
-}
 
-/**
- * Similarity computation result
- */
-interface SimilarityResult {
-  patternId: string;
-  similarity: number;
-  distance: number;
-  method: 'cosine' | 'euclidean' | 'dot_product';
-}
+

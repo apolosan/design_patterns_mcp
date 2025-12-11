@@ -6,6 +6,7 @@
 import type { RelationshipRepository } from './interfaces.js';
 import type {
   Relationship,
+  RelationshipType,
   CreateRelationshipInput,
   UpdateRelationshipInput,
   RelationshipFilters,
@@ -19,8 +20,18 @@ interface RelationshipRow {
   target_pattern_id: string;
   type: string;
   strength: number;
-  description: string;
+  description: string | null;
   created_at: string;
+  updated_at: string;
+}
+
+interface RelationshipWithPatternsRow extends RelationshipRow {
+  source_id: string;
+  source_name: string;
+  source_category: string;
+  target_id: string;
+  target_name: string;
+  target_category: string;
 }
 
 export class SqliteRelationshipRepository implements RelationshipRepository {
@@ -31,9 +42,9 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
       id: row.id,
       sourcePatternId: row.source_pattern_id,
       targetPatternId: row.target_pattern_id,
-      type: row.type as any, // Type assertion for RelationshipType
+      type: row.type as RelationshipType,
       strength: row.strength,
-      description: row.description,
+      description: row.description ?? '',
       createdAt: new Date(row.created_at),
     };
   }
@@ -41,22 +52,22 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
   async findBySourceId(sourceId: string): Promise<Relationship[]> {
     const sql =
       'SELECT * FROM pattern_relationships WHERE source_pattern_id = ? ORDER BY strength DESC, created_at DESC';
-    const rows = this.db.query(sql, [sourceId]);
-    return rows.map(row => this.mapRowToRelationship(row));
+    const rows = this.db.query<RelationshipRow>(sql, [sourceId]);
+    return Promise.resolve(rows.map(row => this.mapRowToRelationship(row)));
   }
 
   async findByTargetId(targetId: string): Promise<Relationship[]> {
     const sql =
       'SELECT * FROM pattern_relationships WHERE target_pattern_id = ? ORDER BY strength DESC, created_at DESC';
-    const rows = this.db.query(sql, [targetId]);
-    return rows.map(row => this.mapRowToRelationship(row));
+    const rows = this.db.query<RelationshipRow>(sql, [targetId]);
+    return Promise.resolve(rows.map(row => this.mapRowToRelationship(row)));
   }
 
   async findByType(type: string): Promise<Relationship[]> {
     const sql =
       'SELECT * FROM pattern_relationships WHERE type = ? ORDER BY strength DESC, created_at DESC';
-    const rows = this.db.query(sql, [type]);
-    return rows.map(row => this.mapRowToRelationship(row));
+    const rows = this.db.query<RelationshipRow>(sql, [type]);
+    return Promise.resolve(rows.map(row => this.mapRowToRelationship(row)));
   }
 
   async findByPatternId(patternId: string): Promise<Relationship[]> {
@@ -65,8 +76,8 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
       WHERE source_pattern_id = ? OR target_pattern_id = ?
       ORDER BY strength DESC, created_at DESC
     `;
-    const rows = this.db.query(sql, [patternId, patternId]);
-    return rows.map(row => this.mapRowToRelationship(row));
+    const rows = this.db.query<RelationshipRow>(sql, [patternId, patternId]);
+    return Promise.resolve(rows.map(row => this.mapRowToRelationship(row)));
   }
 
   async findWithPatterns(filters?: RelationshipFilters): Promise<RelationshipWithPatterns[]> {
@@ -81,7 +92,7 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
       WHERE 1=1
     `;
 
-    const params: any[] = [];
+    const params: unknown[] = [];
 
     if (filters?.sourcePatternId) {
       sql += ' AND r.source_pattern_id = ?';
@@ -105,14 +116,14 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
 
     sql += ' ORDER BY r.strength DESC, r.created_at DESC';
 
-    const rows = this.db.query(sql, params);
-    return rows.map(row => ({
+    const rows = this.db.query<RelationshipWithPatternsRow>(sql, params);
+    return Promise.resolve(rows.map(row => ({
       id: row.id,
       sourcePatternId: row.source_pattern_id,
       targetPatternId: row.target_pattern_id,
-      type: row.type,
+      type: row.type as RelationshipType,
       strength: row.strength,
-      description: row.description,
+      description: row.description ?? '',
       createdAt: new Date(row.created_at),
       sourcePattern: {
         id: row.source_id,
@@ -124,7 +135,7 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
         name: row.target_name,
         category: row.target_category,
       },
-    }));
+    })));
   }
 
   async save(input: CreateRelationshipInput): Promise<Relationship> {
@@ -188,7 +199,7 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
     }
 
     const updates: string[] = [];
-    const params: any[] = [];
+    const params: (string | number)[] = [];
 
     if (input.type !== undefined) {
       updates.push('type = ?');
@@ -221,6 +232,7 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
   async delete(id: string): Promise<void> {
     const sql = 'DELETE FROM pattern_relationships WHERE id = ?';
     this.db.run(sql, [id]);
+    return Promise.resolve();
   }
 
   async deleteById(id: string): Promise<boolean> {
@@ -242,24 +254,24 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
     const sql =
       'SELECT COUNT(*) as count FROM pattern_relationships WHERE source_pattern_id = ? AND target_pattern_id = ?';
     const result = this.db.queryOne<{ count: number }>(sql, [sourceId, targetId]);
-    return (result?.count ?? 0) > 0;
+    return Promise.resolve((result?.count ?? 0) > 0);
   }
 
   async patternExists(patternId: string): Promise<boolean> {
     const sql = 'SELECT COUNT(*) as count FROM patterns WHERE id = ?';
     const result = this.db.queryOne<{ count: number }>(sql, [patternId]);
-    return (result?.count ?? 0) > 0;
+    return Promise.resolve((result?.count ?? 0) > 0);
   }
 
   async findById(id: string): Promise<Relationship | null> {
     const sql = 'SELECT * FROM pattern_relationships WHERE id = ?';
-    const row = this.db.queryOne(sql, [id]);
-    return row ? this.mapRowToRelationship(row) : null;
+    const row = this.db.queryOne<RelationshipRow>(sql, [id]);
+    return Promise.resolve(row ? this.mapRowToRelationship(row) : null);
   }
 
   async count(filters?: RelationshipFilters): Promise<number> {
     let sql = 'SELECT COUNT(*) as count FROM pattern_relationships WHERE 1=1';
-    const params: any[] = [];
+    const params: unknown[] = [];
 
     if (filters?.sourcePatternId) {
       sql += ' AND source_pattern_id = ?';
@@ -281,11 +293,11 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
       params.push(filters.minStrength);
     }
 
-    const result = this.db.queryOne(sql, params) as { count: number };
-    return result.count;
+    const result = this.db.queryOne<{ count: number }>(sql, params);
+    return Promise.resolve(result?.count ?? 0);
   }
 
-  async create(relationship: any): Promise<any> {
+  async create(relationship: CreateRelationshipInput): Promise<Relationship> {
     const sql = `
       INSERT INTO pattern_relationships (source_pattern_id, target_pattern_id, relationship_type, strength, description)
       VALUES (?, ?, ?, ?, ?)
@@ -293,18 +305,22 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
     this.db.run(sql, [
       relationship.sourcePatternId,
       relationship.targetPatternId,
-      relationship.relationshipType,
-      relationship.strength,
+      relationship.type,
+      relationship.strength ?? 0.5,
       relationship.description,
     ]);
 
     const lastId = this.db.queryOne<{ id: string }>('SELECT last_insert_rowid() as id');
-    return this.findById(lastId?.id || '');
+    const created = await this.findById(lastId?.id ?? '');
+    if (!created) {
+      throw new Error('Failed to create relationship');
+    }
+    return created;
   }
 
-  async findAll(): Promise<any[]> {
+  async findAll(): Promise<Relationship[]> {
     const sql = 'SELECT * FROM pattern_relationships ORDER BY created_at DESC';
-    const rows = this.db.query(sql);
-    return rows.map(row => this.mapRowToRelationship(row));
+    const rows = this.db.query<RelationshipRow>(sql);
+    return Promise.resolve(rows.map(row => this.mapRowToRelationship(row)));
   }
 }

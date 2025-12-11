@@ -4,11 +4,9 @@
  */
 import { DatabaseManager } from './database-manager.js';
 import {
-  PatternVector,
   EmbeddingModel,
   VectorSearchResult,
   VectorSearchFilters,
-  VectorSearchStrategy,
   VectorStats,
 } from '../models/vector.js';
 import { logger } from './logger.js';
@@ -34,7 +32,7 @@ export class VectorOperationsService {
   /**
    * Store pattern embedding
    */
-  async storeEmbedding(patternId: string, embedding: number[]): Promise<void> {
+  storeEmbedding(patternId: string, embedding: number[]): void {
     try {
       // Validate embedding dimensions
       if (embedding.length !== this.config.dimensions) {
@@ -75,7 +73,7 @@ export class VectorOperationsService {
   /**
    * Retrieve pattern embedding
    */
-  async getEmbedding(patternId: string): Promise<number[] | null> {
+  getEmbedding(patternId: string): number[] | null {
     try {
       // Check cache first
       if (this.config.cacheEnabled) {
@@ -92,7 +90,7 @@ export class VectorOperationsService {
         return null;
       }
 
-      const embedding = JSON.parse(row.embedding);
+      const embedding = JSON.parse(row.embedding) as number[];
 
       // Update cache
       if (this.config.cacheEnabled) {
@@ -109,7 +107,7 @@ export class VectorOperationsService {
   /**
    * Delete pattern embedding
    */
-  async deleteEmbedding(patternId: string): Promise<void> {
+  deleteEmbedding(patternId: string): void {
     try {
       const sql = 'DELETE FROM pattern_embeddings WHERE pattern_id = ?';
       this.db.execute(sql, [patternId]);
@@ -135,7 +133,7 @@ export class VectorOperationsService {
     limit?: number
   ): Promise<VectorSearchResult[]> {
     try {
-      const maxResults = limit || this.config.maxResults;
+      const maxResults = limit ?? this.config.maxResults;
 
       // Get all embeddings (in production, use vector database with indexing)
       const sql = 'SELECT pattern_id, embedding FROM pattern_embeddings';
@@ -144,7 +142,7 @@ export class VectorOperationsService {
       const results: VectorSearchResult[] = [];
 
       for (const row of rows) {
-        const embedding = JSON.parse(row.embedding);
+      const embedding = JSON.parse(row.embedding) as number[];
         const similarity = this.calculateSimilarity(queryEmbedding, embedding);
 
         // Apply filters
@@ -157,7 +155,7 @@ export class VectorOperationsService {
           score: similarity,
           distance: 1 - similarity, // Convert similarity to distance
           rank: 0, // Will be set after sorting
-          pattern: await this.getPatternInfo(row.pattern_id),
+          pattern: this.getPatternInfo(row.pattern_id) || undefined,
         });
       }
 
@@ -226,10 +224,14 @@ export class VectorOperationsService {
   /**
    * Check if pattern matches search filters
    */
-  private async matchesFilters(patternId: string, filters: VectorSearchFilters): Promise<boolean> {
+  private matchesFilters(patternId: string, filters: VectorSearchFilters): boolean {
     try {
       // Get pattern information
-      const pattern = await this.getPatternInfo(patternId);
+      const pattern = this.getPatternInfo(patternId);
+
+      if (!pattern) {
+        return false;
+      }
 
       // Category filter
       if (filters.categories && filters.categories.length > 0) {
@@ -259,33 +261,41 @@ export class VectorOperationsService {
   /**
    * Get pattern information for search results
    */
-  private async getPatternInfo(
+  private getPatternInfo(
     patternId: string
-  ): Promise<{ id: string; name: string; category: string; description: string }> {
+  ): { id: string; name: string; category: string; description: string; tags: string[] } | null {
     try {
-      const sql = 'SELECT id, name, category, description FROM patterns WHERE id = ?';
+      const sql = 'SELECT id, name, category, description, tags FROM patterns WHERE id = ?';
       const pattern = this.db.queryOne<{
         id: string;
         name: string;
         category: string;
         description: string;
+        tags: string;
       }>(sql, [patternId]);
 
-      return (
-        pattern || {
-          id: patternId,
-          name: 'Unknown Pattern',
-          category: 'Unknown',
-          description: 'Pattern information not available',
-        }
-      );
-    } catch (error) {
-      console.error(`Failed to get pattern info for ${patternId}:`, error);
+      if (pattern) {
+        return {
+          ...pattern,
+          tags: pattern.tags ? pattern.tags.split(',').filter(Boolean) : [],
+        };
+      }
+
       return {
         id: patternId,
         name: 'Unknown Pattern',
         category: 'Unknown',
         description: 'Pattern information not available',
+        tags: [],
+      };
+    } catch (error) {
+      logger.error('vector-operations', 'Failed to get pattern info', error as Error, { patternId });
+      return {
+        id: patternId,
+        name: 'Unknown Pattern',
+        category: 'Unknown',
+        description: 'Pattern information not available',
+        tags: [],
       };
     }
   }
@@ -293,9 +303,9 @@ export class VectorOperationsService {
   /**
    * Batch store embeddings
    */
-  async storeEmbeddingsBatch(
+  storeEmbeddingsBatch(
     embeddings: Array<{ patternId: string; embedding: number[] }>
-  ): Promise<void> {
+  ): void {
     this.db.transaction(() => {
       for (const { patternId, embedding } of embeddings) {
         this.storeEmbedding(patternId, embedding);
@@ -308,15 +318,13 @@ export class VectorOperationsService {
   /**
    * Get vector statistics
    */
-  async getStats(): Promise<VectorStats> {
+  getStats(): VectorStats {
     try {
       const totalEmbeddings = this.db.queryOne<{ count: number }>(
         'SELECT COUNT(*) as count FROM pattern_embeddings'
       );
 
-      const modelStats = this.db.query<{ model: string; count: number }>(
-        'SELECT model, COUNT(*) as count FROM pattern_embeddings GROUP BY model'
-      );
+
 
       // Calculate average dimensions (simplified)
       const dimensions = this.config.dimensions;
@@ -343,7 +351,7 @@ export class VectorOperationsService {
   /**
    * Clear all embeddings
    */
-  async clearAll(): Promise<void> {
+  clearAll(): void {
     try {
       const sql = 'DELETE FROM pattern_embeddings';
       this.db.execute(sql);
@@ -364,7 +372,7 @@ export class VectorOperationsService {
   async rebuildEmbeddings(generateEmbeddingFn: (text: string) => Promise<number[]>): Promise<void> {
     try {
       // Clear existing embeddings
-      await this.clearAll();
+      this.clearAll();
 
       // Get all patterns
       const patterns = this.db.query<{ id: string; name: string; description: string }>(
@@ -385,7 +393,7 @@ export class VectorOperationsService {
       const batchSize = 10;
       for (let i = 0; i < embeddings.length; i += batchSize) {
         const batch = embeddings.slice(i, i + batchSize);
-        await this.storeEmbeddingsBatch(batch);
+        this.storeEmbeddingsBatch(batch);
       }
 
       logger.info('vector-operations', `Rebuilt embeddings for ${embeddings.length} patterns`);
@@ -399,7 +407,7 @@ export class VectorOperationsService {
    * Find similar patterns by pattern ID
    */
   async findSimilarPatterns(patternId: string, limit?: number): Promise<VectorSearchResult[]> {
-    const embedding = await this.getEmbedding(patternId);
+    const embedding = this.getEmbedding(patternId);
 
     if (!embedding) {
       throw new Error(`No embedding found for pattern: ${patternId}`);
@@ -411,9 +419,9 @@ export class VectorOperationsService {
   /**
    * Calculate cluster centroids for pattern categorization
    */
-  async calculateClusters(
+  calculateClusters(
     clusterCount: number
-  ): Promise<Array<{ centroid: number[]; patterns: string[] }>> {
+  ): Array<{ centroid: number[]; patterns: string[] }> {
     try {
       // Get all embeddings
       const embeddings = this.db.query<{ pattern_id: string; embedding: string }>(

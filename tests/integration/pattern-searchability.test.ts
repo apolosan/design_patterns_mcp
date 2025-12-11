@@ -64,7 +64,7 @@ describe('Pattern Searchability Tests', () => {
       '%Singleton%',
     ]);
     expect(singletonResults.length).toBeGreaterThan(0);
-    expect(singletonResults[0].name.toLowerCase()).toContain('singleton');
+    expect((singletonResults[0] as { name: string }).name.toLowerCase()).toContain('singleton');
   });
 
   it('should support category filtering', async () => {

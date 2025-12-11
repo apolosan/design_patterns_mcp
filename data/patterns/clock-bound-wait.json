@@ -1,0 +1,18 @@
+{
+  "id": "clock-bound-wait",
+  "name": "Clock-Bound Wait",
+  "category": "Distributed Systems",
+  "description": "A pattern for handling timeouts and delays in distributed systems using time-based conditions",
+  "when_to_use": "Timeout handling, retry logic, circuit breakers, deadline management",
+  "benefits": "Predictable behavior, prevents indefinite waiting, resource management",
+  "drawbacks": "Clock synchronization issues, potential for premature timeouts",
+  "use_cases": "Network timeouts, database query timeouts, service call timeouts",
+  "complexity": "Low",
+  "tags": ["distributed-systems", "timeouts", "reliability", "concurrency"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "class ClockBoundWait {\n  private timeoutMs: number;\n  \n  constructor(timeoutMs: number) {\n    this.timeoutMs = timeoutMs;\n  }\n  \n  async waitFor<T>(operation: () => Promise<T>): Promise<T> {\n    const timeoutPromise = new Promise<never>((_, reject) => {\n      setTimeout(() => reject(new Error('Operation timed out')), this.timeoutMs);\n    });\n    \n    return Promise.race([operation(), timeoutPromise]);\n  }\n  \n  async waitUntil(condition: () => boolean, maxWaitMs: number = this.timeoutMs): Promise<void> {\n    const startTime = Date.now();\n    \n    while (!condition()) {\n      if (Date.now() - startTime > maxWaitMs) {\n        throw new Error('Condition not met within timeout');\n      }\n      await this.sleep(10); // Small delay to prevent busy waiting\n    }\n  }\n  \n  private sleep(ms: number): Promise<void> {\n    return new Promise(resolve => setTimeout(resolve, ms));\n  }\n}\n\n// Usage example\nasync function fetchWithTimeout(url: string, timeoutMs: number = 5000) {\n  const waiter = new ClockBoundWait(timeoutMs);\n  \n  try {\n    const response = await waiter.waitFor(() => \n      fetch(url).then(res => {\n        if (!res.ok) throw new Error('HTTP error');\n        return res.json();\n      })\n    );\n    return response;\n  } catch (error) {\n    console.error('Request failed or timed out:', error);\n    throw error;\n  }\n}\n\n// Circuit breaker with clock-bound wait\nclass CircuitBreaker {\n  private failureCount = 0;\n  private lastFailureTime = 0;\n  private readonly failureThreshold = 3;\n  private readonly timeoutMs = 60000; // 1 minute\n  \n  async execute<T>(operation: () => Promise<T>): Promise<T> {\n    if (this.isOpen()) {\n      throw new Error('Circuit breaker is open');\n    }\n    \n    try {\n      const result = await operation();\n      this.onSuccess();\n      return result;\n    } catch (error) {\n      this.onFailure();\n      throw error;\n    }\n  }\n  \n  private isOpen(): boolean {\n    if (this.failureCount >= this.failureThreshold) {\n      const timeSinceLastFailure = Date.now() - this.lastFailureTime;\n      return timeSinceLastFailure < this.timeoutMs;\n    }\n    return false;\n  }\n  \n  private onSuccess() {\n    this.failureCount = 0;\n  }\n  \n  private onFailure() {\n    this.failureCount++;\n    this.lastFailureTime = Date.now();\n  }\n}"
+    }
+  }
+}

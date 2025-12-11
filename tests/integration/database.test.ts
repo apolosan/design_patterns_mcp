@@ -196,6 +196,6 @@ describe('Database Operations', () => {
     );
 
     expect(results.length).toBeGreaterThan(0);
-    expect(results[0].name.toLowerCase()).toContain(searchTerm);
+    expect((results[0] as { name: string }).name.toLowerCase()).toContain(searchTerm);
   });
 });

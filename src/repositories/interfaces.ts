@@ -3,6 +3,9 @@
  * Defines contracts for data access layer
  */
 
+import { Pattern } from '../models/pattern.js';
+import { Relationship, CreateRelationshipInput, UpdateRelationshipInput } from '../models/relationship.js';
+
 export interface SearchFilters {
   query?: string;
   category?: string;
@@ -15,60 +18,44 @@ export interface SearchFilters {
 }
 
 export interface SearchResult {
-  pattern: any;
+  pattern: Pattern;
   score: number;
   highlights?: string[];
 }
 
 export interface PatternRepository {
-  findById(id: string): Promise<any>;
-  findByCategory(category: string): Promise<any[]>;
+  findById(id: string): Promise<Pattern | null>;
+  findByCategory(category: string): Promise<Pattern[]>;
   search(filters: SearchFilters): Promise<SearchResult[]>;
-  findAll(): Promise<any[]>;
+  findAll(): Promise<Pattern[]>;
   count(): Promise<number>;
   countByCategory(): Promise<Record<string, number>>;
-  create(pattern: any): Promise<any>;
-  update(id: string, pattern: any): Promise<any>;
+  create(pattern: Pattern): Promise<Pattern>;
+  update(id: string, pattern: Partial<Pattern>): Promise<Pattern>;
   delete(id: string): Promise<void>;
-  findByIds(ids: string[]): Promise<any[]>;
-  findByTags(tags: string[]): Promise<any[]>;
+  findByIds(ids: string[]): Promise<Pattern[]>;
+  findByTags(tags: string[]): Promise<Pattern[]>;
   exists(id: string): Promise<boolean>;
-  save(pattern: any): Promise<any>;
+  save(pattern: Pattern): Promise<Pattern>;
 }
 
 export interface PatternSearchResult {
-  pattern: any;
+  pattern: Pattern;
   score: number;
   highlights?: string[];
 }
 
-interface CategoryRepository {
-  findAll(): Promise<any[]>;
-  findById(id: string): Promise<any>;
-  create(category: any): Promise<any>;
-  update(id: string, category: any): Promise<any>;
-  delete(id: string): Promise<void>;
-}
 
-interface ImplementationRepository {
-  findByPatternId(patternId: string): Promise<any[]>;
-  findById(id: string): Promise<any>;
-  create(implementation: any): Promise<any>;
-  update(id: string, implementation: any): Promise<any>;
-  delete(id: string): Promise<void>;
-}
 
-interface VectorRepository {
-  findSimilar(embedding: number[], limit: number): Promise<any[]>;
-  storeEmbedding(patternId: string, embedding: number[]): Promise<void>;
-  deleteEmbedding(patternId: string): Promise<void>;
-}
+
+
+
 
 export interface RelationshipRepository {
-  findByPatternId(patternId: string): Promise<any[]>;
-  findById(id: string): Promise<any>;
-  create(relationship: any): Promise<any>;
-  update(id: string, relationship: any): Promise<any>;
+  findByPatternId(patternId: string): Promise<Relationship[]>;
+  findById(id: string): Promise<Relationship | null>;
+  create(relationship: CreateRelationshipInput): Promise<Relationship>;
+  update(id: string, relationship: UpdateRelationshipInput): Promise<Relationship | null>;
   delete(id: string): Promise<void>;
-  findAll(): Promise<any[]>;
+  findAll(): Promise<Relationship[]>;
 }

@@ -34,15 +34,15 @@ export class MigrationManager {
   /**
    * Initialize migration system
    */
-  async initialize(): Promise<void> {
-    await this.createMigrationsTable();
+  initialize(): void {
+    this.createMigrationsTable();
     logger.info('migrations', 'Migration system initialized');
   }
 
   /**
    * Create migrations tracking table
    */
-  private async createMigrationsTable(): Promise<void> {
+  private createMigrationsTable(): void {
     const sql = `
       CREATE TABLE IF NOT EXISTS schema_migrations (
         id TEXT PRIMARY KEY,
@@ -61,7 +61,7 @@ export class MigrationManager {
   /**
    * Get all available migrations
    */
-  async getAvailableMigrations(): Promise<Migration[]> {
+  getAvailableMigrations(): Migration[] {
     const migrations: Migration[] = [];
 
     try {
@@ -77,7 +77,7 @@ export class MigrationManager {
         .sort();
 
       for (const file of files) {
-        const migration = await this.parseMigrationFile(file);
+        const migration = this.parseMigrationFile(file);
         if (migration) {
           migrations.push(migration);
         }
@@ -92,7 +92,7 @@ export class MigrationManager {
   /**
    * Parse migration file
    */
-  private async parseMigrationFile(filename: string): Promise<Migration | null> {
+  private parseMigrationFile(filename: string): Migration | null {
     try {
       const filePath = path.join(this.migrationsPath, filename);
       const content = fs.readFileSync(filePath, 'utf8');
@@ -141,7 +141,7 @@ export class MigrationManager {
   /**
    * Get executed migrations
    */
-  async getExecutedMigrations(): Promise<MigrationRecord[]> {
+  getExecutedMigrations(): MigrationRecord[] {
     const sql =
       'SELECT id, name, executed_at, checksum FROM schema_migrations ORDER BY executed_at';
     const rows = this.db.query<MigrationRecord & { executed_at: string }>(sql);
@@ -156,8 +156,8 @@ export class MigrationManager {
    * Get pending migrations
    */
   async getPendingMigrations(): Promise<Migration[]> {
-    const available = await this.getAvailableMigrations();
-    const executed = await this.getExecutedMigrations();
+    const available = await Promise.resolve(this.getAvailableMigrations());
+    const executed = await Promise.resolve(this.getExecutedMigrations());
     const executedIds = new Set(executed.map(m => m.id));
 
     return available.filter(migration => !executedIds.has(migration.id));
@@ -197,7 +197,7 @@ export class MigrationManager {
       for (const migration of pending) {
         try {
           await this.executeMigrationWithRetry(migration, options);
-          const record = await this.recordMigration(migration);
+          const record = this.recordMigration(migration);
           executed.push(record);
           logger.info('migrations', `Migration executed: ${migration.id} - ${migration.name}`);
 
@@ -306,8 +306,9 @@ export class MigrationManager {
           this.db.execDDL(statement);
         } catch (error) {
           const errorString = (
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             error?.toString?.() ||
-            (error as any)?.message ||
+            (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' ? error.message : '') ||
             String(error)
           ).toLowerCase();
           // Ignore "already exists" errors for indexes and tables
@@ -334,10 +335,10 @@ export class MigrationManager {
    * Validate DDL migration execution - ensure tables/indexes were actually created
    */
   private async validateDDLMigration(migration: Migration): Promise<void> {
-    const statements = migration.up
+    const statements = await Promise.resolve(migration.up
       .split(';')
       .map(s => s.trim())
-      .filter(s => s.length > 0);
+      .filter(s => s.length > 0));
 
     const createdObjects: string[] = [];
 
@@ -351,7 +352,7 @@ export class MigrationManager {
 
     // Validate that all expected objects exist
     for (const objectName of createdObjects) {
-      if (!(await this.objectExists(objectName))) {
+      if (!(this.objectExists(objectName))) {
         throw new Error(`Migration ${migration.id} failed: object '${objectName}' was not created`);
       }
     }
@@ -372,7 +373,7 @@ export class MigrationManager {
     // Handle CREATE TABLE statements
     if (upperSql.startsWith('CREATE TABLE')) {
       const match = sql.match(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?["`]?(\w+)["`]?/i);
-      if (match && match[1]) {
+      if (match?.[1]) {
         objects.push(match[1]);
       }
     }
@@ -382,7 +383,7 @@ export class MigrationManager {
       const match = sql.match(
         /CREATE\s+(?:UNIQUE\s+)?INDEX\s+(?:IF\s+NOT\s+EXISTS\s+)?["`]?(\w+)["`]?/i
       );
-      if (match && match[1]) {
+      if (match?.[1]) {
         objects.push(match[1]);
       }
     }
@@ -393,7 +394,7 @@ export class MigrationManager {
   /**
    * Check if database object exists
    */
-  private async objectExists(objectName: string): Promise<boolean> {
+  private objectExists(objectName: string): boolean {
     try {
       // Check if it's a table
       const tableCheck = this.db.query(
@@ -428,10 +429,10 @@ export class MigrationManager {
    * Rollback DDL migration by dropping created objects
    */
   private async rollbackDDLMigration(migration: Migration): Promise<void> {
-    const statements = migration.up
+    const statements = await Promise.resolve(migration.up
       .split(';')
       .map(s => s.trim())
-      .filter(s => s.length > 0);
+      .filter(s => s.length > 0));
 
     const createdObjects: string[] = [];
 
@@ -445,8 +446,8 @@ export class MigrationManager {
     // Attempt to drop created objects in reverse order
     for (const objectName of createdObjects.reverse()) {
       try {
-        if (await this.objectExists(objectName)) {
-          await this.dropObject(objectName);
+        if (this.objectExists(objectName)) {
+          this.dropObject(objectName);
           logger.info(
             'migrations',
             `Rolled back object '${objectName}' from migration ${migration.id}`
@@ -462,13 +463,13 @@ export class MigrationManager {
   /**
    * Drop database object
    */
-  private async dropObject(objectName: string): Promise<void> {
+  private dropObject(objectName: string): void {
     try {
       // Check if it's a table
       const tableCheck = this.db.query('SELECT type FROM sqlite_master WHERE name=?', [objectName]);
 
       if (tableCheck.length > 0) {
-        const type = tableCheck[0].type;
+        const type = (tableCheck[0] as { type: string }).type;
         if (type === 'table') {
           this.db.execDDL(`DROP TABLE IF EXISTS ${objectName}`);
         } else if (type === 'index') {
@@ -524,8 +525,8 @@ export class MigrationManager {
     migration: Migration,
     options: MigrationOptions
   ): Promise<void> {
-    const maxRetries = options.maxRetries || 3;
-    const retryDelay = options.retryDelay || 1000;
+    const maxRetries = options.maxRetries ?? 3;
+    const retryDelay = options.retryDelay ?? 1000;
 
     let lastError: Error | null = null;
 
@@ -561,15 +562,15 @@ export class MigrationManager {
     }
 
     // All retries failed
-    throw lastError || new Error(`Migration ${migration.id} failed after ${maxRetries} attempts`);
+    throw lastError ?? new Error(`Migration ${migration.id} failed after ${maxRetries} attempts`);
   }
 
   /**
    * Recover from failed migrations
    */
   async recoverFailedMigrations(): Promise<MigrationResult> {
-    const executed = await this.getExecutedMigrations();
-    const available = await this.getAvailableMigrations();
+    const executed = this.getExecutedMigrations();
+    const available = this.getAvailableMigrations();
     const failed: MigrationFailure[] = [];
 
     for (const record of executed) {
@@ -621,8 +622,8 @@ export class MigrationManager {
    * Get migration health status
    */
   async getHealthStatus(): Promise<MigrationHealthStatus> {
-    const available = await this.getAvailableMigrations();
-    const executed = await this.getExecutedMigrations();
+    const available = this.getAvailableMigrations();
+    const executed = this.getExecutedMigrations();
     const pending = await this.getPendingMigrations();
 
     const checksumMismatches = [];
@@ -660,7 +661,7 @@ export class MigrationManager {
   /**
    * Record migration execution
    */
-  private async recordMigration(migration: Migration): Promise<MigrationRecord> {
+  private recordMigration(migration: Migration): MigrationRecord {
     const checksum = this.calculateChecksum(migration.up);
     const sql = `
       INSERT INTO schema_migrations (id, name, checksum)
@@ -681,7 +682,7 @@ export class MigrationManager {
    * Rollback last migration
    */
   async rollback(steps: number = 1): Promise<MigrationResult> {
-    const executed = await this.getExecutedMigrations();
+    const executed = this.getExecutedMigrations();
 
     if (executed.length === 0) {
       return {
@@ -738,7 +739,8 @@ export class MigrationManager {
    * Get migration by ID
    */
   private async getMigrationById(id: string): Promise<Migration | null> {
-    const available = await this.getAvailableMigrations();
+    const available = await Promise.resolve(this.getAvailableMigrations());
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     return available.find(m => m.id === id) || null;
   }
 
@@ -810,7 +812,7 @@ export class MigrationManager {
   /**
    * Create a new migration file
    */
-  async createMigration(name: string): Promise<string> {
+  createMigration(name: string): string {
     const timestamp = Date.now();
     const id = timestamp.toString();
     const filename = `${id}_${name}.sql`;
@@ -841,8 +843,8 @@ export class MigrationManager {
    * Get migration status
    */
   async getStatus(): Promise<MigrationStatus> {
-    const available = await this.getAvailableMigrations();
-    const executed = await this.getExecutedMigrations();
+    const available = this.getAvailableMigrations();
+    const executed = this.getExecutedMigrations();
     const pending = await this.getPendingMigrations();
 
     return {
@@ -858,8 +860,8 @@ export class MigrationManager {
    * Validate migration integrity
    */
   async validate(): Promise<ValidationResult> {
-    const available = await this.getAvailableMigrations();
-    const executed = await this.getExecutedMigrations();
+    const available = await Promise.resolve(this.getAvailableMigrations());
+    const executed = await Promise.resolve(this.getExecutedMigrations());
     const errors: string[] = [];
     const warnings: string[] = [];
 
@@ -912,7 +914,7 @@ export class MigrationManager {
     migrationId: string,
     options: ChecksumResolutionOptions = {}
   ): Promise<ResolutionResult> {
-    const executed = await this.getExecutedMigrations();
+    const executed = await Promise.resolve(this.getExecutedMigrations());
     const record = executed.find(r => r.id === migrationId);
 
     if (!record) {
@@ -922,7 +924,7 @@ export class MigrationManager {
       };
     }
 
-    const available = await this.getAvailableMigrations();
+    const available = this.getAvailableMigrations();
     const migration = available.find(m => m.id === migrationId);
 
     if (!migration) {
@@ -992,7 +994,7 @@ export class MigrationManager {
     for (const migration of pending) {
       try {
         // Validate migration first
-        const validation = await this.validateSingleMigration(migration);
+        const validation = this.validateSingleMigration(migration);
         if (!validation.valid) {
           if (options.skipFailedMigrations) {
             results.push({
@@ -1021,7 +1023,7 @@ export class MigrationManager {
         } else {
           // Execute migration
           await this.executeMigrationWithRetry(migration, options);
-          const record = await this.recordMigration(migration);
+          const record = this.recordMigration(migration);
           executed.push(record);
           results.push({ migration: migration.id, success: true });
           logger.info('migrations', `Gradual migration completed: ${migration.id}`);
@@ -1063,9 +1065,9 @@ export class MigrationManager {
   /**
    * Validate a single migration
    */
-  private async validateSingleMigration(
+  private validateSingleMigration(
     migration: Migration
-  ): Promise<{ valid: boolean; errors: string[] }> {
+  ): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
     try {
@@ -1261,8 +1263,9 @@ interface DryRunResult {
   migrations: DryRunMigrationResult[];
 }
 
-// Initial schema migration
-const INITIAL_SCHEMA_MIGRATION: Migration = {
+// Initial schema migration (commented out - not currently used)
+/*
+// const INITIAL_SCHEMA_MIGRATION: Migration = {
   id: '001',
   name: 'initial_schema',
   up: `
@@ -1333,9 +1336,11 @@ const INITIAL_SCHEMA_MIGRATION: Migration = {
   `,
   createdAt: new Date('2024-01-11T00:00:00Z'),
 };
+*/
 
-// Vector search migration
-const VECTOR_SEARCH_MIGRATION: Migration = {
+// Vector search migration (commented out - not currently used)
+/*
+// const VECTOR_SEARCH_MIGRATION: Migration = {
   id: '002',
   name: 'vector_search_support',
   up: `
@@ -1380,3 +1385,4 @@ const VECTOR_SEARCH_MIGRATION: Migration = {
   `,
   createdAt: new Date('2024-01-11T00:00:00Z'),
 };
+*/

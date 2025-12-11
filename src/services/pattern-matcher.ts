@@ -4,7 +4,7 @@
  */
 import { DatabaseManager } from './database-manager.js';
 import { VectorOperationsService } from './vector-operations.js';
-import { PatternRecommendation } from '../models/recommendation.js';
+import { PatternRecommendation, ImplementationGuidance, AlternativePattern } from '../models/recommendation.js';
 import { PatternAnalyzer } from './pattern-analyzer.js';
 import { CacheService } from './cache.js';
 import { structuredLogger } from '../utils/logger.js';
@@ -77,6 +77,37 @@ interface MatchResult {
   };
 }
 
+interface DetailedPattern {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  when_to_use: string[];
+  benefits: string[];
+  drawbacks: string[];
+  use_cases: string[];
+  complexity: string;
+  tags: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+interface PatternImplementation {
+  id: string;
+  language: string;
+  code: string;
+  explanation: string;
+}
+
+
+
+interface PatternImplementation {
+  language: string;
+  code: string;
+  explanation: string;
+}
+
+
 export class PatternMatcher {
   private db: DatabaseManager;
   private vectorOps: VectorOperationsService;
@@ -95,7 +126,7 @@ export class PatternMatcher {
     this.vectorOps = vectorOps;
     this.config = config;
     this.patternAnalyzer = new PatternAnalyzer();
-    this.cache = cache || new CacheService();
+    this.cache = cache ?? new CacheService();
 
     // Embedding adapter will be initialized lazily in generateQueryEmbedding
   }
@@ -114,15 +145,15 @@ export class PatternMatcher {
       const cachedResult = this.cache.get(cacheKey);
 
       if (cachedResult) {
-        return cachedResult;
+        return cachedResult as PatternRecommendation[];
       }
 
       const matches = await this.performMatching(request);
-      const recommendations = await this.buildRecommendations(matches, request);
+      const recommendations = this.buildRecommendations(matches, request);
 
       // Sort by confidence and limit results
       recommendations.sort((a, b) => b.confidence - a.confidence);
-      const finalResults = recommendations.slice(0, request.maxResults || this.config.maxResults);
+      const finalResults = recommendations.slice(0, request.maxResults ?? this.config.maxResults);
 
       // Cache the results for 30 minutes
       this.cache.set(cacheKey, finalResults, 1800000);
@@ -184,9 +215,9 @@ export class PatternMatcher {
       const matches = searchResults.map(result => ({
         pattern: {
           id: result.patternId,
-          name: result.pattern?.name || 'Unknown Pattern',
-          category: result.pattern?.category || 'Unknown',
-          description: result.pattern?.description || 'No description available',
+          name: result.pattern?.name ?? 'Unknown Pattern',
+          category: result.pattern?.category ?? 'Unknown',
+          description: result.pattern?.description ?? 'No description available',
         },
         confidence: result.score,
         matchType: 'semantic' as const,
@@ -214,7 +245,7 @@ export class PatternMatcher {
    */
   private async keywordSearch(request: PatternRequest): Promise<MatchResult[]> {
     try {
-      const queryWords = this.tokenizeQuery(request.query);
+      const queryWords = await Promise.resolve(this.tokenizeQuery(request.query));
       const matches: MatchResult[] = [];
 
       // Build SQL query
@@ -222,7 +253,7 @@ export class PatternMatcher {
         SELECT id, name, category, description, complexity, tags
         FROM patterns
       `;
-      const params: any[] = [];
+      const params: string[] = [];
 
       if (request.categories && request.categories.length > 0) {
         sql += ` WHERE category IN (${request.categories.map(() => '?').join(',')})`;
@@ -236,25 +267,34 @@ export class PatternMatcher {
         description: string;
         complexity: string;
         tags: string;
-      }>(sql, params);
+       }>(sql, params);
 
-      for (const pattern of patterns) {
-        const score = this.calculateKeywordScore(queryWords, pattern);
-        const confidence = Math.min(score / 10, 0.99); // Normalize score, cap at 0.99
+       for (const pattern of patterns) {
+         const parsedTags = parseTags(pattern.tags);
+         const score = this.calculateKeywordScore(queryWords, {
+           id: pattern.id,
+           name: pattern.name,
+           category: pattern.category,
+           description: pattern.description,
+           complexity: pattern.complexity,
+           tags: parsedTags,
+         });
+         const confidence = Math.min(score / 10, 0.99); // Normalize score, cap at 0.99
 
-        if (confidence >= this.config.minConfidence) {
-          matches.push({
-            pattern: {
-              id: pattern.id,
-              name: pattern.name,
-              category: pattern.category,
-              description: pattern.description,
-              complexity: pattern.complexity,
-              tags: parseTags(pattern.tags),
-            },
-            confidence,
-            matchType: 'keyword' as const,
-            reasons: this.generateKeywordReasons(queryWords, pattern),
+         if (confidence >= this.config.minConfidence) {
+           const parsedPattern = {
+             id: pattern.id,
+             name: pattern.name,
+             category: pattern.category,
+             description: pattern.description,
+             complexity: pattern.complexity,
+             tags: parsedTags,
+           };
+           matches.push({
+             pattern: parsedPattern,
+             confidence,
+             matchType: 'keyword' as const,
+             reasons: this.generateKeywordReasons(queryWords, parsedPattern),
             metadata: {
               keywordScore: score,
               finalScore: confidence,
@@ -275,7 +315,7 @@ export class PatternMatcher {
    */
   private async broadKeywordSearch(request: PatternRequest): Promise<MatchResult[]> {
     try {
-      const queryWords = this.tokenizeQuery(request.query);
+      const queryWords = await Promise.resolve(this.tokenizeQuery(request.query));
       const matches: MatchResult[] = [];
 
       // Get all patterns (no category filter)
@@ -289,23 +329,32 @@ export class PatternMatcher {
       }>(`SELECT id, name, category, description, complexity, tags FROM patterns`);
 
       for (const pattern of patterns) {
-        const score = this.calculateKeywordScore(queryWords, pattern);
+        const parsedTags = parseTags(pattern.tags);
+        const score = this.calculateKeywordScore(queryWords, {
+          id: pattern.id,
+          name: pattern.name,
+          category: pattern.category,
+          description: pattern.description,
+          complexity: pattern.complexity,
+          tags: parsedTags,
+        });
         const confidence = Math.min(score / 10, 0.99);
 
         // Lower threshold for broad search
         if (confidence >= 0.01) {
+          const parsedPattern = {
+            id: pattern.id,
+            name: pattern.name,
+            category: pattern.category,
+            description: pattern.description,
+            complexity: pattern.complexity,
+            tags: parsedTags,
+          };
           matches.push({
-            pattern: {
-              id: pattern.id,
-              name: pattern.name,
-              category: pattern.category,
-              description: pattern.description,
-              complexity: pattern.complexity,
-              tags: parseTags(pattern.tags),
-            },
+            pattern: parsedPattern,
             confidence,
             matchType: 'keyword' as const,
-            reasons: this.generateKeywordReasons(queryWords, pattern),
+            reasons: this.generateKeywordReasons(queryWords, parsedPattern),
             metadata: {
               keywordScore: score,
               finalScore: confidence,
@@ -326,16 +375,14 @@ export class PatternMatcher {
     * Combine semantic and keyword matches using hybrid scoring
     */
    private combineMatches(matches: MatchResult[]): MatchResult[] {
-     // Create a map of patterns for O(1) lookup
-     const patternsById = new Map<string, any>();
-     // Note: We need to get all patterns to build this map
-     // For now, we'll use a simplified approach
+      // Note: We could create a map of patterns for O(1) lookup
+      // For now, we'll use a simplified approach
 
      const patternMap = new Map<string, MatchResult[]>();
 
      // Group matches by pattern
      for (const match of matches) {
-       const existing = patternMap.get(match.pattern.id) || [];
+        const existing = patternMap.get(match.pattern.id) ?? [];
        existing.push(match);
        patternMap.set(match.pattern.id, existing);
      }
@@ -347,8 +394,8 @@ export class PatternMatcher {
        const semanticMatch = patternMatches.find(m => m.matchType === 'semantic');
        const keywordMatch = patternMatches.find(m => m.matchType === 'keyword');
 
-       const semanticScore = semanticMatch?.metadata.semanticScore || 0;
-       const keywordScore = keywordMatch?.metadata.keywordScore || 0;
+        const semanticScore = semanticMatch?.metadata.semanticScore ?? 0;
+        const keywordScore = keywordMatch?.metadata.keywordScore ?? 0;
 
        // Improved weighted scoring - avoid division by zero and handle cases where one score is missing
        let finalScore = 0;
@@ -367,7 +414,7 @@ export class PatternMatcher {
        // Ensure final score is normalized between 0 and 1
        finalScore = Math.min(Math.max(finalScore, 0), 1);
 
-       const reasons = [...(semanticMatch?.reasons || []), ...(keywordMatch?.reasons || [])];
+        const reasons = [...(semanticMatch?.reasons ?? []), ...(keywordMatch?.reasons ?? [])];
 
        combinedMatches.push({
          pattern: patternMatches[0].pattern,
@@ -388,15 +435,15 @@ export class PatternMatcher {
   /**
    * Build pattern recommendations from matches
    */
-  private async buildRecommendations(
+  private buildRecommendations(
     matches: MatchResult[],
     request: PatternRequest
-  ): Promise<PatternRecommendation[]> {
+  ): PatternRecommendation[] {
     const recommendations: PatternRecommendation[] = [];
 
     for (let i = 0; i < matches.length; i++) {
       const match = matches[i];
-      const pattern = await this.getDetailedPattern(match.pattern.id);
+      const pattern = this.getDetailedPattern(match.pattern.id);
 
       if (pattern) {
         const recommendation: PatternRecommendation = {
@@ -419,15 +466,15 @@ export class PatternMatcher {
             benefits: pattern.benefits || [],
             drawbacks: pattern.drawbacks || [],
           },
-          implementation: await this.generateImplementationGuidance(pattern, request),
-          alternatives: await this.findAlternatives(pattern.id, matches),
+          implementation: this.generateImplementationGuidance(pattern, request),
+          alternatives: this.findAlternatives(pattern.id, matches),
           context: {
             projectContext: this.extractProjectContext(request),
             teamContext: this.extractTeamContext(request),
             technologyFit: {
               fitScore: 0.8, // Simplified
               reasons: ['Good fit for the specified programming language'],
-              compatibleTech: [request.programmingLanguage || 'typescript'],
+              compatibleTech: [request.programmingLanguage ?? 'typescript'],
               incompatibleTech: [],
               integrationRequirements: [],
             },
@@ -489,7 +536,7 @@ export class PatternMatcher {
    */
   private generateFallbackEmbedding(query: string): number[] {
     const words = query.toLowerCase().split(/\s+/);
-    const embedding = new Array(384).fill(0); // Match all-MiniLM-L6-v2 dimensions
+    const embedding = new Array(384).fill(0) as number[]; // Match all-MiniLM-L6-v2 dimensions
 
     // Create a simple hash-based embedding
     for (let i = 0; i < words.length; i++) {
@@ -505,8 +552,8 @@ export class PatternMatcher {
     }
 
     // Normalize the embedding
-    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
-    const normalizedEmbedding = embedding.map(val => val / (norm || 1));
+    const norm = Math.sqrt(embedding.reduce((sum: number, val: number) => sum + val * val, 0));
+    const normalizedEmbedding: number[] = embedding.map((val: number) => val / (norm || 1));
 
     // Cache the embedding for 1 hour
     this.cache.setEmbeddings(query, normalizedEmbedding, 3600000);
@@ -541,9 +588,9 @@ export class PatternMatcher {
   /**
    * Calculate keyword matching score
    */
-  private calculateKeywordScore(queryWords: string[], pattern: any): number {
+  private calculateKeywordScore(queryWords: string[], pattern: PatternSummary): number {
     let score = 0;
-    const patternText = `${pattern.name} ${pattern.description} ${pattern.tags}`.toLowerCase();
+    const patternText = `${pattern.name} ${pattern.description} ${pattern.tags?.join(' ') ?? ''}`.toLowerCase();
 
     for (const word of queryWords) {
       if (patternText.includes(word)) {
@@ -567,7 +614,7 @@ export class PatternMatcher {
   /**
    * Generate reasons for keyword matches
    */
-  private generateKeywordReasons(queryWords: string[], pattern: any): string[] {
+  private generateKeywordReasons(queryWords: string[], pattern: PatternSummary): string[] {
     const reasons: string[] = [];
 
     for (const word of queryWords) {
@@ -595,11 +642,11 @@ export class PatternMatcher {
   /**
    * Generate implementation guidance
    */
-  private async generateImplementationGuidance(
-    pattern: any,
+  private generateImplementationGuidance(
+    pattern: DetailedPattern,
     request: PatternRequest
-  ): Promise<any> {
-    const implementations = await this.getPatternImplementations(
+  ): ImplementationGuidance {
+    const implementations = this.getPatternImplementations(
       pattern.id,
       request.programmingLanguage
     );
@@ -612,7 +659,7 @@ export class PatternMatcher {
         'Test the implementation',
         'Refactor as needed',
       ],
-      examples: implementations.map((impl: any) => ({
+      examples: implementations.map((impl: PatternImplementation) => ({
         language: impl.language,
         title: `${pattern.name} in ${impl.language}`,
         code: impl.code,
@@ -638,7 +685,7 @@ export class PatternMatcher {
   /**
    * Find alternative patterns
    */
-  private async findAlternatives(patternId: string, allMatches: MatchResult[]): Promise<any[]> {
+  private findAlternatives(patternId: string, allMatches: MatchResult[]): AlternativePattern[] {
     // Get related patterns from database
     const relatedPatterns = this.db.query<{
       target_pattern_id: string;
@@ -653,25 +700,22 @@ export class PatternMatcher {
       [patternId]
     );
 
-    return relatedPatterns.slice(0, 3).map(rel => ({
-      pattern: allMatches.find(m => m.pattern.id === rel.target_pattern_id)?.pattern || {
+    return relatedPatterns.slice(0, 3).map(rel => {
+      const foundPattern = allMatches.find(m => m.pattern.id === rel.target_pattern_id)?.pattern;
+      return {
         id: rel.target_pattern_id,
-        name: 'Unknown Pattern',
-        category: 'Unknown',
-        description: 'Pattern information not available',
-        complexity: 'Unknown',
-        tags: [],
-      },
-      reasonNotChosen: rel.description,
-      whenToChoose: `Consider when you need ${rel.type} approach`,
-      tradeoffs: [`Different ${rel.type} characteristics`],
-    }));
+        name: foundPattern?.name ?? 'Unknown Pattern',
+        category: foundPattern?.category ?? 'Unknown',
+        reason: rel.description,
+        score: 0.7, // Default score for alternatives
+      };
+    });
   }
 
   /**
    * Get detailed pattern information
    */
-  private async getDetailedPattern(patternId: string): Promise<any | null> {
+  private getDetailedPattern(patternId: string): DetailedPattern | null {
     const pattern = this.db.queryOne(
       `
       SELECT id, name, category, description, when_to_use, benefits, drawbacks,
@@ -679,27 +723,46 @@ export class PatternMatcher {
       FROM patterns WHERE id = ?
     `,
       [patternId]
-    );
+    ) as {
+      id: string;
+      name: string;
+      category: string;
+      description: string;
+      when_to_use: string | null;
+      benefits: string | null;
+      drawbacks: string | null;
+      use_cases: string | null;
+      complexity: string | null;
+      tags: string | null;
+      created_at: string;
+      updated_at: string;
+    } | null;
 
     if (!pattern) return null;
 
     return {
-      ...pattern,
+      id: pattern.id,
+      name: pattern.name,
+      category: pattern.category,
+      description: pattern.description,
       when_to_use: parseArrayProperty(pattern.when_to_use, 'when_to_use'),
       benefits: parseArrayProperty(pattern.benefits, 'benefits'),
       drawbacks: parseArrayProperty(pattern.drawbacks, 'drawbacks'),
       use_cases: parseArrayProperty(pattern.use_cases, 'use_cases'),
-      tags: parseTags(pattern.tags),
+      complexity: pattern.complexity ?? 'Medium',
+      tags: parseArrayProperty(pattern.tags, 'tags'),
+      created_at: pattern.created_at,
+      updated_at: pattern.updated_at,
     };
   }
 
   /**
    * Get pattern implementations
    */
-  private async getPatternImplementations(patternId: string, language?: string): Promise<any[]> {
+  private getPatternImplementations(patternId: string, language?: string): PatternImplementation[] {
     let sql =
       'SELECT id, language, code, explanation FROM pattern_implementations WHERE pattern_id = ?';
-    const params: any[] = [patternId];
+    const params: string[] = [patternId];
 
     if (language) {
       sql += ' AND language = ?';
@@ -708,40 +771,31 @@ export class PatternMatcher {
 
     sql += ' ORDER BY language, created_at DESC';
 
-    const implementations = this.db.query(sql, params);
+    const implementations = this.db.query<PatternImplementation>(sql, params);
     return implementations.slice(0, 3); // Return top 3 implementations
   }
 
   /**
    * Extract project context from request
    */
-  private extractProjectContext(_request: PatternRequest): any {
+  private extractProjectContext(_request: PatternRequest): string {
     // Simplified context extraction
-    return {
-      size: 'medium',
-      maturity: 'established',
-      existingPatterns: [],
-      constraints: [],
-    };
+    return 'Medium-sized established project with standard architecture patterns';
   }
 
   /**
    * Extract team context from request
    */
-  private extractTeamContext(_request: PatternRequest): any {
+  private extractTeamContext(_request: PatternRequest): string {
     // Simplified context extraction
-    return {
-      size: 'medium',
-      experience: 'intermediate',
-      learningPreferences: ['examples', 'documentation'],
-    };
+    return 'Medium-sized team with intermediate experience, prefers examples and documentation';
   }
 
   /**
    * Analyze code to detect patterns and suggest improvements
    */
-  async analyzeCode(code: string, language: string): Promise<CodeAnalysisResult> {
-    return await this.patternAnalyzer.analyzeCode(code, language);
+  analyzeCode(code: string, language: string): CodeAnalysisResult {
+    return this.patternAnalyzer.analyzeCode(code, language);
   }
 }
 

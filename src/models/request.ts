@@ -36,65 +36,11 @@ export interface PatternRequest {
   /** Response time in milliseconds */
   processingTime?: number;
 
-  /** Additional context metadata */
-  userContext?: Record<string, any>;
+   /** Additional context metadata */
+   userContext?: Record<string, unknown>;
 }
 
-/**
- * Request creation input
- */
-interface CreatePatternRequestInput {
-  query: string;
-  codeContext?: string;
-  programmingLanguage?: string;
-  complexityPreference?: ComplexityPreference;
-  categoryFilter?: string[];
-  maxResults?: number;
-  includeExamples?: boolean;
-  userContext?: Record<string, any>;
-}
 
-/**
- * Request processing context
- */
-interface RequestProcessingContext {
-  request: PatternRequest;
-  startTime: Date;
-  searchTerms: string[];
-  extractedKeywords: string[];
-  codeAnalysis?: CodeAnalysisResult;
-}
 
-/**
- * Code analysis result from code context
- */
-interface CodeAnalysisResult {
-  detectedLanguage: string;
-  identifiedPatterns: string[];
-  complexity: 'Low' | 'Medium' | 'High';
-  suggestions: string[];
-  confidence: number;
-}
 
-/**
- * Request validation result
- */
-interface RequestValidationResult {
-  isValid: boolean;
-  errors: string[];
-  warnings: string[];
-  suggestions: string[];
-}
 
-/**
- * Request processing statistics
- */
-interface RequestStats {
-  totalRequests: number;
-  averageProcessingTime: number;
-  popularQueries: Array<{
-    query: string;
-    count: number;
-  }>;
-  categoryDistribution: Record<string, number>;
-}

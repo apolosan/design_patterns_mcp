@@ -1,0 +1,18 @@
+{
+  "id": "render-prop-pattern",
+  "name": "Render Prop Pattern",
+  "category": "UI Architecture",
+  "description": "A technique for sharing code between React components using a prop whose value is a function",
+  "when_to_use": "Cross-cutting concerns, sharing behavior between components, reusable logic",
+  "benefits": "Code reuse, decoupling, flexibility",
+  "drawbacks": "Can be complex, performance considerations with PureComponent",
+  "use_cases": "Libraries like React Router, Downshift, Formik, mouse tracking, data providers",
+  "complexity": "Medium",
+  "tags": ["react", "render-prop", "code-sharing", "component-composition"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "interface MouseProviderProps {\n  render: (mouse: { x: number; y: number }) => React.ReactNode;\n}\n\nclass MouseProvider extends React.Component<MouseProviderProps> {\n  state = { x: 0, y: 0 };\n\n  handleMouseMove = (event: React.MouseEvent) => {\n    this.setState({\n      x: event.clientX,\n      y: event.clientY\n    });\n  };\n\n  render() {\n    return (\n      <div style={{ height: '100vh' }} onMouseMove={this.handleMouseMove}>\n        {this.props.render(this.state)}\n      </div>\n    );\n  }\n}\n\n// Usage\nconst App = () => (\n  <MouseProvider render={mouse => (\n    <p>The mouse position is {mouse.x}, {mouse.y}</p>\n  )} />\n);"
+    }
+  }
+}

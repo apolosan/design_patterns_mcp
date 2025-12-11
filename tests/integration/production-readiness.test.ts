@@ -15,18 +15,22 @@ describe('Production Readiness Tests', () => {
     await dbManager.initialize();
 
     // Create test tables matching production schema
-    const db = dbManager.getDatabase();
+    const db = dbManager.getDatabase() as {
+      run: (sql: string) => void;
+      exec: (sql: string) => Array<{ columns: string[]; values: unknown[][] }>;
+    };
+    const typedDb = db;
     
     try {
-      db.run('DROP TABLE IF EXISTS pattern_relationships');
-      db.run('DROP TABLE IF EXISTS pattern_implementations');
-      db.run('DROP TABLE IF EXISTS pattern_embeddings');
-      db.run('DROP TABLE IF EXISTS patterns');
+      typedDb.run('DROP TABLE IF EXISTS pattern_relationships');
+      typedDb.run('DROP TABLE IF EXISTS pattern_implementations');
+      typedDb.run('DROP TABLE IF EXISTS pattern_embeddings');
+      typedDb.run('DROP TABLE IF EXISTS patterns');
     } catch (e) {
       // Ignore drop errors
     }
     
-    db.run(`
+    typedDb.run(`
       CREATE TABLE patterns (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -43,7 +47,7 @@ describe('Production Readiness Tests', () => {
       )
     `);
 
-    db.run(`
+    typedDb.run(`
       CREATE TABLE pattern_embeddings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         pattern_id TEXT NOT NULL,
@@ -53,7 +57,7 @@ describe('Production Readiness Tests', () => {
       )
     `);
     
-    db.run(`
+    typedDb.run(`
       CREATE TABLE pattern_implementations (
         id TEXT PRIMARY KEY,
         pattern_id TEXT NOT NULL,
@@ -67,7 +71,7 @@ describe('Production Readiness Tests', () => {
       )
     `);
     
-    db.run(`
+    typedDb.run(`
       CREATE TABLE pattern_relationships (
         id TEXT PRIMARY KEY,
         source_pattern_id TEXT NOT NULL,
@@ -131,7 +135,10 @@ describe('Production Readiness Tests', () => {
 
   it('should detect high confidence thresholds that prevent results', async () => {
     // Add minimal test data
-    const db = dbManager.getDatabase();
+    const db = dbManager.getDatabase() as {
+      run: (sql: string) => void;
+      exec: (sql: string) => Array<{ columns: string[]; values: unknown[][] }>;
+    };
     db.run(`
       INSERT INTO patterns (id, name, category, description, complexity, tags) 
       VALUES ('factory_method', 'Factory Method', 'Creational', 'Create objects without specifying exact classes', 'Intermediate', 'factory,creation,objects')
@@ -177,11 +184,13 @@ describe('Production Readiness Tests', () => {
 
   it('should detect missing embeddings for semantic search', async () => {
     // Clear any existing data
-    const db = dbManager.getDatabase();
+    const db = dbManager.getDatabase() as {
+      run: (sql: string) => void;
+      exec: (sql: string) => Array<{ columns: string[]; values: unknown[][] }>;
+    };
     db.run('DELETE FROM patterns');
     db.run('DELETE FROM pattern_embeddings');
-    
-    // Add pattern without embedding
+
     db.run(`
       INSERT INTO patterns (id, name, category, description, complexity, tags) 
       VALUES ('test_pattern', 'Test Pattern', 'Creational', 'Test pattern for embedding check', 'Beginner', 'test')
@@ -249,9 +258,12 @@ describe('Production Readiness Tests', () => {
 
   it('should test with production-like configuration', async () => {
     // Clear existing data
-    const db = dbManager.getDatabase();
+    const db = dbManager.getDatabase() as {
+      run: (sql: string) => void;
+      exec: (sql: string) => Array<{ columns: string[]; values: unknown[][] }>;
+    };
     db.run('DELETE FROM patterns');
-    
+
     // Add realistic pattern data
     const productionPatterns = [
       {
@@ -282,9 +294,9 @@ describe('Production Readiness Tests', () => {
 
     for (const pattern of productionPatterns) {
       db.run(`
-        INSERT INTO patterns (id, name, category, description, complexity, tags) 
-        VALUES (?, ?, ?, ?, ?, ?)
-      `, [pattern.id, pattern.name, pattern.category, pattern.description, pattern.complexity, pattern.tags]);
+        INSERT INTO patterns (id, name, category, description, complexity, tags)
+        VALUES ('${pattern.id}', '${pattern.name}', '${pattern.category}', '${pattern.description}', '${pattern.complexity}', '${pattern.tags}')
+      `);
     }
 
     // Use production-like configuration

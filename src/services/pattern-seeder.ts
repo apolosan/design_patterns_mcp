@@ -5,6 +5,7 @@
 import { DatabaseManager } from './database-manager.js';
 import { Pattern } from '../models/pattern.js';
 import { logger } from './logger.js';
+import { isObject } from '../utils/type-guards.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -12,6 +13,29 @@ interface SeederConfig {
   patternsPath: string;
   batchSize: number;
   skipExisting: boolean;
+}
+
+interface RawRelationship {
+  targetPatternId?: string;
+  patternId?: string;
+  name?: string;
+  type?: string;
+  strength?: number;
+  description?: string;
+}
+
+interface RawImplementation {
+  language?: string;
+  approach?: string;
+  code?: string;
+  explanation?: string;
+  dependencies?: string[];
+}
+
+interface PatternFileData {
+  patterns?: unknown[];
+  id?: string;
+  [key: string]: unknown;
 }
 
 export class PatternSeeder {
@@ -34,34 +58,35 @@ export class PatternSeeder {
 
     try {
       // Get all pattern JSON files
-      const patternFiles = await this.getPatternFiles();
+      const patternFiles = this.getPatternFiles();
 
       // First pass: Load all patterns and collect relationships
       const allPatterns: Pattern[] = [];
-      const allRelationships: Array<{ sourceId: string; relationship: any; filename: string }> = [];
+      const allRelationships: Array<{ sourceId: string; relationship: string | RawRelationship; filename: string }> = [];
 
       for (const file of patternFiles) {
-        const data = await this.loadPatternFile(file);
-        const patterns = data.patterns || (data.id ? [data] : []);
+        const data = await this.loadPatternFile(file) as PatternFileData;
+        const patterns = data.patterns ?? (data.id ? [data] : []);
 
         for (const pattern of patterns) {
-          allPatterns.push(pattern);
+          const typedPattern = pattern as Pattern;
+          allPatterns.push(typedPattern);
 
           // Collect relationships for later insertion
-          const relatedPatterns = pattern.relatedPatterns || pattern.related_patterns;
-          const relationships = pattern.relationships;
+          const relatedPatterns = typedPattern.relatedPatterns ?? (typedPattern as Pattern & { related_patterns?: string[] }).related_patterns;
+          const relationships = typedPattern.relationships;
 
           // Process legacy relatedPatterns format
           if (relatedPatterns) {
             for (const rel of relatedPatterns) {
-              allRelationships.push({ sourceId: pattern.id, relationship: rel, filename: file });
+              allRelationships.push({ sourceId: typedPattern.id, relationship: rel, filename: file });
             }
           }
 
           // Process new relationships format
           if (relationships) {
             for (const rel of relationships) {
-              allRelationships.push({ sourceId: pattern.id, relationship: rel, filename: file });
+              allRelationships.push({ sourceId: typedPattern.id, relationship: rel, filename: file });
             }
           }
         }
@@ -104,7 +129,7 @@ export class PatternSeeder {
           } else if (relationship && typeof relationship === 'object') {
             // Object format: extract target pattern name
             const targetPatternName =
-              relationship.patternId || relationship.targetPatternId || relationship.name;
+              relationship.patternId ?? relationship.targetPatternId ?? relationship.name;
             if (targetPatternName) {
               const relInserted = this.insertRelationship(sourceId, targetPatternName);
               if (relInserted) {
@@ -137,8 +162,8 @@ export class PatternSeeder {
    */
   async seedFromFile(filePath: string): Promise<SeederResult> {
     try {
-      const data = await this.loadPatternFile(filePath);
-      const patterns = data.patterns || [];
+      const data = await this.loadPatternFile(filePath) as PatternFileData;
+      const patterns = (data.patterns as Pattern[]) || [];
 
       let patternsInserted = 0;
       let implementationsInserted = 0;
@@ -147,7 +172,7 @@ export class PatternSeeder {
       // Process patterns in batches
       for (let i = 0; i < patterns.length; i += this.config.batchSize) {
         const batch = patterns.slice(i, i + this.config.batchSize);
-        const batchResult = await this.seedBatch(batch);
+        const batchResult = this.seedBatch(batch);
 
         patternsInserted += batchResult.patternsInserted;
         implementationsInserted += batchResult.implementationsInserted;
@@ -177,13 +202,13 @@ export class PatternSeeder {
   /**
    * Seed a batch of patterns
    */
-  private async seedBatch(patterns: Pattern[]): Promise<BatchResult> {
+  private seedBatch(patterns: Pattern[]): BatchResult {
     let patternsInserted = 0;
     let implementationsInserted = 0;
     let relationshipsInserted = 0;
 
     // Collect all relationships for deferred insertion
-    const allRelationships: Array<{ sourceId: string; relationship: any }> = [];
+    const allRelationships: Array<{ sourceId: string; relationship: string | RawRelationship }> = [];
 
     // First pass: Insert all patterns and collect relationships
     this.db.transaction(() => {
@@ -193,7 +218,7 @@ export class PatternSeeder {
           patternsInserted++;
 
           // Collect relationships for later insertion
-          const relatedPatterns = pattern.relatedPatterns || pattern.related_patterns;
+          const relatedPatterns = pattern.relatedPatterns ?? pattern.related_patterns;
           if (relatedPatterns) {
             for (const rel of relatedPatterns) {
               allRelationships.push({ sourceId: pattern.id, relationship: rel });
@@ -231,7 +256,7 @@ export class PatternSeeder {
         } else if (relationship && typeof relationship === 'object') {
           // Object format: extract target pattern name
           const targetPatternName =
-            relationship.patternId || relationship.targetPatternId || relationship.name;
+            relationship.patternId ?? relationship.targetPatternId ?? relationship.name;
           if (targetPatternName) {
             const relInserted = this.insertRelationship(sourceId, targetPatternName);
             if (relInserted) {
@@ -255,7 +280,7 @@ export class PatternSeeder {
   private insertPattern(pattern: Pattern): boolean {
     try {
       if (this.config.skipExisting) {
-        const existing = this.db.queryOne('SELECT id FROM patterns WHERE id = ?', [pattern.id]);
+        const existing = this.db.queryOne<{ id: string }>('SELECT id FROM patterns WHERE id = ?', [pattern.id]);
         if (existing) {
           return false; // Skip existing
         }
@@ -295,7 +320,7 @@ export class PatternSeeder {
   /**
    * Insert a pattern implementation
    */
-  private insertImplementation(patternId: string, implementation: any): boolean {
+  private insertImplementation(patternId: string, implementation: RawImplementation): boolean {
     try {
       const sql = `
         INSERT OR REPLACE INTO pattern_implementations (
@@ -307,11 +332,11 @@ export class PatternSeeder {
       const params = [
         crypto.randomUUID(),
         patternId,
-        implementation.language || 'unknown',
-        implementation.approach || 'default',
-        implementation.code || '',
-        implementation.explanation || '',
-        JSON.stringify(implementation.dependencies || []),
+        implementation.language ?? 'unknown',
+        implementation.approach ?? 'default',
+        implementation.code ?? '',
+        implementation.explanation ?? '',
+        JSON.stringify(implementation.dependencies ?? []),
         new Date().toISOString(),
       ];
 
@@ -326,7 +351,7 @@ export class PatternSeeder {
   /**
    * Insert a pattern relationship
    */
-  private insertRelationship(sourcePatternId: string, relationship: any): boolean {
+  private insertRelationship(sourcePatternId: string, relationship: string | RawRelationship): boolean {
     try {
       let targetPatternId: string;
       let type: string;
@@ -343,10 +368,10 @@ export class PatternSeeder {
       } else if (relationship && typeof relationship === 'object') {
         // New format: relationship is an object
         targetPatternId =
-          relationship.targetPatternId || relationship.patternId || relationship.name;
-        type = relationship.type || 'related';
-        strength = relationship.strength || 1.0;
-        description = relationship.description || `Related to ${targetPatternId}`;
+          relationship.targetPatternId ?? relationship.patternId ?? relationship.name ?? 'unknown';
+        type = relationship.type ?? 'related';
+        strength = relationship.strength ?? 1.0;
+        description = relationship.description ?? `Related to ${targetPatternId}`;
       } else {
         console.warn(`Invalid relationship format for pattern ${sourcePatternId}:`, relationship);
         return false;
@@ -382,7 +407,7 @@ export class PatternSeeder {
       }
 
       // Check if relationship already exists
-      const existing = this.db.queryOne(
+      const existing = this.db.queryOne<{ id: string }>(
         'SELECT id FROM pattern_relationships WHERE source_pattern_id = ? AND target_pattern_id = ?',
         [sourcePatternId, actualTargetId]
       );
@@ -419,7 +444,7 @@ export class PatternSeeder {
   /**
    * Get all pattern files
    */
-  private async getPatternFiles(): Promise<string[]> {
+  private getPatternFiles(): string[] {
     try {
       const files = fs
         .readdirSync(this.config.patternsPath)
@@ -436,10 +461,17 @@ export class PatternSeeder {
   /**
    * Load pattern data from file
    */
-  private async loadPatternFile(filePath: string): Promise<any> {
+  private loadPatternFile(filePath: string): unknown {
     try {
       const content = fs.readFileSync(filePath, 'utf8');
-      return JSON.parse(content);
+      const parsed: unknown = JSON.parse(content);
+
+      // Basic validation that it's an object
+      if (!isObject(parsed)) {
+        throw new Error(`Invalid JSON structure in ${filePath}: expected object, got ${typeof parsed}`);
+      }
+
+      return parsed;
     } catch (error) {
       console.error(`Failed to load pattern file ${filePath}:`, error);
       throw error;
@@ -449,7 +481,7 @@ export class PatternSeeder {
   /**
    * Clear all pattern data
    */
-  async clearAll(): Promise<void> {
+  clearAll(): void {
     this.db.transaction(() => {
       this.db.execute('DELETE FROM pattern_relationships');
       this.db.execute('DELETE FROM pattern_implementations');
@@ -462,7 +494,7 @@ export class PatternSeeder {
   /**
    * Get seeding statistics
    */
-  async getStats(): Promise<SeederStats> {
+  getStats(): SeederStats {
     const patternCount = this.db.queryOne<{ count: number }>(
       'SELECT COUNT(*) as count FROM patterns'
     );
@@ -482,9 +514,9 @@ export class PatternSeeder {
     );
 
     return {
-      totalPatterns: patternCount?.count || 0,
-      totalImplementations: implementationCount?.count || 0,
-      totalRelationships: relationshipCount?.count || 0,
+      totalPatterns: patternCount?.count ?? 0,
+      totalImplementations: implementationCount?.count ?? 0,
+      totalRelationships: relationshipCount?.count ?? 0,
       patternsByCategory: categoryStats,
       implementationsByLanguage: languageStats,
     };
@@ -493,7 +525,7 @@ export class PatternSeeder {
   /**
    * Validate seeded data
    */
-  async validate(): Promise<ValidationResult> {
+  validate(): ValidationResult {
     const errors: string[] = [];
 
     try {

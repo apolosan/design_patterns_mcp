@@ -160,7 +160,7 @@ export class PatternAnalyzer {
   /**
    * Analyze code to detect patterns
    */
-  async analyzeCode(code: string, language: string): Promise<CodeAnalysisResult> {
+  analyzeCode(code: string, language: string): CodeAnalysisResult {
     const identifiedPatterns = this.detectPatterns(code, language);
     const suggestedPatterns = this.suggestPatterns(code, language, identifiedPatterns);
     const improvements = this.generateImprovements(code, language, identifiedPatterns);
@@ -177,7 +177,7 @@ export class PatternAnalyzer {
   /**
    * Detect existing patterns in code
    */
-  private detectPatterns(code: string, language: string): DetectedPattern[] {
+  private detectPatterns(code: string, _language: string): DetectedPattern[] {
     const detected: DetectedPattern[] = [];
     const codeLines = code.split('\n');
 
@@ -201,7 +201,7 @@ export class PatternAnalyzer {
           foundIndicators.push(`Matched pattern: ${pattern.source}`);
 
           // Find line number
-          const lineNum = this.findLineNumber(code, match.index || 0);
+          const lineNum = this.findLineNumber(code, match.index ?? 0);
           if (lineNum > -1) {
             const location = {
               line: lineNum,
@@ -249,7 +249,7 @@ export class PatternAnalyzer {
 
     // Suggest Factory if there's object creation logic
     if (!identifiedNames.includes('Factory Method')) {
-      if (/new\s+\w+\(/g.test(code) && (code.match(/new\s+\w+\(/g) || []).length > 3) {
+      if (/new\s+\w+\(/g.test(code) && (code.match(/new\s+\w+\(/g) ?? []).length > 3) {
         suggestions.push({
           pattern: 'Factory Method',
           reason: 'Multiple object instantiations detected - consider Factory pattern',
@@ -271,8 +271,8 @@ export class PatternAnalyzer {
 
     // Suggest Strategy for conditional algorithms
     if (!identifiedNames.includes('Strategy')) {
-      const ifCount = (code.match(/if\s*\(/g) || []).length;
-      const switchCount = (code.match(/switch\s*\(/g) || []).length;
+      const ifCount = (code.match(/if\s*\(/g) ?? []).length;
+      const switchCount = (code.match(/switch\s*\(/g) ?? []).length;
       if (ifCount > 5 || switchCount > 0) {
         suggestions.push({
           pattern: 'Strategy',
@@ -313,13 +313,13 @@ export class PatternAnalyzer {
 
     // Check for missing comments
     const codeLines = code.split('\n').length;
-    const commentLines = (code.match(/\/\/|\/\*|\*/g) || []).length;
+    const commentLines = (code.match(/\/\/|\/\*|\*/g) ?? []).length;
     if (commentLines < codeLines * 0.1) {
       improvements.push('Add more comments to improve code documentation');
     }
 
     // Check for long methods
-    const methodMatches = code.match(/function\s+\w+|[\w]+\s*\([^)]*\)\s*{/g) || [];
+    const methodMatches = code.match(/function\s+\w+|[\w]+\s*\([^)]*\)\s*{/g) ?? [];
     if (methodMatches.length > 0) {
       const avgMethodLength = codeLines / methodMatches.length;
       if (avgMethodLength > 50) {
@@ -350,7 +350,7 @@ export class PatternAnalyzer {
    */
   private detectAntiPatterns(
     code: string,
-    language: string
+    _language: string
   ): Array<{ pattern: string; reason: string; severity: 'low' | 'medium' | 'high' }> {
     const antiPatterns: Array<{
       pattern: string;
@@ -359,8 +359,8 @@ export class PatternAnalyzer {
     }> = [];
 
     // Check for God Object
-    const methodCount = (code.match(/function\s+\w+|[\w]+\s*\([^)]*\)\s*{/g) || []).length;
-    const propertyCount = (code.match(/this\.\w+\s*=/g) || []).length;
+    const methodCount = (code.match(/function\s+\w+|[\w]+\s*\([^)]*\)\s*{/g) ?? []).length;
+    const propertyCount = (code.match(/this\.\w+\s*=/g) ?? []).length;
 
     if (methodCount > 20 || propertyCount > 30) {
       antiPatterns.push({

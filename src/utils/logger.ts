@@ -31,7 +31,7 @@ interface StructuredLogEntry {
   url?: string;
   userAgent?: string;
   ip?: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   error?: {
     name: string;
     message: string;
@@ -43,7 +43,7 @@ interface StructuredLogEntry {
     cpuUsage?: NodeJS.CpuUsage;
     uptime?: number;
   };
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 interface LoggerConfig {
@@ -78,8 +78,8 @@ export class StructuredLogger {
   debug(
     service: string,
     message: string,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.log(LogLevel.DEBUG, service, message, data, undefined, context);
   }
@@ -90,8 +90,8 @@ export class StructuredLogger {
   info(
     service: string,
     message: string,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.log(LogLevel.INFO, service, message, data, undefined, context);
   }
@@ -102,8 +102,8 @@ export class StructuredLogger {
   warn(
     service: string,
     message: string,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.log(LogLevel.WARN, service, message, data, undefined, context);
   }
@@ -115,8 +115,8 @@ export class StructuredLogger {
     service: string,
     message: string,
     error?: Error,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.log(LogLevel.ERROR, service, message, data, error, context);
   }
@@ -128,8 +128,8 @@ export class StructuredLogger {
     service: string,
     message: string,
     error?: Error,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.log(LogLevel.FATAL, service, message, data, error, context);
   }
@@ -145,7 +145,7 @@ export class StructuredLogger {
     duration: number,
     userAgent?: string,
     ip?: string,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): void {
     this.log(
       LogLevel.INFO,
@@ -173,7 +173,7 @@ export class StructuredLogger {
     table: string,
     duration: number,
     recordCount?: number,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): void {
     this.log(
       LogLevel.INFO,
@@ -197,8 +197,8 @@ export class StructuredLogger {
     service: string,
     operation: string,
     duration: number,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     const performanceData = this.config.includePerformanceMetrics
       ? {
@@ -240,9 +240,9 @@ export class StructuredLogger {
     level: LogLevel,
     service: string,
     message: string,
-    data?: Record<string, any>,
+    data?: Record<string, unknown>,
     error?: Error,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): void {
     // Check if we should log this level
     if (level < this.config.level) {
@@ -260,7 +260,7 @@ export class StructuredLogger {
         ? {
             name: error.name,
             message: error.message,
-            code: (error as any).code,
+            code: (error as Error & { code?: string }).code,
             stack: this.config.includeStackTrace ? error.stack : undefined,
           }
         : undefined,
@@ -485,8 +485,8 @@ class ChildStructuredLogger extends StructuredLogger {
   debug(
     service: string,
     message: string,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.parentLogger.debug(service || this.serviceName, message, data, context);
   }
@@ -494,8 +494,8 @@ class ChildStructuredLogger extends StructuredLogger {
   info(
     service: string,
     message: string,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.parentLogger.info(service || this.serviceName, message, data, context);
   }
@@ -503,8 +503,8 @@ class ChildStructuredLogger extends StructuredLogger {
   warn(
     service: string,
     message: string,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.parentLogger.warn(service || this.serviceName, message, data, context);
   }
@@ -513,8 +513,8 @@ class ChildStructuredLogger extends StructuredLogger {
     service: string,
     message: string,
     error?: Error,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.parentLogger.error(service || this.serviceName, message, error, data, context);
   }
@@ -523,8 +523,8 @@ class ChildStructuredLogger extends StructuredLogger {
     service: string,
     message: string,
     error?: Error,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.parentLogger.fatal(service || this.serviceName, message, error, data, context);
   }
@@ -537,7 +537,7 @@ class ChildStructuredLogger extends StructuredLogger {
     duration: number,
     userAgent?: string,
     ip?: string,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): void {
     this.parentLogger.http(
       service || this.serviceName,
@@ -557,7 +557,7 @@ class ChildStructuredLogger extends StructuredLogger {
     table: string,
     duration: number,
     recordCount?: number,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): void {
     this.parentLogger.database(
       service || this.serviceName,
@@ -573,8 +573,8 @@ class ChildStructuredLogger extends StructuredLogger {
     service: string,
     operation: string,
     duration: number,
-    data?: Record<string, any>,
-    context?: Record<string, any>
+    data?: Record<string, unknown>,
+    context?: Record<string, unknown>
   ): void {
     this.parentLogger.timing(service || this.serviceName, operation, duration, data, context);
   }

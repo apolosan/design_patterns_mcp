@@ -9,14 +9,14 @@ import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 interface ValidationResult {
   valid: boolean;
   errors: string[];
-  sanitized?: any;
+  sanitized?: unknown;
 }
 
 interface ValidationOptions {
   maxLength?: number;
   minLength?: number;
   pattern?: RegExp;
-  allowedValues?: any[];
+  allowedValues?: (string | number | boolean)[];
   required?: boolean;
   sanitize?: boolean;
 }
@@ -26,7 +26,7 @@ export class InputValidator {
    * Validates a string input with comprehensive checks
    */
   static validateString(
-    value: any,
+    value: unknown,
     fieldName: string,
     options: ValidationOptions = {}
   ): ValidationResult {
@@ -87,7 +87,7 @@ export class InputValidator {
    * Validates a number input
    */
   static validateNumber(
-    value: any,
+    value: unknown,
     fieldName: string,
     options: ValidationOptions & { min?: number; max?: number } = {}
   ): ValidationResult {
@@ -110,7 +110,7 @@ export class InputValidator {
     }
 
     // Required check
-    if (options.required && (value === undefined || value === null || isNaN(value))) {
+    if (options.required && (value === undefined || value === null || (typeof value === 'number' && isNaN(value)))) {
       errors.push(`${fieldName} is required`);
       return { valid: false, errors };
     }
@@ -118,6 +118,12 @@ export class InputValidator {
     // Skip further validation if value is undefined/null and not required
     if (value === undefined || value === null) {
       return { valid: true, errors: [], sanitized: value };
+    }
+
+    // Ensure value is a number for further checks
+    if (typeof value !== 'number' || isNaN(value)) {
+      errors.push(`${fieldName} must be a valid number`);
+      return { valid: false, errors };
     }
 
     // Range checks
@@ -140,9 +146,9 @@ export class InputValidator {
    * Validates an array input
    */
   static validateArray(
-    value: any,
+    value: unknown,
     fieldName: string,
-    options: ValidationOptions & { itemValidator?: (item: any) => ValidationResult } = {}
+    options: ValidationOptions & { itemValidator?: (item: unknown) => ValidationResult } = {}
   ): ValidationResult {
     const errors: string[] = [];
 
@@ -193,7 +199,7 @@ export class InputValidator {
    * Validates a boolean input
    */
   static validateBoolean(
-    value: any,
+    value: unknown,
     fieldName: string,
     options: ValidationOptions = {}
   ): ValidationResult {
@@ -276,7 +282,7 @@ export class InputValidator {
   /**
    * Validates and sanitizes pattern ID
    */
-  static validatePatternId(id: any): ValidationResult {
+  static validatePatternId(id: unknown): ValidationResult {
     return this.validateString(id, 'patternId', {
       required: true,
       maxLength: 255,
@@ -288,7 +294,7 @@ export class InputValidator {
   /**
    * Validates and sanitizes search query
    */
-  static validateSearchQuery(query: any): ValidationResult {
+  static validateSearchQuery(query: unknown): ValidationResult {
     return this.validateString(query, 'query', {
       required: true,
       maxLength: 1000,
@@ -300,7 +306,7 @@ export class InputValidator {
   /**
    * Validates programming language
    */
-  static validateProgrammingLanguage(lang: any): ValidationResult {
+  static validateProgrammingLanguage(lang: unknown): ValidationResult {
     const allowedLanguages = [
       'javascript',
       'typescript',
@@ -355,7 +361,7 @@ export class InputValidator {
   /**
    * Validates search type
    */
-  static validateSearchType(type: any): ValidationResult {
+  static validateSearchType(type: unknown): ValidationResult {
     return this.validateString(type, 'searchType', {
       allowedValues: ['keyword', 'semantic', 'hybrid'],
       sanitize: true,
@@ -365,7 +371,7 @@ export class InputValidator {
   /**
    * Validates limit parameter
    */
-  static validateLimit(limit: any): ValidationResult {
+  static validateLimit(limit: unknown): ValidationResult {
     return this.validateNumber(limit, 'limit', {
       min: 1,
       max: 100,
@@ -376,7 +382,7 @@ export class InputValidator {
   /**
    * Validates max results parameter
    */
-  static validateMaxResults(maxResults: any): ValidationResult {
+  static validateMaxResults(maxResults: unknown): ValidationResult {
     return this.validateNumber(maxResults, 'maxResults', {
       min: 1,
       max: 50,
@@ -387,7 +393,7 @@ export class InputValidator {
   /**
    * Validates categories array
    */
-  static validateCategories(categories: any): ValidationResult {
+  static validateCategories(categories: unknown): ValidationResult {
     return this.validateArray(categories, 'categories', {
       maxLength: 20,
       itemValidator: item =>
@@ -401,7 +407,7 @@ export class InputValidator {
   /**
    * Validates include details boolean
    */
-  static validateIncludeDetails(includeDetails: any): ValidationResult {
+  static validateIncludeDetails(includeDetails: unknown): ValidationResult {
     return this.validateBoolean(includeDetails, 'includeDetails', {
       sanitize: true,
     });
@@ -422,81 +428,97 @@ export class InputValidator {
   /**
    * Validates all inputs for find_patterns tool
    */
-  static validateFindPatternsArgs(args: any): {
+  static validateFindPatternsArgs(args: unknown): {
     query: string;
     categories: string[];
     maxResults: number;
     programmingLanguage?: string;
   } {
-    const queryResult = this.validateSearchQuery(args.query);
+    if (typeof args !== 'object' || args === null) {
+      throw new McpError(ErrorCode.InvalidParams, 'Invalid arguments: expected object');
+    }
+    const obj = args as Record<string, unknown>;
+    const queryResult = this.validateSearchQuery(obj.query);
     this.throwIfInvalid(queryResult);
 
-    const categoriesResult = this.validateCategories(args.categories);
+    const categoriesResult = this.validateCategories(obj.categories);
     this.throwIfInvalid(categoriesResult);
 
-    const maxResultsResult = this.validateMaxResults(args.maxResults);
+    const maxResultsResult = this.validateMaxResults(obj.maxResults);
     this.throwIfInvalid(maxResultsResult);
 
-    const langResult = this.validateProgrammingLanguage(args.programmingLanguage);
+    const langResult = this.validateProgrammingLanguage(obj.programmingLanguage);
     this.throwIfInvalid(langResult);
 
     return {
-      query: queryResult.sanitized,
-      categories: categoriesResult.sanitized || [],
-      maxResults: maxResultsResult.sanitized || 5,
-      programmingLanguage: langResult.sanitized,
+      query: queryResult.sanitized as string,
+      categories: (categoriesResult.sanitized as string[]) ?? [],
+      maxResults: (maxResultsResult.sanitized as number) ?? 5,
+      programmingLanguage: langResult.sanitized as string | undefined,
     };
   }
 
   /**
    * Validates all inputs for search_patterns tool
    */
-  static validateSearchPatternsArgs(args: any): {
+  static validateSearchPatternsArgs(args: unknown): {
     query: string;
     searchType: string;
     limit: number;
   } {
-    const queryResult = this.validateSearchQuery(args.query);
+    if (typeof args !== 'object' || args === null) {
+      throw new McpError(ErrorCode.InvalidParams, 'Invalid arguments: expected object');
+    }
+    const obj = args as Record<string, unknown>;
+    const queryResult = this.validateSearchQuery(obj.query);
     this.throwIfInvalid(queryResult);
 
-    const searchTypeResult = this.validateSearchType(args.searchType);
+    const searchTypeResult = this.validateSearchType(obj.searchType);
     this.throwIfInvalid(searchTypeResult);
 
-    const limitResult = this.validateLimit(args.limit);
+    const limitResult = this.validateLimit(obj.limit);
     this.throwIfInvalid(limitResult);
 
     return {
-      query: queryResult.sanitized,
-      searchType: searchTypeResult.sanitized || 'hybrid',
-      limit: limitResult.sanitized || 10,
+      query: queryResult.sanitized as string,
+      searchType: (searchTypeResult.sanitized as string) ?? 'hybrid',
+      limit: (limitResult.sanitized as number) ?? 10,
     };
   }
 
   /**
    * Validates all inputs for get_pattern_details tool
    */
-  static validateGetPatternDetailsArgs(args: any): {
+  static validateGetPatternDetailsArgs(args: unknown): {
     patternId: string;
   } {
-    const patternIdResult = this.validatePatternId(args.patternId);
+    if (typeof args !== 'object' || args === null) {
+      throw new McpError(ErrorCode.InvalidParams, 'Invalid arguments: expected object');
+    }
+    const obj = args as Record<string, unknown>;
+    const patternIdResult = this.validatePatternId(obj.patternId);
     this.throwIfInvalid(patternIdResult);
 
     return {
-      patternId: patternIdResult.sanitized,
+      patternId: patternIdResult.sanitized as string,
     };
   }
 
   /**
    * Validates all inputs for count_patterns tool
    */
-  static validateCountPatternsArgs(args: any): {
+  static validateCountPatternsArgs(args: unknown): {
     includeDetails: boolean;
   } {
-    const includeDetailsResult = this.validateIncludeDetails(args.includeDetails);
+    if (typeof args !== 'object' || args === null) {
+      throw new McpError(ErrorCode.InvalidParams, 'Invalid arguments: expected object');
+    }
+    const obj = args as Record<string, unknown>;
+    const includeDetailsResult = this.validateIncludeDetails(obj.includeDetails);
     this.throwIfInvalid(includeDetailsResult);
 
     return {
-      includeDetails: includeDetailsResult.sanitized || false,
+      includeDetails: (includeDetailsResult.sanitized as boolean) ?? false,
     };
   }
 }

@@ -1,0 +1,18 @@
+{
+  "id": "hooks-pattern",
+  "name": "Hooks Pattern",
+  "category": "UI Architecture",
+  "description": "Functions that let you use state and other React features in functional components",
+  "when_to_use": "Functional components, state management, side effects, component lifecycle",
+  "benefits": "Code reuse, cleaner functional components, better performance, easier testing",
+  "drawbacks": "Rules of hooks complexity, potential for misuse, learning curve",
+  "use_cases": "State management, data fetching, subscriptions, animations, form handling",
+  "complexity": "Low to Medium",
+  "tags": ["react", "hooks", "functional-components", "state-management"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "import { useState, useEffect } from 'react';\n\ninterface UseCounterReturn {\n  count: number;\n  increment: () => void;\n  decrement: () => void;\n  reset: () => void;\n}\n\nfunction useCounter(initialValue: number = 0): UseCounterReturn {\n  const [count, setCount] = useState(initialValue);\n  \n  const increment = () => setCount(c => c + 1);\n  const decrement = () => setCount(c => c - 1);\n  const reset = () => setCount(initialValue);\n  \n  return { count, increment, decrement, reset };\n}\n\n// Usage in component\nfunction Counter() {\n  const { count, increment, decrement, reset } = useCounter(0);\n  \n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={increment}>+</button>\n      <button onClick={decrement}>-</button>\n      <button onClick={reset}>Reset</button>\n    </div>\n  );\n}\n\n// Custom hook for data fetching\nfunction useFetch<T>(url: string): { data: T | null; loading: boolean; error: Error | null } {\n  const [data, setData] = useState<T | null>(null);\n  const [loading, setLoading] = useState(true);\n  const [error, setError] = useState<Error | null>(null);\n  \n  useEffect(() => {\n    fetch(url)\n      .then(response => response.json())\n      .then(setData)\n      .catch(setError)\n      .finally(() => setLoading(false));\n  }, [url]);\n  \n  return { data, loading, error };\n}"
+    }
+  }
+}

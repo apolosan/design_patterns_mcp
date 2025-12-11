@@ -12,8 +12,8 @@ export interface UserPreference {
   /** Preference identifier */
   settingKey: string;
 
-  /** Preference value (flexible type) */
-  settingValue: any;
+   /** Preference value (flexible type) */
+   settingValue: unknown;
 
   /** Human-readable description */
   description?: string;
@@ -33,9 +33,9 @@ export interface UserPreference {
  */
 export interface CreateUserPreferenceInput {
   settingKey: string;
-  settingValue: any;
-  description?: string;
+  settingValue: unknown;
   category: PreferenceCategory;
+  description?: string;
 }
 
 /**
@@ -48,7 +48,7 @@ export interface UpdateUserPreferenceInput extends Partial<CreateUserPreferenceI
 /**
  * Default user preferences
  */
-export const DEFAULT_PREFERENCES: Record<string, any> = {
+export const DEFAULT_PREFERENCES: Record<string, unknown> = {
   search_max_results: 5,
   search_include_examples: true,
   search_complexity_filter: 'any',
@@ -88,7 +88,7 @@ export interface PreferenceCategoryConfig {
   preferences: Array<{
     key: string;
     type: 'string' | 'number' | 'boolean' | 'json' | 'enum';
-    defaultValue: any;
+     defaultValue: unknown;
     description: string;
     validation?: {
       min?: number;
@@ -103,8 +103,8 @@ export interface PreferenceCategoryConfig {
  * User preference manager interface
  */
 export interface PreferenceManager {
-  get<T = any>(key: string): T | undefined;
-  set(key: string, value: any): Promise<void>;
+   get<T = unknown>(key: string): T | undefined;
+   set(key: string, value: unknown): Promise<void>;
   getAll(): Promise<UserPreference[]>;
   getByCategory(category: PreferenceCategory): Promise<UserPreference[]>;
   reset(key: string): Promise<void>;

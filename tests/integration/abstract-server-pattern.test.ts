@@ -9,25 +9,21 @@ import {
 } from '../../src/services/database-manager';
 import { getPatternStorageService } from '../../src/services/pattern-storage';
 import { getTestDatabaseConfig } from '../helpers/test-db';
-import Database from 'better-sqlite3';
 
 describe('Abstract Server Pattern Integration Tests', () => {
   let db: DatabaseManager;
-  let sqliteDb: Database.Database;
 
   beforeAll(async () => {
     db = await initializeDatabaseManager(getTestDatabaseConfig(false));
-    sqliteDb = new Database(getTestDatabaseConfig(false).filename);
   });
 
   afterAll(async () => {
     await closeDatabaseManager();
-    sqliteDb.close();
   });
 
   describe('Pattern Existence', () => {
     it('should have Abstract Server pattern in database', () => {
-      const pattern = sqliteDb.prepare('SELECT * FROM patterns WHERE id = ?').get('abstract-server') as any;
+      const pattern = db.queryOne('SELECT * FROM patterns WHERE id = ?', ['abstract-server']);
 
       expect(pattern).toBeDefined();
       expect(pattern.name).toBe('Abstract Server');
@@ -35,7 +31,7 @@ describe('Abstract Server Pattern Integration Tests', () => {
     });
 
     it('should have at least 574 total patterns including Abstract Server, new patterns, and SQL patterns', () => {
-      const result = sqliteDb.prepare('SELECT COUNT(*) as count FROM patterns').get() as { count: number };
+      const result = db.queryOne('SELECT COUNT(*) as count FROM patterns') as { count: number };
 
       expect(result?.count).toBeGreaterThanOrEqual(574);
     });
@@ -43,15 +39,15 @@ describe('Abstract Server Pattern Integration Tests', () => {
 
   describe('Code Examples Feature', () => {
     it('should have examples column in patterns table', () => {
-      const tableInfo = sqliteDb.prepare('PRAGMA table_info(patterns)').all();
-      const examplesColumn = tableInfo.find((col: any) => col.name === 'examples') as any;
+      const tableInfo = db.query('PRAGMA table_info(patterns)');
+      const examplesColumn = tableInfo.find((col: any) => col.name === 'examples');
 
       expect(examplesColumn).toBeDefined();
       expect(examplesColumn.type).toBe('TEXT');
     });
 
     it('should have code examples for Abstract Server pattern', () => {
-      const pattern = sqliteDb.prepare('SELECT examples FROM patterns WHERE id = ?').get('abstract-server') as any;
+      const pattern = db.queryOne('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
 
       expect(pattern).toBeDefined();
       expect(pattern.examples).toBeDefined();
@@ -61,7 +57,7 @@ describe('Abstract Server Pattern Integration Tests', () => {
     });
 
     it('should have valid JSON in examples field', () => {
-      const pattern = sqliteDb.prepare('SELECT examples FROM patterns WHERE id = ?').get('abstract-server') as any;
+      const pattern = db.queryOne('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
 
       expect(() => {
         JSON.parse(pattern.examples);
@@ -69,7 +65,7 @@ describe('Abstract Server Pattern Integration Tests', () => {
     });
 
     it('should have examples in multiple languages', () => {
-      const pattern = sqliteDb.prepare('SELECT examples FROM patterns WHERE id = ?').get('abstract-server') as any;
+      const pattern = db.queryOne('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
 
       const examples = JSON.parse(pattern.examples);
 
@@ -80,7 +76,7 @@ describe('Abstract Server Pattern Integration Tests', () => {
     });
 
     it('should have proper structure for each example', () => {
-      const pattern = sqliteDb.prepare('SELECT examples FROM patterns WHERE id = ?').get('abstract-server') as any;
+      const pattern = db.queryOne('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
 
       const examples = JSON.parse(pattern.examples);
       const tsExample = examples.typescript;
@@ -95,7 +91,7 @@ describe('Abstract Server Pattern Integration Tests', () => {
 
   describe('Pattern Content Validation', () => {
     it('should have correct pattern properties', () => {
-      const pattern = sqliteDb.prepare('SELECT * FROM patterns WHERE id = ?').get('abstract-server') as any;
+      const pattern = db.queryOne('SELECT * FROM patterns WHERE id = ?', ['abstract-server']);
 
       expect(pattern.description).toContain('abstraction layer');
       expect(pattern.description).toContain('Dependency Inversion Principle');
@@ -129,16 +125,16 @@ describe('Abstract Server Pattern Integration Tests', () => {
 
   describe('Examples in Other Patterns', () => {
     it('should allow patterns without examples (optional feature)', () => {
-      const patterns = sqliteDb.prepare('SELECT id, name, examples FROM patterns WHERE examples IS NULL LIMIT 5').all();
+      const patterns = db.query('SELECT id, name, examples FROM patterns WHERE examples IS NULL LIMIT 5');
 
       expect(patterns.length).toBeGreaterThan(0);
-      patterns.forEach((pattern: any) => {
+      patterns.forEach((pattern) => {
         expect(pattern.examples).toBeNull();
       });
     });
 
     it('should maintain backward compatibility for patterns without examples', () => {
-      const patternWithoutExamples = sqliteDb.prepare('SELECT * FROM patterns WHERE examples IS NULL LIMIT 1').get() as any;
+      const patternWithoutExamples = db.queryOne('SELECT * FROM patterns WHERE examples IS NULL LIMIT 1');
 
       expect(patternWithoutExamples).toBeDefined();
       expect(patternWithoutExamples.id).toBeDefined();

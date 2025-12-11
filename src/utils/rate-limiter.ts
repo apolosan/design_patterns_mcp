@@ -48,7 +48,7 @@ export class RateLimiter {
   /**
    * Check if a request is allowed for the given key
    */
-  async checkLimit(key: string): Promise<void> {
+  checkLimit(key: string): void {
     const now = Date.now();
     const state = this.getOrCreateState(key);
 
@@ -173,7 +173,7 @@ function withRateLimit<T extends any[], R>(
     const key = keyFn(...args);
 
     try {
-      await limiter.checkLimit(key);
+      limiter.checkLimit(key);
       const result = await fn(...args);
       return result;
     } finally {

@@ -16,7 +16,7 @@ interface ResourceResponse {
     text: string;
   }>;
 }
-import { Pattern, PatternCategory } from '../models/pattern.js';
+import { Pattern } from '../models/pattern.js';
 import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
 
 // Import real service interfaces
@@ -36,10 +36,22 @@ export interface ServerStats {
   cacheHitRate: number;
 }
 
+// Database row types for query results
+interface CategoryRow {
+  category: string;
+  pattern_count: number;
+}
+
+interface CategoryInfo {
+  name: string;
+  count: number;
+  description?: string;
+}
+
 export interface DatabaseManager {
   getAllPatterns(): Promise<Pattern[]>;
   getPatternById(id: string): Promise<Pattern | null>;
-  getPatternCategories(): Promise<PatternCategory[]>;
+  getPatternCategories(): Promise<CategoryInfo[]>;
   getSupportedLanguages(): Promise<SupportedLanguage[]>;
   getServerStats(): Promise<ServerStats>;
 }
@@ -135,11 +147,8 @@ export class DatabaseManagerAdapter implements DatabaseManager {
     });
   }
 
-  async getPatternCategories(): Promise<any[]> {
-    const rows = this.realDatabaseManager.query<{
-      category: string;
-      pattern_count: number;
-    }>(`
+  async getPatternCategories(): Promise<CategoryInfo[]> {
+    const rows = this.realDatabaseManager.query<CategoryRow>(`
       SELECT category, COUNT(*) as pattern_count
       FROM patterns
       GROUP BY category
@@ -147,14 +156,10 @@ export class DatabaseManagerAdapter implements DatabaseManager {
     `);
 
     return Promise.resolve(
-      rows.map((row, index) => ({
-        id: index + 1,
+      rows.map((row) => ({
         name: row.category,
+        count: row.pattern_count,
         description: `${row.category} design patterns`,
-        patternCount: row.pattern_count,
-        typicalUseCases: this.getTypicalUseCases(row.category),
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }))
     );
   }
@@ -383,15 +388,14 @@ export class MCPResourcesHandler {
     try {
       const categories = await this.config.databaseManager.getPatternCategories();
 
-      const categoriesWithStats = categories.map((category: any) => ({
+      const categoriesWithStats = categories.map((category: CategoryInfo) => ({
         category: category.name,
-        pattern_count: category.patternCount,
+        pattern_count: category.count,
         description: category.description,
-        typical_use_cases: category.typicalUseCases,
         complexity_distribution: {
-          Low: Math.floor(category.patternCount * 0.3), // Placeholder distribution
-          Medium: Math.floor(category.patternCount * 0.5),
-          High: Math.floor(category.patternCount * 0.2),
+          Low: Math.floor(category.count * 0.3), // Placeholder distribution
+          Medium: Math.floor(category.count * 0.5),
+          High: Math.floor(category.count * 0.2),
         },
       }));
 
@@ -541,7 +545,7 @@ export class MCPResourcesHandler {
   /**
    * Handle resource list requests
    */
-  async handleResourceList(_request: ListResourcesRequest): Promise<{ resources: any[] }> {
+  async handleResourceList(_request: ListResourcesRequest): Promise<{ resources: Resource[] }> {
     try {
       const resources = this.getResources();
 

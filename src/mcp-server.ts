@@ -12,6 +12,7 @@ import {
   ReadResourceRequestSchema,
   ListResourcesRequestSchema,
   ListToolsRequestSchema,
+  CallToolResult,
   ErrorCode,
   McpError,
 } from '@modelcontextprotocol/sdk/types.js';
@@ -29,6 +30,7 @@ import { CacheService } from './services/cache.js';
 import { logger } from './services/logger.js';
 import { parseTags, parseArrayProperty } from './utils/parse-tags.js';
 import { MCPRateLimiter } from './utils/rate-limiter.js';
+import { InputValidator } from './utils/input-validation.js';
 
 export interface MCPServerConfig {
   databasePath: string;
@@ -150,7 +152,7 @@ class DesignPatternsMCPServer {
 
   private setupHandlers(): void {
     // List available tools
-    this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+    this.server.setRequestHandler(ListToolsRequestSchema, () => {
       return {
         tools: [
           {
@@ -243,7 +245,7 @@ class DesignPatternsMCPServer {
 
       // Apply rate limiting to tool calls
       const rateLimitedHandler = this.rateLimiter.wrapToolHandler(
-        async (toolName: string, toolArgs: any) => {
+        async (toolName: string, toolArgs: unknown) => {
           switch (toolName) {
             case 'find_patterns':
               return await this.handleFindPatterns(toolArgs);
@@ -264,7 +266,7 @@ class DesignPatternsMCPServer {
     });
 
     // List available resources
-    this.server.setRequestHandler(ListResourcesRequestSchema, async () => {
+    this.server.setRequestHandler(ListResourcesRequestSchema, () => {
       return {
         resources: [
           {
@@ -316,13 +318,14 @@ class DesignPatternsMCPServer {
   }
 
   // Tool handlers
-  private async handleFindPatterns(args: any): Promise<any> {
+  private async handleFindPatterns(args: unknown): Promise<CallToolResult> {
+    const validatedArgs = InputValidator.validateFindPatternsArgs(args);
     const request = {
       id: crypto.randomUUID(),
-      query: args.query,
-      categories: args.categories || [],
-      maxResults: args.maxResults || 5,
-      programmingLanguage: args.programmingLanguage,
+      query: validatedArgs.query,
+      categories: validatedArgs.categories,
+      maxResults: validatedArgs.maxResults,
+      programmingLanguage: validatedArgs.programmingLanguage,
     };
 
     const recommendations = await this.patternMatcher.findMatchingPatterns(request);
@@ -347,12 +350,13 @@ class DesignPatternsMCPServer {
     };
   }
 
-  private async handleSearchPatterns(args: any): Promise<any> {
+  private async handleSearchPatterns(args: unknown): Promise<CallToolResult> {
+    const validatedArgs = InputValidator.validateSearchPatternsArgs(args);
     const query = {
-      text: args.query,
-      filters: args.filters || {},
+      text: validatedArgs.query,
+      filters: {},
       options: {
-        limit: args.limit || 10,
+        limit: validatedArgs.limit,
         includeMetadata: true,
       },
     };
@@ -364,7 +368,7 @@ class DesignPatternsMCPServer {
         {
           type: 'text',
           text:
-            `Search results for "${args.query}":\n\n` +
+            `Search results for "${validatedArgs.query}":\n\n` +
             results
               .map(
                 (result, index) =>
@@ -378,20 +382,21 @@ class DesignPatternsMCPServer {
     };
   }
 
-  private async handleGetPatternDetails(args: any): Promise<any> {
+  private async handleGetPatternDetails(args: unknown): Promise<CallToolResult> {
+    const validatedArgs = InputValidator.validateGetPatternDetailsArgs(args);
     const pattern = this.db.queryOne(
       `
       SELECT id, name, category, description, when_to_use, benefits,
              drawbacks, use_cases, complexity, tags, examples, created_at
       FROM patterns WHERE id = ?
     `,
-      [args.patternId]
+      [validatedArgs.patternId]
     );
 
     if (!pattern) {
       // Try to find similar patterns using semantic search
       const similarPatterns = await this.semanticSearch.search({
-        text: args.patternId,
+        text: validatedArgs.patternId,
         options: {
           limit: 3,
           includeMetadata: true,
@@ -403,7 +408,7 @@ class DesignPatternsMCPServer {
           content: [
             {
               type: 'text',
-              text: `Pattern "${args.patternId}" not found. Here are similar patterns:\n\n${similarPatterns
+              text: `Pattern "${validatedArgs.patternId}" not found. Here are similar patterns:\n\n${similarPatterns
                 .map(
                   (p, i) =>
                     `${i + 1}. **${p.pattern.name}** (${p.pattern.category})\n   ${p.pattern.description}\n   Score: ${(p.score * 100).toFixed(1)}%`
@@ -417,7 +422,7 @@ class DesignPatternsMCPServer {
           content: [
             {
               type: 'text',
-              text: `Pattern "${args.patternId}" not found and no similar patterns were found.`,
+              text: `Pattern "${validatedArgs.patternId}" not found and no similar patterns were found.`,
             },
           ],
         };
@@ -429,7 +434,7 @@ class DesignPatternsMCPServer {
       SELECT language, code, explanation FROM pattern_implementations
       WHERE pattern_id = ? LIMIT 3
     `,
-      [args.patternId]
+      [validatedArgs.patternId]
     );
 
     // Parse code examples if available
@@ -483,15 +488,16 @@ class DesignPatternsMCPServer {
     };
   }
 
-  private async handleCountPatterns(args: any): Promise<any> {
+  private handleCountPatterns(args: unknown): CallToolResult {
     try {
+      const validatedArgs = InputValidator.validateCountPatternsArgs(args);
       // OPTIMIZATION: Use COUNT instead of loading all rows
       const totalResult = this.db.queryOne<{ total: number }>(
         'SELECT COUNT(*) as total FROM patterns'
       );
       const total = totalResult?.total || 0;
 
-      if (args.includeDetails) {
+      if (validatedArgs.includeDetails) {
         // Get category breakdown efficiently
         const breakdown = this.db.query<{ category: string; count: number }>(
           'SELECT category, COUNT(*) as count FROM patterns GROUP BY category ORDER BY count DESC'
@@ -529,7 +535,7 @@ class DesignPatternsMCPServer {
   }
 
   // Resource handlers
-  private async handleReadPatterns(): Promise<any> {
+  private handleReadPatterns(): { contents: Array<{ uri: string; mimeType: string; text: string }> } {
     // OPTIMIZATION: Add pagination with LIMIT to prevent loading all 574+ patterns
     const patterns = this.db.query(
       'SELECT id, name, category, description, complexity, tags FROM patterns ORDER BY name LIMIT 100'
@@ -546,7 +552,7 @@ class DesignPatternsMCPServer {
     };
   }
 
-  private async handleReadCategories(): Promise<any> {
+  private handleReadCategories(): { contents: Array<{ uri: string; mimeType: string; text: string }> } {
     const categories = this.db.query(`
       SELECT category, COUNT(*) as count 
       FROM patterns 
@@ -565,7 +571,7 @@ class DesignPatternsMCPServer {
     };
   }
 
-  private async handleReadServerInfo(): Promise<any> {
+  private handleReadServerInfo(): { contents: Array<{ uri: string; mimeType: string; text: string }> } {
     const info = {
       name: 'Design Patterns MCP Server',
       version: '0.1.0',

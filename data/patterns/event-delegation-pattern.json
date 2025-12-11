@@ -1,0 +1,18 @@
+{
+  "id": "event-delegation-pattern",
+  "name": "Event Delegation Pattern",
+  "category": "Async/Event-Driven",
+  "description": "Using event bubbling to handle events on parent elements instead of individual child elements",
+  "when_to_use": "Many similar elements, dynamic content, performance-critical applications",
+  "benefits": "Memory efficient, handles dynamic elements, simpler event management",
+  "drawbacks": "Requires bubbling events, potential for misfires, event.stopPropagation issues",
+  "use_cases": "Lists, tables, dynamic menus, large DOM trees",
+  "complexity": "Low",
+  "tags": ["javascript", "events", "performance", "dom", "bubbling"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Event delegation for list items\nclass TodoList {\n  private list: HTMLElement;\n  \n  constructor(container: HTMLElement) {\n    this.list = container;\n    this.list.addEventListener('click', this.handleClick.bind(this));\n  }\n  \n  private handleClick(event: Event) {\n    const target = event.target as HTMLElement;\n    \n    // Check if clicked element is a todo item\n    if (target.classList.contains('todo-item')) {\n      this.toggleTodo(target.dataset.id!);\n      return;\n    }\n    \n    // Check if clicked element is a delete button\n    if (target.classList.contains('delete-btn')) {\n      event.stopPropagation(); // Prevent triggering item click\n      this.deleteTodo(target.dataset.id!);\n      return;\n    }\n    \n    // Check if clicked element is inside a todo item\n    const todoItem = target.closest('.todo-item') as HTMLElement;\n    if (todoItem) {\n      this.toggleTodo(todoItem.dataset.id!);\n    }\n  }\n  \n  private toggleTodo(id: string) {\n    console.log(`Toggling todo ${id}`);\n  }\n  \n  private deleteTodo(id: string) {\n    console.log(`Deleting todo ${id}`);\n  }\n}\n\n// Usage\nconst todoList = new TodoList(document.getElementById('todo-list')!);\n\n// HTML structure\n/*\n<ul id=\"todo-list\">\n  <li class=\"todo-item\" data-id=\"1\">\n    <span>Buy groceries</span>\n    <button class=\"delete-btn\" data-id=\"1\">×</button>\n  </li>\n  <li class=\"todo-item\" data-id=\"2\">\n    <span>Walk the dog</span>\n    <button class=\"delete-btn\" data-id=\"2\">×</button>\n  </li>\n</ul>\n*/\n\n// Advanced delegation with data attributes\nfunction createDelegatedMenu(container: HTMLElement) {\n  container.addEventListener('click', (event) => {\n    const target = event.target as HTMLElement;\n    const action = target.dataset.action;\n    \n    if (!action) return;\n    \n    const menuItem = target.closest('[data-menu-item]') as HTMLElement;\n    const itemId = menuItem?.dataset.id;\n    \n    switch (action) {\n      case 'edit':\n        editItem(itemId);\n        break;\n      case 'delete':\n        deleteItem(itemId);\n        break;\n      case 'duplicate':\n        duplicateItem(itemId);\n        break;\n    }\n  });\n}\n\nfunction editItem(id: string | undefined) { console.log('Edit', id); }\nfunction deleteItem(id: string | undefined) { console.log('Delete', id); }\nfunction duplicateItem(id: string | undefined) { console.log('Duplicate', id); }"
+    }
+  }
+}

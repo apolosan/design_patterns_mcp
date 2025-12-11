@@ -3,7 +3,7 @@
  * Represents relationships between design patterns
  */
 
-type RelationshipType =
+export type RelationshipType =
   | 'related'
   | 'extends'
   | 'implements'

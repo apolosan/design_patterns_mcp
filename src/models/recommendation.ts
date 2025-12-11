@@ -6,17 +6,39 @@
 /**
  * Implementation guidance for the recommended pattern
  */
-interface ImplementationGuidance {
+export interface ImplementationGuidance {
+  steps: string[];
+  examples: ImplementationExample[];
+  dependencies: string[];
+  configuration: string[];
+  testing: {
+    unitTests: string[];
+    integrationTests: string[];
+    testScenarios: string[];
+  };
+  performance: {
+    impact: string;
+    memoryUsage: string;
+    cpuUsage: string;
+    optimizations: string[];
+    monitoring: string[];
+  };
+}
+
+/**
+ * Example implementation for a pattern
+ */
+export interface ImplementationExample {
   language: string;
-  codeSnippet: string;
+  title: string;
+  code: string;
   explanation: string;
-  considerations: string[];
 }
 
 /**
  * Alternative pattern suggestion
  */
-interface AlternativePattern {
+export interface AlternativePattern {
   id: string;
   name: string;
   category: string;
@@ -102,78 +124,3 @@ export interface PatternRecommendation {
   createdAt?: Date;
 }
 
-/**
- * Recommendation creation input
- */
-interface CreatePatternRecommendationInput {
-  requestId: string;
-  patternId: string;
-  score: number;
-  rank: number;
-  justification: string;
-  confidence: number;
-  semanticScore?: number;
-  keywordScore?: number;
-  contextMatch?: number;
-  llmEnhanced?: boolean;
-  llmExplanation?: string;
-}
-
-/**
- * Recommendation with full pattern data
- */
-interface PatternRecommendationWithPattern extends PatternRecommendation {
-  pattern: {
-    id: string;
-    name: string;
-    category: string;
-    description: string;
-    complexity: string;
-    tags?: string[];
-  };
-}
-
-/**
- * Recommendation scoring components
- */
-interface RecommendationScore {
-  semantic: number;
-  keyword: number;
-  context?: number;
-  final: number;
-  confidence: number;
-}
-
-/**
- * Recommendation ranking result
- */
-interface RecommendationRanking {
-  recommendations: PatternRecommendation[];
-  totalFound: number;
-  processingTime: number;
-  searchStrategy: 'semantic' | 'keyword' | 'hybrid';
-}
-
-/**
- * Recommendation validation result
- */
-interface RecommendationValidation {
-  isValid: boolean;
-  scoreRange: { min: number; max: number };
-  confidenceThreshold: number;
-  issues: string[];
-}
-
-/**
- * Batch recommendation result
- */
-interface BatchRecommendationResult {
-  requestId: string;
-  recommendations: PatternRecommendation[];
-  metadata: {
-    totalPatterns: number;
-    searchTime: number;
-    rankingStrategy: string;
-    filtersApplied: string[];
-  };
-}

@@ -1,0 +1,18 @@
+{
+  "id": "provider-pattern",
+  "category": "UI Architecture",
+  "name": "Provider Pattern",
+  "description": "A pattern for providing context to component trees without prop drilling",
+  "when_to_use": "Global state, theme configuration, user authentication, internationalization",
+  "benefits": "Avoids prop drilling, clean component interfaces, centralized state management",
+  "drawbacks": "Can make component dependencies less explicit, potential performance issues with deep trees",
+  "use_cases": "React Context, Redux Provider, Theme providers, Authentication providers",
+  "complexity": "Low",
+  "tags": ["react", "context", "state-management", "prop-drilling"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "import React, { createContext, useContext, ReactNode } from 'react';\n\ninterface Theme {\n  primaryColor: string;\n  secondaryColor: string;\n  fontSize: string;\n}\n\nconst ThemeContext = createContext<Theme | undefined>(undefined);\n\ninterface ThemeProviderProps {\n  children: ReactNode;\n  theme: Theme;\n}\n\nfunction ThemeProvider({ children, theme }: ThemeProviderProps) {\n  return (\n    <ThemeContext.Provider value={theme}>\n      {children}\n    </ThemeContext.Provider>\n  );\n}\n\nfunction useTheme(): Theme {\n  const context = useContext(ThemeContext);\n  if (context === undefined) {\n    throw new Error('useTheme must be used within a ThemeProvider');\n  }\n  return context;\n}\n\n// Usage\nconst lightTheme: Theme = {\n  primaryColor: '#007bff',\n  secondaryColor: '#6c757d',\n  fontSize: '16px'\n};\n\nfunction Button() {\n  const theme = useTheme();\n  return (\n    <button style={{ \n      backgroundColor: theme.primaryColor,\n      fontSize: theme.fontSize \n    }}>\n      Themed Button\n    </button>\n  );\n}\n\nfunction App() {\n  return (\n    <ThemeProvider theme={lightTheme}>\n      <Button />\n    </ThemeProvider>\n  );\n}"
+    }
+  }
+}
