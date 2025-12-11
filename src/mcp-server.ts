@@ -671,11 +671,12 @@ async function main(): Promise<void> {
 
   const defaultDbPath = path.join(projectRoot, 'data', 'design-patterns.db');
 
+  const maxConcurrentRequests = parseInt(process.env.MAX_CONCURRENT_REQUESTS || '10');
   const config: MCPServerConfig = {
     databasePath: process.env.DATABASE_PATH || defaultDbPath,
     logLevel: (process.env.LOG_LEVEL as any) || 'info',
     enableLLM: process.env.ENABLE_LLM === 'true',
-    maxConcurrentRequests: parseInt(process.env.MAX_CONCURRENT_REQUESTS || '10'),
+    maxConcurrentRequests: isNaN(maxConcurrentRequests) ? 10 : Math.max(1, maxConcurrentRequests),
   };
 
   const server = createDesignPatternsServer(config);

@@ -5,6 +5,29 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2025-12-11
+
+### Fixed
+
+#### TypeScript Compilation Errors
+
+- **Embedding Service Adapter**: Fixed TypeScript errors in `src/adapters/embedding-service-adapter.ts` where `Error` objects were being incorrectly passed to `structuredLogger.warn()` method
+  - Lines 217 and 249: Converted `Error` objects to proper `Record<string, unknown>` format with `{ message: error.message, stack: error.stack }`
+  - Ensures type safety while preserving error information for logging
+  - Build now passes without TypeScript compilation errors
+
+#### Code Quality Improvements
+
+- **Type Safety**: Enhanced type consistency across logging operations
+- **Error Handling**: Maintained error information while fixing type compatibility
+
+### Technical Details
+
+- **Build Status**: ✅ TypeScript compilation passing
+- **Test Status**: 214/219 tests passing (97.7% success rate)
+- **Pattern Catalog**: 661 design patterns available
+- **Zero Breaking Changes**: Fix maintains backward compatibility
+
 ## [0.2.10] - 2025-10-17
 
 ### Fixed

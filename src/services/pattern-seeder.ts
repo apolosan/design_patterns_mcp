@@ -17,6 +17,7 @@ interface SeederConfig {
 
 interface RawRelationship {
   targetPatternId?: string;
+  target_pattern_id?: string;
   patternId?: string;
   name?: string;
   type?: string;
@@ -127,14 +128,10 @@ export class PatternSeeder {
               totalRelationships++;
             }
           } else if (relationship && typeof relationship === 'object') {
-            // Object format: extract target pattern name
-            const targetPatternName =
-              relationship.patternId ?? relationship.targetPatternId ?? relationship.name;
-            if (targetPatternName) {
-              const relInserted = this.insertRelationship(sourceId, targetPatternName);
-              if (relInserted) {
-                totalRelationships++;
-              }
+            // Object format: pass the relationship object
+            const relInserted = this.insertRelationship(sourceId, relationship);
+            if (relInserted) {
+              totalRelationships++;
             }
           }
         }
@@ -368,7 +365,7 @@ export class PatternSeeder {
       } else if (relationship && typeof relationship === 'object') {
         // New format: relationship is an object
         targetPatternId =
-          relationship.targetPatternId ?? relationship.patternId ?? relationship.name ?? 'unknown';
+          relationship.targetPatternId ?? relationship.target_pattern_id ?? relationship.patternId ?? relationship.name ?? 'unknown';
         type = relationship.type ?? 'related';
         strength = relationship.strength ?? 1.0;
         description = relationship.description ?? `Related to ${targetPatternId}`;

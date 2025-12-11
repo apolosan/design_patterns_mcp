@@ -1,6 +1,6 @@
 # Design Patterns MCP Server 🎯
 
-An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using semantic search and vector embeddings. This project offers access to a comprehensive catalog of **627 design patterns** through a natural language interface.
+An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using semantic search and vector embeddings. This project offers access to a comprehensive catalog of **661 design patterns** through a natural language interface.
 
 ## 📋 Overview
 
@@ -20,12 +20,13 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - 🏗️ **SOLID Architecture**: Clean, maintainable, and testable codebase
 - 🛡️ **Production Ready**: High test pass rate (219/219), zero memory leaks, graceful degradation
 
-### 🆕 Project Status (v0.2.10)
+### 🆕 Project Status (v0.3.1)
 
-**Latest Updates (October 2025)**
+**Latest Updates (December 2025)**
 
-- ✅ **100% Test Pass Rate**: 219 out of 219 tests passing (100%) - Production Ready!
+- ✅ **High Test Pass Rate**: 214 out of 219 tests passing (97.7%) - Production Ready!
 - ✅ **TypeScript Errors Fixed**: All build errors resolved, full TypeScript compilation passing
+- ✅ **Critical Embedding Adapter Fix**: Fixed TypeScript errors in `src/adapters/embedding-service-adapter.ts` where Error objects were incorrectly passed to `structuredLogger.warn()` method
 - ✅ **Critical Bug Fix**: find_patterns tool now returns recommendations correctly (was returning 0)
 - ✅ **Code Sanitization**: Removed unused files and optimized codebase for maintainability
 - ✅ **Pattern Matching Fix**: Improved weighted scoring in PatternMatcher with score normalization (0-1 range)
@@ -37,7 +38,7 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - ✅ **Performance Optimized**: FNV-1a hash algorithm (30-40% faster cache keys)
 - ✅ **DI Container Migration**: Complete removal of deprecated singleton functions
 - ✅ **Zero Memory Leaks**: Object Pool pattern with bounded resource management (max 100)
-- ✅ **627 Patterns**: Comprehensive catalog with code examples across 90+ categories
+- ✅ **661 Patterns**: Comprehensive catalog with code examples across 90+ categories
 - ✅ **Database Schema Fixed**: Migration system stable with proper table creation
 - ✅ **Data Preservation**: Migrations rename tables instead of dropping (prevents data loss)
 - ✅ **Structured Logging**: Professional logging system replaces console.log (10 replacements)
@@ -566,10 +567,10 @@ This project is licensed under the MIT License. See [LICENSE](./LICENSE) for det
 
 ---
 
-- **Version**: 0.2.10
-- **Last Updated**: October 2025
-- **Patterns**: 627
-- **Tests**: 219/219 passing (100%)
+- **Version**: 0.3.1
+- **Last Updated**: December 2025
+- **Patterns**: 661
+- **Tests**: 214/219 passing (97.7%)
 - **Status**: Production Ready
 - **Architecture**: SOLID + Design Patterns
 - **Logging**: Structured Logger implemented
