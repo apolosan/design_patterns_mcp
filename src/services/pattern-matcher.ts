@@ -10,6 +10,9 @@ import { CacheService } from './cache.js';
 import { structuredLogger } from '../utils/logger.js';
 import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
 import { EmbeddingServiceAdapter } from '../adapters/embedding-service-adapter.js';
+import { FuzzyInferenceEngine } from './fuzzy-inference.js';
+import { FuzzyDefuzzificationEngine } from './fuzzy-defuzzification.js';
+import { PatternMembershipFunctions } from './fuzzy-membership.js';
 
 // Define CodeAnalysisResult interface locally since it's not exported in compiled JS
 interface CodeAnalysisResult {
@@ -45,6 +48,7 @@ interface PatternMatcherConfig {
   useHybridSearch: boolean;
   semanticWeight: number;
   keywordWeight: number;
+  useFuzzyRefinement?: boolean;
 }
 
 // Local interfaces for pattern matching
@@ -115,6 +119,9 @@ export class PatternMatcher {
   private patternAnalyzer: PatternAnalyzer;
   private embeddingAdapter: EmbeddingServiceAdapter | null = null;
   private cache: CacheService;
+  private fuzzyInferenceEngine: FuzzyInferenceEngine;
+  private fuzzyDefuzzificationEngine: FuzzyDefuzzificationEngine;
+  private fuzzyMembershipFunctions: PatternMembershipFunctions;
 
   constructor(
     db: DatabaseManager,
@@ -128,6 +135,11 @@ export class PatternMatcher {
     this.patternAnalyzer = new PatternAnalyzer();
     this.cache = cache ?? new CacheService();
 
+    // Initialize fuzzy logic components
+    this.fuzzyMembershipFunctions = new PatternMembershipFunctions();
+    this.fuzzyInferenceEngine = new FuzzyInferenceEngine();
+    this.fuzzyDefuzzificationEngine = new FuzzyDefuzzificationEngine();
+
     // Embedding adapter will be initialized lazily in generateQueryEmbedding
   }
 
@@ -135,7 +147,14 @@ export class PatternMatcher {
    * Find patterns matching a user request
    */
   async findMatchingPatterns(request: PatternRequest): Promise<PatternRecommendation[]> {
+    const startTime = Date.now();
+
     try {
+      structuredLogger.debug('pattern-matcher', 'Starting pattern matching', {
+        query: request.query,
+        useFuzzyRefinement: this.config.useFuzzyRefinement,
+        config: this.config
+      });
       // Check cache first
       const cacheKey = `pattern_match:${request.query}:${JSON.stringify({
         categories: request.categories?.sort(),
@@ -145,22 +164,70 @@ export class PatternMatcher {
       const cachedResult = this.cache.get(cacheKey);
 
       if (cachedResult) {
+        structuredLogger.debug('pattern-matcher', 'Cache hit for pattern matching', {
+          query: request.query,
+          cacheKey,
+          resultsCount: (cachedResult as PatternRecommendation[]).length
+        });
         return cachedResult as PatternRecommendation[];
       }
 
+      const matchingStartTime = Date.now();
       const matches = await this.performMatching(request);
-      const recommendations = this.buildRecommendations(matches, request);
+      const matchingTime = Date.now() - matchingStartTime;
+
+      const buildingStartTime = Date.now();
+      let recommendations = this.buildRecommendations(matches, request);
+      const buildingTime = Date.now() - buildingStartTime;
+
+      // Apply fuzzy refinement if enabled
+      const fuzzyStartTime = Date.now();
+      if (this.config.useFuzzyRefinement) {
+        structuredLogger.debug('pattern-matcher', 'Applying fuzzy refinement', {
+          patternCount: recommendations.length,
+          query: request.query
+        });
+        recommendations = await this.applyFuzzyRefinement(recommendations, request);
+      }
+      const fuzzyTime = this.config.useFuzzyRefinement ? Date.now() - fuzzyStartTime : 0;
 
       // Sort by confidence and limit results
+      const sortingStartTime = Date.now();
       recommendations.sort((a, b) => b.confidence - a.confidence);
       const finalResults = recommendations.slice(0, request.maxResults ?? this.config.maxResults);
+      const sortingTime = Date.now() - sortingStartTime;
 
       // Cache the results for 30 minutes
       this.cache.set(cacheKey, finalResults, 1800000);
 
+      const totalTime = Date.now() - startTime;
+
+      structuredLogger.info('pattern-matcher', 'Pattern matching performance metrics', {
+        query: request.query,
+        totalTimeMs: totalTime,
+        matchingTimeMs: matchingTime,
+        buildingTimeMs: buildingTime,
+        fuzzyTimeMs: fuzzyTime,
+        sortingTimeMs: sortingTime,
+        matchesFound: matches.length,
+        recommendationsBuilt: recommendations.length,
+        finalResultsCount: finalResults.length,
+        semanticSearchEnabled: this.config.useSemanticSearch,
+        keywordSearchEnabled: this.config.useKeywordSearch,
+        hybridSearchEnabled: this.config.useHybridSearch,
+        fuzzyRefinementEnabled: this.config.useFuzzyRefinement,
+        avgConfidence: finalResults.length > 0
+          ? (finalResults.reduce((sum, r) => sum + r.confidence, 0) / finalResults.length).toFixed(3)
+          : '0.000'
+      });
+
       return finalResults;
     } catch (error) {
-      structuredLogger.error('pattern-matcher', 'Pattern matching failed', error as Error);
+      const totalTime = Date.now() - startTime;
+      structuredLogger.error('pattern-matcher', 'Pattern matching failed', error as Error, {
+        query: request.query,
+        processingTimeMs: totalTime
+      });
       throw error;
     }
   }
@@ -431,6 +498,146 @@ export class PatternMatcher {
 
      return combinedMatches;
    }
+
+  /**
+   * Apply fuzzy refinement to pattern recommendations
+   */
+  private async applyFuzzyRefinement(
+    recommendations: PatternRecommendation[],
+    request: PatternRequest
+  ): Promise<PatternRecommendation[]> {
+    const startTime = Date.now();
+    let processedCount = 0;
+    let failedCount = 0;
+    const originalScores: number[] = [];
+    const refinedScores: number[] = [];
+
+    for (const recommendation of recommendations) {
+      try {
+        originalScores.push(recommendation.confidence);
+
+        // Extract features for fuzzy evaluation
+        const pattern = recommendation.pattern;
+        const detailedPattern = this.getDetailedPattern(pattern.id);
+
+        if (!detailedPattern) continue;
+
+        // Calculate contextual fit based on programming language and other factors
+        const contextualFit = this.calculateContextualFit(detailedPattern, request);
+
+        // Prepare fuzzy input
+        const fuzzyInput = {
+          semanticSimilarity: recommendation.confidence, // Use current confidence as semantic score
+          keywordMatchStrength: this.calculateKeywordStrength(recommendation.justification.supportingReasons),
+          patternComplexity: detailedPattern.complexity || 'Medium',
+          contextualFit,
+          programmingLanguage: request.programmingLanguage,
+          patternId: pattern.id,
+          originalScore: recommendation.confidence
+        };
+
+        // Apply fuzzy inference
+        const fuzzyResult = this.fuzzyInferenceEngine.evaluatePattern(fuzzyInput);
+
+        // Apply defuzzification
+        const defuzzResult = this.fuzzyDefuzzificationEngine.defuzzifyPatternRelevance(fuzzyResult.fuzzyScore);
+
+        // Update recommendation with fuzzy-refined score
+        const originalConfidence = recommendation.confidence;
+        recommendation.confidence = defuzzResult.crispValues.relevance;
+        recommendation.justification.fuzzyReasoning = fuzzyResult.reasoning;
+        recommendation.justification.fuzzyConfidence = defuzzResult.confidence;
+
+        refinedScores.push(recommendation.confidence);
+        processedCount++;
+        processedCount++;
+
+        console.log(`🎯 Pattern ${pattern.id}: original=${originalConfidence.toFixed(3)}, fuzzy=${defuzzResult.crispValues.relevance.toFixed(3)}, rules=${fuzzyResult.ruleFirings.length}`);
+
+        // Log significant changes
+        const scoreChange = recommendation.confidence - originalConfidence;
+        if (Math.abs(scoreChange) > 0.1) {
+          structuredLogger.debug('pattern-matcher', 'Significant fuzzy refinement', {
+            patternId: pattern.id,
+            originalScore: originalConfidence.toFixed(3),
+            refinedScore: recommendation.confidence.toFixed(3),
+            change: scoreChange.toFixed(3),
+            dominantRule: fuzzyResult.ruleFirings[0]?.rule.split(' → ')[0]
+          });
+        }
+
+      } catch (error) {
+        failedCount++;
+        structuredLogger.warn('pattern-matcher', 'Fuzzy refinement failed for pattern', {
+          patternId: recommendation.pattern.id,
+          error: (error as Error).message
+        });
+        // Keep original recommendation if fuzzy refinement fails
+      }
+    }
+
+    const processingTime = Date.now() - startTime;
+    const avgProcessingTime = processedCount > 0 ? processingTime / processedCount : 0;
+    const avgScoreChange = refinedScores.length > 0 && originalScores.length > 0
+      ? refinedScores.reduce((a, b, i) => a + (b - originalScores[i]), 0) / refinedScores.length
+      : 0;
+
+    structuredLogger.info('pattern-matcher', 'Fuzzy refinement performance metrics', {
+      patternsProcessed: processedCount,
+      patternsFailed: failedCount,
+      totalProcessingTimeMs: processingTime,
+      avgProcessingTimePerPatternMs: avgProcessingTime.toFixed(2),
+      avgScoreChange: avgScoreChange.toFixed(4),
+      successRate: ((processedCount / recommendations.length) * 100).toFixed(1) + '%'
+    });
+
+    return recommendations;
+  }
+
+  /**
+   * Calculate contextual fit based on programming language and other factors
+   */
+  private calculateContextualFit(pattern: DetailedPattern, request: PatternRequest): number {
+    let fit = 0.5; // Base fit
+
+    // Language compatibility
+    if (request.programmingLanguage) {
+      const hasLanguageExamples = pattern.tags.some(tag =>
+        tag.toLowerCase().includes(request.programmingLanguage!.toLowerCase().slice(0, 3))
+      );
+      fit += hasLanguageExamples ? 0.3 : -0.1;
+    }
+
+    // Category relevance (creational patterns might be more relevant for object creation queries)
+    if (request.query.toLowerCase().includes('create') || request.query.toLowerCase().includes('factory')) {
+      if (pattern.category.toLowerCase() === 'creational') {
+        fit += 0.2;
+      }
+    }
+
+    // Complexity appropriateness (prefer simpler patterns for basic queries)
+    if (request.query.split(' ').length <= 3 && pattern.complexity.toLowerCase() === 'low') {
+      fit += 0.1;
+    }
+
+    return Math.max(0, Math.min(1, fit));
+  }
+
+  /**
+   * Calculate keyword match strength from justification reasons
+   */
+  private calculateKeywordStrength(supportingReasons: string[]): number {
+    if (!supportingReasons || supportingReasons.length === 0) return 0.3;
+
+    // Count keyword-related reasons
+    const keywordReasons = supportingReasons.filter(reason =>
+      reason.toLowerCase().includes('contains') ||
+      reason.toLowerCase().includes('matches') ||
+      reason.toLowerCase().includes('keyword')
+    );
+
+    return Math.min(1, keywordReasons.length * 0.2 + 0.3);
+  }
 
   /**
    * Build pattern recommendations from matches

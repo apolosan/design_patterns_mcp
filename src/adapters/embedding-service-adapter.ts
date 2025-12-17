@@ -7,6 +7,7 @@ import { EmbeddingStrategy, EmbeddingVector } from '../strategies/embedding-stra
 import { EmbeddingStrategyFactory } from '../factories/embedding-factory.js';
 import { CacheService } from '../services/cache.js';
 import { structuredLogger } from '../utils/logger.js';
+import { CircuitBreaker, CircuitBreakerConfig } from '../utils/circuit-breaker.js';
 
 interface EmbeddingServiceConfig {
   cacheEnabled?: boolean;
@@ -16,16 +17,23 @@ interface EmbeddingServiceConfig {
   retryDelay?: number;
   preferredStrategy?: 'transformers' | 'ollama' | 'simple-hash';
   fallbackToSimple?: boolean;
+  circuitBreakerEnabled?: boolean;
+  circuitBreakerConfig?: Partial<CircuitBreakerConfig>;
 }
+
+type RequiredEmbeddingServiceConfig = Required<Omit<EmbeddingServiceConfig, 'circuitBreakerConfig'>> & {
+  circuitBreakerConfig?: Partial<CircuitBreakerConfig>;
+};
 
 /**
  * Adapter that integrates embedding strategies with the existing system
  */
 export class EmbeddingServiceAdapter {
   private strategy: EmbeddingStrategy | null = null;
-  private config: Required<EmbeddingServiceConfig>;
+  private config: RequiredEmbeddingServiceConfig;
   private factory: EmbeddingStrategyFactory;
   private cache: CacheService;
+  private circuitBreaker?: CircuitBreaker;
 
   constructor(config: EmbeddingServiceConfig = {}, cache?: CacheService) {
     const defaultConfig = {
@@ -34,8 +42,9 @@ export class EmbeddingServiceAdapter {
       batchSize: 10,
       retryAttempts: 3,
       retryDelay: 1000,
-      preferredStrategy: 'simple-hash' as const,
+      preferredStrategy: 'transformers' as const,
       fallbackToSimple: true,
+      circuitBreakerEnabled: true,
     };
 
     this.config = { ...defaultConfig, ...config };
@@ -47,6 +56,19 @@ export class EmbeddingServiceAdapter {
       fallbackToSimple: this.config.fallbackToSimple,
       enableLogging: true,
     });
+
+    // Initialize circuit breaker if enabled
+    if (this.config.circuitBreakerEnabled) {
+      const circuitConfig: CircuitBreakerConfig = {
+        failureThreshold: 5,
+        recoveryTimeout: 60000, // 1 minute
+        monitoringPeriod: 300000, // 5 minutes
+        successThreshold: 3,
+        name: 'embedding-service',
+        ...this.config.circuitBreakerConfig,
+      };
+      this.circuitBreaker = new CircuitBreaker(circuitConfig);
+    }
   }
 
   /**
@@ -67,7 +89,7 @@ export class EmbeddingServiceAdapter {
   }
 
   /**
-   * Generate embedding for a single text (with caching)
+   * Generate embedding for a single text (with caching and circuit breaker)
    */
   async generateEmbedding(text: string): Promise<number[]> {
     if (!this.strategy) {
@@ -82,8 +104,8 @@ export class EmbeddingServiceAdapter {
       }
     }
 
-    // Generate new embedding with retry logic
-    const embedding = await this.generateWithRetry(text);
+    // Generate new embedding with circuit breaker protection
+    const embedding = await this.generateWithCircuitBreaker(text);
 
     // Cache the result
     if (this.config.cacheEnabled) {
@@ -94,7 +116,7 @@ export class EmbeddingServiceAdapter {
   }
 
   /**
-   * Generate embeddings for multiple texts (batch processing)
+   * Generate embeddings for multiple texts (batch processing with circuit breaker)
    */
   async generateEmbeddings(texts: string[]): Promise<number[][]> {
     if (!this.strategy) {
@@ -119,8 +141,8 @@ export class EmbeddingServiceAdapter {
       uncachedTexts.push(...texts.map((text, index) => ({ text, index })));
     }
 
-    // Process uncached texts in batches
-    const newEmbeddings = await this.processBatches(uncachedTexts.map(item => item.text));
+    // Process uncached texts in batches with circuit breaker
+    const newEmbeddings = await this.processBatchesWithCircuitBreaker(uncachedTexts.map(item => item.text));
 
     // Cache new embeddings and map to correct positions
     uncachedTexts.forEach((item, i) => {
@@ -177,6 +199,23 @@ export class EmbeddingServiceAdapter {
   }
 
   /**
+   * Get circuit breaker statistics
+   */
+  getCircuitBreakerStats() {
+    return this.circuitBreaker?.getStats();
+  }
+
+  /**
+   * Manually reset circuit breaker (for testing/admin purposes)
+   */
+  resetCircuitBreaker(): void {
+    if (this.circuitBreaker) {
+      this.circuitBreaker.close();
+      structuredLogger.info('embedding-adapter', 'Circuit breaker manually reset');
+    }
+  }
+
+  /**
    * Switch to a different strategy
    */
   async switchStrategy(strategyType: 'transformers' | 'ollama' | 'simple-hash'): Promise<void> {
@@ -228,6 +267,17 @@ export class EmbeddingServiceAdapter {
     );
   }
 
+  private async generateWithCircuitBreaker(text: string): Promise<EmbeddingVector> {
+    if (!this.circuitBreaker) {
+      // Fallback to original retry logic if circuit breaker disabled
+      return this.generateWithRetry(text);
+    }
+
+    return this.circuitBreaker.execute(async () => {
+      return this.generateWithRetry(text);
+    });
+  }
+
   private async processBatches(texts: string[]): Promise<number[][]> {
     if (!this.strategy) {
       throw new Error('Embedding strategy not initialized');
@@ -251,6 +301,41 @@ export class EmbeddingServiceAdapter {
 
         for (const text of batch) {
           const embedding = await this.generateWithRetry(text);
+          results.push(embedding.values);
+        }
+      }
+    }
+
+    return results;
+  }
+
+  private async processBatchesWithCircuitBreaker(texts: string[]): Promise<number[][]> {
+    if (!this.circuitBreaker) {
+      // Fallback to original batch processing if circuit breaker disabled
+      return this.processBatches(texts);
+    }
+
+    const results: number[][] = [];
+
+    for (let i = 0; i < texts.length; i += this.config.batchSize) {
+      const batch = texts.slice(i, i + this.config.batchSize);
+
+      try {
+        // Use circuit breaker for batch processing
+        const batchEmbeddings = await this.circuitBreaker.execute(async () => {
+          return this.strategy!.batchGenerateEmbeddings(batch);
+        });
+        results.push(...batchEmbeddings.map(e => e.values));
+      } catch (error) {
+        // Fallback to individual processing if batch fails
+        structuredLogger.warn(
+          'embedding-adapter',
+          'Batch processing failed, falling back to individual processing',
+          { message: (error as Error).message, stack: (error as Error).stack }
+        );
+
+        for (const text of batch) {
+          const embedding = await this.generateWithCircuitBreaker(text);
           results.push(embedding.values);
         }
       }

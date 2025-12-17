@@ -5,6 +5,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { LoggingStrategy, LogEntry as StrategyLogEntry, LogLevel as StrategyLogLevel, ConsoleLoggingStrategy } from '../strategies/logging-strategy.js';
 
 enum LogLevel {
   DEBUG = 0,
@@ -33,15 +34,18 @@ interface LoggerConfig {
   logFile?: string;
   maxFileSize: number;
   maxFiles: number;
+  strategy?: LoggingStrategy; // Optional strategy for Strategy Pattern
 }
 
 export class Logger {
   private config: LoggerConfig;
   private logBuffer: LogEntry[] = [];
   private bufferSize = 100;
+  private strategy?: LoggingStrategy;
 
   constructor(config: LoggerConfig) {
     this.config = config;
+    this.strategy = config.strategy;
   }
 
   /**
@@ -126,6 +130,23 @@ export class Logger {
       duration
     };
 
+    // Use strategy if available (Strategy Pattern)
+    if (this.strategy) {
+      const strategyEntry: StrategyLogEntry = {
+        timestamp: entry.timestamp,
+        level: level as unknown as StrategyLogLevel, // Map log levels
+        service: entry.service,
+        message: entry.message,
+        data: entry.data,
+        error: entry.error,
+        correlationId: entry.correlationId,
+        duration: entry.duration
+      };
+      this.strategy.log(strategyEntry);
+      return;
+    }
+
+    // Fallback to traditional logging
     // Add to buffer
     this.logBuffer.push(entry);
 
@@ -329,6 +350,12 @@ const DEFAULT_LOGGER_CONFIG: LoggerConfig = {
 // Factory function
 function createLogger(config?: Partial<LoggerConfig>): Logger {
   const finalConfig = { ...DEFAULT_LOGGER_CONFIG, ...config };
+  return new Logger(finalConfig);
+}
+
+// Factory function with strategy injection (Strategy Pattern)
+export function createLoggerWithStrategy(strategy: LoggingStrategy, config?: Partial<LoggerConfig>): Logger {
+  const finalConfig = { ...DEFAULT_LOGGER_CONFIG, ...config, strategy };
   return new Logger(finalConfig);
 }
 

@@ -31,12 +31,21 @@ import { logger } from './services/logger.js';
 import { parseTags, parseArrayProperty } from './utils/parse-tags.js';
 import { MCPRateLimiter } from './utils/rate-limiter.js';
 import { InputValidator } from './utils/input-validation.js';
+import { SimpleContainer, configureContainer, TOKENS } from './core/container.js';
+import { MCPServerConfigBuilder } from './core/config-builder.js';
+import { HealthCheckService } from './health/health-check-service.js';
+import { DatabaseHealthCheck } from './health/database-health-check.js';
+import { VectorOperationsHealthCheck } from './health/vector-operations-health-check.js';
+import { LLMBridgeHealthCheck } from './health/llm-bridge-health-check.js';
+import { EmbeddingServiceHealthCheck } from './health/embedding-service-health-check.js';
+import type { Logger } from './services/logger.js';
 
 export interface MCPServerConfig {
   databasePath: string;
   logLevel: 'debug' | 'info' | 'warn' | 'error';
   enableLLM: boolean;
   maxConcurrentRequests: number;
+  enableFuzzyLogic?: boolean;
 }
 
 class DesignPatternsMCPServer {
@@ -50,20 +59,125 @@ class DesignPatternsMCPServer {
   private patternSeeder: PatternSeeder;
   private config: MCPServerConfig;
   private rateLimiter: MCPRateLimiter;
+  private container?: SimpleContainer;
+  private logger: Logger;
+  private healthCheckService?: HealthCheckService;
 
-  constructor(config: MCPServerConfig) {
-    this.config = config;
+  constructor(configBuilder: MCPServerConfigBuilder | MCPServerConfig, container?: SimpleContainer) {
+    // Build configuration using Builder Pattern if provided, otherwise use legacy config
+    this.config = configBuilder instanceof MCPServerConfigBuilder
+      ? configBuilder.build()
+      : configBuilder;
+    this.container = container;
 
-    // Initialize database
-    this.db = new DatabaseManager({
-      filename: config.databasePath,
-      options: {
+    // Use logger from container if available, otherwise use global logger
+    this.logger = container ? container.getService<Logger>(TOKENS.LOGGER) : logger;
+
+    // Initialize health check service
+    this.healthCheckService = new HealthCheckService({ enabled: true, timeout: 30000 });
+
+
+
+    // Use DI container if provided, otherwise fallback to direct instantiation
+    if (container) {
+      // Resolve dependencies from container
+    this.db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    this.vectorOps = container.getService<VectorOperationsService>(TOKENS.VECTOR_OPERATIONS);
+    this.semanticSearch = container.getService<SemanticSearchService>(TOKENS.SEMANTIC_SEARCH);
+    this.patternMatcher = container.getService<PatternMatcher>(TOKENS.PATTERN_MATCHER);
+    this.migrationManager = container.getService<MigrationManager>(TOKENS.MIGRATION_MANAGER);
+    this.patternSeeder = container.getService<PatternSeeder>(TOKENS.PATTERN_SEEDER);
+    this.rateLimiter = container.getService<MCPRateLimiter>(TOKENS.RATE_LIMITER);
+
+    // Get health check service from container
+    this.healthCheckService = container.getService<HealthCheckService>(TOKENS.HEALTH_CHECK_SERVICE);
+
+      // Optional LLM bridge
+      if (this.config.enableLLM && container.has(TOKENS.LLM_BRIDGE)) {
+        this.llmBridge = container.getService<LLMBridgeService>(TOKENS.LLM_BRIDGE);
+      }
+    } else {
+      // Fallback to direct instantiation for backward compatibility
+      // Initialize database
+      this.db = new DatabaseManager({
+        filename: this.config.databasePath,
+        options: {
         verbose:
-          config.logLevel === 'debug'
-            ? (message: string) => logger.debug('database', message)
+          this.config.logLevel === 'debug'
+            ? (message: string) => this.logger.debug('database', message)
             : undefined,
-      },
-    });
+        },
+      });
+
+      // Initialize services
+      this.vectorOps = new VectorOperationsService(this.db, {
+        model: 'all-MiniLM-L6-v2',
+        dimensions: 384,
+        similarityThreshold: 0.3,
+        maxResults: 10,
+        cacheEnabled: true,
+      });
+
+      // Initialize semantic search service
+      this.semanticSearch = new SemanticSearchService(this.db, this.vectorOps, {
+        modelName: 'all-MiniLM-L6-v2',
+        maxResults: 10,
+        similarityThreshold: 0.3,
+        contextWindow: 512,
+        useQueryExpansion: false,
+        useReRanking: true,
+      });
+
+      this.patternMatcher = new PatternMatcher(this.db, this.vectorOps, {
+        maxResults: 5,
+        minConfidence: 0.05, // Lower threshold for more results
+        useSemanticSearch: true,
+        useKeywordSearch: true,
+        useHybridSearch: true,
+        semanticWeight: 0.7,
+        keywordWeight: 0.3,
+        useFuzzyRefinement: this.config.enableFuzzyLogic ?? true, // Enable fuzzy refinement by default
+      });
+
+      if (this.config.enableLLM) {
+        this.llmBridge = new LLMBridgeService(this.db, {
+
+          provider: 'ollama',
+          model: 'llama3.2',
+          maxTokens: 2000,
+          temperature: 0.3,
+          timeout: 30000, // 30 seconds
+        });
+      }
+
+      // Get the directory of the current module
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
+
+      // Resolve path relative to project root
+      // When running from src/, no need to go up
+      // When running from dist/src/, go up two levels
+      const isCompiled = __dirname.includes('dist');
+      const projectRoot = isCompiled
+        ? path.resolve(__dirname, '..', '..')
+        : path.resolve(__dirname, '..');
+      const patternsPath = path.join(projectRoot, 'data', 'patterns');
+
+      this.migrationManager = new MigrationManager(this.db);
+      this.patternSeeder = new PatternSeeder(this.db, {
+        patternsPath,
+        batchSize: 100,
+        skipExisting: true,
+      });
+
+      // Initialize rate limiter
+      this.rateLimiter = new MCPRateLimiter({
+        maxRequestsPerMinute: 60,
+        maxRequestsPerHour: 1000,
+        maxConcurrentRequests: this.config.maxConcurrentRequests,
+        burstLimit: 20,
+      });
+    }
 
     // Initialize services
     this.vectorOps = new VectorOperationsService(this.db, {
@@ -92,9 +206,10 @@ class DesignPatternsMCPServer {
       useHybridSearch: true,
       semanticWeight: 0.7,
       keywordWeight: 0.3,
+        useFuzzyRefinement: this.config.enableFuzzyLogic ?? true, // Enable fuzzy refinement by default
     });
 
-    if (config.enableLLM) {
+    if (this.config.enableLLM) {
       this.llmBridge = new LLMBridgeService(this.db, {
         provider: 'ollama',
         model: 'llama3.2',
@@ -235,6 +350,24 @@ class DesignPatternsMCPServer {
               },
             },
           },
+          {
+            name: 'get_health_status',
+            description: 'Get the health status of all system services',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                checkName: {
+                  type: 'string',
+                  description: 'Optional: Check only a specific health check by name',
+                },
+                tags: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Optional: Filter health checks by tags (e.g., ["database", "critical"])',
+                },
+              },
+            },
+          },
         ],
       };
     });
@@ -255,6 +388,8 @@ class DesignPatternsMCPServer {
               return await this.handleGetPatternDetails(toolArgs);
             case 'count_patterns':
               return await this.handleCountPatterns(toolArgs);
+            case 'get_health_status':
+              return await this.handleGetHealthStatus(toolArgs);
             default:
               throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${toolName}`);
           }
@@ -309,7 +444,7 @@ class DesignPatternsMCPServer {
 
     // Error handling
     this.server.onerror = error => {
-      logger.error(
+      this.logger.error(
         'mcp-server',
         'Server error',
         error instanceof Error ? error : new Error(String(error))
@@ -534,6 +669,93 @@ class DesignPatternsMCPServer {
     }
   }
 
+  private async handleGetHealthStatus(args: unknown): Promise<CallToolResult> {
+    try {
+      if (!this.healthCheckService) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: 'Health check service is not available. Health checks require DI container initialization.',
+            },
+          ],
+        };
+      }
+
+      const validatedArgs = InputValidator.validateGetHealthStatusArgs(args);
+
+      let report;
+      if (validatedArgs.checkName) {
+        // Get specific health check
+        const result = await this.healthCheckService.check(validatedArgs.checkName);
+        report = {
+          overall: result.status,
+          timestamp: new Date().toISOString(),
+          duration: result.duration,
+          checks: [result],
+          summary: {
+            total: 1,
+            healthy: result.status === 'healthy' ? 1 : 0,
+            degraded: result.status === 'degraded' ? 1 : 0,
+            unhealthy: result.status === 'unhealthy' ? 1 : 0,
+            unknown: result.status === 'unknown' ? 1 : 0,
+          },
+        };
+      } else if (validatedArgs.tags && validatedArgs.tags.length > 0) {
+        // Get health checks by tags
+        report = await this.healthCheckService.checkByTags(validatedArgs.tags);
+      } else {
+        // Get all health checks
+        report = await this.healthCheckService.checkAll();
+      }
+
+      // Format the response
+      let response = `## System Health Report\n\n`;
+      response += `**Overall Status:** ${report.overall.toUpperCase()}\n`;
+      response += `**Timestamp:** ${new Date(report.timestamp).toLocaleString()}\n`;
+      response += `**Total Duration:** ${Math.round(report.duration)}ms\n\n`;
+
+      response += `### Summary\n`;
+      response += `- **Total Checks:** ${report.summary.total}\n`;
+      response += `- **Healthy:** ${report.summary.healthy}\n`;
+      response += `- **Degraded:** ${report.summary.degraded}\n`;
+      response += `- **Unhealthy:** ${report.summary.unhealthy}\n`;
+      response += `- **Unknown:** ${report.summary.unknown}\n\n`;
+
+      response += `### Individual Check Results\n\n`;
+      report.checks.forEach((check, index) => {
+        response += `${index + 1}. **${check.name}**\n`;
+        response += `   - **Status:** ${check.status.toUpperCase()}\n`;
+        response += `   - **Duration:** ${Math.round(check.duration)}ms\n`;
+        response += `   - **Message:** ${check.message}\n`;
+
+        if (check.details) {
+          response += `   - **Details:** ${JSON.stringify(check.details, null, 2)}\n`;
+        }
+
+        if (check.tags && check.tags.length > 0) {
+          response += `   - **Tags:** ${check.tags.join(', ')}\n`;
+        }
+
+        response += `\n`;
+      });
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: response,
+          },
+        ],
+      };
+    } catch (error) {
+      throw new McpError(
+        ErrorCode.InternalError,
+        `Health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+  }
+
   // Resource handlers
   private handleReadPatterns(): { contents: Array<{ uri: string; mimeType: string; text: string }> } {
     // OPTIMIZATION: Add pagination with LIMIT to prevent loading all 574+ patterns
@@ -604,7 +826,7 @@ class DesignPatternsMCPServer {
 
   async initialize(): Promise<void> {
     try {
-      logger.info('mcp-server', 'Initializing Design Patterns MCP Server', {
+      this.logger.info('mcp-server', 'Initializing Design Patterns MCP Server', {
         databasePath: this.config.databasePath,
         logLevel: this.config.logLevel,
       });
@@ -616,12 +838,12 @@ class DesignPatternsMCPServer {
 
       // LLMBridge doesn't require initialization
       if (this.llmBridge) {
-        logger.info('mcp-server', 'LLM Bridge configured');
+        this.logger.info('mcp-server', 'LLM Bridge configured');
       }
 
-      logger.info('mcp-server', 'Design Patterns MCP Server initialized successfully');
+      this.logger.info('mcp-server', 'Design Patterns MCP Server initialized successfully');
     } catch (error) {
-      logger.error(
+      this.logger.error(
         'mcp-server',
         'Failed to initialize server',
         error instanceof Error ? error : new Error(String(error))
@@ -633,16 +855,16 @@ class DesignPatternsMCPServer {
   async start(): Promise<void> {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    logger.info('mcp-server', 'Server started and listening on stdio');
+    this.logger.info('mcp-server', 'Server started and listening on stdio');
   }
 
   async stop(): Promise<void> {
     try {
       await this.db.close();
       await this.server.close();
-      logger.info('mcp-server', 'Server stopped');
+      this.logger.info('mcp-server', 'Server stopped');
     } catch (error) {
-      logger.error(
+      this.logger.error(
         'mcp-server',
         'Error stopping server',
         error instanceof Error ? error : new Error(String(error))
@@ -652,32 +874,21 @@ class DesignPatternsMCPServer {
   }
 }
 
-// Export server creation function
+// Export server creation functions
 export function createDesignPatternsServer(config: MCPServerConfig): DesignPatternsMCPServer {
   return new DesignPatternsMCPServer(config);
 }
 
+// Create server with dependency injection (recommended)
+export function createDesignPatternsServerWithDI(config: MCPServerConfig): DesignPatternsMCPServer {
+  const container = configureContainer(config);
+  return new DesignPatternsMCPServer(config, container);
+}
+
 // Main execution when run directly
 async function main(): Promise<void> {
-  // Get the directory of the current module
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
-  // Resolve path relative to project root
-  const isCompiled = __dirname.includes('dist');
-  const projectRoot = isCompiled
-    ? path.resolve(__dirname, '..', '..')
-    : path.resolve(__dirname, '..');
-
-  const defaultDbPath = path.join(projectRoot, 'data', 'design-patterns.db');
-
-  const maxConcurrentRequests = parseInt(process.env.MAX_CONCURRENT_REQUESTS || '10');
-  const config: MCPServerConfig = {
-    databasePath: process.env.DATABASE_PATH || defaultDbPath,
-    logLevel: (process.env.LOG_LEVEL as any) || 'info',
-    enableLLM: process.env.ENABLE_LLM === 'true',
-    maxConcurrentRequests: isNaN(maxConcurrentRequests) ? 10 : Math.max(1, maxConcurrentRequests),
-  };
+  // Build configuration using Builder Pattern
+  const config = MCPServerConfigBuilder.fromEnvironment().build();
 
   const server = createDesignPatternsServer(config);
 

@@ -39,15 +39,31 @@ export function parseArrayProperty(
             .map(item => item.trim())
             .filter(item => item.length > 0);
         } else {
-          // For other longer text properties, treat as single item
-          console.warn(
-            `Failed to parse ${propertyName || 'property'} as JSON, treating as single item`,
-            {
-              data: data.substring(0, 50) + '...',
-              error: error instanceof Error ? error.message : String(error),
-            }
-          );
-          return [data];
+          // For other longer text properties, try to split by common delimiters or return empty array
+          // This prevents noisy warnings while still attempting to extract useful data
+          const cleanedData = data.trim();
+
+          // Try splitting by semicolons (alternative delimiter)
+          if (cleanedData.includes(';')) {
+            return cleanedData
+              .split(';')
+              .map(item => item.trim())
+              .filter(item => item.length > 0);
+          }
+
+          // For array-like properties, return empty array instead of single item
+          // This is safer and prevents false positives in matching
+          if (['when_to_use', 'benefits', 'drawbacks', 'use_cases'].includes(propertyName || '')) {
+            // Silently return empty array for malformed array properties
+            return [];
+          }
+
+          // For other properties, treat as single item but only if it looks meaningful
+          if (cleanedData.length > 0 && cleanedData.length < 500) {
+            return [cleanedData];
+          }
+
+          return [];
         }
       }
     }

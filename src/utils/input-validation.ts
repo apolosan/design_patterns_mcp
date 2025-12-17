@@ -521,4 +521,47 @@ export class InputValidator {
       includeDetails: (includeDetailsResult.sanitized as boolean) ?? false,
     };
   }
+
+  /**
+   * Validates all inputs for get_health_status tool
+   */
+  static validateGetHealthStatusArgs(args: unknown): {
+    checkName?: string;
+    tags?: string[];
+  } {
+    if (typeof args !== 'object' || args === null) {
+      // Allow empty args for getting all health checks
+      return {};
+    }
+    const obj = args as Record<string, unknown>;
+
+    let checkName: string | undefined;
+    if (obj.checkName !== undefined) {
+      const checkNameResult = this.validateString(obj.checkName, 'checkName', {
+        maxLength: 100,
+        sanitize: true,
+      });
+      this.throwIfInvalid(checkNameResult);
+      checkName = checkNameResult.sanitized as string;
+    }
+
+    let tags: string[] | undefined;
+    if (obj.tags !== undefined) {
+      const tagsResult = this.validateArray(obj.tags, 'tags', {
+        maxLength: 10,
+        itemValidator: item =>
+          this.validateString(item, 'tag', {
+            maxLength: 50,
+            sanitize: true,
+          }),
+      });
+      this.throwIfInvalid(tagsResult);
+      tags = tagsResult.sanitized as string[];
+    }
+
+    return {
+      checkName,
+      tags,
+    };
+  }
 }

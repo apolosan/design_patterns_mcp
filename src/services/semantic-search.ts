@@ -80,13 +80,15 @@ export class SemanticSearchService {
     this.vectorOps = vectorOps;
     this.config = config;
 
-    // Initialize embedding adapter with same strategy as other services
+    // Initialize embedding adapter with transformers strategy for semantic search
     this.embeddingAdapter = new EmbeddingServiceAdapter({
       cacheEnabled: true,
       cacheTTL: 3600000, // 1 hour
       batchSize: 10,
       retryAttempts: 3,
       retryDelay: 1000,
+      preferredStrategy: 'transformers',
+      fallbackToSimple: false, // Don't fallback to simple hash for semantic search
     });
   }
 

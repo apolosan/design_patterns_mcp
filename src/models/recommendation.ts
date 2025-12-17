@@ -91,6 +91,8 @@ export interface PatternRecommendation {
     problemFit: string;
     benefits: string[];
     drawbacks: string[];
+    fuzzyReasoning?: string[];
+    fuzzyConfidence?: number;
   };
 
   /** Algorithm confidence in recommendation */
