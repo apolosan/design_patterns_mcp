@@ -34,7 +34,7 @@ export class RateLimiter {
   static getInstance(config?: RateLimitConfig): RateLimiter {
     if (!RateLimiter.instance) {
       RateLimiter.instance = new RateLimiter(
-        config || {
+        config ?? {
           maxRequestsPerMinute: 60,
           maxRequestsPerHour: 1000,
           maxConcurrentRequests: 10,
@@ -162,12 +162,12 @@ export class RateLimiter {
 /**
  * Middleware function for rate limiting MCP tool calls
  */
-function withRateLimit<T extends any[], R>(
+function withRateLimit<T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,
   keyFn: (...args: T) => string,
   rateLimiter?: RateLimiter
 ): (...args: T) => Promise<R> {
-  const limiter = rateLimiter || RateLimiter.getInstance();
+  const limiter = rateLimiter ?? RateLimiter.getInstance();
 
   return async (...args: T): Promise<R> => {
     const key = keyFn(...args);
@@ -195,7 +195,7 @@ export class MCPRateLimiter {
   /**
    * Wrap a tool handler with rate limiting
    */
-  wrapToolHandler<T extends any[], R>(
+  wrapToolHandler<T extends unknown[], R>(
     handler: (...args: T) => Promise<R>,
     toolName: string
   ): (...args: T) => Promise<R> {

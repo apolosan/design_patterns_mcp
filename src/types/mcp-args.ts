@@ -66,7 +66,7 @@ export function isUpdatePatternArgs(args: unknown): args is UpdatePatternArgs {
   const a = args as Record<string, unknown>;
   return typeof a.name === 'string' &&
     typeof a.category === 'string' &&
-    ['Creational', 'Structural', 'Behavioral', 'Architectural', 'Cloud-Native', 'Microservices', 'AI-ML', 'Functional', 'Reactive', 'Anti-Pattern'].includes(a.category as string) &&
+    ['Creational', 'Structural', 'Behavioral', 'Architectural', 'Cloud-Native', 'Microservices', 'AI-ML', 'Functional', 'Reactive', 'Anti-Pattern'].includes(a.category) &&
     typeof a.description === 'string' &&
     typeof a.problem === 'string' &&
     typeof a.solution === 'string' &&
@@ -94,7 +94,7 @@ export function isSetConfigArgs(args: unknown): args is SetConfigArgs {
   if (typeof args !== 'object' || args === null) return false;
   const a = args as Record<string, unknown>;
   return typeof a.category === 'string' &&
-    ['search', 'display', 'llm', 'performance'].includes(a.category as string) &&
+    ['search', 'display', 'llm', 'performance'].includes(a.category) &&
     typeof a.settings === 'object' && a.settings !== null;
 }
 

@@ -5,7 +5,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { LoggingStrategy, LogEntry as StrategyLogEntry, LogLevel as StrategyLogLevel, ConsoleLoggingStrategy } from '../strategies/logging-strategy.js';
+import { LoggingStrategy, LogEntry as StrategyLogEntry, LogLevel as StrategyLogLevel } from '../strategies/logging-strategy.js';
 
 enum LogLevel {
   DEBUG = 0,

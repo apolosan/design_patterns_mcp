@@ -7,7 +7,6 @@ import { describe, it, expect } from 'vitest';
 import { SeedCommand } from '../../src/cli/commands/seed-command.js';
 import { MigrateCommand } from '../../src/cli/commands/migrate-command.js';
 import { GenerateEmbeddingsCommand } from '../../src/cli/commands/generate-embeddings-command.js';
-import { CLICommand } from '../../src/cli/commands/cli-command.js';
 
 describe('CLI Command Pattern', () => {
   describe('Command Interface', () => {

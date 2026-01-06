@@ -5,9 +5,42 @@
 
 import { describe, test, expect } from 'vitest';
 
-// Mock implementations for testing
+interface FindSimilarPatternsResult {
+  pattern: {
+    id: string;
+    name: string;
+    category: string;
+    description: string;
+    complexity: string;
+    tags: string[];
+  };
+  score: number;
+  rank: number;
+  justification: string;
+  implementation?: {
+    language: string;
+    code: string;
+    explanation: string;
+  };
+}
+
+interface AnalyzeCodeResult {
+  identifiedPatterns: string[];
+  suggestedPatterns: string[];
+  improvements: string[];
+}
+
+interface SearchResult {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  score: number;
+}
+
 class MockPatternMatcher {
-  async findSimilarPatterns(request: any): Promise<any[]> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async findSimilarPatterns(_request: unknown): Promise<FindSimilarPatternsResult[]> {
     return [
       {
         pattern: {
@@ -30,7 +63,8 @@ class MockPatternMatcher {
     ];
   }
 
-  async analyzeCode(code: string, language: string): Promise<any> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async analyzeCode(_code: string, _language: string): Promise<AnalyzeCodeResult> {
     return {
       identifiedPatterns: ['Singleton'],
       suggestedPatterns: ['Factory Method'],
@@ -40,7 +74,8 @@ class MockPatternMatcher {
 }
 
 class MockSemanticSearch {
-  async search(query: string, options?: any): Promise<any[]> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async search(_query: string, _options?: unknown): Promise<SearchResult[]> {
     return [
       {
         id: 'singleton',
@@ -100,7 +135,6 @@ describe('MCP Tools Contract Tests', () => {
     expect(results[0]).toHaveProperty('score');
   });
 
-  // TODO: Add more comprehensive tests when actual MCP implementation is ready
   test('should validate tool request structure', () => {
     const validRequest = {
       method: 'tools/call',

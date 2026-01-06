@@ -323,7 +323,7 @@ export class EmbeddingServiceAdapter {
       try {
         // Use circuit breaker for batch processing
         const batchEmbeddings = await this.circuitBreaker.execute(async () => {
-          return this.strategy!.batchGenerateEmbeddings(batch);
+          return this.strategy?.batchGenerateEmbeddings(batch) ?? [];
         });
         results.push(...batchEmbeddings.map(e => e.values));
       } catch (error) {

@@ -2,37 +2,39 @@
  * Integration Tests for MCP Server
  * Tests the full MCP server with real database and services
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { describe, test, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
-import { createDesignPatternsServer, createDesignPatternsServerWithDI } from '../../src/mcp-server.js';
+import { describe, test, expect, beforeAll, afterAll } from 'vitest';
+import { createDesignPatternsServer, createDesignPatternsServerWithDI, type MCPServerConfig } from '../../src/mcp-server.js';
 import { MCPServerConfigBuilder } from '../../src/core/config-builder.js';
-import { getTestDatabasePath } from '../helpers/test-db';
+import { createTempDatabasePath, cleanupTempDatabase } from '../helpers/test-db';
+import { MCPServerInstance } from '../helpers/test-interfaces';
 
 describe('MCP Server Integration Tests', () => {
-  let server: any;
+  let server: MCPServerInstance;
+  let tempDbPath: string;
 
-  beforeAll(async () => {
-    const config = {
-      databasePath: getTestDatabasePath(),
+  beforeAll(() => {
+    tempDbPath = createTempDatabasePath('mcp-integration');
+  });
+
+  afterAll(() => {
+    cleanupTempDatabase(tempDbPath);
+  });
+
+  test('server should initialize successfully', () => {
+    const config: MCPServerConfig = {
+      databasePath: tempDbPath,
       logLevel: 'info' as const,
       enableLLM: false,
       maxConcurrentRequests: 10,
     };
-    server = createDesignPatternsServer(config);
-    expect(server).toBeDefined();
-  });
-
-  afterAll(async () => {
-    // Cleanup if needed
-  });
-
-  test('server should initialize successfully', () => {
+    server = createDesignPatternsServer(config) as MCPServerInstance;
     expect(server).toBeDefined();
     expect(server).toBeInstanceOf(Object);
   });
 
   test('server should have MCP capabilities', () => {
-    // Check that server has expected properties indicating proper MCP setup
     expect(server).toBeDefined();
     expect(typeof server.start).toBe('function');
     expect(typeof server.stop).toBe('function');
@@ -40,61 +42,54 @@ describe('MCP Server Integration Tests', () => {
   });
 
   test('server should have tool and resource handlers registered', () => {
-    // This is a basic test to ensure the server structure is correct
     expect(server).toBeDefined();
     expect(typeof server.start).toBe('function');
     expect(typeof server.stop).toBe('function');
   });
 
   test('server should initialize with debug logging', async () => {
-    const config = {
-      databasePath: getTestDatabasePath(),
+    const config: MCPServerConfig = {
+      databasePath: tempDbPath,
       logLevel: 'debug' as const,
       enableLLM: false,
       maxConcurrentRequests: 5,
     };
-    const debugServer = createDesignPatternsServer(config);
+    const debugServer = createDesignPatternsServer(config) as MCPServerInstance;
     expect(debugServer).toBeDefined();
 
-    // Test initialization
     await expect(debugServer.initialize()).resolves.not.toThrow();
   });
 
   test('server should initialize with LLM enabled', async () => {
-    const config = {
-      databasePath: getTestDatabasePath(),
+    const config: MCPServerConfig = {
+      databasePath: tempDbPath,
       logLevel: 'info' as const,
       enableLLM: true,
       maxConcurrentRequests: 5,
     };
-    const llmServer = createDesignPatternsServer(config);
+    const llmServer = createDesignPatternsServer(config) as MCPServerInstance;
     expect(llmServer).toBeDefined();
 
-    // Test initialization
     await expect(llmServer.initialize()).resolves.not.toThrow();
   });
 
   test('server should handle start and stop lifecycle', async () => {
-    const config = {
-      databasePath: getTestDatabasePath(),
+    const config: MCPServerConfig = {
+      databasePath: tempDbPath,
       logLevel: 'info' as const,
       enableLLM: false,
       maxConcurrentRequests: 5,
     };
     const lifecycleServer = createDesignPatternsServer(config);
 
-    // Initialize
     await expect(lifecycleServer.initialize()).resolves.not.toThrow();
 
-    // Start (may succeed or fail depending on environment)
     try {
       await lifecycleServer.start();
     } catch (error) {
-      // Expected in some test environments
       expect(error).toBeDefined();
     }
 
-    // Stop
     await expect(lifecycleServer.stop()).resolves.not.toThrow();
   });
 
@@ -103,7 +98,7 @@ describe('MCP Server Integration Tests', () => {
 
     levels.forEach(level => {
       const config = {
-        databasePath: getTestDatabasePath(),
+        databasePath: tempDbPath,
         logLevel: level,
         enableLLM: false,
         maxConcurrentRequests: 10,
@@ -118,7 +113,7 @@ describe('MCP Server Integration Tests', () => {
 
     limits.forEach(limit => {
       const config = {
-        databasePath: getTestDatabasePath(),
+        databasePath: tempDbPath,
         logLevel: 'info' as const,
         enableLLM: false,
         maxConcurrentRequests: limit,
@@ -130,7 +125,7 @@ describe('MCP Server Integration Tests', () => {
 
    test('createDesignPatternsServer factory function', () => {
      const config = {
-       databasePath: getTestDatabasePath(),
+       databasePath: tempDbPath,
        logLevel: 'info' as const,
        enableLLM: false,
        maxConcurrentRequests: 10,
@@ -145,41 +140,33 @@ describe('MCP Server Integration Tests', () => {
 
    test('server initializes successfully with all services', async () => {
      const config = {
-       databasePath: getTestDatabasePath(),
+       databasePath: tempDbPath,
        logLevel: 'info' as const,
        enableLLM: false,
        maxConcurrentRequests: 10,
      };
      const server = createDesignPatternsServer(config);
 
-     // Should initialize without throwing errors - this validates that:
-     // 1. Database connection works
-     // 2. Migrations run successfully
-     // 3. Pattern seeding completes
-     // 4. All services (vector ops, pattern matcher, semantic search) initialize
-     // 5. Embedding system works with transformers strategy
      await expect(server.initialize()).resolves.not.toThrow();
-
-     // Should be able to stop without errors
      await expect(server.stop()).resolves.not.toThrow();
    });
 
    test('server handles different configuration options', async () => {
      const configs = [
        {
-         databasePath: getTestDatabasePath(),
+         databasePath: tempDbPath,
          logLevel: 'debug' as const,
          enableLLM: false,
          maxConcurrentRequests: 5,
        },
        {
-         databasePath: getTestDatabasePath(),
+         databasePath: tempDbPath,
          logLevel: 'warn' as const,
          enableLLM: false,
          maxConcurrentRequests: 20,
        },
        {
-         databasePath: getTestDatabasePath(),
+         databasePath: tempDbPath,
          logLevel: 'error' as const,
          enableLLM: false,
          maxConcurrentRequests: 1,
@@ -188,8 +175,6 @@ describe('MCP Server Integration Tests', () => {
 
      for (const config of configs) {
        const server = createDesignPatternsServer(config);
-
-       // Each configuration should initialize successfully
        await expect(server.initialize()).resolves.not.toThrow();
        await expect(server.stop()).resolves.not.toThrow();
      }
@@ -197,7 +182,7 @@ describe('MCP Server Integration Tests', () => {
 
    test('server maintains stability under concurrent operations', async () => {
      const config = {
-       databasePath: getTestDatabasePath(),
+       databasePath: tempDbPath,
        logLevel: 'info' as const,
        enableLLM: false,
        maxConcurrentRequests: 10,
@@ -206,9 +191,7 @@ describe('MCP Server Integration Tests', () => {
      const server = createDesignPatternsServer(config);
      await server.initialize();
 
-     // Test multiple start/stop cycles
      for (let i = 0; i < 3; i++) {
-       // Server should handle multiple lifecycle operations gracefully
        await expect(server.stop()).resolves.not.toThrow();
        await expect(server.initialize()).resolves.not.toThrow();
      }
@@ -218,37 +201,45 @@ describe('MCP Server Integration Tests', () => {
 
    test('server factory creates properly configured instances', () => {
      const configs = [
-       { databasePath: getTestDatabasePath(), logLevel: 'info' as const, enableLLM: false, maxConcurrentRequests: 10 },
-       { databasePath: getTestDatabasePath(), logLevel: 'debug' as const, enableLLM: false, maxConcurrentRequests: 5 },
-       { databasePath: getTestDatabasePath(), logLevel: 'warn' as const, enableLLM: true, maxConcurrentRequests: 15 },
+       { databasePath: tempDbPath, logLevel: 'info' as const, enableLLM: false, maxConcurrentRequests: 10 },
+       { databasePath: tempDbPath, logLevel: 'debug' as const, enableLLM: false, maxConcurrentRequests: 5 },
+       { databasePath: tempDbPath, logLevel: 'warn' as const, enableLLM: true, maxConcurrentRequests: 15 },
      ];
 
      configs.forEach(config => {
        const server = createDesignPatternsServer(config);
 
-       // Each server instance should have the expected public interface
        expect(server).toBeDefined();
        expect(typeof server.start).toBe('function');
        expect(typeof server.stop).toBe('function');
        expect(typeof server.initialize).toBe('function');
 
-       // Server should accept the configuration without throwing
        expect(() => createDesignPatternsServer(config)).not.toThrow();
       });
     });
 });
 
 describe('MCPServerConfigBuilder Tests', () => {
+  let tempDbPath: string;
+
+  beforeAll(() => {
+    tempDbPath = createTempDatabasePath('mcp-config-builder');
+  });
+
+  afterAll(() => {
+    cleanupTempDatabase(tempDbPath);
+  });
+
   test('builder creates valid configuration', () => {
     const config = new MCPServerConfigBuilder()
-      .withDatabasePath(getTestDatabasePath())
+      .withDatabasePath(tempDbPath)
       .withLogLevel('debug')
       .withLLM(true)
       .withMaxConcurrentRequests(20)
       .withFuzzyLogic(false)
       .build();
 
-    expect(config.databasePath).toBe(getTestDatabasePath());
+    expect(config.databasePath).toBe(tempDbPath);
     expect(config.logLevel).toBe('debug');
     expect(config.enableLLM).toBe(true);
     expect(config.maxConcurrentRequests).toBe(20);
@@ -257,10 +248,10 @@ describe('MCPServerConfigBuilder Tests', () => {
 
   test('builder applies sensible defaults', () => {
     const config = new MCPServerConfigBuilder()
-      .withDatabasePath(getTestDatabasePath())
+      .withDatabasePath(tempDbPath)
       .build();
 
-    expect(config.databasePath).toBe(getTestDatabasePath());
+    expect(config.databasePath).toBe(tempDbPath);
     expect(config.logLevel).toBe('info');
     expect(config.enableLLM).toBe(false);
     expect(config.maxConcurrentRequests).toBe(10);
@@ -270,34 +261,32 @@ describe('MCPServerConfigBuilder Tests', () => {
   test('builder validates max concurrent requests', () => {
     expect(() => {
       new MCPServerConfigBuilder()
-        .withDatabasePath(getTestDatabasePath())
+        .withDatabasePath(tempDbPath)
         .withMaxConcurrentRequests(0)
         .build();
     }).toThrow('Max concurrent requests must be an integer between 1 and 1000');
 
     expect(() => {
       new MCPServerConfigBuilder()
-        .withDatabasePath(getTestDatabasePath())
+        .withDatabasePath(tempDbPath)
         .withMaxConcurrentRequests(1001)
         .build();
     }).toThrow('Max concurrent requests must be an integer between 1 and 1000');
   });
 
   test('builder fromEnvironment creates valid config', () => {
-    // Set some env vars
-    process.env.DATABASE_PATH = getTestDatabasePath();
+    process.env.DATABASE_PATH = tempDbPath;
     process.env.LOG_LEVEL = 'debug';
     process.env.ENABLE_LLM = 'true';
     process.env.MAX_CONCURRENT_REQUESTS = '25';
 
     const config = MCPServerConfigBuilder.fromEnvironment().build();
 
-    expect(config.databasePath).toBe(getTestDatabasePath());
+    expect(config.databasePath).toBe(tempDbPath);
     expect(config.logLevel).toBe('debug');
     expect(config.enableLLM).toBe(true);
     expect(config.maxConcurrentRequests).toBe(25);
 
-    // Clean up
     delete process.env.DATABASE_PATH;
     delete process.env.LOG_LEVEL;
     delete process.env.ENABLE_LLM;
@@ -322,9 +311,19 @@ describe('MCPServerConfigBuilder Tests', () => {
 });
 
 describe('DI Container Server Tests', () => {
+  let tempDbPath: string;
+
+  beforeAll(() => {
+    tempDbPath = createTempDatabasePath('mcp-di-container');
+  });
+
+  afterAll(() => {
+    cleanupTempDatabase(tempDbPath);
+  });
+
   test('createDesignPatternsServerWithDI creates server with container', () => {
     const config = new MCPServerConfigBuilder()
-      .withDatabasePath(getTestDatabasePath())
+      .withDatabasePath(tempDbPath)
       .withLogLevel('info')
       .build();
 
@@ -338,13 +337,12 @@ describe('DI Container Server Tests', () => {
 
   test('DI server initializes successfully', async () => {
     const config = new MCPServerConfigBuilder()
-      .withDatabasePath(getTestDatabasePath())
+      .withDatabasePath(tempDbPath)
       .withLogLevel('info')
       .build();
 
     const server = createDesignPatternsServerWithDI(config);
 
-    // Should initialize without throwing - validates DI container setup
     await expect(server.initialize()).resolves.not.toThrow();
     await expect(server.stop()).resolves.not.toThrow();
   });

@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 import { createPatternSeeder } from '../../src/services/pattern-seeder';
+import { CloudPatternResult } from '../helpers/test-interfaces';
 import path from 'path';
 
-async function createFullSchema(dbManager: DatabaseManager): Promise<void> {
+function createFullSchema(dbManager: DatabaseManager): void {
   // Drop existing tables to ensure clean schema
   dbManager.execute('DROP TABLE IF EXISTS pattern_embeddings');
   dbManager.execute('DROP TABLE IF EXISTS pattern_relationships');
@@ -104,7 +105,7 @@ describe('Cloud-Native Patterns', () => {
     await dbManager.initialize();
 
     // Create full schema manually (since migrations fail on in-memory DBs with existing tables)
-    await createFullSchema(dbManager);
+    createFullSchema(dbManager);
 
     // Seed patterns for testing
     const seeder = createPatternSeeder(dbManager, {
@@ -126,51 +127,51 @@ describe('Cloud-Native Patterns', () => {
   });
 
   it('should recommend Circuit Breaker for fault tolerance', () => {
-    const circuitBreaker = dbManager.queryOne(
+    const circuitBreaker = dbManager.queryOne<CloudPatternResult>(
       'SELECT * FROM patterns WHERE name = ? AND category = ?',
       ['Circuit Breaker', 'Cloud-Native']
     );
 
     expect(circuitBreaker).toBeTruthy();
-    expect(circuitBreaker!.name).toBe('Circuit Breaker');
-    expect(circuitBreaker!.category).toBe('Cloud-Native');
+    expect(circuitBreaker?.name).toBe('Circuit Breaker');
+    expect(circuitBreaker?.category).toBe('Cloud-Native');
   });
 
   it('should recommend Retry Pattern for fault tolerance', () => {
-    const retryPattern = dbManager.queryOne(
+    const retryPattern = dbManager.queryOne<CloudPatternResult>(
       'SELECT * FROM patterns WHERE name = ? AND category = ?',
       ['Retry Pattern', 'Cloud-Native']
     );
 
     expect(retryPattern).toBeTruthy();
-    expect(retryPattern!.name).toBe('Retry Pattern');
-    expect(retryPattern!.category).toBe('Cloud-Native');
+    expect(retryPattern?.name).toBe('Retry Pattern');
+    expect(retryPattern?.category).toBe('Cloud-Native');
   });
 
   it('should recommend Bulkhead Pattern for resource isolation', () => {
-    const bulkhead = dbManager.queryOne('SELECT * FROM patterns WHERE name = ? AND category = ?', [
+    const bulkhead = dbManager.queryOne<CloudPatternResult>('SELECT * FROM patterns WHERE name = ? AND category = ?', [
       'Bulkhead Pattern',
       'Cloud-Native',
     ]);
 
     expect(bulkhead).toBeTruthy();
-    expect(bulkhead!.name).toBe('Bulkhead Pattern');
-    expect(bulkhead!.category).toBe('Cloud-Native');
+    expect(bulkhead?.name).toBe('Bulkhead Pattern');
+    expect(bulkhead?.category).toBe('Cloud-Native');
   });
 
   it('should recommend Timeout Pattern for resource protection', () => {
-    const timeout = dbManager.queryOne('SELECT * FROM patterns WHERE name = ? AND category = ?', [
+    const timeout = dbManager.queryOne<CloudPatternResult>('SELECT * FROM patterns WHERE name = ? AND category = ?', [
       'Timeout Pattern',
       'Cloud-Native',
     ]);
 
     expect(timeout).toBeTruthy();
-    expect(timeout!.name).toBe('Timeout Pattern');
-    expect(timeout!.category).toBe('Cloud-Native');
+    expect(timeout?.name).toBe('Timeout Pattern');
+    expect(timeout?.category).toBe('Cloud-Native');
   });
 
   it('should include Kubernetes patterns', () => {
-    const cloudPatterns = dbManager.query('SELECT * FROM patterns WHERE category = ?', [
+    const cloudPatterns = dbManager.query<CloudPatternResult>('SELECT * FROM patterns WHERE category = ?', [
       'Cloud-Native',
     ]);
 

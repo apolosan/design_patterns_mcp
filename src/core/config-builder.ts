@@ -87,10 +87,10 @@ export class MCPServerConfigBuilder {
 
     // Apply defaults and validate
     const config: MCPServerConfig = {
-      databasePath: this.state.databasePath || defaultDbPath,
-      logLevel: this.state.logLevel || 'info',
+      databasePath: this.state.databasePath ?? defaultDbPath,
+      logLevel: this.state.logLevel ?? 'info',
       enableLLM: this.state.enableLLM ?? false,
-      maxConcurrentRequests: this.state.maxConcurrentRequests || 10,
+      maxConcurrentRequests: this.state.maxConcurrentRequests ?? 10,
       enableFuzzyLogic: this.state.enableFuzzyLogic ?? true,
     };
 
@@ -124,7 +124,7 @@ export class MCPServerConfigBuilder {
     }
 
     // Max concurrent requests
-    const maxConcurrent = parseInt(process.env.MAX_CONCURRENT_REQUESTS || '10');
+    const maxConcurrent = parseInt(process.env.MAX_CONCURRENT_REQUESTS ?? '10');
     if (!isNaN(maxConcurrent)) {
       builder.withMaxConcurrentRequests(maxConcurrent);
     }

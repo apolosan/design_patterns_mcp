@@ -2,6 +2,7 @@
  * Unit Tests for LLM Bridge Service
  * Tests LLM integration functionality with mocked external calls
  */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
 
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { LLMBridgeService } from '../../src/services/llm-bridge.js';

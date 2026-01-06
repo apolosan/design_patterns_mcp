@@ -54,7 +54,7 @@ export class EmbeddingServiceHealthCheck implements HealthCheck {
       return {
         name: this.name,
         status: HealthStatus.HEALTHY,
-        message: `Embedding service healthy - using ${strategyInfo?.name || 'unknown'} strategy`,
+        message: `Embedding service healthy - using ${strategyInfo?.name ?? 'unknown'} strategy`,
         timestamp: new Date().toISOString(),
         duration: Date.now() - startTime,
         details: {

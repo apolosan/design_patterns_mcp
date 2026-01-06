@@ -117,7 +117,7 @@ export function isCallToolResult(value: unknown): value is CallToolResultData {
  */
 export function assertType<T>(value: unknown, guard: (v: unknown) => v is T, errorMessage?: string): T {
   if (!guard(value)) {
-    throw new Error(errorMessage || `Type assertion failed: expected ${guard.name}, got ${typeof value}`);
+    throw new Error(errorMessage ?? `Type assertion failed: expected ${guard.name}, got ${typeof value}`);
   }
   return value;
 }
@@ -156,7 +156,7 @@ export function safeArrayGet<T>(
     return defaultValue;
   }
 
-  const value = arr[index];
+  const value = arr[index] as T;
   if (guard(value)) {
     return value;
   }
@@ -193,7 +193,7 @@ export function safeJsonParse<T>(
   }
 
   try {
-    const parsed = JSON.parse(value);
+    const parsed = JSON.parse(value) as T;
     if (guard(parsed)) {
       return parsed;
     }

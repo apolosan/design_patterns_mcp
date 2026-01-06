@@ -93,6 +93,7 @@ export interface PatternRecommendation {
     drawbacks: string[];
     fuzzyReasoning?: string[];
     fuzzyConfidence?: number;
+    enhancedScoring?: string[];
   };
 
   /** Algorithm confidence in recommendation */

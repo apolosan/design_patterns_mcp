@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 import { MigrationManager } from '../../src/services/migrations';
 import { getTestDatabaseConfig } from '../helpers/test-db';
+import { ArchitecturalPatternResult } from '../helpers/test-interfaces';
 
 describe('Architectural Patterns', () => {
   let dbManager: DatabaseManager;
@@ -13,7 +14,7 @@ describe('Architectural Patterns', () => {
 
     // Run migrations to ensure schema is up to date
     const migrationManager = new MigrationManager(dbManager, './migrations');
-    await migrationManager.initialize();
+    migrationManager.initialize();
     await migrationManager.migrate();
 
     // Create schema - use IF NOT EXISTS to avoid conflicts with other tests
@@ -107,7 +108,7 @@ describe('Architectural Patterns', () => {
   });
 
   it('should have Clean Architecture pattern in database', () => {
-    const pattern = dbManager.queryOne('SELECT name, category FROM patterns WHERE id = ?', [
+    const pattern = dbManager.queryOne<ArchitecturalPatternResult>('SELECT name, category FROM patterns WHERE id = ?', [
       'clean-architecture',
     ]);
 
@@ -118,7 +119,7 @@ describe('Architectural Patterns', () => {
   });
 
   it('should have Hexagonal Architecture pattern in database', () => {
-    const pattern = dbManager.queryOne('SELECT name, category FROM patterns WHERE id = ?', [
+    const pattern = dbManager.queryOne<ArchitecturalPatternResult>('SELECT name, category FROM patterns WHERE id = ?', [
       'hexagonal-architecture',
     ]);
 
@@ -129,7 +130,7 @@ describe('Architectural Patterns', () => {
   });
 
   it('should have Onion Architecture pattern in database', () => {
-    const pattern = dbManager.queryOne('SELECT name, category FROM patterns WHERE id = ?', [
+    const pattern = dbManager.queryOne<ArchitecturalPatternResult>('SELECT name, category FROM patterns WHERE id = ?', [
       'onion-architecture',
     ]);
 
@@ -140,7 +141,7 @@ describe('Architectural Patterns', () => {
   });
 
   it('should have Domain-Driven Design pattern in database', () => {
-    const pattern = dbManager.queryOne('SELECT name, category FROM patterns WHERE id = ?', [
+    const pattern = dbManager.queryOne<ArchitecturalPatternResult>('SELECT name, category FROM patterns WHERE id = ?', [
       'domain-driven-design',
     ]);
 
@@ -151,7 +152,7 @@ describe('Architectural Patterns', () => {
   });
 
   it('should include multiple architectural patterns', () => {
-    const architecturalPatterns = dbManager.query(
+    const architecturalPatterns = dbManager.query<ArchitecturalPatternResult>(
       'SELECT id, name, category FROM patterns WHERE category = ?',
       ['Architectural']
     );

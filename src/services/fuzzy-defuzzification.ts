@@ -42,7 +42,7 @@ export class FuzzyDefuzzificationEngine {
         throw new Error(`No range defined for output variable: ${outputVar}`);
       }
 
-      crispValues[outputVar] = this.maxMembershipDefuzzification(fuzzyOutput, range);
+      crispValues[outputVar] = this.centroidDefuzzification(fuzzyOutput, range);
     }
 
     // Calculate overall confidence
@@ -50,14 +50,40 @@ export class FuzzyDefuzzificationEngine {
 
     return {
       crispValues,
-      method: 'max-membership',
+      method: 'centroid',
       confidence,
       explanation: this.generateExplanation(crispValues, confidence)
     };
   }
 
   /**
-   * Max membership defuzzification method
+   * Centroid defuzzification method for better accuracy
+   */
+  private centroidDefuzzification(
+    fuzzyOutput: { [term: string]: number },
+    range: { [term: string]: { min: number; max: number; representativeValue: number } }
+  ): number {
+    let numerator = 0;
+    let denominator = 0;
+
+    for (const [term, membership] of Object.entries(fuzzyOutput)) {
+      if (membership > 0 && range[term]) {
+        const representativeValue = range[term].representativeValue;
+        numerator += membership * representativeValue;
+        denominator += membership;
+      }
+    }
+
+    if (denominator > 0) {
+      return numerator / denominator;
+    }
+
+    // Fallback to max membership if centroid fails
+    return this.maxMembershipDefuzzification(fuzzyOutput, range);
+  }
+
+  /**
+   * Max membership defuzzification method (fallback)
    */
   private maxMembershipDefuzzification(
     fuzzyOutput: { [term: string]: number },
@@ -85,16 +111,12 @@ export class FuzzyDefuzzificationEngine {
    */
   private calculateConfidence(fuzzyOutputs: { [outputVariable: string]: { [linguisticTerm: string]: number } }): number {
     let totalMembership = 0;
-    let strongMemberships = 0;
     let maxMembership = 0;
 
     for (const fuzzyOutput of Object.values(fuzzyOutputs)) {
       for (const membership of Object.values(fuzzyOutput)) {
         totalMembership += membership;
         maxMembership = Math.max(maxMembership, membership);
-        if (membership > 0.7) {
-          strongMemberships += membership;
-        }
       }
     }
 
@@ -139,10 +161,10 @@ export class FuzzyDefuzzificationEngine {
       },
       outputRanges: {
         relevance: {
-          low: { min: 0.0, max: 0.3, representativeValue: 0.2 },
-          medium: { min: 0.3, max: 0.7, representativeValue: 0.5 },
-          high: { min: 0.7, max: 0.9, representativeValue: 0.75 },
-          very_high: { min: 0.9, max: 1.0, representativeValue: 0.85 }
+          low: { min: 0.0, max: 0.3, representativeValue: 0.15 },
+          medium: { min: 0.3, max: 0.7, representativeValue: 0.45 },
+          high: { min: 0.7, max: 0.9, representativeValue: 0.80 },
+          very_high: { min: 0.9, max: 1.0, representativeValue: 0.95 }
         }
       }
     };

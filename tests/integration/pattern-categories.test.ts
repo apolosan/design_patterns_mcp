@@ -3,7 +3,7 @@ import { DatabaseManager } from '../../src/services/database-manager';
 import { createPatternSeeder } from '../../src/services/pattern-seeder';
 import path from 'path';
 
-async function createFullSchema(dbManager: DatabaseManager): Promise<void> {
+function createFullSchema(dbManager: DatabaseManager): void {
   // Drop existing tables to ensure clean schema
   dbManager.execute('DROP TABLE IF EXISTS pattern_embeddings');
   dbManager.execute('DROP TABLE IF EXISTS pattern_relationships');
@@ -104,7 +104,7 @@ describe('Pattern Category Filtering', () => {
     await dbManager.initialize();
 
     // Create full schema manually (since migrations fail on in-memory DBs with existing tables)
-    await createFullSchema(dbManager);
+    createFullSchema(dbManager);
 
     // Seed patterns for testing
     const seeder = createPatternSeeder(dbManager, {

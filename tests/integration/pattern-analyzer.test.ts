@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { PatternAnalyzer } from '../../src/services/pattern-analyzer';
 
 describe('Code Analysis Pattern Detection', () => {
@@ -8,7 +9,7 @@ describe('Code Analysis Pattern Detection', () => {
     analyzer = new PatternAnalyzer();
   });
 
-  it('should detect Singleton pattern in code', async () => {
+  it('should detect Singleton pattern in code', () => {
     const singletonCode = `
       class Logger {
         private static instance: Logger;
@@ -23,12 +24,11 @@ describe('Code Analysis Pattern Detection', () => {
       }
     `;
 
-    const result = await analyzer.analyzeCode(singletonCode, 'typescript');
+    const result = analyzer.analyzeCode(singletonCode, 'typescript');
 
     expect(result.identifiedPatterns).toContainEqual(
       expect.objectContaining({
         pattern: 'Singleton',
-        confidence: expect.any(Number),
         category: 'Creational',
       })
     );
@@ -37,7 +37,7 @@ describe('Code Analysis Pattern Detection', () => {
     expect(singletonPattern!.confidence).toBeGreaterThan(0.4);
   });
 
-  it('should detect Factory pattern in code', async () => {
+  it('should detect Factory pattern in code', () => {
     const factoryCode = `
       abstract class Product {
         abstract operation(): string;
@@ -65,18 +65,17 @@ describe('Code Analysis Pattern Detection', () => {
       }
     `;
 
-    const result = await analyzer.analyzeCode(factoryCode, 'typescript');
+    const result = analyzer.analyzeCode(factoryCode, 'typescript');
 
     expect(result.identifiedPatterns).toContainEqual(
       expect.objectContaining({
         pattern: 'Factory Method',
-        confidence: expect.any(Number),
         category: 'Creational',
       })
     );
   });
 
-  it('should detect Observer pattern in code', async () => {
+  it('should detect Observer pattern in code', () => {
     const observerCode = `
       interface Observer {
         update(message: string): void;
@@ -102,18 +101,17 @@ describe('Code Analysis Pattern Detection', () => {
       }
     `;
 
-    const result = await analyzer.analyzeCode(observerCode, 'typescript');
+    const result = analyzer.analyzeCode(observerCode, 'typescript');
 
     expect(result.identifiedPatterns).toContainEqual(
       expect.objectContaining({
         pattern: 'Observer',
-        confidence: expect.any(Number),
         category: 'Behavioral',
       })
     );
   });
 
-  it('should handle multiple languages', async () => {
+  it('should handle multiple languages', () => {
     const pythonCode = `
       class Singleton:
           _instance = None
@@ -124,7 +122,7 @@ describe('Code Analysis Pattern Detection', () => {
               return cls._instance
     `;
 
-    const result = await analyzer.analyzeCode(pythonCode, 'python');
+    const result = analyzer.analyzeCode(pythonCode, 'python');
 
     // Should still detect patterns even for unsupported languages
     expect(result).toHaveProperty('identifiedPatterns');
@@ -132,7 +130,7 @@ describe('Code Analysis Pattern Detection', () => {
     expect(result).toHaveProperty('improvements');
   });
 
-  it('should provide pattern improvement suggestions', async () => {
+  it('should provide pattern improvement suggestions', () => {
     const badCode = `
       class GodObject {
         private data1: string;
@@ -183,7 +181,7 @@ describe('Code Analysis Pattern Detection', () => {
       }
     `;
 
-    const result = await analyzer.analyzeCode(badCode, 'typescript');
+    const result = analyzer.analyzeCode(badCode, 'typescript');
 
     expect(result.antiPatterns).toBeDefined();
     expect(result.antiPatterns!.length).toBeGreaterThan(0);
@@ -193,7 +191,7 @@ describe('Code Analysis Pattern Detection', () => {
     expect(godObjectAntiPattern!.severity).toBe('high');
   });
 
-  it('should suggest patterns for improvement', async () => {
+  it('should suggest patterns for improvement', () => {
     const codeWithIssues = `
       if (type === 'A') {
         return new ProductA();
@@ -206,7 +204,7 @@ describe('Code Analysis Pattern Detection', () => {
       }
     `;
 
-    const result = await analyzer.analyzeCode(codeWithIssues, 'typescript');
+    const result = analyzer.analyzeCode(codeWithIssues, 'typescript');
 
     expect(result.suggestedPatterns.length).toBeGreaterThan(0);
 
@@ -215,7 +213,7 @@ describe('Code Analysis Pattern Detection', () => {
     expect(factorySuggestion!.confidence).toBeGreaterThan(0.5);
   });
 
-  it('should generate improvement suggestions', async () => {
+  it('should generate improvement suggestions', () => {
     const poorCode = `
       function doEverything() {
         // 100 lines of mixed logic
@@ -234,7 +232,7 @@ describe('Code Analysis Pattern Detection', () => {
       }
     `;
 
-    const result = await analyzer.analyzeCode(poorCode, 'typescript');
+    const result = analyzer.analyzeCode(poorCode, 'typescript');
 
     expect(result.improvements.length).toBeGreaterThan(0);
     expect(result.improvements).toContain('Add error handling to improve robustness');

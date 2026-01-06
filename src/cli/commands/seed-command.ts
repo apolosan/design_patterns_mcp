@@ -13,7 +13,7 @@ export class SeedCommand extends BaseCLICommand {
   readonly name = 'seed';
   readonly description = 'Seeds the database with pattern data from JSON files';
 
-  protected async run(args?: string[]): Promise<void> {
+  protected async run(_args?: string[]): Promise<void> {
     const dbManager = getDatabaseManager();
     const patternStorage = getPatternStorageService();
 

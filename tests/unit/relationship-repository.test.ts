@@ -85,9 +85,9 @@ describe('SqliteRelationshipRepository', () => {
     repository = new SqliteRelationshipRepository(dbManager);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     // Clean up
-    dbManager.close();
+    await dbManager.close();
   });
 
   describe('save', () => {
@@ -268,9 +268,11 @@ describe('SqliteRelationshipRepository', () => {
       const updated = await repository.update(created.id, updateInput);
 
       expect(updated).toBeDefined();
+      /* eslint-disable @typescript-eslint/no-non-null-assertion */
       expect(updated!.type).toBe('extends');
       expect(updated!.strength).toBe(0.8);
       expect(updated!.description).toBe('Updated description');
+      /* eslint-enable @typescript-eslint/no-non-null-assertion */
     });
 
     it('should return null when relationship does not exist', async () => {
@@ -299,9 +301,11 @@ describe('SqliteRelationshipRepository', () => {
 
       const updated = await repository.update(created.id, updateInput);
 
+      /* eslint-disable @typescript-eslint/no-non-null-assertion */
       expect(updated!.type).toBe('related'); // Unchanged
       expect(updated!.strength).toBe(0.9); // Updated
       expect(updated!.description).toBe('Original description'); // Unchanged
+      /* eslint-enable @typescript-eslint/no-non-null-assertion */
     });
   });
 
@@ -362,11 +366,13 @@ describe('SqliteRelationshipRepository', () => {
       });
 
       const found = await repository.findById(created.id);
+      /* eslint-disable @typescript-eslint/no-non-null-assertion */
       expect(found!.id).toBe(created.id);
       expect(found!.sourcePatternId).toBe(created.sourcePatternId);
       expect(found!.targetPatternId).toBe(created.targetPatternId);
       expect(found!.type).toBe(created.type);
       expect(found!.description).toBe(created.description);
+      /* eslint-enable @typescript-eslint/no-non-null-assertion */
     });
 
     it('should return null when relationship does not exist', async () => {

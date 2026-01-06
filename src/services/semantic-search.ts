@@ -111,7 +111,7 @@ export class SemanticSearchService {
       const combinedEmbedding = this.combineEmbeddings(queryEmbeddings);
 
       // Perform vector search
-      const vectorResults = await this.vectorOps.searchSimilar(
+      const vectorResults = this.vectorOps.searchSimilar(
         combinedEmbedding,
         {
           categories: query.filters?.categories,
@@ -134,11 +134,11 @@ export class SemanticSearchService {
       const searchResults: SearchResult[] = finalResults.map((result, index) => ({
         patternId: result.patternId,
         pattern: {
-          name: result.pattern!.name,
-          category: result.pattern!.category,
-          description: result.pattern!.description,
-          complexity: 'Intermediate', // Default value
-          tags: result.pattern!.tags || [],
+          name: result.pattern?.name ?? 'Unknown Pattern',
+          category: result.pattern?.category ?? 'Unknown',
+          description: result.pattern?.description ?? 'No description available',
+          complexity: 'Intermediate',
+          tags: result.pattern?.tags ?? [],
         },
         score: result.score,
         rank: index + 1,
@@ -306,21 +306,21 @@ export class SemanticSearchService {
         let adjustedScore = result.score;
 
         // Boost score for exact matches in pattern name
-        if (result.pattern!.name.toLowerCase().includes(originalQuery.toLowerCase())) {
+        if (result.pattern?.name?.toLowerCase().includes(originalQuery.toLowerCase())) {
           adjustedScore *= 1.2;
         }
 
         // Boost score for category matches
         const queryWords = originalQuery.toLowerCase().split(/\s+/);
         for (const word of queryWords) {
-          if (result.pattern!.category.toLowerCase().includes(word)) {
+          if (result.pattern?.category?.toLowerCase().includes(word)) {
             adjustedScore *= 1.1;
           }
         }
 
         // Boost score for tag matches
-        if (result.pattern!.tags) {
-          for (const tag of result.pattern!.tags) {
+        if (result.pattern?.tags) {
+          for (const tag of result.pattern.tags) {
             for (const word of queryWords) {
               if (tag.toLowerCase().includes(word)) {
                 adjustedScore *= 1.05;
@@ -363,39 +363,41 @@ export class SemanticSearchService {
   /**
    * Find similar patterns by pattern ID
    */
-  async findSimilarPatterns(patternId: string, limit?: number): Promise<SearchResult[]> {
+  findSimilarPatterns(patternId: string, limit?: number): Promise<SearchResult[]> {
     const embedding = this.vectorOps.getEmbedding(patternId);
 
     if (!embedding) {
       throw new Error(`No embedding found for pattern: ${patternId}`);
     }
 
-    const vectorResults = await this.vectorOps.searchSimilar(
+    const vectorResults = this.vectorOps.searchSimilar(
       embedding,
       { excludePatterns: [patternId] },
       limit ?? this.config.maxResults
     );
 
-    return vectorResults
-      .filter(r => r.patternId !== patternId)
-      .map((result, index) => ({
-        patternId: result.patternId,
-        pattern: {
-          name: result.pattern?.name ?? 'Unknown Pattern',
-          category: result.pattern?.category ?? 'Unknown',
-          description: result.pattern?.description ?? 'No description available',
-          complexity: 'Intermediate', // Default value
-          tags: [],
-        },
-        score: result.score,
-        rank: index + 1,
-        metadata: {
-          searchQuery: `similar to ${patternId}`,
-          searchTime: Date.now(),
-          totalCandidates: vectorResults.length,
-          similarityMethod: 'cosine',
-        },
-      }));
+    return Promise.resolve(
+      vectorResults
+        .filter(r => r.patternId !== patternId)
+        .map((result, index) => ({
+          patternId: result.patternId,
+          pattern: {
+            name: result.pattern?.name ?? 'Unknown Pattern',
+            category: result.pattern?.category ?? 'Unknown',
+            description: result.pattern?.description ?? 'No description available',
+            complexity: 'Intermediate',
+            tags: [],
+          },
+          score: result.score,
+          rank: index + 1,
+          metadata: {
+            searchQuery: `similar to ${patternId}`,
+            searchTime: Date.now(),
+            totalCandidates: vectorResults.length,
+            similarityMethod: 'cosine',
+          },
+        }))
+    );
   }
 
   /**
@@ -557,20 +559,259 @@ export class SemanticSearchService {
   /**
    * Search for similar patterns using embedding
    */
-  async searchSimilar(
+  searchSimilar(
     queryEmbedding: number[],
     limit: number = 10,
     threshold: number = 0.3
   ): Promise<Array<{ id: string; score: number }>> {
-    const vectorResults = await this.vectorOps.searchSimilar(
+    const vectorResults = this.vectorOps.searchSimilar(
       queryEmbedding,
       { minScore: threshold },
       limit
     );
-    return vectorResults.map(result => ({
-      id: result.patternId,
-      score: result.score,
-    }));
+    return Promise.resolve(
+      vectorResults.map(result => ({
+        id: result.patternId,
+        score: result.score,
+      }))
+    );
+  }
+
+  /**
+   * Compress context for large result sets
+   * Reduces redundancy and highlights most relevant information
+   */
+  compressContext(results: SearchResult[], maxTokens: number = 1000): {
+    compressedResults: SearchResult[];
+    compressionRatio: number;
+    preservedInfo: string[];
+  } {
+    if (results.length <= 3) {
+      return {
+        compressedResults: results,
+        compressionRatio: 1.0,
+        preservedInfo: ['No compression needed for small result set'],
+      };
+    }
+
+    const compressedResults: SearchResult[] = [];
+    const preservedInfo: string[] = [];
+    let currentTokens = 0;
+    const targetTokens = maxTokens * 0.8; // Leave room for metadata
+
+    // Sort by score to prioritize most relevant results
+    const sortedResults = [...results].sort((a, b) => b.score - a.score);
+
+    // Always include top result
+    if (sortedResults.length > 0) {
+      const topResult = this.compressSingleResult(sortedResults[0], targetTokens / 4);
+      compressedResults.push(topResult);
+      currentTokens += this.estimateTokens(topResult);
+      preservedInfo.push('Top result fully preserved');
+    }
+
+    // Compress remaining results with diversity preservation
+    const remainingResults = sortedResults.slice(1);
+    const diverseResults = this.selectDiverseResults(remainingResults, Math.min(5, remainingResults.length));
+
+    for (let i = 0; i < diverseResults.length; i++) {
+      const result = diverseResults[i];
+      const availableTokens = targetTokens - currentTokens;
+      
+      if (availableTokens <= 50) break;
+
+      const compressedResult = this.compressSingleResult(result, availableTokens / (diverseResults.length - i));
+      compressedResults.push(compressedResult);
+      currentTokens += this.estimateTokens(compressedResult);
+      preservedInfo.push(`Result ${i + 2} compressed to key points`);
+    }
+
+    const compressionRatio = results.length > 0 ? compressedResults.length / results.length : 1.0;
+
+    return {
+      compressedResults: compressedResults.sort((a, b) => b.score - a.score),
+      compressionRatio,
+      preservedInfo,
+    };
+  }
+
+  /**
+   * Compress a single search result to reduce token usage
+   */
+  private compressSingleResult(result: SearchResult, maxTokens: number): SearchResult {
+    const compressed: SearchResult = { ...result };
+    
+    // Compress description to key points
+    if (result.pattern.description && result.pattern.description.length > 200) {
+      compressed.pattern = {
+        ...result.pattern,
+        description: this.extractKeyPoints(result.pattern.description, Math.max(100, maxTokens / 4)),
+      };
+    }
+
+    // Preserve essential metadata only
+    compressed.metadata = {
+      searchQuery: result.metadata.searchQuery,
+      searchTime: result.metadata.searchTime,
+      totalCandidates: result.metadata.totalCandidates,
+      similarityMethod: result.metadata.similarityMethod,
+    };
+
+    return compressed;
+  }
+
+  /**
+   * Select diverse results to avoid redundancy
+   */
+  private selectDiverseResults(results: SearchResult[], maxCount: number): SearchResult[] {
+    if (results.length <= maxCount) {
+      return results;
+    }
+
+    const diverseResults: SearchResult[] = [];
+    const usedCategories = new Set<string>();
+    const usedNames = new Set<string>();
+
+    // Select results ensuring category diversity
+    for (const result of results) {
+      if (diverseResults.length >= maxCount) break;
+
+      const category = result.pattern.category?.toLowerCase();
+      const name = result.pattern.name?.toLowerCase();
+
+      // Include if new category or high score
+      if (!usedCategories.has(category) || result.score > 0.8) {
+        diverseResults.push(result);
+        usedCategories.add(category);
+        usedNames.add(name);
+      }
+    }
+
+    // Fill remaining slots with highest scoring results
+    if (diverseResults.length < maxCount) {
+      const remaining = results.filter(r => !usedNames.has(r.pattern.name?.toLowerCase()));
+      const additional = remaining.slice(0, maxCount - diverseResults.length);
+      diverseResults.push(...additional);
+    }
+
+    return diverseResults;
+  }
+
+  /**
+   * Extract key points from a longer text
+   */
+  private extractKeyPoints(text: string, maxLength: number): string {
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    
+    if (sentences.length <= 2) {
+      return text.length > maxLength ? text.substring(0, maxLength - 3) + '...' : text;
+    }
+
+    // Score sentences based on importance indicators
+    const scoredSentences = sentences.map((sentence, index) => {
+      const score = this.scoreSentence(sentence, index, sentences.length);
+      return { sentence: sentence.trim(), score };
+    });
+
+    // Select top sentences within length limit
+    scoredSentences.sort((a, b) => b.score - a.score);
+    
+    let result = '';
+    for (const { sentence } of scoredSentences) {
+      if (result.length + sentence.length + 2 <= maxLength) {
+        result += (result ? '. ' : '') + sentence;
+      } else {
+        break;
+      }
+    }
+
+    return result || text.substring(0, maxLength - 3) + '...';
+  }
+
+  /**
+   * Score sentence importance based on heuristics
+   */
+  private scoreSentence(sentence: string, index: number, totalSentences: number): number {
+    let score = 0;
+    const words = sentence.toLowerCase().split(/\s+/);
+
+    // Boost for sentences with important keywords
+    const importantKeywords = [
+      'pattern', 'design', 'structure', 'architecture', 'implement',
+      'benefit', 'advantage', 'use', 'when', 'because', 'purpose'
+    ];
+
+    for (const keyword of importantKeywords) {
+      if (words.includes(keyword)) {
+        score += 0.2;
+      }
+    }
+
+    // Position scoring (first and last sentences often important)
+    if (index === 0 || index === totalSentences - 1) {
+      score += 0.3;
+    }
+
+    // Length scoring (medium-length sentences often most informative)
+    const wordCount = words.length;
+    if (wordCount >= 8 && wordCount <= 20) {
+      score += 0.2;
+    } else if (wordCount > 25) {
+      score -= 0.1; // Penalize very long sentences
+    }
+
+    return score;
+  }
+
+  /**
+   * Estimate token count for a search result
+   */
+  private estimateTokens(result: SearchResult): number {
+    const text = JSON.stringify(result);
+    return Math.ceil(text.length / 4); // Rough estimate: 4 chars per token
+  }
+
+  /**
+   * Search with automatic context compression
+   */
+  async searchWithCompression(
+    query: SearchQuery,
+    maxContextTokens?: number
+  ): Promise<{
+    results: SearchResult[];
+    compression: {
+      ratio: number;
+      preservedInfo: string[];
+    };
+    metadata: {
+      originalCount: number;
+      compressedCount: number;
+      searchTime: number;
+    };
+  }> {
+    const startTime = Date.now();
+
+    // Perform regular search
+    const allResults = await this.search(query);
+
+    // Apply context compression
+    const { compressedResults, compressionRatio, preservedInfo } = this.compressContext(
+      allResults,
+      maxContextTokens ?? 2000
+    );
+
+    return {
+      results: compressedResults,
+      compression: {
+        ratio: compressionRatio,
+        preservedInfo,
+      },
+      metadata: {
+        originalCount: allResults.length,
+        compressedCount: compressedResults.length,
+        searchTime: Date.now() - startTime,
+      },
+    };
   }
 }
 

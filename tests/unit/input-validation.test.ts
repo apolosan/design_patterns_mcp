@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { InputValidator } from '../../src/utils/input-validation.js';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError } from '@modelcontextprotocol/sdk/types.js';
 
 describe('InputValidator', () => {
   describe('validateString', () => {

@@ -60,7 +60,7 @@ export class HealthCheckService implements HealthService {
     const checkPromises = checks.map(async (check) => {
       try {
         const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error(`Health check timeout: ${check.name}`)), check.timeout || this.config.timeout);
+          setTimeout(() => reject(new Error(`Health check timeout: ${check.name}`)), check.timeout ?? this.config.timeout);
         });
 
         const result = await Promise.race([check.check(), timeoutPromise]);
@@ -94,8 +94,8 @@ export class HealthCheckService implements HealthService {
       checks: results,
       summary,
       metadata: {
-        version: process.env.npm_package_version || '1.0.0',
-        environment: process.env.NODE_ENV || 'development'
+        version: process.env.npm_package_version ?? '1.0.0',
+        environment: process.env.NODE_ENV ?? 'development'
       }
     };
   }
@@ -119,7 +119,7 @@ export class HealthCheckService implements HealthService {
 
     try {
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error(`Health check timeout: ${name}`)), check.timeout || this.config.timeout);
+        setTimeout(() => reject(new Error(`Health check timeout: ${name}`)), check.timeout ?? this.config.timeout);
       });
 
       return await Promise.race([check.check(), timeoutPromise]);
@@ -149,7 +149,7 @@ export class HealthCheckService implements HealthService {
       .map(async (check) => {
         try {
           const timeoutPromise = new Promise<never>((_, reject) => {
-            setTimeout(() => reject(new Error(`Health check timeout: ${check.name}`)), check.timeout || this.config.timeout);
+        setTimeout(() => reject(new Error(`Health check timeout: ${check.name}`)), check.timeout ?? this.config.timeout);
           });
 
           const result = await Promise.race([check.check(), timeoutPromise]);
@@ -182,8 +182,8 @@ export class HealthCheckService implements HealthService {
       checks: results,
       summary,
       metadata: {
-        version: process.env.npm_package_version || '1.0.0',
-        environment: process.env.NODE_ENV || 'development'
+        version: process.env.npm_package_version ?? '1.0.0',
+        environment: process.env.NODE_ENV ?? 'development'
       }
     };
   }

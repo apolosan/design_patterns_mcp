@@ -103,12 +103,146 @@ interface PatternImplementation {
   explanation: string;
 }
 
+interface QueryAnalysis {
+  queryLength: number;
+  wordCount: number;
+  technicalTermCount: number;
+  exploratoryScore: number;
+  specificityScore: number;
+  hasCodeSnippet: boolean;
+  entropy: number;
+}
 
+interface DynamicAlphaResult {
+  semanticAlpha: number;
+  keywordAlpha: number;
+  queryType: 'exploratory' | 'specific' | 'balanced';
+  confidence: number;
+  analysis: QueryAnalysis;
+}
 
-interface PatternImplementation {
-  language: string;
-  code: string;
-  explanation: string;
+// Technical keywords that suggest more specific/semantic search
+const TECHNICAL_KEYWORDS = [
+  'pattern', 'architecture', 'design', 'algorithm', 'data', 'structure',
+  'interface', 'abstract', 'factory', 'singleton', 'observer', 'strategy',
+  'decorator', 'adapter', 'bridge', 'proxy', 'facade', 'flyweight', 'chain',
+  'command', 'mediator', 'memento', 'state', 'template', 'visitor', 'iterator'
+];
+
+// Query type indicators
+const EXPLORATORY_WORDS = ['best', 'good', 'how', 'what', 'why', 'explain', 'learn', 'understand'];
+const SPECIFIC_WORDS = ['implement', 'code', 'example', 'use', 'apply', 'create', 'write'];
+
+/**
+ * Dynamic Alpha Tuner - Implements Dynamic Alpha Tuning for Hybrid Retrieval (2025)
+ * Adjusts the weight between semantic and keyword search based on query characteristics
+ * Based on research: "DAT: Dynamic Alpha Tuning for Hybrid Retrieval in RAG" (2025)
+ */
+class DynamicAlphaTuner {
+  calculateAlpha(query: string): DynamicAlphaResult {
+    const analysis = this.analyzeQuery(query);
+    const { semanticAlpha, keywordAlpha, queryType, confidence } = this.computeAlphaFromAnalysis(analysis);
+
+    return {
+      semanticAlpha,
+      keywordAlpha,
+      queryType,
+      confidence,
+      analysis,
+    };
+  }
+
+  private analyzeQuery(query: string): QueryAnalysis {
+    const normalizedQuery = query.toLowerCase();
+    const words = normalizedQuery.split(/\s+/).filter(w => w.length > 0);
+    const queryLength = query.length;
+    const wordCount = words.length;
+
+    const technicalTermCount = words.filter(word =>
+      TECHNICAL_KEYWORDS.some(keyword => word.includes(keyword))
+    ).length;
+
+    const exploratoryScore = EXPLORATORY_WORDS.reduce((score, word) => {
+      return score + (normalizedQuery.includes(word) ? 0.15 : 0);
+    }, 0);
+
+    const specificityScore = SPECIFIC_WORDS.reduce((score, word) => {
+      return score + (normalizedQuery.includes(word) ? 0.12 : 0);
+    }, 0);
+
+    const hasCodeSnippet = /`[^`]+`|\{[^{]+\}|\([^(]+\)/.test(query);
+
+    const uniqueChars = new Set(query).size;
+    const entropy = uniqueChars / Math.max(queryLength, 1);
+
+    return {
+      queryLength,
+      wordCount,
+      technicalTermCount,
+      exploratoryScore: Math.min(exploratoryScore, 0.5),
+      specificityScore: Math.min(specificityScore, 0.5),
+      hasCodeSnippet,
+      entropy,
+    };
+  }
+
+  private computeAlphaFromAnalysis(analysis: QueryAnalysis): Omit<DynamicAlphaResult, 'analysis'> {
+    let semanticAlpha = 0.5;
+    let keywordAlpha = 0.5;
+    let queryType: 'exploratory' | 'specific' | 'balanced' = 'balanced';
+    let confidence = 0.5;
+
+    if (analysis.wordCount <= 2 && analysis.specificityScore > 0.2) {
+      semanticAlpha = 0.3;
+      keywordAlpha = 0.7;
+      queryType = 'specific';
+      confidence = 0.7;
+    } else if (analysis.wordCount > 5 && analysis.exploratoryScore > 0.2) {
+      semanticAlpha = 0.7;
+      keywordAlpha = 0.3;
+      queryType = 'exploratory';
+      confidence = 0.75;
+    } else if (analysis.technicalTermCount > 0 && analysis.wordCount > 3) {
+      semanticAlpha = 0.6;
+      keywordAlpha = 0.4;
+      queryType = 'exploratory';
+      confidence = 0.65;
+    } else if (analysis.hasCodeSnippet) {
+      semanticAlpha = 0.4;
+      keywordAlpha = 0.6;
+      queryType = 'specific';
+      confidence = 0.6;
+    } else if (analysis.entropy > 0.6 && analysis.wordCount > 3) {
+      semanticAlpha = 0.65;
+      keywordAlpha = 0.35;
+      queryType = 'exploratory';
+      confidence = 0.55;
+    } else {
+      semanticAlpha = 0.5;
+      keywordAlpha = 0.5;
+      queryType = 'balanced';
+      confidence = 0.5;
+    }
+
+    if (analysis.queryLength > 100) {
+      semanticAlpha += 0.1;
+      keywordAlpha -= 0.1;
+    } else if (analysis.queryLength < 30) {
+      semanticAlpha -= 0.15;
+      keywordAlpha += 0.15;
+    }
+
+    const total = semanticAlpha + keywordAlpha;
+    semanticAlpha = semanticAlpha / total;
+    keywordAlpha = keywordAlpha / total;
+
+    return {
+      semanticAlpha: Math.max(0.1, Math.min(0.9, semanticAlpha)),
+      keywordAlpha: Math.max(0.1, Math.min(0.9, keywordAlpha)),
+      queryType,
+      confidence: Math.min(0.9, confidence + (analysis.technicalTermCount * 0.05)),
+    };
+  }
 }
 
 
@@ -122,6 +256,7 @@ export class PatternMatcher {
   private fuzzyInferenceEngine: FuzzyInferenceEngine;
   private fuzzyDefuzzificationEngine: FuzzyDefuzzificationEngine;
   private fuzzyMembershipFunctions: PatternMembershipFunctions;
+  private dynamicAlphaTuner: DynamicAlphaTuner;
 
   constructor(
     db: DatabaseManager,
@@ -134,6 +269,7 @@ export class PatternMatcher {
     this.config = config;
     this.patternAnalyzer = new PatternAnalyzer();
     this.cache = cache ?? new CacheService();
+    this.dynamicAlphaTuner = new DynamicAlphaTuner();
 
     // Initialize fuzzy logic components
     this.fuzzyMembershipFunctions = new PatternMembershipFunctions();
@@ -187,7 +323,7 @@ export class PatternMatcher {
           patternCount: recommendations.length,
           query: request.query
         });
-        recommendations = await this.applyFuzzyRefinement(recommendations, request);
+        recommendations = this.applyFuzzyRefinement(recommendations, request);
       }
       const fuzzyTime = this.config.useFuzzyRefinement ? Date.now() - fuzzyStartTime : 0;
 
@@ -236,17 +372,42 @@ export class PatternMatcher {
    * Perform pattern matching using configured strategies
    */
   private async performMatching(request: PatternRequest): Promise<MatchResult[]> {
+    const alphaResult = this.dynamicAlphaTuner.calculateAlpha(request.query);
+
+    structuredLogger.debug('pattern-matcher', 'Dynamic Alpha Tuning applied', {
+      query: request.query.substring(0, 50),
+      queryType: alphaResult.queryType,
+      semanticAlpha: alphaResult.semanticAlpha.toFixed(3),
+      keywordAlpha: alphaResult.keywordAlpha.toFixed(3),
+      confidence: alphaResult.confidence.toFixed(3),
+    });
+
     const allMatches: MatchResult[] = [];
+    let semanticWeight = this.config.semanticWeight;
+    let keywordWeight = this.config.keywordWeight;
+
+    if (this.config.useHybridSearch) {
+      semanticWeight = alphaResult.semanticAlpha;
+      keywordWeight = alphaResult.keywordAlpha;
+    }
 
     // Semantic search
     if (this.config.useSemanticSearch) {
       const semanticMatches = await this.semanticSearch(request);
+      semanticMatches.forEach(match => {
+        match.confidence *= semanticWeight;
+        match.metadata.finalScore = match.confidence;
+      });
       allMatches.push(...semanticMatches);
     }
 
     // Keyword search
     if (this.config.useKeywordSearch) {
       const keywordMatches = await this.keywordSearch(request);
+      keywordMatches.forEach(match => {
+        match.confidence *= keywordWeight;
+        match.metadata.finalScore = match.confidence;
+      });
       allMatches.push(...keywordMatches);
     }
 
@@ -259,7 +420,7 @@ export class PatternMatcher {
 
     // Hybrid search (combine results)
     if (this.config.useHybridSearch && allMatches.length > 0) {
-      return this.combineMatches(allMatches);
+      return this.combineMatches(allMatches, alphaResult);
     }
 
     return allMatches;
@@ -274,7 +435,7 @@ export class PatternMatcher {
       const queryEmbedding = await this.generateQueryEmbedding(request.query);
 
       // Search for similar patterns
-      const searchResults = await this.vectorOps.searchSimilar(queryEmbedding, {
+      const searchResults = this.vectorOps.searchSimilar(queryEmbedding, {
         categories: request.categories,
         minUsageCount: 0,
       });
@@ -441,71 +602,65 @@ export class PatternMatcher {
   /**
     * Combine semantic and keyword matches using hybrid scoring
     */
-   private combineMatches(matches: MatchResult[]): MatchResult[] {
-      // Note: We could create a map of patterns for O(1) lookup
-      // For now, we'll use a simplified approach
+    private combineMatches(matches: MatchResult[], alphaResult: DynamicAlphaResult): MatchResult[] {
+      const patternMap = new Map<string, MatchResult[]>();
 
-     const patternMap = new Map<string, MatchResult[]>();
-
-     // Group matches by pattern
-     for (const match of matches) {
+      for (const match of matches) {
         const existing = patternMap.get(match.pattern.id) ?? [];
-       existing.push(match);
-       patternMap.set(match.pattern.id, existing);
-     }
+        existing.push(match);
+        patternMap.set(match.pattern.id, existing);
+      }
 
-     // Combine scores for each pattern
-     const combinedMatches: MatchResult[] = [];
+      const combinedMatches: MatchResult[] = [];
 
-     for (const [, patternMatches] of patternMap) {
-       const semanticMatch = patternMatches.find(m => m.matchType === 'semantic');
-       const keywordMatch = patternMatches.find(m => m.matchType === 'keyword');
+      const semanticWeight = alphaResult?.semanticAlpha ?? this.config.semanticWeight;
+      const keywordWeight = alphaResult?.keywordAlpha ?? this.config.keywordWeight;
+
+      for (const [, patternMatches] of patternMap) {
+        const semanticMatch = patternMatches.find(m => m.matchType === 'semantic');
+        const keywordMatch = patternMatches.find(m => m.matchType === 'keyword');
 
         const semanticScore = semanticMatch?.metadata.semanticScore ?? 0;
-        const keywordScore = keywordMatch?.metadata.keywordScore ?? 0;
+        const keywordScoreRaw = keywordMatch?.metadata.keywordScore ?? 0;
+        const keywordScore = Math.min(keywordScoreRaw / 10, 0.99);
 
-       // Improved weighted scoring - avoid division by zero and handle cases where one score is missing
-       let finalScore = 0;
-       if (semanticScore > 0 && keywordScore > 0) {
-         // Both scores available - use weighted average
-         finalScore = (this.config.semanticWeight * semanticScore + this.config.keywordWeight * keywordScore) /
-                      (this.config.semanticWeight + this.config.keywordWeight);
-       } else if (semanticScore > 0) {
-         // Only semantic score - use it directly
-         finalScore = semanticScore;
-       } else if (keywordScore > 0) {
-         // Only keyword score - use it directly
-         finalScore = keywordScore;
-       }
+        let finalScore = 0;
+        if (semanticScore > 0 && keywordScore > 0) {
+          finalScore = (semanticWeight * semanticScore + keywordWeight * keywordScore) /
+                       (semanticWeight + keywordWeight);
+        } else if (semanticScore > 0) {
+          finalScore = semanticScore;
+        } else if (keywordScore > 0) {
+          finalScore = keywordScore;
+        }
 
-       // Ensure final score is normalized between 0 and 1
-       finalScore = Math.min(Math.max(finalScore, 0), 1);
+        finalScore = Math.min(Math.max(finalScore, 0), 1);
 
         const reasons = [...(semanticMatch?.reasons ?? []), ...(keywordMatch?.reasons ?? [])];
 
-       combinedMatches.push({
-         pattern: patternMatches[0].pattern,
-         confidence: finalScore,
-         matchType: 'hybrid' as const,
-         reasons,
-         metadata: {
-           semanticScore,
-           keywordScore,
-           finalScore,
-         },
-       });
-     }
+        combinedMatches.push({
+          pattern: patternMatches[0].pattern,
+          confidence: finalScore,
+          matchType: 'hybrid' as const,
+          reasons,
+          metadata: {
+            semanticScore,
+            keywordScore,
+            finalScore,
+          },
+        });
+      }
 
-     return combinedMatches;
-   }
+      return combinedMatches;
+    }
 
   /**
    * Apply fuzzy refinement to pattern recommendations
    */
-  private async applyFuzzyRefinement(
+  private applyFuzzyRefinement(
     recommendations: PatternRecommendation[],
     request: PatternRequest
-  ): Promise<PatternRecommendation[]> {
+  ): PatternRecommendation[] {
     const startTime = Date.now();
     let processedCount = 0;
     let failedCount = 0;
@@ -602,8 +757,9 @@ export class PatternMatcher {
 
     // Language compatibility
     if (request.programmingLanguage) {
+      const lang = request.programmingLanguage;
       const hasLanguageExamples = pattern.tags.some(tag =>
-        tag.toLowerCase().includes(request.programmingLanguage!.toLowerCase().slice(0, 3))
+        tag.toLowerCase().includes(lang.toLowerCase().slice(0, 3))
       );
       fit += hasLanguageExamples ? 0.3 : -0.1;
     }
@@ -923,14 +1079,7 @@ export class PatternMatcher {
    * Get detailed pattern information
    */
   private getDetailedPattern(patternId: string): DetailedPattern | null {
-    const pattern = this.db.queryOne(
-      `
-      SELECT id, name, category, description, when_to_use, benefits, drawbacks,
-             use_cases, complexity, tags, created_at, updated_at
-      FROM patterns WHERE id = ?
-    `,
-      [patternId]
-    ) as {
+    const pattern = this.db.queryOne<{
       id: string;
       name: string;
       category: string;
@@ -943,7 +1092,14 @@ export class PatternMatcher {
       tags: string | null;
       created_at: string;
       updated_at: string;
-    } | null;
+    }>(
+      `
+      SELECT id, name, category, description, when_to_use, benefits, drawbacks,
+             use_cases, complexity, tags, created_at, updated_at
+      FROM patterns WHERE id = ?
+    `,
+      [patternId]
+    );
 
     if (!pattern) return null;
 

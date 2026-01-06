@@ -1,6 +1,7 @@
 /**
  * Unit Tests for Fuzzy Logic Components
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { describe, it, expect } from 'vitest';
 import { PatternMembershipFunctions } from '../../src/services/fuzzy-membership.js';
@@ -219,8 +220,9 @@ describe('Fuzzy Defuzzification Engine', () => {
     const result = defuzzEngine.defuzzifyPatternRelevance(fuzzyScore);
     const maxMembershipResult = defuzzEngine.defuzzifyMaxMembership(fuzzyScore);
 
-    // Should return medium value (0.5) as it has the highest membership (0.6)
-    expect(result.crispValues.relevance).toBe(0.5);
+    // Centroid method with weighted average: 0.2*0.15 + 0.6*0.45 + 0.4*0.80 + 0.1*0.95 = 0.715 / 1.3 = 0.55
+    expect(result.crispValues.relevance).toBeCloseTo(0.55, 5);
+    // Max membership returns 0.5 for medium term
     expect(maxMembershipResult).toBe(0.5);
     expect(result.confidence).toBeGreaterThan(0.5);
   });
@@ -246,11 +248,17 @@ describe('Fuzzy Defuzzification Engine', () => {
   });
 
   it('should generate statistics correctly', () => {
-    const results = [
+    interface TestDefuzzificationResult {
+      crispValues: { relevance: number };
+      confidence: number;
+      method: string;
+      explanation: string;
+    }
+    const results: TestDefuzzificationResult[] = [
       { crispValues: { relevance: 0.8 }, confidence: 0.9, method: 'centroid', explanation: 'test' },
       { crispValues: { relevance: 0.6 }, confidence: 0.8, method: 'centroid', explanation: 'test' },
       { crispValues: { relevance: 0.2 }, confidence: 0.6, method: 'centroid', explanation: 'test' }
-    ] as any;
+    ];
 
     const stats = defuzzEngine.getStatistics(results);
 

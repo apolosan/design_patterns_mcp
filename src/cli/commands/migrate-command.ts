@@ -24,7 +24,7 @@ export class MigrateCommand extends BaseCLICommand {
     };
   }
 
-  protected async run(args?: string[]): Promise<void> {
+  protected async run(_args?: string[]): Promise<void> {
     const dbManager = getDatabaseManager();
 
     // Initialize migration manager

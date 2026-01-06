@@ -1,6 +1,8 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/await-thenable, @typescript-eslint/no-unsafe-assignment */
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 import { MigrationManager } from '../../src/services/migrations';
+import { MigrationRecord, TableName, ColumnInfo } from '../helpers/test-interfaces';
 
 describe('Database Migration', () => {
   let dbManager: DatabaseManager;
@@ -15,7 +17,7 @@ describe('Database Migration', () => {
     await dbManager.initialize();
 
     migrationManager = new MigrationManager(dbManager, './migrations');
-    await migrationManager.initialize();
+    migrationManager.initialize();
 
     // Execute all pending migrations
     const result = await migrationManager.migrate();
@@ -28,23 +30,23 @@ describe('Database Migration', () => {
     await dbManager.close();
   });
 
-  it('should execute initial migration', async () => {
+  it('should execute initial migration', () => {
     // Check if migrations table exists and has records
-    const migrationRecords = dbManager.query('SELECT * FROM schema_migrations');
+    const migrationRecords = dbManager.query<MigrationRecord>('SELECT * FROM schema_migrations');
     const migrationExecuted = migrationRecords && migrationRecords.length > 0;
 
     expect(migrationExecuted).toBe(true);
   });
 
-  it('should handle migration versioning', async () => {
+  it('should handle migration versioning', () => {
     // Check if migration records exist
-    const migrationRecords = dbManager.query(
+    const migrationRecords = dbManager.query<MigrationRecord>(
       'SELECT id, checksum FROM schema_migrations ORDER BY id'
     );
     const versionTracked =
       migrationRecords &&
       migrationRecords.length > 0 &&
-      migrationRecords.every((record: any) => record.id && record.checksum);
+      migrationRecords.every((record) => record.id && record.checksum);
 
     expect(versionTracked).toBe(true);
   });
@@ -60,7 +62,7 @@ describe('Database Migration', () => {
     // Assert: Verify rollback was successful
     expect(rollbackResult.success).toBe(true);
     expect(rollbackResult.rolledBack).toBeDefined();
-    expect(rollbackResult.rolledBack!.length).toBe(1);
+    expect(rollbackResult.rolledBack?.length).toBe(1);
 
     // Verify migration was actually rolled back
     const statusAfter = await migrationManager.getStatus();
@@ -71,9 +73,9 @@ describe('Database Migration', () => {
     expect(migrateResult.success).toBe(true);
   });
 
-  it('should create required database tables', async () => {
+  it('should create required database tables', () => {
     // Check if all required tables exist
-    const tables = dbManager.query(`
+    const tables = dbManager.query<TableName>(`
       SELECT name FROM sqlite_master
       WHERE type='table' AND name IN (
         'patterns', 'pattern_embeddings', 'pattern_relationships',
@@ -88,28 +90,28 @@ describe('Database Migration', () => {
       'pattern_implementations',
       'schema_migrations',
     ];
-    const existingTables = tables.map((row: any) => row.name);
+    const existingTables = tables.map((row) => row.name);
     const allTablesExist = requiredTables.every(table => existingTables.includes(table));
 
     expect(allTablesExist).toBe(true);
   });
 
-  it('should migrate pattern data', async () => {
+  it('should migrate pattern data', () => {
     // Check if patterns table exists and has correct structure
     const tableInfo = dbManager.query(`
       PRAGMA table_info(patterns)
     `);
     const hasRequiredColumns =
       tableInfo &&
-      tableInfo.length >= 8 && // id, name, category, description, when_to_use, benefits, drawbacks, use_cases, complexity, tags, created_at, updated_at
-      tableInfo.some((col: any) => col.name === 'id' && col.type === 'TEXT') &&
-      tableInfo.some((col: any) => col.name === 'name' && col.type === 'TEXT') &&
-      tableInfo.some((col: any) => col.name === 'category' && col.type === 'TEXT');
+      tableInfo.length >= 8 &&
+      tableInfo.some((col: ColumnInfo) => col.name === 'id' && col.type === 'TEXT') &&
+      tableInfo.some((col: ColumnInfo) => col.name === 'name' && col.type === 'TEXT') &&
+      tableInfo.some((col: ColumnInfo) => col.name === 'category' && col.type === 'TEXT');
 
     expect(hasRequiredColumns).toBe(true);
   });
 
-  it('should validate migration integrity', async () => {
+  it('should validate migration integrity', () => {
     // Check if all expected tables have data
     const tablesWithData = dbManager.query(`
       SELECT name FROM sqlite_master
@@ -122,10 +124,10 @@ describe('Database Migration', () => {
   });
 
   // Mutation Testing: Test edge cases and error conditions
-  it('should handle invalid migration files gracefully', async () => {
+  it('should handle invalid migration files gracefully', () => {
     // Create a separate migration manager with invalid migration path
     const invalidMigrationManager = new MigrationManager(dbManager, '/nonexistent/path');
-    const migrations = await invalidMigrationManager.getAvailableMigrations();
+    const migrations = invalidMigrationManager.getAvailableMigrations();
 
     expect(migrations).toEqual([]);
   });
@@ -170,11 +172,11 @@ describe('Database Migration', () => {
     const result = await migrationManager.migrateGradually({ dryRun: true });
 
     expect(result.success).toBe(true);
-    expect(result.executed!.length).toBeGreaterThan(0);
+    expect(result.executed?.length).toBeGreaterThan(0);
   });
 
-  it('should validate single migrations', async () => {
-    const available = await migrationManager.getAvailableMigrations();
+  it('should validate single migrations', () => {
+    const available = migrationManager.getAvailableMigrations();
     const firstMigration = available[0];
 
     // This is a private method, but we're testing the concept
@@ -184,13 +186,15 @@ describe('Database Migration', () => {
     expect(firstMigration.down).toBeDefined();
   });
 
-  it('should handle checksum resolution', async () => {
-    const available = await migrationManager.getAvailableMigrations();
+  it('should handle checksum resolution', () => {
+    const available = migrationManager.getAvailableMigrations();
     const firstMigration = available[0];
 
     // Test checksum calculation
-    const checksum1 = (migrationManager as any).calculateChecksum(firstMigration.up);
-    const checksum2 = (migrationManager as any).calculateChecksum(firstMigration.up);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const checksum1 = (migrationManager as any).calculateChecksum(firstMigration.up) as string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const checksum2 = (migrationManager as any).calculateChecksum(firstMigration.up) as string;
 
     expect(checksum1).toBe(checksum2); // Should be deterministic
     expect(typeof checksum1).toBe('string');
@@ -235,7 +239,8 @@ describe('Database Migration', () => {
     expect(result).toHaveProperty('message');
   });
 
-  describe('DDL Migration Error Handling', () => {
+    describe('DDL Migration Error Handling', () => {
+    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
     let testDbManager: DatabaseManager;
     let testMigrationManager: MigrationManager;
 
@@ -248,7 +253,7 @@ describe('Database Migration', () => {
       await testDbManager.initialize();
 
       testMigrationManager = new MigrationManager(testDbManager, './migrations');
-      await testMigrationManager.initialize();
+      testMigrationManager.initialize();
     });
 
     afterEach(async () => {
@@ -391,7 +396,8 @@ describe('Database Migration', () => {
 
       // Mock the executeMigration to fail twice then succeed
       const originalExecute = (testMigrationManager as any).executeMigration;
-      (testMigrationManager as any).executeMigration = async (migration: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      (testMigrationManager as any).executeMigration = (migration: any) => {
         attemptCount++;
         if (attemptCount < 3) {
           // Create partial state then fail

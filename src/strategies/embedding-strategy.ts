@@ -30,7 +30,7 @@ export class SimpleHashEmbeddingStrategy implements EmbeddingStrategy {
 
   async generateEmbedding(text: string): Promise<EmbeddingVector> {
     const words = text.toLowerCase().split(/\s+/);
-    const embedding: number[] = new Array(this.dimensions).fill(0);
+    const embedding: number[] = Array<number>(this.dimensions).fill(0);
 
     // Improved hash-based algorithm
     for (let i = 0; i < words.length; i++) {
@@ -274,7 +274,7 @@ export class OllamaEmbeddingStrategy implements EmbeddingStrategy {
       return (
         data.models?.some(
           (model: { name: string }) => model.name.includes('all-minilm') || model.name.includes('embedding')
-        ) || false
+        ) ?? false
       );
     } catch {
       return false;

@@ -3,7 +3,7 @@
  * Provides standardized database initialization, error handling, and logging
  */
 
-import { initializeDatabaseManager, getDatabaseManager, closeDatabaseManager } from '../../services/database-manager.js';
+import { initializeDatabaseManager, closeDatabaseManager } from '../../services/database-manager.js';
 import { logger } from '../../services/logger.js';
 import type { CLICommand, DBConfig } from './cli-command.js';
 
@@ -30,7 +30,7 @@ export abstract class BaseCLICommand implements CLICommand {
   /**
    * Hook called before command execution
    */
-  protected async preExecute(args?: string[]): Promise<void> {
+  protected async preExecute(_args?: string[]): Promise<void> {
     // Override in subclasses if needed
   }
 
@@ -42,7 +42,7 @@ export abstract class BaseCLICommand implements CLICommand {
   /**
    * Hook called after command execution
    */
-  protected async postExecute(args?: string[]): Promise<void> {
+  protected async postExecute(_args?: string[]): Promise<void> {
     // Override in subclasses if needed
   }
 

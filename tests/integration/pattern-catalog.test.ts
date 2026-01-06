@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MOCK_PATTERNS, getMockPatternsByCategory, getAllMockCategories, getMockPatternsCount } from '../mocks/mock-patterns.js';
+import { getMockPatternsByCategory, getMockPatternsCount } from '../mocks/mock-patterns.js';
 
 describe('Pattern Catalog Loading', () => {
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, no-empty */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 import { PatternMatcher } from '../../src/services/pattern-matcher';
@@ -235,10 +236,11 @@ describe('Production Readiness Tests', () => {
     expect(Array.isArray(recommendations)).toBe(true);
   });
 
-  it('should validate database schema requirements', async () => {
+  it('should validate database schema requirements', () => {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     // Check that all required tables exist
     const tables = dbManager.query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
-    const tableNames = tables.map(t => t.name);
+    const tableNames = tables.map((t: { name: string }) => t.name);
     
     expect(tableNames).toContain('patterns');
     expect(tableNames).toContain('pattern_embeddings');
@@ -247,12 +249,13 @@ describe('Production Readiness Tests', () => {
 
     // Check patterns table has required columns
     const patternColumns = dbManager.query("PRAGMA table_info(patterns)");
-    const columnNames = patternColumns.map(c => c.name);
+    const columnNames = patternColumns.map((c: { name: string }) => c.name);
     
     const requiredColumns = ['id', 'name', 'category', 'description', 'complexity'];
     for (const column of requiredColumns) {
       expect(columnNames).toContain(column);
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
   });
 

@@ -26,7 +26,6 @@ import { SemanticSearchService } from './services/semantic-search.js';
 import { LLMBridgeService } from './services/llm-bridge.js';
 import { MigrationManager } from './services/migrations.js';
 import { PatternSeeder } from './services/pattern-seeder.js';
-import { CacheService } from './services/cache.js';
 import { logger } from './services/logger.js';
 import { parseTags, parseArrayProperty } from './utils/parse-tags.js';
 import { MCPRateLimiter } from './utils/rate-limiter.js';
@@ -34,10 +33,7 @@ import { InputValidator } from './utils/input-validation.js';
 import { SimpleContainer, configureContainer, TOKENS } from './core/container.js';
 import { MCPServerConfigBuilder } from './core/config-builder.js';
 import { HealthCheckService } from './health/health-check-service.js';
-import { DatabaseHealthCheck } from './health/database-health-check.js';
-import { VectorOperationsHealthCheck } from './health/vector-operations-health-check.js';
-import { LLMBridgeHealthCheck } from './health/llm-bridge-health-check.js';
-import { EmbeddingServiceHealthCheck } from './health/embedding-service-health-check.js';
+import { HealthStatus } from './health/types.js';
 import type { Logger } from './services/logger.js';
 
 export interface MCPServerConfig {
@@ -46,6 +42,38 @@ export interface MCPServerConfig {
   enableLLM: boolean;
   maxConcurrentRequests: number;
   enableFuzzyLogic?: boolean;
+}
+
+interface PatternRow {
+  id: string;
+  name: string;
+  category: string;
+  description?: string;
+  when_to_use?: string;
+  benefits?: string;
+  drawbacks?: string;
+  use_cases?: string;
+  complexity?: string;
+  tags?: string;
+  examples?: string;
+  created_at?: string;
+}
+
+interface PatternExample {
+  language: string;
+  code: string;
+  description?: string;
+  explanation?: string;
+}
+
+interface CountResult {
+  count: number;
+}
+
+interface PatternImplementation {
+  language: string;
+  code: string;
+  explanation?: string;
 }
 
 class DesignPatternsMCPServer {
@@ -387,7 +415,7 @@ class DesignPatternsMCPServer {
             case 'get_pattern_details':
               return await this.handleGetPatternDetails(toolArgs);
             case 'count_patterns':
-              return await this.handleCountPatterns(toolArgs);
+              return this.handleCountPatterns(toolArgs);
             case 'get_health_status':
               return await this.handleGetHealthStatus(toolArgs);
             default:
@@ -427,16 +455,16 @@ class DesignPatternsMCPServer {
     });
 
     // Handle resource reads
-    this.server.setRequestHandler(ReadResourceRequestSchema, async request => {
+    this.server.setRequestHandler(ReadResourceRequestSchema, request => {
       const { uri } = request.params;
 
       switch (uri) {
         case 'patterns':
-          return await this.handleReadPatterns();
+          return this.handleReadPatterns();
         case 'categories':
-          return await this.handleReadCategories();
+          return this.handleReadCategories();
         case 'server_info':
-          return await this.handleReadServerInfo();
+          return this.handleReadServerInfo();
         default:
           throw new McpError(ErrorCode.InvalidRequest, `Unknown resource: ${uri}`);
       }
@@ -519,7 +547,7 @@ class DesignPatternsMCPServer {
 
   private async handleGetPatternDetails(args: unknown): Promise<CallToolResult> {
     const validatedArgs = InputValidator.validateGetPatternDetailsArgs(args);
-    const pattern = this.db.queryOne(
+    const pattern = this.db.queryOne<PatternRow>(
       `
       SELECT id, name, category, description, when_to_use, benefits,
              drawbacks, use_cases, complexity, tags, examples, created_at
@@ -564,7 +592,10 @@ class DesignPatternsMCPServer {
       }
     }
 
-    const implementations = this.db.query(
+    // At this point pattern is guaranteed to exist
+    const patternData: PatternRow = pattern;
+
+    const implementations = this.db.query<PatternImplementation>(
       `
       SELECT language, code, explanation FROM pattern_implementations
       WHERE pattern_id = ? LIMIT 3
@@ -574,9 +605,9 @@ class DesignPatternsMCPServer {
 
     // Parse code examples if available
     let examplesText = '';
-    if (pattern.examples) {
+    if (patternData.examples) {
       try {
-        const examples = JSON.parse(pattern.examples);
+        const examples = JSON.parse(patternData.examples) as Record<string, PatternExample>;
         const exampleKeys = Object.keys(examples);
 
         if (exampleKeys.length > 0) {
@@ -600,14 +631,14 @@ class DesignPatternsMCPServer {
         {
           type: 'text',
           text:
-            `# ${pattern.name} (${pattern.category})\n\n` +
-            `**Description:** ${pattern.description}\n\n` +
-            `**When to Use:** ${parseArrayProperty(pattern.when_to_use).join(', ')}\n\n` +
-            `**Benefits:** ${parseArrayProperty(pattern.benefits).join(', ')}\n\n` +
-            `**Drawbacks:** ${parseArrayProperty(pattern.drawbacks).join(', ')}\n\n` +
-            `**Use Cases:** ${parseArrayProperty(pattern.use_cases).join(', ')}\n\n` +
-            `**Complexity:** ${pattern.complexity}\n\n` +
-            `**Tags:** ${parseTags(pattern.tags).join(', ')}\n` +
+            `# ${patternData.name} (${patternData.category})\n\n` +
+            `**Description:** ${patternData.description ?? 'No description available'}\n\n` +
+            `**When to Use:** ${parseArrayProperty(patternData.when_to_use).join(', ')}\n\n` +
+            `**Benefits:** ${parseArrayProperty(patternData.benefits).join(', ')}\n\n` +
+            `**Drawbacks:** ${parseArrayProperty(patternData.drawbacks).join(', ')}\n\n` +
+            `**Use Cases:** ${parseArrayProperty(patternData.use_cases).join(', ')}\n\n` +
+            `**Complexity:** ${patternData.complexity ?? 'Unknown'}\n\n` +
+            `**Tags:** ${parseTags(patternData.tags).join(', ')}\n` +
             examplesText +
             (implementations.length > 0
               ? `\n\n**Implementations:**\n` +
@@ -630,7 +661,7 @@ class DesignPatternsMCPServer {
       const totalResult = this.db.queryOne<{ total: number }>(
         'SELECT COUNT(*) as total FROM patterns'
       );
-      const total = totalResult?.total || 0;
+      const total = totalResult?.total ?? 0;
 
       if (validatedArgs.includeDetails) {
         // Get category breakdown efficiently
@@ -695,10 +726,10 @@ class DesignPatternsMCPServer {
           checks: [result],
           summary: {
             total: 1,
-            healthy: result.status === 'healthy' ? 1 : 0,
-            degraded: result.status === 'degraded' ? 1 : 0,
-            unhealthy: result.status === 'unhealthy' ? 1 : 0,
-            unknown: result.status === 'unknown' ? 1 : 0,
+            healthy: result.status === HealthStatus.HEALTHY ? 1 : 0,
+            degraded: result.status === HealthStatus.DEGRADED ? 1 : 0,
+            unhealthy: result.status === HealthStatus.UNHEALTHY ? 1 : 0,
+            unknown: result.status === HealthStatus.UNKNOWN ? 1 : 0,
           },
         };
       } else if (validatedArgs.tags && validatedArgs.tags.length > 0) {
@@ -800,7 +831,7 @@ class DesignPatternsMCPServer {
       status: 'running',
       database: {
         path: this.config.databasePath,
-        patternCount: this.db.queryOne('SELECT COUNT(*) as count FROM patterns')?.count || 0,
+        patternCount: this.db.queryOne<CountResult>('SELECT COUNT(*) as count FROM patterns')?.count ?? 0,
       },
       features: {
         semanticSearch: true,
@@ -832,7 +863,7 @@ class DesignPatternsMCPServer {
       });
 
       await this.db.initialize();
-      await this.migrationManager.initialize();
+      this.migrationManager.initialize();
       await this.migrationManager.migrate();
       await this.patternSeeder.seedAll();
 
@@ -920,8 +951,18 @@ async function main(): Promise<void> {
     }
   };
 
-  process.on('SIGINT', () => shutdown('SIGINT'));
-  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => {
+    shutdown('SIGINT').catch((error: unknown) => {
+      logger.error('main', 'Error during SIGINT shutdown', error instanceof Error ? error : new Error(String(error)));
+      process.exit(1);
+    });
+  });
+  process.on('SIGTERM', () => {
+    shutdown('SIGTERM').catch((error: unknown) => {
+      logger.error('main', 'Error during SIGTERM shutdown', error instanceof Error ? error : new Error(String(error)));
+      process.exit(1);
+    });
+  });
 }
 
 // Run if this is the main module

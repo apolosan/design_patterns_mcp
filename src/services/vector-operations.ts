@@ -30,6 +30,48 @@ export class VectorOperationsService {
   }
 
   /**
+   * Create vector index for performance optimization
+   */
+  createVectorIndex(): void {
+    try {
+      // Create virtual table for vector search using sqlite-vec
+      this.db.execute(`
+        CREATE VIRTUAL TABLE IF NOT EXISTS vec_pattern_embeddings 
+        USING vec0(
+          pattern_id TEXT PRIMARY KEY,
+          embedding FLOAT[${this.config.dimensions}]
+        )
+      `);
+
+      // Populate the vector index from existing embeddings
+      this.db.execute(`
+        INSERT OR REPLACE INTO vec_pattern_embeddings(pattern_id, embedding)
+        SELECT pattern_id, embedding FROM pattern_embeddings
+      `);
+
+      logger.info('vector-operations', 'Vector index created successfully');
+    } catch (error) {
+      console.error('Failed to create vector index:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Check if vector index exists
+   */
+  hasVectorIndex(): boolean {
+    try {
+      const result = this.db.queryOne<{ count: number }>(`
+        SELECT COUNT(*) as count FROM sqlite_master 
+        WHERE type = 'virtual table' AND name = 'vec_pattern_embeddings'
+      `);
+      return result ? result.count > 0 : false;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Store pattern embedding
    */
   storeEmbedding(patternId: string, embedding: number[]): void {
@@ -127,56 +169,191 @@ export class VectorOperationsService {
   /**
    * Perform vector similarity search
    */
-  async searchSimilar(
+  searchSimilar(
     queryEmbedding: number[],
     filters?: VectorSearchFilters,
     limit?: number
-  ): Promise<VectorSearchResult[]> {
+  ): VectorSearchResult[] {
     try {
       const maxResults = limit ?? this.config.maxResults;
 
-      // Get all embeddings (in production, use vector database with indexing)
-      const sql = 'SELECT pattern_id, embedding FROM pattern_embeddings';
-      const rows = this.db.query<{ pattern_id: string; embedding: string }>(sql);
-
-      const results: VectorSearchResult[] = [];
-
-      for (const row of rows) {
-      const embedding = JSON.parse(row.embedding) as number[];
-        const similarity = this.calculateSimilarity(queryEmbedding, embedding);
-
-        // Apply filters
-        if (filters && !(await this.matchesFilters(row.pattern_id, filters))) {
-          continue;
-        }
-
-        results.push({
-          patternId: row.pattern_id,
-          score: similarity,
-          distance: 1 - similarity, // Convert similarity to distance
-          rank: 0, // Will be set after sorting
-          pattern: this.getPatternInfo(row.pattern_id) || undefined,
-        });
+      // Try indexed vector search first (optimized path)
+      const indexedResults = this.tryIndexedVectorSearch(queryEmbedding, filters, maxResults);
+      if (indexedResults) {
+        return indexedResults;
       }
 
-      // Sort by similarity score (descending)
-      results.sort((a, b) => b.score - a.score);
-
-      // Apply threshold and limit
-      const filteredResults = results
-        .filter(result => result.score >= 0.1) // Lower threshold for better results
-        .slice(0, maxResults);
-
-      // Set ranks
-      filteredResults.forEach((result, index) => {
-        result.rank = index + 1;
-      });
-
-      return filteredResults;
+      // Fallback to linear search (backward compatibility)
+      return this.linearVectorSearch(queryEmbedding, filters, maxResults);
     } catch (error) {
       console.error('Vector search failed:', error);
       throw error;
     }
+  }
+
+  /**
+   * Attempt indexed vector search using sqlite-vec
+   */
+  private tryIndexedVectorSearch(
+    queryEmbedding: number[],
+    filters?: VectorSearchFilters,
+    maxResults?: number
+  ): VectorSearchResult[] | null {
+    try {
+      // Check if vector index exists
+      const indexCheck = this.db.queryOne<{ count: number }>(`
+        SELECT COUNT(*) as count FROM sqlite_master 
+        WHERE type = 'virtual table' AND name = 'vec_pattern_embeddings'
+      `);
+
+      if (!indexCheck || indexCheck.count === 0) {
+        return null; // No vector index available
+      }
+
+      // Build WHERE clause for filters
+      const whereConditions: string[] = [];
+      const whereParams: (string | number)[] = [];
+
+      if (filters) {
+        if (filters.categories && filters.categories.length > 0) {
+          const placeholders = filters.categories.map(() => '?').join(',');
+          whereConditions.push(`p.category IN (${placeholders})`);
+          whereParams.push(...filters.categories);
+        }
+
+        if (filters.complexity) {
+          whereConditions.push('p.complexity = ?');
+          whereParams.push(filters.complexity);
+        }
+
+        if (filters.tags && filters.tags.length > 0) {
+          const tagConditions = filters.tags.map(() => 'JSON_EXTRACT(p.tags, ?)').join(' OR ');
+          whereConditions.push(`(${tagConditions})`);
+          whereParams.push(...filters.tags.map(tag => `$.${tag}`));
+        }
+
+        if (filters.excludePatterns && filters.excludePatterns.length > 0) {
+          const placeholders = filters.excludePatterns.map(() => '?').join(',');
+          whereConditions.push(`pe.pattern_id NOT IN (${placeholders})`);
+          for (const pattern of filters.excludePatterns) {
+            whereParams.push(pattern);
+          }
+        }
+      }
+
+      const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+      // Use sqlite-vec for indexed vector search
+      const sql = `
+        SELECT 
+          pe.pattern_id,
+          pe.embedding,
+          vec_distance_l2(pe.embedding, ?) as distance,
+          p.name,
+          p.category,
+          p.description,
+          p.tags
+        FROM pattern_embeddings pe
+        JOIN patterns p ON pe.pattern_id = p.id
+        ${whereClause}
+        ORDER BY vec_distance_l2(pe.embedding, ?)
+        LIMIT ?
+      `;
+
+      const params: (string | number)[] = [
+        JSON.stringify(queryEmbedding),
+        ...whereParams,
+        JSON.stringify(queryEmbedding),
+        maxResults ?? this.config.maxResults
+      ];
+
+      interface VectorSearchRow {
+        pattern_id: string;
+        embedding: string;
+        distance: number;
+        name: string;
+        category: string;
+        description: string;
+        tags: unknown;
+      }
+
+      const rows = this.db.query<VectorSearchRow>(sql, params);
+
+      const results: VectorSearchResult[] = rows.map((row, index) => ({
+        patternId: row.pattern_id,
+        score: 1 / (1 + row.distance), // Convert distance to similarity score
+        distance: row.distance,
+        rank: index + 1,
+        pattern: {
+          id: row.pattern_id,
+          name: row.name,
+          category: row.category,
+          description: row.description,
+          tags: (row.tags as string[]),
+        },
+      }));
+
+      // Apply minimum score threshold
+      const minScore = filters?.minScore ?? 0.1;
+      return results.filter(result => result.score >= minScore);
+    } catch (error) {
+      // Indexed search failed, fall back to linear search
+      logger.debug('vector-operations', 'Indexed search failed, falling back to linear search', { 
+        error: error instanceof Error ? error.message : String(error) 
+      });
+      return null;
+    }
+  }
+
+  /**
+   * Linear vector search (fallback method)
+   */
+  private linearVectorSearch(
+    queryEmbedding: number[],
+    filters?: VectorSearchFilters,
+    maxResults?: number
+  ): VectorSearchResult[] {
+    const limit = maxResults ?? this.config.maxResults;
+
+    // Get all embeddings
+    const sql = 'SELECT pattern_id, embedding FROM pattern_embeddings';
+    const rows = this.db.query<{ pattern_id: string; embedding: string }>(sql);
+
+    const results: VectorSearchResult[] = [];
+
+    for (const row of rows) {
+      const embedding = JSON.parse(row.embedding) as number[];
+      const similarity = this.calculateSimilarity(queryEmbedding, embedding);
+
+      // Apply filters
+      if (filters && !(this.matchesFilters(row.pattern_id, filters))) {
+        continue;
+      }
+
+      results.push({
+        patternId: row.pattern_id,
+        score: similarity,
+        distance: 1 - similarity, // Convert similarity to distance
+        rank: 0, // Will be set after sorting
+        pattern: this.getPatternInfo(row.pattern_id) ?? undefined,
+      });
+    }
+
+    // Sort by similarity score (descending)
+    results.sort((a, b) => b.score - a.score);
+
+    // Apply threshold and limit
+    const minScore = filters?.minScore ?? 0.1;
+    const filteredResults = results
+      .filter(result => result.score >= minScore)
+      .slice(0, limit);
+
+    // Set ranks
+    filteredResults.forEach((result, index) => {
+      result.rank = index + 1;
+    });
+
+    return filteredResults;
   }
 
   /**
@@ -333,7 +510,7 @@ export class VectorOperationsService {
       const dbStats = this.db.getStats();
 
       return {
-        totalVectors: totalEmbeddings?.count || 0,
+        totalVectors: totalEmbeddings?.count ?? 0,
         embeddingModel: this.config.model,
         dimensions: this.config.dimensions,
         averageDimensions: dimensions,
@@ -406,7 +583,7 @@ export class VectorOperationsService {
   /**
    * Find similar patterns by pattern ID
    */
-  async findSimilarPatterns(patternId: string, limit?: number): Promise<VectorSearchResult[]> {
+  findSimilarPatterns(patternId: string, limit?: number): VectorSearchResult[] {
     const embedding = this.getEmbedding(patternId);
 
     if (!embedding) {
@@ -435,7 +612,7 @@ export class VectorOperationsService {
       // Simple K-means clustering (simplified implementation)
       const vectors = embeddings.map(e => ({
         id: e.pattern_id,
-        vector: JSON.parse(e.embedding),
+        vector: JSON.parse(e.embedding) as number[],
       }));
 
       const clusters = this.simpleKMeans(vectors, clusterCount);
@@ -536,7 +713,7 @@ export class VectorOperationsService {
    */
   private calculateCentroid(vectors: number[][]): number[] {
     const dimensions = vectors[0].length;
-    const centroid = new Array(dimensions).fill(0);
+    const centroid: number[] = Array<number>(dimensions).fill(0);
 
     for (const vector of vectors) {
       for (let i = 0; i < dimensions; i++) {

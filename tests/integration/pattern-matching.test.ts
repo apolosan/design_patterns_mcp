@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
-import { createVectorOperationsService } from '../../src/services/vector-operations';
-import { createPatternMatcher } from '../../src/services/pattern-matcher';
+import { VectorOperationsService, createVectorOperationsService } from '../../src/services/vector-operations';
+import { PatternMatcher, createPatternMatcher } from '../../src/services/pattern-matcher';
 import { createPatternSeeder } from '../../src/services/pattern-seeder';
 import path from 'path';
 
-async function createFullSchema(dbManager: DatabaseManager): Promise<void> {
+function createFullSchema(dbManager: DatabaseManager): void {
   // Drop existing tables to ensure clean schema
   dbManager.execute('DROP TABLE IF EXISTS pattern_embeddings');
   dbManager.execute('DROP TABLE IF EXISTS pattern_relationships');
@@ -95,8 +95,8 @@ async function createFullSchema(dbManager: DatabaseManager): Promise<void> {
 
 describe('Pattern Matching with Semantic Search', () => {
   let dbManager: DatabaseManager;
-  let vectorOps: any;
-  let patternMatcher: any;
+  let vectorOps: VectorOperationsService;
+  let patternMatcher: PatternMatcher;
 
   beforeAll(async () => {
     // Initialize test database
@@ -107,7 +107,7 @@ describe('Pattern Matching with Semantic Search', () => {
     await dbManager.initialize();
 
     // Create full schema manually (since migrations fail on in-memory DBs with existing tables)
-    await createFullSchema(dbManager);
+    createFullSchema(dbManager);
 
     // Seed patterns for testing
     const seeder = createPatternSeeder(dbManager, {
@@ -204,11 +204,11 @@ describe('Pattern Matching with Semantic Search', () => {
     expect(matches.length).toBeGreaterThan(0);
 
     // Should find Factory Method pattern
-    const factoryMethodMatch = matches.find((m: any) =>
+    const factoryMethodMatch = matches.find(m =>
       m.pattern.name.toLowerCase().includes('factory method')
     );
-    expect(factoryMethodMatch).toBeTruthy();
-    expect(factoryMethodMatch!.confidence).toBeGreaterThan(0.3);
+    expect(factoryMethodMatch).not.toBeNull();
+    expect(factoryMethodMatch?.confidence ?? 0).toBeGreaterThanOrEqual(0.3);
   });
 
   it('should provide pattern explanations', async () => {

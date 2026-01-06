@@ -78,10 +78,6 @@ export function getMockPatternsByCategory(category: string): MockPattern[] {
   return MOCK_PATTERNS.filter(p => p.category === category);
 }
 
-function getMockPatternById(id: string): MockPattern | undefined {
-  return MOCK_PATTERNS.find(p => p.id === id);
-}
-
 export function getAllMockCategories(): string[] {
   return [...new Set(MOCK_PATTERNS.map(p => p.category))];
 }

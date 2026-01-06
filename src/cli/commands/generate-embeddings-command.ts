@@ -25,7 +25,7 @@ export class GenerateEmbeddingsCommand extends BaseCLICommand {
     };
   }
 
-  protected async run(args?: string[]): Promise<void> {
+  protected async run(_args?: string[]): Promise<void> {
     const dbManager = getDatabaseManager();
     const vectorOps = createVectorOperationsService(dbManager);
 

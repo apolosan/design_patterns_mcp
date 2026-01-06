@@ -197,14 +197,15 @@ describe('UserPreference Model', () => {
       expect(typeof mockPreferenceManager.import).toBe('function');
     });
 
-    it('should mock get method correctly', async () => {
-      (mockPreferenceManager.get as any).mockReturnValue('test_value');
+    it('should mock get method correctly', () => {
+      (mockPreferenceManager.get as unknown as { mockReturnValue: (val: string) => void }).mockReturnValue('test_value');
       const result = mockPreferenceManager.get<string>('test_key');
       expect(result).toBe('test_value');
     });
 
     it('should mock set method correctly', async () => {
       await mockPreferenceManager.set('test_key', 'test_value');
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockPreferenceManager.set).toHaveBeenCalledWith('test_key', 'test_value');
     });
   });

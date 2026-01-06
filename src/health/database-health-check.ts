@@ -6,6 +6,17 @@
 import { HealthCheck, HealthCheckResult, HealthStatus, HealthUtils, HealthCheckSeverity } from './types.js';
 import { DatabaseManager } from '../services/database-manager.js';
 
+interface ConnectivityTestResult {
+  test_value: number;
+  version: string;
+}
+
+interface PerformanceTestResult {
+  pattern_count: number;
+  relationship_count?: number;
+  vector_count?: number;
+}
+
 export class DatabaseHealthCheck implements HealthCheck {
   name = 'database';
   description = 'Database connectivity and performance health check';
@@ -18,7 +29,6 @@ export class DatabaseHealthCheck implements HealthCheck {
     const startTime = Date.now();
 
     try {
-      // Test basic connectivity with a simple query
       const connectivityResult = await this.testConnectivity();
       const duration = Date.now() - startTime;
 
@@ -35,15 +45,13 @@ export class DatabaseHealthCheck implements HealthCheck {
         );
       }
 
-      // Test performance with a more complex query
-      const performanceResult = await this.testPerformance();
+      const performanceResult = this.testPerformance();
 
-      // Determine overall status based on results
       let overallStatus = HealthStatus.HEALTHY;
       let message = 'Database is healthy and responsive';
       let severity = HealthCheckSeverity.LOW;
 
-      if (performanceResult.duration > 1000) { // Slow query (> 1 second)
+      if (performanceResult.duration > 1000) {
         overallStatus = HealthStatus.DEGRADED;
         message = `Database is responsive but slow (${performanceResult.duration}ms)`;
         severity = HealthCheckSeverity.MEDIUM;
@@ -79,40 +87,39 @@ export class DatabaseHealthCheck implements HealthCheck {
     }
   }
 
-  private async testConnectivity(): Promise<{ success: boolean; message: string; error?: Error }> {
+  private testConnectivity(): Promise<{ success: boolean; message: string; error?: Error }> {
     try {
-      // Simple connectivity test
-      const result = this.db.queryOne('SELECT 1 as test_value, sqlite_version() as version');
+      const result = this.db.queryOne<ConnectivityTestResult>('SELECT 1 as test_value, sqlite_version() as version');
 
       if (!result) {
-        return {
+        return Promise.resolve({
           success: false,
           message: 'Database query returned no result',
-        };
+        });
       }
 
       if (result.test_value !== 1) {
-        return {
+        return Promise.resolve({
           success: false,
           message: `Unexpected test value: ${result.test_value}`,
-        };
+        });
       }
 
-      return {
+      return Promise.resolve({
         success: true,
         message: `Database connected successfully (SQLite ${result.version})`,
-      };
+      });
 
     } catch (error) {
-      return {
+      return Promise.resolve({
         success: false,
         message: `Database connectivity test failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         error: error instanceof Error ? error : new Error(String(error)),
-      };
+      });
     }
   }
 
-  private async testPerformance(): Promise<{ duration: number; queryCount: number; message: string }> {
+  private testPerformance(): { duration: number; queryCount: number; message: string } {
     const testQueries = [
       'SELECT COUNT(*) as pattern_count FROM patterns',
       'SELECT COUNT(*) as relationship_count FROM relationships',
@@ -125,19 +132,16 @@ export class DatabaseHealthCheck implements HealthCheck {
     for (const query of testQueries) {
       try {
         const startTime = Date.now();
-        const result = this.db.queryOne(query);
+        const result = this.db.queryOne<PerformanceTestResult>(query);
         const duration = Date.now() - startTime;
         results.push(duration);
         totalQueries++;
 
-        // If result is null/undefined, it might indicate empty tables which is OK
         if (result === null || result === undefined) {
           // This is acceptable for empty databases
         }
       } catch (error) {
-        // Some queries might fail if tables don't exist (acceptable during initialization)
-        // We'll still count this as a completed query for performance measurement
-        results.push(100); // Default duration for failed queries
+        results.push(100);
         totalQueries++;
       }
     }
@@ -152,7 +156,6 @@ export class DatabaseHealthCheck implements HealthCheck {
   }
 
   isEnabled(): boolean {
-    // Database health check is always enabled as it's critical infrastructure
     return true;
   }
 }

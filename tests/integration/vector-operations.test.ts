@@ -1,24 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 import { VectorOperationsService } from '../../src/services/vector-operations';
 import { MigrationManager } from '../../src/services/migrations';
-import { getTestDatabaseConfig } from '../helpers/test-db';
+import { createTempDatabasePath } from '../helpers/test-db';
 
 describe('Vector Operations with sqlite-vec', () => {
   let dbManager: DatabaseManager;
   let vectorOps: VectorOperationsService;
+  let tempDbPath: string;
 
   beforeAll(async () => {
-    // Initialize test database with proper schema
-    dbManager = new DatabaseManager(getTestDatabaseConfig(false));
+    tempDbPath = createTempDatabasePath('vector-ops');
+    dbManager = new DatabaseManager({ filename: tempDbPath, options: { readonly: false } });
     await dbManager.initialize();
 
-    // Run migrations to ensure schema is up to date
     const migrationManager = new MigrationManager(dbManager, './migrations');
-    await migrationManager.initialize();
+    migrationManager.initialize();
     await migrationManager.migrate();
 
-    // Initialize vector operations service
     vectorOps = new VectorOperationsService(dbManager, {
       model: 'all-MiniLM-L6-v2',
       dimensions: 384,
@@ -31,7 +31,7 @@ describe('Vector Operations with sqlite-vec', () => {
   beforeEach(() => {
     // Clean up embeddings table between tests
     try {
-      dbManager!.execute('DELETE FROM pattern_embeddings');
+      dbManager.execute('DELETE FROM pattern_embeddings');
     } catch {
       // Table might not exist yet, ignore
     }
@@ -68,7 +68,7 @@ describe('Vector Operations with sqlite-vec', () => {
     expect(vectorTableCreated).toBe(true);
   });
 
-  it('should store pattern embeddings', async () => {
+  it('should store pattern embeddings', () => {
     // Create patterns table first with complete schema
     dbManager.execute(`
       CREATE TABLE IF NOT EXISTS patterns (
@@ -109,7 +109,7 @@ describe('Vector Operations with sqlite-vec', () => {
     const testEmbedding = Array.from({ length: 384 }, () => Math.random());
 
     // Store the embedding
-    await vectorOps.storeEmbedding('test_pattern', testEmbedding);
+    vectorOps.storeEmbedding('test_pattern', testEmbedding);
 
     // Verify embedding was stored
     const embeddings = dbManager.query('SELECT * FROM pattern_embeddings WHERE pattern_id = ?', [
@@ -118,11 +118,12 @@ describe('Vector Operations with sqlite-vec', () => {
 
     const stored = embeddings.length === 1;
     expect(stored).toBe(true);
-    expect(embeddings[0].pattern_id).toBe('test_pattern');
-    expect(embeddings[0].model).toBe('all-MiniLM-L6-v2');
+    const firstEmbedding = embeddings[0] as { pattern_id: string; model: string };
+    expect(firstEmbedding.pattern_id).toBe('test_pattern');
+    expect(firstEmbedding.model).toBe('all-MiniLM-L6-v2');
   });
 
-  it('should perform vector similarity search', async () => {
+  it('should perform vector similarity search', () => {
     // Create tables first
     dbManager.execute(`
       CREATE TABLE IF NOT EXISTS patterns (
@@ -173,12 +174,12 @@ describe('Vector Operations with sqlite-vec', () => {
 
       // Create embeddings with slight variations to test similarity
       const baseEmbedding = Array.from({ length: 384 }, () => Math.random());
-      await vectorOps.storeEmbedding(pattern.id, baseEmbedding);
+      vectorOps.storeEmbedding(pattern.id, baseEmbedding);
     }
 
     // Perform similarity search
     const queryEmbedding = Array.from({ length: 384 }, () => Math.random());
-    const results = await vectorOps.searchSimilar(queryEmbedding, undefined, 5);
+    const results = vectorOps.searchSimilar(queryEmbedding, undefined, 5);
 
     expect(results.length).toBeGreaterThan(0);
     expect(results[0]).toHaveProperty('distance');
@@ -186,7 +187,7 @@ describe('Vector Operations with sqlite-vec', () => {
     expect(results[0]).toHaveProperty('pattern');
   });
 
-  it('should handle different vector dimensions', async () => {
+  it('should handle different vector dimensions', () => {
     // Create tables first
     dbManager.execute(`
       CREATE TABLE IF NOT EXISTS patterns (
@@ -222,7 +223,7 @@ describe('Vector Operations with sqlite-vec', () => {
     try {
       // This should fail with wrong dimensions
       const wrongDimensionEmbedding = Array.from({ length: 100 }, () => Math.random());
-      await vectorOps.storeEmbedding('wrong_dim_pattern', wrongDimensionEmbedding);
+      vectorOps.storeEmbedding('wrong_dim_pattern', wrongDimensionEmbedding);
       dimensionsSupported = false;
     } catch (error) {
       // Should throw error for wrong dimensions
@@ -240,7 +241,8 @@ describe('Vector Operations with sqlite-vec', () => {
       ['correct_dim_pattern', 'Correct Dim', 'Test', 'Test pattern with correct dimensions', 'Low']
     );
 
-    await vectorOps.storeEmbedding('correct_dim_pattern', correctEmbedding);
+    // Store with correct dimensions
+    vectorOps.storeEmbedding('correct_dim_pattern', correctEmbedding);
 
     const embeddings = dbManager.query('SELECT * FROM pattern_embeddings WHERE pattern_id = ?', [
       'correct_dim_pattern',
@@ -249,19 +251,21 @@ describe('Vector Operations with sqlite-vec', () => {
     expect(embeddings.length).toBe(1);
   });
 
-  it('should optimize vector queries', async () => {
+  it('should optimize vector queries', () => {
     // Test caching and performance optimizations
     const queryEmbedding = Array.from({ length: 384 }, () => Math.random());
 
     // First search (should be slower)
     const startTime1 = Date.now();
-    const results1 = await vectorOps.searchSimilar(queryEmbedding, undefined, 3);
-    const time1 = Date.now() - startTime1;
+    const results1 = vectorOps.searchSimilar(queryEmbedding, undefined, 3);
+    const _timing1 = Date.now() - startTime1;
+    void _timing1;
 
     // Second search with same embedding (should use cache if available)
     const startTime2 = Date.now();
-    const results2 = await vectorOps.searchSimilar(queryEmbedding, undefined, 3);
-    const time2 = Date.now() - startTime2;
+    const results2 = vectorOps.searchSimilar(queryEmbedding, undefined, 3);
+    const _timing2 = Date.now() - startTime2;
+    void _timing2;
 
     const queryOptimized = results1.length === results2.length;
     expect(queryOptimized).toBe(true);

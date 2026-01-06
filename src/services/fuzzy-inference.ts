@@ -53,7 +53,7 @@ export class FuzzyInferenceEngine {
       membershipValues.semanticSimilarity.high,
       membershipValues.keywordMatchStrength.strong
     );
-    if (rule1Strength > 0.3) { // Lower threshold for strong matches
+    if (rule1Strength > 0.7) { // Higher threshold for very high matches
       veryHighOutput = Math.max(veryHighOutput, rule1Strength);
       ruleFirings.push({
         rule: "High semantic similarity AND strong keyword match → Very High Relevance",
@@ -68,7 +68,7 @@ export class FuzzyInferenceEngine {
       membershipValues.semanticSimilarity.high,
       membershipValues.contextualFit.excellent
     );
-    if (rule2Strength > 0.3) { // Lower threshold
+    if (rule2Strength > 0.8) { // Much higher threshold for excellent matches
       veryHighOutput = Math.max(veryHighOutput, rule2Strength);
       ruleFirings.push({
         rule: "High semantic similarity AND excellent contextual fit → Very High Relevance",
@@ -155,22 +155,22 @@ export class FuzzyInferenceEngine {
 
     // Default rule: Intelligent fallback based on available evidence
     const maxFiredStrength = Math.max(lowOutput, mediumOutput, highOutput, veryHighOutput);
-    if (maxFiredStrength < 0.2) { // Low threshold for default
+    if (maxFiredStrength < 0.5) { // Higher threshold for default - require more evidence
       // Smart default based on strongest available evidence
-      const semanticStrength = membershipValues.semanticSimilarity.high * 0.8 +
-                              membershipValues.semanticSimilarity.medium * 0.5;
-      const keywordStrength = membershipValues.keywordMatchStrength.strong * 0.6 +
-                             membershipValues.keywordMatchStrength.moderate * 0.3;
-      const contextStrength = membershipValues.contextualFit.excellent * 0.7 +
-                             membershipValues.contextualFit.good * 0.4;
+      const semanticStrength = membershipValues.semanticSimilarity.high * 0.6 +
+                              membershipValues.semanticSimilarity.medium * 0.3;
+      const keywordStrength = membershipValues.keywordMatchStrength.strong * 0.5 +
+                             membershipValues.keywordMatchStrength.moderate * 0.2;
+      const contextStrength = membershipValues.contextualFit.excellent * 0.4 +
+                             membershipValues.contextualFit.good * 0.2;
 
       const smartDefault = Math.max(
-        Math.min(semanticStrength + keywordStrength + contextStrength, 0.8), // Cap at 0.8
-        0.3 // Minimum baseline
+        Math.min(semanticStrength + keywordStrength + contextStrength, 0.7), // Cap at 0.7
+        0.1 // Lower minimum baseline
       );
 
       // Assign to appropriate category based on smart default
-      if (smartDefault > 0.6) {
+      if (smartDefault > 0.55) {
         highOutput = Math.max(highOutput, smartDefault);
         ruleFirings.push({
           rule: "Smart default: High relevance based on combined evidence",
@@ -178,7 +178,7 @@ export class FuzzyInferenceEngine {
           contribution: smartDefault
         });
         reasoning.push(`High relevance from combined evidence (${(smartDefault * 100).toFixed(1)}% confidence)`);
-      } else if (smartDefault > 0.4) {
+      } else if (smartDefault > 0.35) {
         mediumOutput = Math.max(mediumOutput, smartDefault);
         ruleFirings.push({
           rule: "Smart default: Medium relevance based on available evidence",
@@ -186,14 +186,22 @@ export class FuzzyInferenceEngine {
           contribution: smartDefault
         });
         reasoning.push(`Medium relevance from available evidence (${(smartDefault * 100).toFixed(1)}% confidence)`);
-      } else {
+      } else if (smartDefault > 0.2) {
         lowOutput = Math.max(lowOutput, smartDefault);
         ruleFirings.push({
           rule: "Smart default: Low relevance - limited matching evidence",
           strength: smartDefault,
           contribution: smartDefault
         });
-        reasoning.push(`Low baseline relevance (${(smartDefault * 100).toFixed(1)}% confidence)`);
+        reasoning.push(`Low-moderate relevance (${(smartDefault * 100).toFixed(1)}% confidence)`);
+      } else {
+        lowOutput = Math.max(lowOutput, 0.15); // Very low baseline
+        ruleFirings.push({
+          rule: "Smart default: Very low relevance - minimal matching evidence",
+          strength: 0.15,
+          contribution: 0.15
+        });
+        reasoning.push(`Very low baseline relevance (15.0% confidence)`);
       }
     }
 

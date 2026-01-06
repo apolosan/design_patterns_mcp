@@ -57,7 +57,7 @@ export class LLMBridgeHealthCheck implements HealthCheck {
         return HealthUtils.createResult(
           this.name,
           HealthStatus.UNHEALTHY,
-          `LLM service is unhealthy: ${healthStatus.error || 'Unknown error'}`,
+          `LLM service is unhealthy: ${healthStatus.error ?? 'Unknown error'}`,
           duration,
           {
             provider: healthStatus.provider,
@@ -65,7 +65,7 @@ export class LLMBridgeHealthCheck implements HealthCheck {
             error: healthStatus.error,
             lastTest: healthStatus.lastTest?.toISOString()
           },
-          new Error(healthStatus.error || 'LLM service unhealthy'),
+            new Error(healthStatus.error ?? 'LLM service unhealthy'),
           HealthCheckSeverity.MEDIUM,
           this.tags
         );

@@ -14,8 +14,8 @@ export function parseArrayProperty(
   // If string, try to parse as JSON
   if (typeof data === 'string') {
     try {
-      const parsed = JSON.parse(data);
-      return Array.isArray(parsed) ? parsed : [];
+      const parsed = JSON.parse(data) as unknown;
+      return Array.isArray(parsed) ? (parsed as string[]) : [];
     } catch (error) {
       // If JSON parse fails, try to split by comma for tags-like properties
       const isCommaSplittable =
@@ -31,7 +31,7 @@ export function parseArrayProperty(
       } else {
         // For longer text properties, split by newlines (multiline strings from database)
         const isMultilineProperty = ['when_to_use', 'benefits', 'drawbacks', 'use_cases'].includes(
-          propertyName || ''
+          propertyName ?? ''
         );
         if (isMultilineProperty && data.includes('\n')) {
           return data
@@ -53,7 +53,7 @@ export function parseArrayProperty(
 
           // For array-like properties, return empty array instead of single item
           // This is safer and prevents false positives in matching
-          if (['when_to_use', 'benefits', 'drawbacks', 'use_cases'].includes(propertyName || '')) {
+          if (['when_to_use', 'benefits', 'drawbacks', 'use_cases'].includes(propertyName ?? '')) {
             // Silently return empty array for malformed array properties
             return [];
           }

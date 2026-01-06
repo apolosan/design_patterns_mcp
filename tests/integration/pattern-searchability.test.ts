@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { DatabaseManager, initializeDatabaseManager } from '../../src/services/database-manager';
 import { parseTags } from '../../src/utils/parse-tags';
@@ -14,52 +15,52 @@ describe('Pattern Searchability Tests', () => {
     await db.close();
   });
 
-  it('should have patterns loaded in database', async () => {
+  it('should have patterns loaded in database', () => {
     const patterns = db.query('SELECT COUNT(*) as count FROM patterns');
-    expect(patterns[0].count).toBeGreaterThan(0);
+    expect(patterns[0]?.count).toBeGreaterThan(0);
   });
 
-  it('should have Data Management patterns searchable', async () => {
+  it('should have Data Management patterns searchable', () => {
     const dataPatterns = db.query('SELECT name FROM patterns WHERE category = ?', [
       'Data Management',
     ]);
     expect(dataPatterns.length).toBeGreaterThan(0);
   });
 
-  it('should have Behavioral patterns searchable', async () => {
+  it('should have Behavioral patterns searchable', () => {
     const behavioralPatterns = db.query('SELECT name FROM patterns WHERE category = ?', [
       'Behavioral',
     ]);
     expect(behavioralPatterns.length).toBeGreaterThan(0);
   });
 
-  it('should have Integration patterns searchable', async () => {
+  it('should have Integration patterns searchable', () => {
     const integrationPatterns = db.query('SELECT name FROM patterns WHERE category = ?', [
       'Integration',
     ]);
     expect(integrationPatterns.length).toBeGreaterThan(0);
   });
 
-  it('should have architectural patterns searchable', async () => {
+  it('should have architectural patterns searchable', () => {
     const archPatterns = db.query('SELECT name FROM patterns WHERE category = ?', [
       'Architectural',
     ]);
     expect(archPatterns.length).toBeGreaterThan(0);
   });
 
-  it('should have cloud-native patterns searchable', async () => {
+  it('should have cloud-native patterns searchable', () => {
     const cloudPatterns = db.query('SELECT name FROM patterns WHERE category = ?', [
       'Cloud-Native',
     ]);
     expect(cloudPatterns.length).toBeGreaterThan(0);
   });
 
-  it('should have AI/ML patterns searchable', async () => {
+  it('should have AI/ML patterns searchable', () => {
     const aiPatterns = db.query('SELECT name FROM patterns WHERE category = ?', ['AI/ML']);
     expect(aiPatterns.length).toBeGreaterThan(0);
   });
 
-  it('should support keyword search', async () => {
+  it('should support keyword search', () => {
     const singletonResults = db.query('SELECT name FROM patterns WHERE name LIKE ?', [
       '%Singleton%',
     ]);
@@ -67,7 +68,7 @@ describe('Pattern Searchability Tests', () => {
     expect((singletonResults[0] as { name: string }).name.toLowerCase()).toContain('singleton');
   });
 
-  it('should support category filtering', async () => {
+  it('should support category filtering', () => {
     const categories = [
       'Behavioral',
       'Architectural',
@@ -85,16 +86,16 @@ describe('Pattern Searchability Tests', () => {
     for (const category of categories) {
       const patterns = db.query('SELECT name FROM patterns WHERE category = ?', [category]);
       expect(patterns.length).toBeGreaterThan(0);
-      patterns.forEach(pattern => {
+      patterns.forEach((pattern: { name: string }) => {
         expect(pattern.name).toBeDefined();
         expect(typeof pattern.name).toBe('string');
       });
     }
   });
 
-  it('should have pattern metadata', async () => {
+  it('should have pattern metadata', () => {
     const patterns = db.query('SELECT name, description, complexity FROM patterns LIMIT 5');
-    patterns.forEach(pattern => {
+    patterns.forEach((pattern: { name: string; description: string; complexity: string }) => {
       expect(pattern.name).toBeDefined();
       expect(pattern.description).toBeDefined();
       expect(pattern.complexity).toBeDefined();
@@ -103,17 +104,17 @@ describe('Pattern Searchability Tests', () => {
     });
   });
 
-  it('should have patterns loaded in database', async () => {
+  it('should have patterns loaded in database', () => {
     const count = db.queryOne<{ count: number }>('SELECT COUNT(*) as count FROM patterns');
     expect(count?.count).toBeGreaterThanOrEqual(30); // We have 39 patterns loaded
   });
 
-  it('should have patterns with tags', async () => {
+  it('should have patterns with tags', () => {
     const patternsWithTags = db.query(
       'SELECT name, tags FROM patterns WHERE tags IS NOT NULL AND tags != "" LIMIT 5'
     );
     expect(patternsWithTags.length).toBeGreaterThan(0);
-    patternsWithTags.forEach(pattern => {
+    patternsWithTags.forEach((pattern: { name: string; tags: string }) => {
       expect(pattern.tags).toBeDefined();
       // Tags should be parseable JSON
       const tags = parseTags(pattern.tags);
@@ -122,7 +123,7 @@ describe('Pattern Searchability Tests', () => {
     });
   });
 
-  it('should have Kotlin patterns searchable', async () => {
+  it('should have Kotlin patterns searchable', () => {
     const kotlinPatterns = [
       'Coroutines Pattern',
       'Structured Concurrency Pattern',
@@ -141,7 +142,7 @@ describe('Pattern Searchability Tests', () => {
     ];
 
     for (const patternName of kotlinPatterns) {
-      const pattern = db.queryOne('SELECT id, name, category FROM patterns WHERE name = ?', [
+      const pattern = db.queryOne<{ id: string; name: string; category: string }>('SELECT id, name, category FROM patterns WHERE name = ?', [
         patternName,
       ]);
       expect(pattern).toBeDefined();
@@ -150,7 +151,7 @@ describe('Pattern Searchability Tests', () => {
     }
   });
 
-  it('should have Kotlin pattern relationships', async () => {
+  it('should have Kotlin pattern relationships', () => {
     const kotlinRelationships = db.query(`
       SELECT pr.source_pattern_id, pr.target_pattern_id, pr.type, pr.description
       FROM pattern_relationships pr
@@ -161,20 +162,20 @@ describe('Pattern Searchability Tests', () => {
 
     // Check specific relationships
     const observerFlows = kotlinRelationships.find(
-      r => r.source_pattern_id === 'observer' && r.target_pattern_id === 'flows'
+      (r: { source_pattern_id: string; target_pattern_id: string }) => r.source_pattern_id === 'observer' && r.target_pattern_id === 'flows'
     );
     expect(observerFlows).toBeDefined();
     expect(observerFlows?.type).toBe('enhances');
     expect(observerFlows?.description).toContain('Flows provide a more composable');
 
     const producerConsumerChannels = kotlinRelationships.find(
-      r => r.source_pattern_id === 'producer-consumer' && r.target_pattern_id === 'channels'
+      (r: { source_pattern_id: string; target_pattern_id: string }) => r.source_pattern_id === 'producer-consumer' && r.target_pattern_id === 'channels'
     );
     expect(producerConsumerChannels).toBeDefined();
     expect(producerConsumerChannels?.type).toBe('enhances');
   });
 
-  it('should support Kotlin-specific keyword search', async () => {
+  it('should support Kotlin-specific keyword search', () => {
     // Test searching for Kotlin-specific terms
     const kotlinTerms = [
       'coroutines',

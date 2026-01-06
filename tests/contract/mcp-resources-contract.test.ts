@@ -9,8 +9,8 @@ import { describe, test, expect } from 'vitest';
 import { createDesignPatternsServer } from '../../src/mcp-server.js';
 
 describe('MCP Resources Contract Tests', () => {
+  // eslint-disable-next-line @typescript-eslint/require-await
   test('should create MCP server successfully', async () => {
-    // This test verifies that the MCP server implementation exists and can be created
     const config = {
       databasePath: './data/design-patterns.db',
       logLevel: 'info' as const,
@@ -23,8 +23,8 @@ describe('MCP Resources Contract Tests', () => {
     expect(typeof server.stop).toBe('function');
   });
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   test('should have MCP resources handler', async () => {
-    // This test verifies that the resources handler is properly implemented
     const config = {
       databasePath: './data/design-patterns.db',
       logLevel: 'info' as const,
@@ -33,8 +33,6 @@ describe('MCP Resources Contract Tests', () => {
     };
     const server = createDesignPatternsServer(config);
 
-    // Check if the server has the required handlers registered
-    // The server should have handlers for ReadResourceRequestSchema and ListResourcesRequestSchema
     expect(server).toBeDefined();
     expect(typeof server.start).toBe('function');
     expect(typeof server.stop).toBe('function');

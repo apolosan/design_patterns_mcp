@@ -2,6 +2,7 @@
  * Performance Tests for Design Patterns MCP Server
  * Tests response times, memory usage, and throughput requirements
  */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
@@ -57,7 +58,7 @@ describe('Performance Tests', () => {
   });
 
   describe('Database Performance Tests', () => {
-    it('should execute database queries within time limits', async () => {
+    it('should execute database queries within time limits', () => {
       const testQueries = [
         'SELECT COUNT(*) as count FROM patterns',
         'SELECT name, category FROM patterns LIMIT 10',
@@ -86,7 +87,7 @@ describe('Performance Tests', () => {
 
       const promises = Array(concurrentQueries)
         .fill(null)
-        .map(() => databaseManager.query(sql));
+        .map(() => databaseManager.query<{ name: string }>(sql));
 
       const results = await Promise.all(promises);
       const endTime = performance.now();
@@ -101,7 +102,7 @@ describe('Performance Tests', () => {
       });
     });
 
-    it('should maintain performance with prepared statements', async () => {
+    it('should maintain performance with prepared statements', () => {
       const sql = 'SELECT * FROM patterns WHERE id = ?';
       const iterations = 10;
 

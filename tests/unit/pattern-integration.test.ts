@@ -1,6 +1,7 @@
 /**
  * Integration Tests for Builder Pattern and Health Check Pattern
  */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { MCPServerConfigBuilder } from '../../src/core/config-builder.js';

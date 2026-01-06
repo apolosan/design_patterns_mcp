@@ -2,6 +2,7 @@
  * Health Check Components Tests
  * Tests for health check types and utilities
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { describe, test, expect } from 'vitest';
 import { HealthStatus, HealthUtils, HealthCheckSeverity } from '../../src/health/types.js';
@@ -9,6 +10,7 @@ import { HealthStatus, HealthUtils, HealthCheckSeverity } from '../../src/health
 describe('Health Check Types and Utilities', () => {
 
   test('should calculate overall status correctly', () => {
+    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
     const results = [
       { status: HealthStatus.HEALTHY },
       { status: HealthStatus.HEALTHY },
@@ -16,6 +18,7 @@ describe('Health Check Types and Utilities', () => {
     ] as any[];
 
     const overall = HealthUtils.calculateOverallStatus(results);
+    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
     expect(overall).toBe(HealthStatus.DEGRADED);
   });
 
@@ -41,6 +44,7 @@ describe('Health Check Types and Utilities', () => {
   });
 
   test('should create proper summary', () => {
+    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
     const results = [
       { status: HealthStatus.HEALTHY },
       { status: HealthStatus.HEALTHY },
@@ -50,6 +54,7 @@ describe('Health Check Types and Utilities', () => {
     ] as any[];
 
     const summary = HealthUtils.createSummary(results);
+    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
     expect(summary.total).toBe(5);
     expect(summary.healthy).toBe(2);
     expect(summary.degraded).toBe(1);

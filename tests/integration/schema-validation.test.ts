@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 
-async function createFullSchema(dbManager: DatabaseManager): Promise<void> {
+function createFullSchema(dbManager: DatabaseManager): void {
   // Drop existing tables to ensure clean schema
   dbManager.execute('DROP TABLE IF EXISTS pattern_embeddings');
   dbManager.execute('DROP TABLE IF EXISTS pattern_relationships');
@@ -102,7 +102,7 @@ describe('SQLite Schema Validation', () => {
     await dbManager.initialize();
 
     // Create full schema manually (since migrations fail on in-memory DBs with existing tables)
-    await createFullSchema(dbManager);
+    createFullSchema(dbManager);
   });
 
   afterAll(async () => {
@@ -164,7 +164,7 @@ describe('SQLite Schema Validation', () => {
     // Check that id is PRIMARY KEY
     const idColumn = columns.find((c: { name: string }) => c.name === 'id');
     expect(idColumn).toBeDefined();
-    expect(idColumn!.pk).toBe(1); // Primary key flag
+    expect(idColumn?.pk ?? 0).toBe(1); // Primary key flag
   });
 
   it('should validate pattern_embeddings table schema', () => {
@@ -192,7 +192,7 @@ describe('SQLite Schema Validation', () => {
     // Check that pattern_id is PRIMARY KEY
     const patternIdColumn = columns.find((c: { name: string }) => c.name === 'pattern_id');
     expect(patternIdColumn).toBeDefined();
-    expect(patternIdColumn!.pk).toBe(1); // Primary key flag
+    expect(patternIdColumn?.pk ?? 0).toBe(1); // Primary key flag
   });
 
   it('should validate foreign key constraints', () => {
@@ -200,21 +200,21 @@ describe('SQLite Schema Validation', () => {
     const fkPatternImpl = dbManager.query('PRAGMA foreign_key_list(pattern_implementations)');
 
     expect(fkPatternImpl.length).toBeGreaterThan(0);
-    expect(fkPatternImpl[0].table).toBe('patterns');
-    expect(fkPatternImpl[0].from).toBe('pattern_id');
-    expect(fkPatternImpl[0].to).toBe('id');
+    expect((fkPatternImpl[0] as { table: string; from: string; to: string }).table).toBe('patterns');
+    expect((fkPatternImpl[0] as { table: string; from: string; to: string }).from).toBe('pattern_id');
+    expect((fkPatternImpl[0] as { table: string; from: string; to: string }).to).toBe('id');
 
     // Check foreign keys for pattern_relationships
-    const fkRelationships = dbManager.query('PRAGMA foreign_key_list(pattern_relationships)');
+    const fkRelationships = dbManager.query<{ table: string; from: string; to: string }>('PRAGMA foreign_key_list(pattern_relationships)');
 
     expect(fkRelationships.length).toBeGreaterThan(0);
-    const sourceFk = fkRelationships.find((fk: any) => fk.from === 'source_pattern_id');
-    const targetFk = fkRelationships.find((fk: any) => fk.from === 'target_pattern_id');
+    const sourceFk = fkRelationships.find((fk: { from: string }) => fk.from === 'source_pattern_id');
+    const targetFk = fkRelationships.find((fk: { from: string }) => fk.from === 'target_pattern_id');
 
     expect(sourceFk).toBeDefined();
     expect(targetFk).toBeDefined();
-    expect(sourceFk!.table).toBe('patterns');
-    expect(targetFk!.table).toBe('patterns');
+    expect((sourceFk as { table: string }).table).toBe('patterns');
+    expect((targetFk as { table: string }).table).toBe('patterns');
   });
 
   it('should validate indexes exist', () => {

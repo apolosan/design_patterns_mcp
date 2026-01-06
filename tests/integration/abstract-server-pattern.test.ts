@@ -8,7 +8,7 @@ import {
   closeDatabaseManager,
 } from '../../src/services/database-manager';
 import { getPatternStorageService } from '../../src/services/pattern-storage';
-import { getTestDatabaseConfig } from '../helpers/test-db';
+import { getTestDatabaseConfig, type PatternRow, type PatternColumnInfo, type ExamplesField } from '../helpers/test-db';
 
 describe('Abstract Server Pattern Integration Tests', () => {
   let db: DatabaseManager;
@@ -23,15 +23,19 @@ describe('Abstract Server Pattern Integration Tests', () => {
 
   describe('Pattern Existence', () => {
     it('should have Abstract Server pattern in database', () => {
-      const pattern = db.queryOne('SELECT * FROM patterns WHERE id = ?', ['abstract-server']);
+      const pattern = db.queryOne<{
+        id: string;
+        name: string;
+        category: string;
+      }>('SELECT * FROM patterns WHERE id = ?', ['abstract-server']);
 
-      expect(pattern).toBeDefined();
-      expect(pattern.name).toBe('Abstract Server');
-      expect(pattern.category).toBe('Structural');
+      expect(pattern).not.toBeNull();
+      expect(pattern?.name).toBe('Abstract Server');
+      expect(pattern?.category).toBe('Structural');
     });
 
     it('should have at least 574 total patterns including Abstract Server, new patterns, and SQL patterns', () => {
-      const result = db.queryOne('SELECT COUNT(*) as count FROM patterns') as { count: number };
+      const result = db.queryOne<{ count: number }>('SELECT COUNT(*) as count FROM patterns');
 
       expect(result?.count).toBeGreaterThanOrEqual(574);
     });
@@ -39,35 +43,35 @@ describe('Abstract Server Pattern Integration Tests', () => {
 
   describe('Code Examples Feature', () => {
     it('should have examples column in patterns table', () => {
-      const tableInfo = db.query('PRAGMA table_info(patterns)');
-      const examplesColumn = tableInfo.find((col: any) => col.name === 'examples');
+      const tableInfo = db.query<PatternColumnInfo>('PRAGMA table_info(patterns)');
+      const examplesColumn = tableInfo.find((col): col is PatternColumnInfo & { name: string } => col.name === 'examples');
 
       expect(examplesColumn).toBeDefined();
-      expect(examplesColumn.type).toBe('TEXT');
+      expect(examplesColumn?.type).toBe('TEXT');
     });
 
     it('should have code examples for Abstract Server pattern', () => {
-      const pattern = db.queryOne('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
+      const pattern = db.queryOne<Pick<PatternRow, 'examples'>>('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
 
       expect(pattern).toBeDefined();
-      expect(pattern.examples).toBeDefined();
-      expect(pattern.examples).not.toBeNull();
-      expect(typeof pattern.examples).toBe('string');
-      expect(pattern.examples.length).toBeGreaterThan(0);
+      expect(pattern?.examples).toBeDefined();
+      expect(pattern?.examples).not.toBeNull();
+      expect(typeof pattern?.examples).toBe('string');
+      expect(pattern?.examples?.length).toBeGreaterThan(0);
     });
 
     it('should have valid JSON in examples field', () => {
-      const pattern = db.queryOne('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
+      const pattern = db.queryOne<Pick<PatternRow, 'examples'>>('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
 
       expect(() => {
-        JSON.parse(pattern.examples);
+        JSON.parse(pattern?.examples ?? '{}');
       }).not.toThrow();
     });
 
     it('should have examples in multiple languages', () => {
-      const pattern = db.queryOne('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
+      const pattern = db.queryOne<Pick<PatternRow, 'examples'>>('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
 
-      const examples = JSON.parse(pattern.examples);
+      const examples = JSON.parse(pattern?.examples ?? '{}') as ExamplesField;
 
       expect(examples).toHaveProperty('typescript');
       expect(examples).toHaveProperty('clojure');
@@ -76,9 +80,9 @@ describe('Abstract Server Pattern Integration Tests', () => {
     });
 
     it('should have proper structure for each example', () => {
-      const pattern = db.queryOne('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
+      const pattern = db.queryOne<Pick<PatternRow, 'examples'>>('SELECT examples FROM patterns WHERE id = ?', ['abstract-server']);
 
-      const examples = JSON.parse(pattern.examples);
+      const examples = JSON.parse(pattern?.examples ?? '{}') as ExamplesField;
       const tsExample = examples.typescript;
 
       expect(tsExample).toHaveProperty('description');
@@ -91,15 +95,15 @@ describe('Abstract Server Pattern Integration Tests', () => {
 
   describe('Pattern Content Validation', () => {
     it('should have correct pattern properties', () => {
-      const pattern = db.queryOne('SELECT * FROM patterns WHERE id = ?', ['abstract-server']);
+      const pattern = db.queryOne<PatternRow>('SELECT * FROM patterns WHERE id = ?', ['abstract-server']);
 
-      expect(pattern.description).toContain('abstraction layer');
-      expect(pattern.description).toContain('Dependency Inversion Principle');
-      expect(pattern.when_to_use).toContain('decouple');
-      expect(pattern.benefits).toContain('Loose coupling');
-      expect(pattern.use_cases).toContain('Database access');
-      expect(pattern.complexity).toBe('Medium');
-      expect(pattern.tags).toContain('dependency-inversion');
+      expect(pattern?.description).toContain('abstraction layer');
+      expect(pattern?.description).toContain('Dependency Inversion Principle');
+      expect(pattern?.when_to_use).toContain('decouple');
+      expect(pattern?.benefits).toContain('Loose coupling');
+      expect(pattern?.use_cases).toContain('Database access');
+      expect(pattern?.complexity).toBe('Medium');
+      expect(pattern?.tags).toContain('dependency-inversion');
     });
   });
 
@@ -125,7 +129,7 @@ describe('Abstract Server Pattern Integration Tests', () => {
 
   describe('Examples in Other Patterns', () => {
     it('should allow patterns without examples (optional feature)', () => {
-      const patterns = db.query('SELECT id, name, examples FROM patterns WHERE examples IS NULL LIMIT 5');
+      const patterns = db.query<Pick<PatternRow, 'id' | 'name' | 'examples'>>('SELECT id, name, examples FROM patterns WHERE examples IS NULL LIMIT 5');
 
       expect(patterns.length).toBeGreaterThan(0);
       patterns.forEach((pattern) => {
@@ -134,12 +138,12 @@ describe('Abstract Server Pattern Integration Tests', () => {
     });
 
     it('should maintain backward compatibility for patterns without examples', () => {
-      const patternWithoutExamples = db.queryOne('SELECT * FROM patterns WHERE examples IS NULL LIMIT 1');
+      const patternWithoutExamples = db.queryOne<Pick<PatternRow, 'id' | 'name' | 'description'>>('SELECT * FROM patterns WHERE examples IS NULL LIMIT 1');
 
       expect(patternWithoutExamples).toBeDefined();
-      expect(patternWithoutExamples.id).toBeDefined();
-      expect(patternWithoutExamples.name).toBeDefined();
-      expect(patternWithoutExamples.description).toBeDefined();
+      expect(patternWithoutExamples?.id).toBeDefined();
+      expect(patternWithoutExamples?.name).toBeDefined();
+      expect(patternWithoutExamples?.description).toBeDefined();
     });
   });
 });

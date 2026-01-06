@@ -3,6 +3,9 @@
  * Provides interchangeable logging strategies for different environments and needs
  */
 
+import fs from 'fs';
+import path from 'path';
+
 export enum LogLevel {
   DEBUG = 0,
   INFO = 1,
@@ -99,9 +102,6 @@ export class FileLoggingStrategy implements LoggingStrategy {
     if (this.buffer.length === 0) return;
 
     try {
-      const fs = require('fs');
-      const path = require('path');
-
       // Ensure log directory exists
       const logDir = path.dirname(this.logFile);
       if (!fs.existsSync(logDir)) {
@@ -141,8 +141,6 @@ export class FileLoggingStrategy implements LoggingStrategy {
 
   private rotateIfNeeded(): void {
     try {
-      const fs = require('fs');
-      const path = require('path');
       const stats = fs.statSync(this.logFile);
 
       if (stats.size >= this.maxFileSize) {
@@ -203,8 +201,8 @@ export class StructuredLoggingStrategy implements LoggingStrategy {
         message: entry.error.message,
         stack: entry.error.stack?.split('\n').slice(0, 5) // Limit stack trace
       } : undefined,
-      environment: process.env.NODE_ENV || 'development',
-      version: process.env.npm_package_version || 'unknown'
+      environment: process.env.NODE_ENV ?? 'development',
+      version: process.env.npm_package_version ?? 'unknown'
     };
   }
 
@@ -256,17 +254,13 @@ export class CompositeLoggingStrategy implements LoggingStrategy {
   }
 
   getStats(): { entriesLogged: number; strategies?: { entriesLogged: number }[] } {
-    const strategyStats = this.strategies.map(s => s.getStats?.() || { entriesLogged: 0 });
+    const strategyStats = this.strategies.map(s => s.getStats?.() ?? { entriesLogged: 0 });
     return {
       entriesLogged: this.entriesLogged,
       strategies: strategyStats
     };
   }
 }
-
-/**
- * Logger Manager that coordinates logging strategies
- */
 export class LoggerManager {
   private strategies: LoggingStrategy[] = [];
   private minLevel: LogLevel = LogLevel.INFO;
@@ -293,7 +287,7 @@ export class LoggerManager {
   }
 
   createLogger(service?: string): Logger {
-    return new Logger(this, service || this.serviceName);
+    return new Logger(this, service ?? this.serviceName);
   }
 
   log(entry: LogEntry): void {
@@ -368,7 +362,7 @@ export class Logger {
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
       level,
-      service: this.serviceName || 'unknown',
+      service: this.serviceName ?? 'unknown',
       message,
       data,
       error,

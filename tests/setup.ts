@@ -3,6 +3,19 @@ import { beforeAll, afterAll, beforeEach } from 'vitest';
 import { mkdirSync, rmSync, existsSync, copyFileSync } from 'fs';
 import { join } from 'path';
 
+interface TestCache {
+  clear(): void;
+}
+
+interface TestDatabaseManager {
+  close(): Promise<void>;
+}
+
+declare global {
+  let testCache: TestCache | undefined;
+  let testDatabaseManager: TestDatabaseManager | undefined;
+}
+
 const TEST_DATA_DIR = join(__dirname, 'temp');
 const MAIN_DB_PATH = join(__dirname, '..', 'data', 'design-patterns.db');
 const TEST_DB_PATH = join(TEST_DATA_DIR, 'test-patterns.db');
