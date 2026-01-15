@@ -102,7 +102,9 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
         normalize: true,
       });
 
-      const data = response.data as unknown;
+      const data = response.data;
+
+      // Runtime validation for the dynamic import result
       if (!Array.isArray(data) && !(data instanceof Float32Array)) {
         throw new Error('Invalid embedding data: expected array or Float32Array of numbers');
       }
@@ -140,7 +142,8 @@ export class TransformersEmbeddingStrategy implements EmbeddingStrategy {
         normalize: true,
       });
 
-      const data = response.data as unknown;
+      const data = response.data;
+
       if (!Array.isArray(data) && !(data instanceof Float32Array)) {
         throw new Error('Invalid embedding data: expected array or Float32Array of numbers');
       }

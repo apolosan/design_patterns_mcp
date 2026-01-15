@@ -12,8 +12,10 @@ interface TestDatabaseManager {
 }
 
 declare global {
-  let testCache: TestCache | undefined;
-  let testDatabaseManager: TestDatabaseManager | undefined;
+  // eslint-disable-next-line no-var
+  var testCache: TestCache | undefined;
+  // eslint-disable-next-line no-var
+  var testDatabaseManager: TestDatabaseManager | undefined;
 }
 
 const TEST_DATA_DIR = join(__dirname, 'temp');
@@ -38,8 +40,8 @@ beforeAll(() => {
 // Reset test environment before each test
 beforeEach(() => {
   // Clear any test-specific caches
-  if ((global as any).testCache) {
-    (global as any).testCache.clear();
+  if (globalThis.testCache) {
+    globalThis.testCache.clear();
   }
 });
 
@@ -49,9 +51,9 @@ afterAll(async () => {
   await new Promise(resolve => setTimeout(resolve, 500));
 
   // Force close any remaining database connections
-  if ((global as any).testDatabaseManager) {
+  if (globalThis.testDatabaseManager) {
     try {
-      await (global as any).testDatabaseManager.close();
+      await globalThis.testDatabaseManager.close();
     } catch (error) {
       // Ignore close errors
     }

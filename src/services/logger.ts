@@ -5,22 +5,14 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { LoggingStrategy, LogEntry as StrategyLogEntry, LogLevel as StrategyLogLevel } from '../strategies/logging-strategy.js';
-
-enum LogLevel {
-  DEBUG = 0,
-  INFO = 1,
-  WARN = 2,
-  ERROR = 3,
-  FATAL = 4
-}
+import { LoggingStrategy, LogEntry as StrategyLogEntry, LogLevel, LogData } from '../strategies/logging-strategy.js';
 
 interface LogEntry {
   timestamp: string;
   level: LogLevel;
   service: string;
   message: string;
-  data?: unknown;
+  data?: LogData;
   error?: Error;
   correlationId?: string;
   duration?: number;
@@ -51,44 +43,47 @@ export class Logger {
   /**
     * Log debug message
     */
-   debug(service: string, message: string, data?: unknown, correlationId?: string): void {
+   debug(service: string, message: string, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.DEBUG, service, message, data, undefined, correlationId);
   }
 
   /**
     * Log info message
     */
-   info(service: string, message: string, data?: unknown, correlationId?: string): void {
+   info(service: string, message: string, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.INFO, service, message, data, undefined, correlationId);
   }
 
   /**
     * Log warning message
     */
-   warn(service: string, message: string, data?: unknown, correlationId?: string): void {
-    this.log(LogLevel.WARN, service, message, data, undefined, correlationId);
+   warn(service: string, message: string, errorOrData?: Error | LogData, correlationId?: string): void {
+    const isError = errorOrData instanceof Error;
+    const error = isError ? errorOrData : undefined;
+    const data = isError ? undefined : errorOrData;
+    this.log(LogLevel.WARN, service, message, data, error, correlationId);
   }
 
   /**
     * Log error message
     */
-   error(service: string, message: string, error?: Error, data?: unknown, correlationId?: string): void {
+   error(service: string, message: string, error?: Error, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.ERROR, service, message, data, error, correlationId);
   }
 
   /**
     * Log fatal error message
     */
-   fatal(service: string, message: string, error?: Error, data?: unknown, correlationId?: string): void {
+   fatal(service: string, message: string, error?: Error, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.FATAL, service, message, data, error, correlationId);
   }
 
   /**
     * Log performance timing
     */
-   timing(service: string, operation: string, duration: number, data?: unknown, correlationId?: string): void {
+   timing(service: string, operation: string, duration: number, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.INFO, service, `Operation completed: ${operation}`, {
-      ...(data as Record<string, unknown> || {}),
+      ...(data as Record<string, LogData> || {}),
       operation,
       duration,
       durationUnit: 'ms'
@@ -109,7 +104,7 @@ export class Logger {
     level: LogLevel,
     service: string,
     message: string,
-    data?: unknown,
+    data?: LogData,
     error?: Error,
     correlationId?: string,
     duration?: number
@@ -134,7 +129,7 @@ export class Logger {
     if (this.strategy) {
       const strategyEntry: StrategyLogEntry = {
         timestamp: entry.timestamp,
-        level: level as unknown as StrategyLogLevel, // Map log levels
+        level: level, // LogLevel is now unified
         service: entry.service,
         message: entry.message,
         data: entry.data,
@@ -307,27 +302,27 @@ class ChildLogger extends Logger {
     this.serviceName = service;
   }
 
-  debug(service: string, message: string, data?: unknown, correlationId?: string): void {
+  debug(service: string, message: string, data?: LogData, correlationId?: string): void {
     this.parentLogger.debug(service || this.serviceName, message, data, correlationId);
   }
 
-  info(service: string, message: string, data?: unknown, correlationId?: string): void {
+  info(service: string, message: string, data?: LogData, correlationId?: string): void {
     this.parentLogger.info(service || this.serviceName, message, data, correlationId);
   }
 
-  warn(service: string, message: string, data?: unknown, correlationId?: string): void {
+  warn(service: string, message: string, data?: LogData, correlationId?: string): void {
     this.parentLogger.warn(service || this.serviceName, message, data, correlationId);
   }
 
-  error(service: string, message: string, error?: Error, data?: unknown, correlationId?: string): void {
+  error(service: string, message: string, error?: Error, data?: LogData, correlationId?: string): void {
     this.parentLogger.error(service || this.serviceName, message, error, data, correlationId);
   }
 
-  fatal(service: string, message: string, error?: Error, data?: unknown, correlationId?: string): void {
+  fatal(service: string, message: string, error?: Error, data?: LogData, correlationId?: string): void {
     this.parentLogger.fatal(service || this.serviceName, message, error, data, correlationId);
   }
 
-  timing(service: string, operation: string, duration: number, data?: Record<string, unknown>, correlationId?: string): void {
+  timing(service: string, operation: string, duration: number, data?: Record<string, LogData>, correlationId?: string): void {
     this.parentLogger.timing(service || this.serviceName, operation, duration, data, correlationId);
   }
 

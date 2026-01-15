@@ -310,9 +310,17 @@ export class DatabaseManagerAdapter implements DatabaseManager {
     const values = Object.values(updates);
     const setClause = fields.map(field => `${field} = ?`).join(', ');
 
+    // Convert complex values to SQL-compatible format
+    const sqlValues = values.map(v => {
+      if (v === null || v === undefined) return null;
+      if (typeof v === 'string' || typeof v === 'number') return v;
+      if (v instanceof Date) return v.toISOString();
+      return JSON.stringify(v);
+    });
+
     this.realDatabaseManager.execute(
       `UPDATE patterns SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
-      [...values, id]
+      [...sqlValues, id]
     );
     return Promise.resolve();
   }

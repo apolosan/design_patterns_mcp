@@ -1,20 +1,22 @@
 /**
  * Integration Tests for Builder Pattern and Health Check Pattern
  */
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
-
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { MCPServerConfigBuilder } from '../../src/core/config-builder.js';
 import { HealthCheckService } from '../../src/health/health-check-service.js';
 import { DatabaseHealthCheck } from '../../src/health/database-health-check.js';
 import { VectorOperationsHealthCheck } from '../../src/health/vector-operations-health-check.js';
 import { EmbeddingServiceHealthCheck } from '../../src/health/embedding-service-health-check.js';
+import { DatabaseManager, DatabaseConfig } from '../../src/services/database-manager.js';
+import { VectorOperationsService, VectorConfig } from '../../src/services/vector-operations.js';
+import { EmbeddingServiceAdapter } from '../../src/adapters/embedding-service-adapter.js';
 
 // Mock database manager for testing
 vi.mock('../../src/services/database-manager.js', () => ({
   DatabaseManager: vi.fn().mockImplementation(() => ({
     queryOne: vi.fn().mockReturnValue({ count: 42 }),
     getStats: vi.fn().mockReturnValue({ totalQueries: 100, databaseSize: 1024 }),
+    healthCheck: vi.fn().mockReturnValue({ healthy: true, lastCheck: new Date() }),
   })),
 }));
 
@@ -27,6 +29,7 @@ vi.mock('../../src/services/vector-operations.js', () => ({
       dimensions: 384,
     }),
     findSimilarPatterns: vi.fn().mockResolvedValue([]),
+    healthCheck: vi.fn().mockReturnValue({ healthy: true, lastCheck: new Date() }),
   })),
 }));
 
@@ -45,6 +48,7 @@ vi.mock('../../src/adapters/embedding-service-adapter.js', () => ({
       failureCount: 0,
       successCount: 5,
     }),
+    healthCheck: vi.fn().mockReturnValue({ healthy: true, lastCheck: new Date() }),
   })),
 }));
 
@@ -126,8 +130,8 @@ describe('Health Check Pattern Integration', () => {
 
   describe('HealthCheckService', () => {
     it('should register and run health checks', async () => {
-      const { DatabaseManager } = await import('../../src/services/database-manager.js');
-      const db = new DatabaseManager({} as any);
+      const dbConfig: DatabaseConfig = { filename: ':memory:' };
+      const db = new DatabaseManager(dbConfig);
       const dbCheck = new DatabaseHealthCheck(db);
 
       healthCheckService.registerHealthCheck(dbCheck);
@@ -141,8 +145,8 @@ describe('Health Check Pattern Integration', () => {
     });
 
     it('should run specific health check', async () => {
-      const { DatabaseManager } = await import('../../src/services/database-manager.js');
-      const db = new DatabaseManager({} as any);
+      const dbConfig: DatabaseConfig = { filename: ':memory:' };
+      const db = new DatabaseManager(dbConfig);
       const dbCheck = new DatabaseHealthCheck(db);
 
       healthCheckService.registerHealthCheck(dbCheck);
@@ -155,8 +159,8 @@ describe('Health Check Pattern Integration', () => {
     });
 
     it('should run health checks by tags', async () => {
-      const { DatabaseManager } = await import('../../src/services/database-manager.js');
-      const db = new DatabaseManager({} as any);
+      const dbConfig: DatabaseConfig = { filename: ':memory:' };
+      const db = new DatabaseManager(dbConfig);
       const dbCheck = new DatabaseHealthCheck(db);
 
       healthCheckService.registerHealthCheck(dbCheck);
@@ -170,8 +174,8 @@ describe('Health Check Pattern Integration', () => {
 
   describe('Specific Health Checks', () => {
     it('should run database health check', async () => {
-      const { DatabaseManager } = await import('../../src/services/database-manager.js');
-      const db = new DatabaseManager({} as any);
+      const dbConfig: DatabaseConfig = { filename: ':memory:' };
+      const db = new DatabaseManager(dbConfig);
       const dbCheck = new DatabaseHealthCheck(db);
 
       const result = await dbCheck.check();
@@ -183,8 +187,18 @@ describe('Health Check Pattern Integration', () => {
     });
 
     it('should run vector operations health check', async () => {
-      const { VectorOperationsService } = await import('../../src/services/vector-operations.js');
-      const vectorOps = new VectorOperationsService({} as any, {} as any);
+      const dbConfig: DatabaseConfig = { filename: ':memory:' };
+      const db = new DatabaseManager(dbConfig);
+
+      const vectorConfig: VectorConfig = {
+        model: 'all-MiniLM-L6-v2',
+        dimensions: 384,
+        similarityThreshold: 0.3,
+        maxResults: 10,
+        cacheEnabled: true
+      };
+
+      const vectorOps = new VectorOperationsService(db, vectorConfig);
       const vectorCheck = new VectorOperationsHealthCheck(vectorOps);
 
       const result = await vectorCheck.check();
@@ -195,7 +209,6 @@ describe('Health Check Pattern Integration', () => {
     });
 
     it('should run embedding service health check', async () => {
-      const { EmbeddingServiceAdapter } = await import('../../src/adapters/embedding-service-adapter.js');
       const embeddingAdapter = new EmbeddingServiceAdapter();
       const embeddingCheck = new EmbeddingServiceHealthCheck(embeddingAdapter);
 

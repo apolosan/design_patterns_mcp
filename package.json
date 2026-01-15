@@ -1,7 +1,7 @@
 {
   "name": "design-patterns-mcp",
-  "version": "0.3.3",
-  "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 622+ patterns using semantic search and vector embeddings",
+  "version": "0.4.0",
+  "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 642+ patterns using semantic search, vector embeddings, and blended RAG hybrid search",
   "main": "dist/mcp-server.js",
   "module": "dist/mcp-server.js",
   "types": "dist/mcp-server.d.ts",
@@ -84,7 +84,12 @@
     "behavioral-patterns",
     "microservices",
     "cloud-native",
-    "ai-patterns"
+    "ai-patterns",
+    "hybrid-search",
+    "blended-rag",
+    "tf-idf",
+    "sparse-search",
+    "graph-augmentation"
   ],
   "author": "Design Patterns MCP Team",
   "license": "MIT",

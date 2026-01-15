@@ -14,8 +14,15 @@ export function parseArrayProperty(
   // If string, try to parse as JSON
   if (typeof data === 'string') {
     try {
-      const parsed = JSON.parse(data) as unknown;
-      return Array.isArray(parsed) ? (parsed as string[]) : [];
+      const parsed: unknown = JSON.parse(data);
+      if (Array.isArray(parsed)) {
+        // Ensure all items are strings
+        if (parsed.every((item): item is string => typeof item === 'string')) {
+          return parsed;
+        }
+        return parsed.map(item => String(item));
+      }
+      return [];
     } catch (error) {
       // If JSON parse fails, try to split by comma for tags-like properties
       const isCommaSplittable =

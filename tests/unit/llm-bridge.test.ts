@@ -2,36 +2,79 @@
  * Unit Tests for LLM Bridge Service
  * Tests LLM integration functionality with mocked external calls
  */
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
-
-import { describe, test, expect, beforeEach, vi } from 'vitest';
+import { describe, test, expect, beforeEach, vi, type Mocked } from 'vitest';
 import { LLMBridgeService } from '../../src/services/llm-bridge.js';
+import { DatabaseManager } from '../../src/services/database-manager.js';
+import type { Pattern } from '../../src/models/pattern.js';
+import type {
+  LLMConfig,
+  UserContext,
+  LLMRequest,
+  LLMResponse,
+  PatternRecommendation,
+  LLMEnhancement,
+  PatternAnalysisRequest,
+  PatternAnalysisResponse
+} from '../../src/services/llm-bridge.js';
 
 // Mock the database manager
 vi.mock('../../src/services/database-manager.js');
 
+// Subclass to expose protected methods for testing purposes
+class TestableLLMBridgeService extends LLMBridgeService {
+  public override callLLM(request: LLMRequest): LLMResponse {
+    return super.callLLM(request);
+  }
+
+  public override buildAnalysisPrompt(request: PatternAnalysisRequest): string {
+    return super.buildAnalysisPrompt(request);
+  }
+
+  public override buildImplementationPrompt(pattern: Partial<Pattern>, language: string, context?: UserContext): string {
+    return super.buildImplementationPrompt(pattern, language, context);
+  }
+
+  public override getPatternInfo(patternName: string): Partial<Pattern> {
+    return super.getPatternInfo(patternName);
+  }
+
+  public override mergeEnhancements(baseRecommendations: PatternRecommendation[], enhancements: LLMEnhancement[]): PatternRecommendation[] {
+    return super.mergeEnhancements(baseRecommendations, enhancements);
+  }
+
+  public override getFallbackAnalysis(request: PatternAnalysisRequest): PatternAnalysisResponse {
+    return super.getFallbackAnalysis(request);
+  }
+}
+
 describe('LLM Bridge Service', () => {
-  let llmBridge: LLMBridgeService;
-  let mockDb: any;
+  let llmBridge: TestableLLMBridgeService;
+  let mockDb: Mocked<DatabaseManager>;
 
   beforeEach(() => {
     vi.clearAllMocks();
 
     // Create mock database
     mockDb = {
-      query: vi.fn().mockResolvedValue([]),
-      queryOne: vi.fn().mockResolvedValue(null),
-      execute: vi.fn().mockResolvedValue(undefined),
+      query: vi.fn().mockReturnValue([]),
+      queryOne: vi.fn().mockReturnValue(null),
+      execute: vi.fn().mockReturnValue(undefined),
       getStats: vi.fn().mockReturnValue({ databaseSize: 1000 }),
-    };
+      transaction: vi.fn(),
+      execDDL: vi.fn(),
+      initialize: vi.fn(),
+      close: vi.fn(),
+    } as unknown as Mocked<DatabaseManager>;
 
-    llmBridge = new LLMBridgeService(mockDb, {
+    const config: LLMConfig = {
       provider: 'ollama',
       model: 'llama3.2',
       maxTokens: 2000,
       temperature: 0.3,
       timeout: 30000,
-    });
+    };
+
+    llmBridge = new TestableLLMBridgeService(mockDb, config);
   });
 
   test('should initialize with correct configuration', () => {
@@ -44,19 +87,19 @@ describe('LLM Bridge Service', () => {
   });
 
   test('should handle analyzePatterns with fallback when LLM fails', async () => {
-    const request = {
+    const request: PatternAnalysisRequest = {
       problemDescription: 'Need to manage shared resources in a web application',
       codeSnippet: 'class Database { connect() {} }',
       programmingLanguage: 'TypeScript',
       context: {
         existingPatterns: ['Singleton', 'Factory'],
         constraints: ['scalability', 'maintainability'],
+        preferences: []
       },
     };
 
     // Mock LLM call to fail
-    const originalCallLLM = (llmBridge as any).callLLM;
-    (llmBridge as any).callLLM = vi.fn().mockRejectedValue(new Error('LLM unavailable'));
+    const callLLMSpy = vi.spyOn(llmBridge, 'callLLM').mockRejectedValue(new Error('LLM unavailable'));
 
     const result = await llmBridge.analyzePatterns(request);
 
@@ -66,7 +109,7 @@ describe('LLM Bridge Service', () => {
     expect(Array.isArray(result.recommendations)).toBe(true);
 
     // Restore original method
-    (llmBridge as any).callLLM = originalCallLLM;
+    callLLMSpy.mockRestore();
   });
 
   test('should generate implementation guidance', async () => {
@@ -108,7 +151,7 @@ describe('LLM Bridge Service', () => {
   });
 
   test('should enhance recommendations', async () => {
-    const baseRecommendations = [
+    const baseRecommendations: PatternRecommendation[] = [
       {
         patternName: 'Singleton',
         confidence: 0.8,
@@ -118,8 +161,8 @@ describe('LLM Bridge Service', () => {
       },
     ];
 
-    const userContext = {
-      experienceLevel: 'beginner' as const,
+    const userContext: UserContext = {
+      experienceLevel: 'beginner',
       projectType: 'web application',
     };
 
@@ -132,19 +175,24 @@ describe('LLM Bridge Service', () => {
 
   test('should get pattern info from database', async () => {
     // Mock database to return pattern data
-    mockDb.queryOne.mockImplementation((query: string, params: any[]) => {
+    mockDb.queryOne.mockImplementation((query: string, params: readonly unknown[] = []) => {
       if (query.includes('patterns') && params[0] === 'Singleton') {
-        return Promise.resolve({
+        return {
           id: 'singleton',
           name: 'Singleton',
           description: 'Ensures only one instance exists',
           category: 'Creational',
-        });
+          when_to_use: '[]',
+          benefits: '[]',
+          drawbacks: '[]',
+          use_cases: '[]',
+          tags: '[]'
+        };
       }
-      return Promise.resolve(null);
+      return null;
     });
 
-    const result = await (llmBridge as any).getPatternInfo('Singleton');
+    const result = llmBridge.getPatternInfo('Singleton');
 
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Object);
@@ -165,17 +213,18 @@ describe('LLM Bridge Service', () => {
   });
 
   test('should build analysis prompt correctly', () => {
-    const request = {
+    const request: PatternAnalysisRequest = {
       problemDescription: 'Need to manage shared resources in a web application',
       codeSnippet: 'class Database { connect() {} }',
       programmingLanguage: 'TypeScript',
       context: {
         existingPatterns: ['Singleton', 'Factory'],
         constraints: ['scalability', 'maintainability'],
+        preferences: []
       },
     };
 
-    const prompt = (llmBridge as any).buildAnalysisPrompt(request);
+    const prompt = llmBridge.buildAnalysisPrompt(request);
 
     expect(prompt).toBeDefined();
     expect(typeof prompt).toBe('string');
@@ -186,10 +235,10 @@ describe('LLM Bridge Service', () => {
   });
 
   test('should build implementation prompt correctly', () => {
-    const pattern = { name: 'Observer', description: 'Publish-subscribe pattern' };
-    const context = { experienceLevel: 'intermediate' as const };
+    const pattern = { name: 'Observer', description: 'Publish-subscribe pattern', category: 'Behavioral' };
+    const context: UserContext = { experienceLevel: 'intermediate' };
 
-    const prompt = (llmBridge as any).buildImplementationPrompt(pattern, 'TypeScript', context);
+    const prompt = llmBridge.buildImplementationPrompt(pattern, 'TypeScript', context);
 
     expect(prompt).toBeDefined();
     expect(typeof prompt).toBe('string');
@@ -201,46 +250,52 @@ describe('LLM Bridge Service', () => {
     const providers = ['openai', 'anthropic', 'ollama', 'local'] as const;
 
     providers.forEach(provider => {
-      const service = new LLMBridgeService(mockDb, {
+      const config: LLMConfig = {
         provider,
         model: 'test-model',
         maxTokens: 1000,
         temperature: 0.5,
         timeout: 10000,
-      });
+      };
+
+      const service = new TestableLLMBridgeService(mockDb, config);
 
       expect(service).toBeDefined();
     });
   });
 
   test('should merge enhancements correctly', () => {
-    const baseRecommendations = [
+    const baseRecommendations: PatternRecommendation[] = [
       {
-        pattern: 'Singleton',
+        patternName: 'Singleton',
         confidence: 0.8,
         reasoning: 'Good for shared resources',
-        alternatives: ['Factory'],
+        benefits: [],
+        drawbacks: [],
+        useCases: []
       },
     ];
 
-    const enhancements = [
+    const enhancements: LLMEnhancement[] = [
       {
-        pattern: 'Singleton',
+        patternName: 'Singleton',
         enhancedReasoning: 'Excellent for database connections',
-        additionalAlternatives: ['Monostate'],
-        priority: 'high' as const,
+        additionalBenefits: ['Memory efficiency'],
+        additionalDrawbacks: [],
+        additionalUseCases: []
       },
     ];
 
-    const result = (llmBridge as any).mergeEnhancements(baseRecommendations, enhancements);
+    const result = llmBridge.mergeEnhancements(baseRecommendations, enhancements);
 
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
     expect(result[0].reasoning).toContain('Excellent for database connections');
+    expect(result[0].benefits).toContain('Memory efficiency');
   });
 
   test('should handle fallback analysis when LLM fails', () => {
-    const request = {
+    const request: PatternAnalysisRequest = {
       problemDescription: 'Test problem description',
       context: {
         existingPatterns: ['Unknown Pattern'],
@@ -248,7 +303,7 @@ describe('LLM Bridge Service', () => {
       },
     };
 
-    const result = (llmBridge as any).getFallbackAnalysis(request);
+    const result = llmBridge.getFallbackAnalysis(request);
 
     expect(result).toBeDefined();
     expect(result.detectedPatterns).toBeDefined();

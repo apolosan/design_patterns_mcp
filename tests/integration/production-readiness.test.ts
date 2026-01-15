@@ -239,18 +239,18 @@ describe('Production Readiness Tests', () => {
   it('should validate database schema requirements', () => {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     // Check that all required tables exist
-    const tables = dbManager.query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
-    const tableNames = tables.map((t: { name: string }) => t.name);
-    
+    const tables = dbManager.query<{ name: string }>("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
+    const tableNames = tables.map((t) => t.name);
+
     expect(tableNames).toContain('patterns');
     expect(tableNames).toContain('pattern_embeddings');
     expect(tableNames).toContain('pattern_implementations');
     expect(tableNames).toContain('pattern_relationships');
 
     // Check patterns table has required columns
-    const patternColumns = dbManager.query("PRAGMA table_info(patterns)");
-    const columnNames = patternColumns.map((c: { name: string }) => c.name);
-    
+    const patternColumns = dbManager.query<{ name: string }>("PRAGMA table_info(patterns)");
+    const columnNames = patternColumns.map((c) => c.name);
+
     const requiredColumns = ['id', 'name', 'category', 'description', 'complexity'];
     for (const column of requiredColumns) {
       expect(columnNames).toContain(column);

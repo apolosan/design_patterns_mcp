@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type Mocked } from 'vitest';
 import {
   UserPreference,
   PreferenceCategory,
@@ -12,7 +12,7 @@ import {
 } from '../../src/models/preference.js';
 
 describe('UserPreference Model', () => {
-  let mockPreferenceManager: PreferenceManager;
+  let mockPreferenceManager: Mocked<PreferenceManager>;
 
   beforeEach(() => {
     mockPreferenceManager = {
@@ -24,7 +24,7 @@ describe('UserPreference Model', () => {
       resetAll: vi.fn(),
       export: vi.fn(),
       import: vi.fn()
-    };
+    } as unknown as Mocked<PreferenceManager>;
   });
 
   describe('UserPreference Interface', () => {
@@ -198,7 +198,7 @@ describe('UserPreference Model', () => {
     });
 
     it('should mock get method correctly', () => {
-      (mockPreferenceManager.get as unknown as { mockReturnValue: (val: string) => void }).mockReturnValue('test_value');
+      mockPreferenceManager.get.mockReturnValue('test_value');
       const result = mockPreferenceManager.get<string>('test_key');
       expect(result).toBe('test_value');
     });

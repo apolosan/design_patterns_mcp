@@ -22,8 +22,11 @@ interface PatternImplementation {
   patternId: string;
   language: string;
   code: string;
-  description: string;
-  complexity: string;
+  description?: string;
+  explanation: string;
+  approach?: string;
+  dependencies?: string[];
+  complexity?: string;
   createdAt: Date;
   updatedAt: Date;
 }

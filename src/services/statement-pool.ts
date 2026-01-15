@@ -4,24 +4,38 @@
  * Uses LRU (Least Recently Used) eviction strategy
  */
 
-// Minimal interface for sql.js Statement
-interface SqlJsStatement {
-  run(params?: readonly unknown[]): { insertId?: number; changes?: number };
+// Type definitions for sql.js values - using the same as @types/sql.js
+export type SqlValue = string | number | Uint8Array | null;
+export type SqlParams = SqlValue[] | Record<string, SqlValue>;
+export type BindParams = SqlValue[] | Record<string, SqlValue> | null;
+
+export interface SqlJsQueryResult {
+  columns: string[];
+  values: SqlValue[][];
+}
+
+// Minimal interface for sql.js Statement (compatible with @types/sql.js)
+export interface SqlJsStatement {
+  run(params?: BindParams): void;
   step(): boolean;
-  getAsObject(): Record<string, unknown>;
-  bind(params: readonly unknown[]): void;
+  getAsObject(): Record<string, SqlValue>;
+  bind(params?: BindParams): boolean;
   reset(): void;
   freemem(): void;
   safeIntegers?(): void;
   free?(): void;
 }
 
-// Dummy statement for error recovery
-interface DummyStatement {
-  run: () => { changes: number; lastInsertRowid?: undefined };
-  get: () => undefined;
-  all: () => never[];
-  finalize: () => void;
+// No-op statement for error recovery
+class NoOpStatement implements SqlJsStatement {
+  run(_params?: BindParams): void {}
+  step(): boolean { return false; }
+  getAsObject(): Record<string, SqlValue> { return {}; }
+  bind(_params?: BindParams): boolean { return true; }
+  reset(): void {}
+  freemem(): void {}
+  safeIntegers(): void {}
+  free(): void {}
 }
 
 interface PooledStatement {
@@ -115,22 +129,17 @@ export class StatementPool {
           errorMessage.includes('no such table')) &&
         (sql.toUpperCase().includes('CREATE INDEX') || sql.toUpperCase().includes('CREATE TABLE'))
       ) {
-        // Create a dummy statement that does nothing
-        const dummyStatement: DummyStatement = {
-          run: () => ({ changes: 0, lastInsertRowid: undefined }),
-          get: () => undefined,
-          all: () => [],
-          finalize: () => {},
-        };
+        // Create a no-op statement that does nothing
+        const noOpStatement = new NoOpStatement();
 
         this.pool.set(sql, {
-          statement: dummyStatement as unknown as SqlJsStatement,
+          statement: noOpStatement,
           lastUsed: Date.now(),
           useCount: 1,
         });
 
         this.metrics.size = this.pool.size;
-        return dummyStatement as unknown as SqlJsStatement;
+        return noOpStatement;
       }
 
       // Factory failed - propagate error but don't corrupt pool

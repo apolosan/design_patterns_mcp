@@ -9,7 +9,7 @@ import { CacheService } from '../services/cache.js';
 import { structuredLogger } from '../utils/logger.js';
 import { CircuitBreaker, CircuitBreakerConfig } from '../utils/circuit-breaker.js';
 
-interface EmbeddingServiceConfig {
+export interface EmbeddingServiceConfig {
   cacheEnabled?: boolean;
   cacheTTL?: number;
   batchSize?: number;

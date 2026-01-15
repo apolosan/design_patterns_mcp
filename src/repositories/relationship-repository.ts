@@ -92,7 +92,7 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
       WHERE 1=1
     `;
 
-    const params: unknown[] = [];
+    const params: (string | number)[] = [];
 
     if (filters?.sourcePatternId) {
       sql += ' AND r.source_pattern_id = ?';
@@ -271,7 +271,7 @@ export class SqliteRelationshipRepository implements RelationshipRepository {
 
   async count(filters?: RelationshipFilters): Promise<number> {
     let sql = 'SELECT COUNT(*) as count FROM pattern_relationships WHERE 1=1';
-    const params: unknown[] = [];
+    const params: (string | number)[] = [];
 
     if (filters?.sourcePatternId) {
       sql += ' AND source_pattern_id = ?';

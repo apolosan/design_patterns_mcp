@@ -3,22 +3,21 @@
  * Handles database connections, transactions, and basic operations
  * Uses sql.js for pure JavaScript SQLite implementation
  */
-import initSqlJs from 'sql.js';
+import initSqlJs, { Database, Statement, SqlJsStatic } from 'sql.js';
 import path from 'path';
 import fs from 'fs';
 import { logger } from './logger.js';
-import { StatementPool } from './statement-pool.js';
+import { StatementPool, SqlValue, SqlParams } from './statement-pool.js';
 
-// sql.js has complex typing that conflicts with strict TypeScript requirements
-// Using controlled type assertions for sql.js compatibility while maintaining runtime safety
+// sql.js type imports are available from @types/sql.js
 
-interface DatabaseConfig {
+export interface DatabaseConfig {
   filename: string;
   options?: {
     readonly?: boolean;
     fileMustExist?: boolean;
     timeout?: number;
-    verbose?: (message: string, ...additionalArgs: unknown[]) => void;
+    verbose?: (message: string, ...additionalArgs: string[]) => void;
   };
 }
 
@@ -28,21 +27,9 @@ interface DatabaseResult {
   changes?: number;
 }
 
-// Type guards and assertions for sql.js compatibility
-// Using controlled type assertions for sql.js compatibility while maintaining runtime safety
-/* eslint-disable @typescript-eslint/no-explicit-any */
-type SqlJsDatabase = any;
-type SqlJsStatement = any;
-type SqlJsStatic = any;
-/* eslint-enable @typescript-eslint/no-explicit-any */
-
 export class DatabaseManager {
-  // sql.js Database instance - using controlled 'any' for external library compatibility
-  // Controlled sql.js compatibility - all unsafe operations are validated at runtime
-  /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
-  private db: SqlJsDatabase = null;
-  // sql.js static constructor - using controlled 'any' for external library compatibility
-  private SQL: SqlJsStatic = null;
+  private db: Database | null = null;
+  private SQL: SqlJsStatic | null = null;
   private config: DatabaseConfig;
   private statementPool: StatementPool;
   private queryMetrics = new Map<string, { count: number; totalTime: number; avgTime: number }>();
@@ -133,7 +120,7 @@ export class DatabaseManager {
   /**
    * Execute a SQL query with prepared statement optimization and caching
    */
-  execute(sql: string, params: readonly unknown[] = []): DatabaseResult {
+  execute(sql: string, params: readonly SqlValue[] = []): DatabaseResult {
     if (!this.db) {
       throw new Error('Database not initialized');
     }
@@ -142,15 +129,19 @@ export class DatabaseManager {
 
     try {
       // Get or create prepared statement using Object Pool
-      const stmt = this.statementPool.getOrCreate(sql, () => this.db.prepare(sql));
+      const stmt = this.statementPool.getOrCreate(sql, () => {
+        if (!this.db) throw new Error('Database not initialized');
+        return this.db.prepare(sql);
+      });
 
-      const result = stmt.run(params);
+      stmt.run([...params]);
       const executionTime = Date.now() - startTime;
 
       // Update query metrics
       this.updateQueryMetrics(sql, executionTime);
 
-      return result;
+      // sql.js run() returns void, so we construct the result manually
+      return { changes: 0 };
     } catch (error) {
       logger.error('database-manager', `Execute failed: ${sql}`, error as Error);
       throw error;
@@ -160,8 +151,7 @@ export class DatabaseManager {
   /**
    * Execute a SELECT query and return all rows with prepared statement caching
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  query<T = any>(sql: string, params: readonly unknown[] = []): T[] {
+  query<T>(sql: string, params: readonly SqlValue[] = []): T[] {
     if (!this.db) {
       throw new Error('Database not initialized');
     }
@@ -170,16 +160,19 @@ export class DatabaseManager {
 
     try {
       // Get or create prepared statement using Object Pool
-      const stmt = this.statementPool.getOrCreate(sql, () => this.db.prepare(sql));
+      const stmt = this.statementPool.getOrCreate(sql, () => {
+        if (!this.db) throw new Error('Database not initialized');
+        return this.db.prepare(sql);
+      });
 
       // Bind parameters if provided
       if (params && params.length > 0) {
-        stmt.bind(params);
+        stmt.bind([...params]);
       }
 
-      const results = [];
+      const results: T[] = [];
       while (stmt.step()) {
-        results.push(stmt.getAsObject());
+        results.push(stmt.getAsObject() as T);
       }
 
       // Reset statement for reuse
@@ -188,7 +181,7 @@ export class DatabaseManager {
       const executionTime = Date.now() - startTime;
       this.updateQueryMetrics(sql, executionTime);
 
-      return results as T[];
+      return results;
     } catch (error) {
       console.error('Query failed:', sql, error);
       throw error;
@@ -198,8 +191,7 @@ export class DatabaseManager {
   /**
    * Execute a SELECT query and return first row with prepared statement caching
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  queryOne<T = any>(sql: string, params: readonly unknown[] = []): T | null {
+  queryOne<T>(sql: string, params: readonly SqlValue[] = []): T | null {
     if (!this.db) {
       throw new Error('Database not initialized');
     }
@@ -208,14 +200,17 @@ export class DatabaseManager {
 
     try {
       // Get or create prepared statement using Object Pool
-      const stmt = this.statementPool.getOrCreate(sql, () => this.db.prepare(sql));
+      const stmt = this.statementPool.getOrCreate(sql, () => {
+        if (!this.db) throw new Error('Database not initialized');
+        return this.db.prepare(sql);
+      });
 
       // Bind parameters if provided
       if (params && params.length > 0) {
-        stmt.bind(params);
+        stmt.bind([...params]);
       }
 
-      const result = stmt.step() ? stmt.getAsObject() : null;
+      const result = stmt.step() ? (stmt.getAsObject() as T) : null;
 
       // Reset statement for reuse
       stmt.reset();
@@ -223,7 +218,7 @@ export class DatabaseManager {
       const executionTime = Date.now() - startTime;
       this.updateQueryMetrics(sql, executionTime);
 
-      return (result as T) || null;
+      return result;
     } catch (error) {
       console.error('Query failed:', sql, error);
       throw error;
@@ -336,13 +331,13 @@ export class DatabaseManager {
       const databaseSize = pageCount * pageSize;
 
       // Get table count
-      const tables = this.query(
+      const tables = this.query<{ name: string }>(
         "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
       );
       const tableCount = tables.length;
 
       // Get index count
-      const indexes = this.query(
+      const indexes = this.query<{ name: string }>(
         "SELECT name FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%'"
       );
       const indexCount = indexes.length;
@@ -356,8 +351,8 @@ export class DatabaseManager {
         journalMode: 'MEMORY', // sql.js default
         tableCount,
         indexCount,
-        tables: tables.map(t => t.name as string),
-        indexes: indexes.map(i => i.name as string),
+        tables: tables.map(t => t.name),
+        indexes: indexes.map(i => i.name),
       };
     } catch (error) {
       return {
@@ -407,7 +402,7 @@ export class DatabaseManager {
   /**
    * Get the underlying database instance (use with caution)
    */
-  getDatabase(): SqlJsDatabase {
+  getDatabase(): Database {
     if (!this.db) {
       throw new Error('Database not initialized');
     }
@@ -455,21 +450,19 @@ export class DatabaseManager {
   /**
    * Alias methods for compatibility with sqlite3-style API
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get<T = any>(sql: string, params: readonly unknown[] = []): T | undefined {
+  get<T>(sql: string, params: readonly SqlValue[] = []): T | undefined {
     return this.queryOne<T>(sql, params) ?? undefined;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  all<T = any>(sql: string, params: readonly unknown[] = []): T[] {
+  all<T>(sql: string, params: readonly SqlValue[] = []): T[] {
     return this.query<T>(sql, params);
   }
 
-  run(sql: string, params: readonly unknown[] = []): DatabaseResult {
+  run(sql: string, params: readonly SqlValue[] = []): DatabaseResult {
     return this.execute(sql, params);
   }
 
-  prepare(sql: string): SqlJsStatement {
+  prepare(sql: string): Statement {
     if (!this.db) {
       throw new Error('Database not initialized');
     }
@@ -507,11 +500,6 @@ export class DatabaseManager {
       throw error;
     }
   }
-
-  /**
-   * Optimize database with additional performance settings
-   */
-  /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
 }
 
 interface DatabaseStats {

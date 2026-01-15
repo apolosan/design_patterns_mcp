@@ -164,6 +164,7 @@ dist
 *.db
 *.sqlite
 *.sqlite3
+
 # Allow specific production databases
 !data/design-patterns.db
 !data/patterns.db
@@ -202,12 +203,15 @@ logs/
 
 # Documentation files (allow important docs)
 # Temporarily disabled to allow important documentation
-# *.md
-# !README.md
-# !INSTALL_GUIDE.md
-# !QUICKSTART.md
+*.md
+!README.md
+!INSTALL_GUIDE.md
+!QUICKSTART.md
 # !AGENTS.md
 # !docs/**/*.md
 
 # OpenCode configuration  
-# opencode.json
+opencode.json
+
+# Others
+worktrees/

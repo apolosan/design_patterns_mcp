@@ -4,6 +4,10 @@
  * Supports pattern search results, embeddings, and frequently accessed data
  */
 
+import { Pattern } from '../models/pattern.js';
+import { SearchResult } from '../repositories/interfaces.js';
+import { isPatternData, isTypedArray, isNumber, isObject } from '../utils/type-guards.js';
+
 interface CacheEntry<T = unknown> {
   data: T;
   timestamp: number;
@@ -50,7 +54,7 @@ export class CacheService {
   /**
    * Get cached value by key
    */
-  get<T = unknown>(key: string): T | null {
+  get<T = unknown>(key: string, guard?: (value: unknown) => value is T): T | null {
     const entry = this.cache.get(key);
 
     if (!entry) {
@@ -62,6 +66,12 @@ export class CacheService {
     if (this.isExpired(entry)) {
       this.cache.delete(key);
       this.updateMetrics(false);
+      return null;
+    }
+
+    // Validate type if guard provided
+    if (guard && !guard(entry.data)) {
+      this.updateMetrics(false); // Treat as miss due to type mismatch
       return null;
     }
 
@@ -263,24 +273,36 @@ export class CacheService {
   /**
    * Get or set pattern (convenience method for pattern caching)
    */
-  getPattern(patternId: string): unknown {
-    return this.get(`pattern:${patternId}`);
+  getPattern(patternId: string): Pattern | null {
+    return this.get<Pattern>(`pattern:${patternId}`, (v): v is Pattern => {
+      // Use isPatternData as base check and ensure additional required fields exist
+      return isPatternData(v) &&
+             'problem' in v && typeof (v as Record<string, unknown>).problem === 'string' &&
+             'solution' in v && typeof (v as Record<string, unknown>).solution === 'string';
+    });
   }
 
-  setPattern(patternId: string, pattern: unknown, ttl?: number): void {
+  setPattern(patternId: string, pattern: Pattern, ttl?: number): void {
     this.set(`pattern:${patternId}`, pattern, ttl);
   }
 
   /**
    * Get or set search results (convenience method for search caching)
    */
-  getSearchResults(query: string, options?: unknown): unknown {
+  getSearchResults(query: string, options?: Record<string, unknown>): SearchResult[] | null {
     const optionsHash = this.hashObject(options ?? {});
     const key = `search:${query}:${optionsHash}`;
-    return this.get(key);
+
+    return this.get<SearchResult[]>(key, (v): v is SearchResult[] => {
+      return isTypedArray(v, (item): item is SearchResult => {
+        return isObject(item) &&
+               'pattern' in item && isPatternData(item.pattern) &&
+               'score' in item && isNumber(item.score);
+      });
+    });
   }
 
-  setSearchResults(query: string, options: unknown, results: unknown, ttl?: number): void {
+  setSearchResults(query: string, options: Record<string, unknown>, results: SearchResult[], ttl?: number): void {
     // Use fast hash for options instead of JSON.stringify for better performance
     const optionsHash = this.hashObject(options || {});
     const key = `search:${query}:${optionsHash}`;
@@ -291,7 +313,7 @@ export class CacheService {
    * Get or set embeddings (convenience method for embedding caching)
    */
   getEmbeddings(text: string): number[] | null {
-    return this.get(`embedding:${text}`);
+    return this.get<number[]>(`embedding:${text}`, (v): v is number[] => isTypedArray(v, isNumber));
   }
 
   setEmbeddings(text: string, embeddings: number[], ttl?: number): void {

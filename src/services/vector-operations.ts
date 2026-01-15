@@ -3,6 +3,8 @@
  * Handles vector embeddings, similarity search, and vector database operations
  */
 import { DatabaseManager } from './database-manager.js';
+import { EmbeddingCompressor } from './embedding-compressor.js';
+import { AdvancedEmbeddingCompressor } from './advanced-embedding-compressor.js';
 import {
   EmbeddingModel,
   VectorSearchResult,
@@ -11,22 +13,185 @@ import {
 } from '../models/vector.js';
 import { logger } from './logger.js';
 
-interface VectorConfig {
+export interface VectorConfig {
   model: EmbeddingModel;
   dimensions: number;
   similarityThreshold: number;
   maxResults: number;
   cacheEnabled: boolean;
+  enableCompression?: boolean;
+  compressionConfig?: {
+    targetVariance?: number;
+    maxDimensions?: number;
+    quantizationBits?: 4 | 8 | 16;
+    minAccuracyDrop?: number;
+  };
 }
 
 export class VectorOperationsService {
   private db: DatabaseManager;
   private config: VectorConfig;
   private embeddingCache: Map<string, number[]> = new Map();
+  private compressor: AdvancedEmbeddingCompressor | EmbeddingCompressor | null = null;
 
-  constructor(db: DatabaseManager, config: VectorConfig) {
+  constructor(db: DatabaseManager, config: VectorConfig, compressor?: AdvancedEmbeddingCompressor | EmbeddingCompressor) {
     this.db = db;
     this.config = config;
+    
+    if (compressor) {
+      this.compressor = compressor;
+    } else if (config.enableCompression) {
+      // Create default advanced compressor if compression enabled
+      this.compressor = new AdvancedEmbeddingCompressor({
+        targetVariance: config.compressionConfig?.targetVariance ?? 0.95,
+        maxDimensions: config.compressionConfig?.maxDimensions ?? 128,
+        quantizationBits: config.compressionConfig?.quantizationBits ?? 8,
+        minAccuracyDrop: config.compressionConfig?.minAccuracyDrop ?? 0.05,
+      });
+    }
+  }
+
+  /**
+   * Compress embedding using available compressor
+   */
+  async compressEmbedding(embedding: number[]): Promise<{
+    compressed: number[] | Int8Array | Uint8Array | Int16Array;
+    metadata: Record<string, any>;
+    stats: {
+      originalSize: number;
+      compressedSize: number;
+      compressionRatio: number;
+      memorySavings: number;
+      accuracyDrop: number;
+    };
+  }> {
+    if (!this.compressor) {
+      throw new Error('Compression not enabled');
+    }
+
+    if (this.compressor instanceof AdvancedEmbeddingCompressor) {
+      const result = await this.compressor.compress(embedding);
+      return {
+        compressed: result.compressed,
+        metadata: result.metadata,
+        stats: result.stats,
+      };
+    } else {
+      // Use basic compressor
+      const basis = this.compressor.buildPCABasis([embedding]);
+      const { compressed, quantized, stats } = this.compressor.compressWithQualityControl(embedding, basis);
+      return {
+        compressed: quantized.quantized,
+        metadata: {
+          scale: quantized.scale,
+          zeroPoint: quantized.zeroPoint,
+          pcaBasis: basis,
+        },
+        stats: {
+          originalSize: stats.originalSize,
+          compressedSize: stats.compressedSize,
+          compressionRatio: stats.compressionRatio,
+          memorySavings: ((stats.originalSize - stats.compressedSize) / stats.originalSize) * 100,
+          accuracyDrop: stats.errorRate,
+        },
+      };
+    }
+  }
+
+  /**
+   * Decompress embedding
+   */
+  decompressEmbedding(
+    compressed: number[] | Int8Array | Uint8Array | Int16Array,
+    metadata: Record<string, any>
+  ): number[] {
+    if (!this.compressor) {
+      throw new Error('Compression not enabled');
+    }
+
+    if (this.compressor instanceof AdvancedEmbeddingCompressor) {
+      // Advanced compressor doesn't have built-in decompression yet
+      // For now, return as-is if it's an array
+      if (Array.isArray(compressed)) {
+        return compressed;
+      } else if (compressed instanceof Int8Array || compressed instanceof Uint8Array) {
+        // Simple dequantization
+        const scale = metadata.quantizationScale || 1.0;
+        const zeroPoint = metadata.quantizationZeroPoint || 0;
+        const result: number[] = [];
+        for (let i = 0; i < compressed.length; i++) {
+          result.push((compressed[i] - zeroPoint) * scale);
+        }
+        return result;
+      } else if (compressed instanceof Int16Array) {
+        const scale = metadata.quantizationScale || 1.0;
+        const zeroPoint = metadata.quantizationZeroPoint || 0;
+        const result: number[] = [];
+        for (let i = 0; i < compressed.length; i++) {
+          result.push((compressed[i] - zeroPoint) * scale);
+        }
+        return result;
+      }
+      throw new Error('Unsupported compressed format');
+    } else {
+      // Basic compressor
+      if (compressed instanceof Int8Array || compressed instanceof Uint8Array) {
+        return this.compressor.dequantize8Bit(
+          compressed,
+          metadata.scale,
+          metadata.zeroPoint
+        );
+      } else if (Array.isArray(compressed)) {
+        return compressed;
+      }
+      throw new Error('Unsupported compressed format');
+    }
+  }
+
+  /**
+   * Store embedding with optional compression
+   */
+  async storeEmbeddingWithCompression(
+    patternId: string,
+    embedding: number[],
+    compress: boolean = false
+  ): Promise<{
+    storedSize: number;
+    compressed: boolean;
+    compressionStats?: any;
+  }> {
+    let finalEmbedding = embedding;
+    let compressed = false;
+    let compressionStats: any = null;
+
+    if (compress && this.compressor) {
+      try {
+        const result = await this.compressEmbedding(embedding);
+        finalEmbedding = this.decompressEmbedding(result.compressed, result.metadata);
+        compressionStats = result.stats;
+        compressed = true;
+        
+        logger.info('vector-operations', 'Embedding compressed', {
+          patternId,
+          compressionRatio: compressionStats.compressionRatio.toFixed(2),
+          memorySavings: compressionStats.memorySavings.toFixed(1) + '%',
+          accuracyDrop: compressionStats.accuracyDrop.toFixed(3),
+        });
+      } catch (error) {
+        logger.warn('vector-operations', 'Compression failed, storing uncompressed', {
+          patternId,
+          error: (error as Error).message,
+        });
+      }
+    }
+
+    this.storeEmbedding(patternId, finalEmbedding);
+    
+    return {
+      storedSize: finalEmbedding.length * 4,
+      compressed,
+      compressionStats,
+    };
   }
 
   /**
@@ -274,7 +439,7 @@ export class VectorOperationsService {
         name: string;
         category: string;
         description: string;
-        tags: unknown;
+        tags: string | null;
       }
 
       const rows = this.db.query<VectorSearchRow>(sql, params);
@@ -289,7 +454,7 @@ export class VectorOperationsService {
           name: row.name,
           category: row.category,
           description: row.description,
-          tags: (row.tags as string[]),
+          tags: row.tags ? row.tags.split(',').filter(Boolean) : [],
         },
       }));
 

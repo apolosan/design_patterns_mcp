@@ -2,23 +2,28 @@
  * Health Check Components Tests
  * Tests for health check types and utilities
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { describe, test, expect } from 'vitest';
-import { HealthStatus, HealthUtils, HealthCheckSeverity } from '../../src/health/types.js';
+import { HealthStatus, HealthUtils, HealthCheckSeverity, HealthCheckResult } from '../../src/health/types.js';
 
 describe('Health Check Types and Utilities', () => {
 
+  // Helper to create minimal result for testing status calculations
+  const createStatusResult = (status: HealthStatus): HealthCheckResult => ({
+    name: 'test-check',
+    status,
+    message: 'test message',
+    timestamp: new Date().toISOString(),
+    duration: 100
+  });
+
   test('should calculate overall status correctly', () => {
-    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
-    const results = [
-      { status: HealthStatus.HEALTHY },
-      { status: HealthStatus.HEALTHY },
-      { status: HealthStatus.DEGRADED },
-    ] as any[];
+    const results: HealthCheckResult[] = [
+      createStatusResult(HealthStatus.HEALTHY),
+      createStatusResult(HealthStatus.HEALTHY),
+      createStatusResult(HealthStatus.DEGRADED),
+    ];
 
     const overall = HealthUtils.calculateOverallStatus(results);
-    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
     expect(overall).toBe(HealthStatus.DEGRADED);
   });
 
@@ -44,17 +49,15 @@ describe('Health Check Types and Utilities', () => {
   });
 
   test('should create proper summary', () => {
-    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
-    const results = [
-      { status: HealthStatus.HEALTHY },
-      { status: HealthStatus.HEALTHY },
-      { status: HealthStatus.DEGRADED },
-      { status: HealthStatus.UNHEALTHY },
-      { status: HealthStatus.UNKNOWN },
-    ] as any[];
+    const results: HealthCheckResult[] = [
+      createStatusResult(HealthStatus.HEALTHY),
+      createStatusResult(HealthStatus.HEALTHY),
+      createStatusResult(HealthStatus.DEGRADED),
+      createStatusResult(HealthStatus.UNHEALTHY),
+      createStatusResult(HealthStatus.UNKNOWN),
+    ];
 
     const summary = HealthUtils.createSummary(results);
-    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
     expect(summary.total).toBe(5);
     expect(summary.healthy).toBe(2);
     expect(summary.degraded).toBe(1);

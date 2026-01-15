@@ -66,21 +66,37 @@ export class PatternSeeder {
       const allRelationships: Array<{ sourceId: string; relationship: string | RawRelationship; filename: string }> = [];
 
       for (const file of patternFiles) {
-        const data = await this.loadPatternFile(file) as PatternFileData;
-        const patterns = data.patterns ?? (data.id ? [data] : []);
+        const loadedData = await this.loadPatternFile(file);
 
-        for (const pattern of patterns) {
-          const typedPattern = pattern as Pattern;
+        if (!this.isPatternFileData(loadedData)) {
+          logger.warn('pattern-seeder', `Skipping invalid pattern file: ${file}`);
+          continue;
+        }
+
+        const data = loadedData;
+        const patternsList = Array.isArray(data.patterns) ? data.patterns : (data.id ? [data] : []);
+
+        for (const pattern of patternsList) {
+          if (!this.isValidPattern(pattern)) {
+             logger.warn('pattern-seeder', `Skipping invalid pattern in file ${file}`, { patternData: String(pattern) });
+             continue;
+          }
+
+          const typedPattern = pattern;
           allPatterns.push(typedPattern);
 
           // Collect relationships for later insertion
-          const relatedPatterns = typedPattern.relatedPatterns ?? (typedPattern as Pattern & { related_patterns?: string[] }).related_patterns;
+          const relatedPatterns = typedPattern.relatedPatterns ?? typedPattern.related_patterns;
           const relationships = typedPattern.relationships;
 
           // Process legacy relatedPatterns format
           if (relatedPatterns) {
             for (const rel of relatedPatterns) {
-              allRelationships.push({ sourceId: typedPattern.id, relationship: rel, filename: file });
+              // Handle potential Pattern object in relatedPatterns (if it was fully resolved in JSON) or string ID
+              const relValue = typeof rel === 'string' ? rel : (rel as Pattern).id || (rel as Pattern).name;
+              if (relValue) {
+                allRelationships.push({ sourceId: typedPattern.id, relationship: relValue, filename: file });
+              }
             }
           }
 
@@ -155,12 +171,63 @@ export class PatternSeeder {
   }
 
   /**
+   * Type guard for PatternFileData
+   */
+  private isPatternFileData(data: unknown): data is PatternFileData {
+    if (!isObject(data)) return false;
+
+    // Check if it has patterns array OR an id (single pattern)
+    if ('patterns' in data && Array.isArray(data.patterns)) {
+      return true;
+    }
+
+    if ('id' in data && typeof data.id === 'string') {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Type guard for Pattern
+   */
+  private isValidPattern(data: unknown): data is Pattern {
+    if (!isObject(data)) return false;
+
+    // Check required fields based on Pattern interface
+    const requiredFields = ['id', 'name', 'category', 'description'];
+    for (const field of requiredFields) {
+      if (!(field in data) || typeof (data as Record<string, unknown>)[field] !== 'string') {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Seed patterns from a specific file
    */
   async seedFromFile(filePath: string): Promise<SeederResult> {
     try {
-      const data = await this.loadPatternFile(filePath) as PatternFileData;
-      const patterns = (data.patterns as Pattern[]) || [];
+      const loadedData = await this.loadPatternFile(filePath);
+
+      if (!this.isPatternFileData(loadedData)) {
+        throw new Error('Invalid pattern file structure');
+      }
+
+      const data = loadedData;
+      const patternsList = Array.isArray(data.patterns) ? data.patterns : (data.id ? [data] : []);
+
+      // Filter valid patterns
+      const patterns: Pattern[] = [];
+      for (const p of patternsList) {
+        if (this.isValidPattern(p)) {
+          patterns.push(p);
+        } else {
+          logger.warn('pattern-seeder', `Skipping invalid pattern in file ${filePath}`, { patternData: String(p) });
+        }
+      }
 
       let patternsInserted = 0;
       let implementationsInserted = 0;

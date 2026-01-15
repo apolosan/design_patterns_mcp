@@ -3,8 +3,8 @@
  * Provides interchangeable logging strategies for different environments and needs
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export enum LogLevel {
   DEBUG = 0,
@@ -14,12 +14,14 @@ export enum LogLevel {
   FATAL = 4
 }
 
+export type LogData = string | number | boolean | null | { [key: string]: LogData } | LogData[];
+
 export interface LogEntry {
   timestamp: string;
   level: LogLevel;
   service: string;
   message: string;
-  data?: unknown;
+  data?: LogData;
   error?: Error;
   correlationId?: string;
   duration?: number;
@@ -318,29 +320,29 @@ export class Logger {
     private serviceName?: string
   ) {}
 
-  debug(message: string, data?: unknown, correlationId?: string): void {
+  debug(message: string, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.DEBUG, message, data, undefined, correlationId);
   }
 
-  info(message: string, data?: unknown, correlationId?: string): void {
+  info(message: string, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.INFO, message, data, undefined, correlationId);
   }
 
-  warn(message: string, data?: unknown, correlationId?: string): void {
+  warn(message: string, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.WARN, message, data, undefined, correlationId);
   }
 
-  error(message: string, error?: Error, data?: unknown, correlationId?: string): void {
+  error(message: string, error?: Error, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.ERROR, message, data, error, correlationId);
   }
 
-  fatal(message: string, error?: Error, data?: unknown, correlationId?: string): void {
+  fatal(message: string, error?: Error, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.FATAL, message, data, error, correlationId);
   }
 
-  timing(operation: string, duration: number, data?: unknown, correlationId?: string): void {
+  timing(operation: string, duration: number, data?: LogData, correlationId?: string): void {
     this.log(LogLevel.INFO, `Operation completed: ${operation}`, {
-      ...(data as Record<string, unknown> || {}),
+      ...(data as Record<string, LogData> || {}),
       operation,
       duration,
       durationUnit: 'ms'
@@ -354,7 +356,7 @@ export class Logger {
   private log(
     level: LogLevel,
     message: string,
-    data?: unknown,
+    data?: LogData,
     error?: Error,
     correlationId?: string,
     duration?: number

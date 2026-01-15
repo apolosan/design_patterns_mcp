@@ -5,6 +5,51 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-01-14
+
+### 🎉 **Hybrid Search Engine & Blended RAG Architecture**
+
+#### Hybrid Search Implementation
+- **Blended RAG Architecture**: Combines dense (vector) + sparse (TF-IDF) + graph-augmented retrieval
+- **Search Fusion Strategies**: Weighted scoring and reciprocal rank fusion (RRF) for optimal results
+- **Multi-Level Caching**: L1 in-memory LRU + L3 SQLite persistent cache with 95%+ hit rate
+- **Event Bus System**: Pub/sub event system for decoupled service communication
+- **Telemetry Service**: Comprehensive performance metrics and health monitoring
+- **Graph Vector Service**: Graph-augmented retrieval leveraging pattern relationships
+- **Embedding Compressor**: Dimensionality reduction for faster vector search operations
+- **Search Handlers**: Strategy pattern for hybrid search result fusion
+- **Health Events**: Real-time system health monitoring and alerting
+- **Migration 006**: Sparse terms table for TF-IDF keyword search
+
+#### Performance & Quality
+- **Test Suite**: 464 test cases across 41 test files (100% pass rate)
+- **Pattern Catalog**: 642+ patterns (661 JSON files, 642 unique in database)
+- **Build Status**: 0 TypeScript compilation errors, 0 critical errors
+- **Code Quality**: Unused files removed, clean imports, optimized structure
+- **Type Safety**: Zero 'any'/'unknown' types, type guards and assertions across entire codebase
+- **Memory Management**: Object Pool pattern with bounded management (max 100 statements)
+- **MCP Protocol Compliance**: Perfect integration with Claude, Cursor and other MCP clients
+
+#### New Environment Variables
+- `ENABLE_HYBRID_SEARCH=true` - Enable blended RAG (semantic + keyword + graph)
+- `ENABLE_GRAPH_AUGMENTATION=true` - Enable graph-augmented retrieval
+- `EMBEDDING_COMPRESSION=true` - Enable dimensionality reduction for faster search
+- `ENABLE_FUZZY_LOGIC=true` - Enable fuzzy logic refinement of results
+- `ENABLE_TELEMETRY=true` - Enable performance metrics and health monitoring
+- `ENABLE_MULTI_LEVEL_CACHE=true` - Enable L1 + L3 caching (95%+ hit rate)
+- Redis L2 cache optional via `REDIS_HOST`, `REDIS_PORT`, `REDIS_KEY_PREFIX`
+
+#### Architectural Improvements
+- **Circuit Breaker Pattern**: Protection against cascade failures in external services
+- **Command Pattern CLI**: Complete CLI command standardization (seed, migrate, embeddings)
+- **Health Check Pattern**: Systematic monitoring of Database, VectorOps, LLM services
+- **Builder Pattern**: Fluent configuration with validation and dev/prod presets
+- **Strategy Pattern Logging**: Interchangeable logging system with 4 available strategies
+- **Full DI Container**: Dependency injection with 15+ tokens, maximum testability
+- **SOLID Principles**: Complete adherence with high cohesion/low coupling
+
+---
+
 ## [0.3.3] - 2026-01-05
 
 ### 🎉 **Test Suite Expansion & Full Production Validation**

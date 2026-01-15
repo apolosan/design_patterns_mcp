@@ -12,6 +12,19 @@ export interface MCPServerConfig {
   enableLLM: boolean;
   maxConcurrentRequests: number;
   enableFuzzyLogic?: boolean;
+  // New Blended RAG features
+  enableTelemetry?: boolean;
+  enableHybridSearch?: boolean;
+  enableGraphAugmentation?: boolean;
+  embeddingCompression?: boolean;
+  // Multi-Level Cache (Phase 2.2)
+  enableMultiLevelCache?: boolean;
+  cacheConfig?: {
+    l1?: { maxSize?: number; defaultTTL?: number };
+    l2?: { enabled?: boolean; host?: string; port?: number; keyPrefix?: string };
+    l3?: { enabled?: boolean; tableName?: string };
+    global?: { writeStrategy?: 'write-through' | 'write-back' };
+  };
 }
 
 interface ConfigBuilderState {
@@ -20,6 +33,12 @@ interface ConfigBuilderState {
   enableLLM?: boolean;
   maxConcurrentRequests?: number;
   enableFuzzyLogic?: boolean;
+  enableTelemetry?: boolean;
+  enableHybridSearch?: boolean;
+  enableGraphAugmentation?: boolean;
+  embeddingCompression?: boolean;
+  enableMultiLevelCache?: boolean;
+  cacheConfig?: MCPServerConfig['cacheConfig'];
 }
 
 export class MCPServerConfigBuilder {
@@ -72,6 +91,54 @@ export class MCPServerConfigBuilder {
   }
 
   /**
+   * Enable/disable telemetry
+   */
+  withTelemetry(enabled: boolean = true): this {
+    this.state.enableTelemetry = enabled;
+    return this;
+  }
+
+  /**
+   * Enable/disable hybrid search
+   */
+  withHybridSearch(enabled: boolean = true): this {
+    this.state.enableHybridSearch = enabled;
+    return this;
+  }
+
+  /**
+   * Enable/disable graph augmentation
+   */
+  withGraphAugmentation(enabled: boolean = true): this {
+    this.state.enableGraphAugmentation = enabled;
+    return this;
+  }
+
+  /**
+   * Enable/disable embedding compression
+   */
+  withEmbeddingCompression(enabled: boolean = true): this {
+    this.state.embeddingCompression = enabled;
+    return this;
+  }
+
+  /**
+   * Enable/disable multi-level cache (Phase 2.2)
+   */
+  withMultiLevelCache(enabled: boolean = true): this {
+    this.state.enableMultiLevelCache = enabled;
+    return this;
+  }
+
+  /**
+   * Configure multi-level cache settings
+   */
+  withCacheConfig(config: MCPServerConfig['cacheConfig']): this {
+    this.state.cacheConfig = config;
+    return this;
+  }
+
+  /**
    * Build configuration with validation and defaults
    */
   build(): MCPServerConfig {
@@ -92,6 +159,14 @@ export class MCPServerConfigBuilder {
       enableLLM: this.state.enableLLM ?? false,
       maxConcurrentRequests: this.state.maxConcurrentRequests ?? 10,
       enableFuzzyLogic: this.state.enableFuzzyLogic ?? true,
+      // New Blended RAG features - default to enabled for optimal performance
+      enableTelemetry: this.state.enableTelemetry ?? true,
+      enableHybridSearch: this.state.enableHybridSearch ?? true,
+      enableGraphAugmentation: this.state.enableGraphAugmentation ?? true,
+      embeddingCompression: this.state.embeddingCompression ?? true,
+      // Multi-Level Cache (Phase 2.2)
+      enableMultiLevelCache: this.state.enableMultiLevelCache ?? true,
+      cacheConfig: this.state.cacheConfig,
     };
 
     // Additional validation
@@ -134,6 +209,43 @@ export class MCPServerConfigBuilder {
       builder.withFuzzyLogic(false);
     }
 
+    // Telemetry
+    if (process.env.ENABLE_TELEMETRY === 'false') {
+      builder.withTelemetry(false);
+    }
+
+    // Hybrid search
+    if (process.env.ENABLE_HYBRID_SEARCH === 'false') {
+      builder.withHybridSearch(false);
+    }
+
+    // Graph augmentation
+    if (process.env.ENABLE_GRAPH_AUGMENTATION === 'false') {
+      builder.withGraphAugmentation(false);
+    }
+
+    // Embedding compression
+    if (process.env.EMBEDDING_COMPRESSION === 'false') {
+      builder.withEmbeddingCompression(false);
+    }
+
+    // Multi-level cache
+    if (process.env.ENABLE_MULTI_LEVEL_CACHE === 'false') {
+      builder.withMultiLevelCache(false);
+    }
+
+    // Redis configuration for L2 cache
+    if (process.env.REDIS_HOST) {
+      builder.withCacheConfig({
+        l2: {
+          enabled: true,
+          host: process.env.REDIS_HOST,
+          port: parseInt(process.env.REDIS_PORT ?? '6379'),
+          keyPrefix: process.env.REDIS_KEY_PREFIX ?? 'cache:',
+        },
+      });
+    }
+
     return builder;
   }
 
@@ -144,7 +256,12 @@ export class MCPServerConfigBuilder {
     return new MCPServerConfigBuilder()
       .withLogLevel('debug')
       .withMaxConcurrentRequests(20)
-      .withFuzzyLogic(true);
+      .withFuzzyLogic(true)
+      .withTelemetry(true)
+      .withHybridSearch(true)
+      .withGraphAugmentation(true)
+      .withEmbeddingCompression(true)
+      .withMultiLevelCache(true);
   }
 
   /**
@@ -154,7 +271,12 @@ export class MCPServerConfigBuilder {
     return new MCPServerConfigBuilder()
       .withLogLevel('info')
       .withMaxConcurrentRequests(50)
-      .withFuzzyLogic(true);
+      .withFuzzyLogic(true)
+      .withTelemetry(true)
+      .withHybridSearch(true)
+      .withGraphAugmentation(true)
+      .withEmbeddingCompression(true)
+      .withMultiLevelCache(true);
   }
 
   /**

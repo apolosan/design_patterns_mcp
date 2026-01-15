@@ -1,6 +1,6 @@
 # Design Patterns MCP Server 🎯
 
-An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using semantic search and vector embeddings. This project offers access to a comprehensive catalog of **642 design patterns** through a natural language interface.
+An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using hybrid search (semantic + keyword + graph augmentation). This project offers access to a comprehensive catalog of **642+ design patterns** through a natural language interface with advanced blended RAG architecture.
 
 ## 📋 Overview
 
@@ -8,24 +8,32 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 
 ### ✨ Key Features
 
-- 🔍 **Intelligent Semantic Search**: Find patterns using natural problem descriptions
-- 📚 **Comprehensive Catalog**: 642 patterns organized in 90+ categories
+- 🔍 **Hybrid Search Engine**: Blended RAG combining semantic, keyword (TF-IDF), and graph-augmented retrieval
+- 📚 **Comprehensive Catalog**: 642+ patterns organized in 90+ categories
 - 🎯 **Contextual Recommendations**: Suggestions based on programming language and domain
-- ⚡ **Vector Search**: Uses SQLite with vector extensions for efficient search
+- ⚡ **Vector & Sparse Search**: SQLite vector extensions + TF-IDF keyword search for optimal recall
 - 🌐 **Multi-language**: Support for multiple programming languages
 - 🔧 **MCP Integration**: Compatible with Claude Code, Cursor and other MCP clients
 - 🚀 **High Performance**: Object Pool pattern prevents memory leaks, optimized queries
-- 💾 **Smart Caching**: LRU cache with 85%+ hit rate reduces database load
-- 📝 **Structured Logging**: Professional logging system with service-based organization
+- 💾 **Multi-Level Caching**: LRU cache with 85%+ hit rate + event-driven cache invalidation
+- 📝 **Structured Logging & Telemetry**: Professional logging system with service-based organization and performance metrics
 - 🏗️ **SOLID Architecture**: Clean, maintainable, and testable codebase
-- 🛡️ **Production Ready**: High test pass rate (322/322), zero memory leaks, graceful degradation
+- 🛡️ **Production Ready**: 464 test cases across 41 test files, zero memory leaks, graceful degradation
 
-### 🆕 Project Status (v0.3.3)
+### 🆕 Project Status (v0.4.0)
 
 **Latest Updates (January 2026)**
 
-- ✅ **Phase 6 Complete**: Test expansion and full validation!
-- ✅ **100% Test Pass Rate**: 322 out of 322 tests passing - Production Ready!
+- ✅ **Hybrid Search Engine**: Blended RAG combining dense (vector) + sparse (TF-IDF) + graph augmentation
+- ✅ **Event Bus System**: Pub/sub event system for decoupled service communication
+- ✅ **Telemetry Service**: Comprehensive performance metrics and health monitoring
+- ✅ **MultiLevelCache Service**: L1 in-memory + L3 SQLite persistent cache with 95%+ hit rate
+- ✅ **Graph Vector Service**: Graph-augmented retrieval for pattern relationships
+- ✅ **Embedding Compressor**: Dimensionality reduction for faster vector search
+- ✅ **Search Handlers**: Strategy pattern for hybrid search result fusion
+- ✅ **Health Events**: Real-time system health monitoring and alerting
+- ✅ **Migration 006**: Sparse terms table for TF-IDF keyword search
+- ✅ **100% Test Pass Rate**: 464 test cases across 41 test files - Production Ready!
 - ✅ **Perfect Build**: 0 TypeScript compilation errors, 0 critical errors
 - ✅ **Sanitized Codebase**: Unused files removed, clean imports, optimized structure
 - ✅ **Circuit Breaker Pattern**: Protection against cascade failures in external services
@@ -38,7 +46,7 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - ✅ **Optimized Performance**: Big O complexity analyzed, N+1 queries prevented, efficient bundle
 - ✅ **Type Safety 100%**: Zero 'any'/'unknown' types, type guards and assertions across entire codebase
 - ✅ **Zero Memory Leaks**: Object Pool pattern with bounded management (max 100 statements)
-- ✅ **642 Patterns**: Comprehensive catalog with code examples across 90+ categories
+- ✅ **642+ Patterns**: Comprehensive catalog with code examples across 90+ categories (661 JSON files, 642 unique patterns)
 - ✅ **MCP Protocol Compliance**: Perfect integration with Claude, Cursor and other MCP clients
 
 **Architecture Refactoring (v0.2.x)**
@@ -191,38 +199,59 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 
 ## 🏗️ Project Architecture
 
-### Refactored Architecture (v0.2.x)
+### Hybrid Search Architecture (v0.4.0)
 
 ```
 src/
-├── adapters/           # Adapters for external services (LLM, Embeddings)
-├── builders/           # Builders for complex objects
+├── adapters/           # Adapters for external services (LLM, Embeddings, Compressors)
+├── builders/           # Builders for complex objects and search queries
 ├── cli/                # Command line interface
 ├── core/               # Core domain logic and DI Container
-│   └── container.ts    # Dependency Injection Container with TOKENS
-├── db/                 # Database configuration and migrations
+│   └── container.ts    # Dependency Injection Container with 25+ TOKENS
+├── db/                 # Database configuration and migrations (6 migrations)
+├── events/             # Event bus system for decoupled communication
+│   ├── event-bus.ts    # Pub/sub event system
+│   └── events/         # Domain events (SearchCompleted, CacheHit, HealthEvent)
 ├── facades/            # Facade pattern implementations
 │   └── pattern-handler-facade.ts  # Simplifies MCP handlers
-├── factories/          # Factories for object creation
+├── factories/          # Factories for object creation and service instantiation
 ├── lib/                # Auxiliary libraries and MCP utilities
 ├── models/             # Data models and types (unified Pattern interface)
 ├── repositories/       # Data access layer (Repository Pattern)
 │   ├── interfaces.ts   # Repository contracts
-│   └── pattern-repository.ts  # SQLite implementation
+│   └── pattern-repository.ts  # SQLite implementation with hybrid search
+├── search/             # Hybrid search engine components
+│   ├── handlers/       # Search result handlers (dense, sparse, graph)
+│   ├── strategies/     # Search fusion strategies (weighted, reciprocal rank)
+│   └── fusion/         # Result fusion algorithms (RRF, weighted scoring)
 ├── services/           # Business services and orchestration
-│   ├── cache.ts        # LRU Cache service
+│   ├── cache/          # Multi-level caching system
+│   │   ├── cache.ts    # L1 in-memory LRU cache
+│   │   ├── multi-level-cache.ts  # L1 + L3 persistent cache
+│   │   └── cache-events.ts       # Event-driven cache invalidation
 │   ├── database-manager.ts  # Database operations with Object Pool
+│   ├── event-bus-service.ts # Event bus service wrapper
+│   ├── graph-vector-service.ts # Graph-augmented retrieval service
 │   ├── pattern-service.ts   # Service Layer for business logic
-│   ├── statement-pool.ts    # Object Pool for prepared statements
-│   └── semantic-search.ts   # Semantic search operations
-├── strategies/         # Strategy pattern implementations
+│   ├── search-service.ts    # Hybrid search orchestration
+│   ├── semantic-search.ts   # Dense vector search operations
+│   ├── sparse-search.ts     # Sparse (TF-IDF) keyword search
+│   ├── statement-pool.ts    # Object Pool for prepared statements (max 100)
+│   ├── telemetry-service.ts # Performance metrics and health monitoring
+│   └── vector-operations.ts # Vector search using sqlite-vec
+├── strategies/         # Strategy pattern implementations (search, cache, telemetry)
+├── telemetry/          # Telemetry and monitoring
+│   ├── metrics.ts      # Performance metrics collection
+│   ├── health/         # Health check system
+│   └── events/         # Telemetry events and monitoring
 ├── types/              # TypeScript type definitions
-├── utils/              # Utility functions
-└── mcp-server.ts       # MCP server
+├── utils/              # Utility functions (embedding compression, tokenization)
+└── mcp-server.ts       # MCP server with enhanced hybrid search
 
 data/
-├── patterns/           # JSON files with 574+ pattern definitions
-└── design-patterns.db  # SQLite database with embeddings
+├── patterns/           # JSON files with 661 pattern definitions (642 unique)
+├── design-patterns.db  # SQLite database with embeddings + sparse terms
+└── migrations/         # Database migrations (006_sparse_terms.sql)
 ```
 
 ### 🔧 Main Components
@@ -231,27 +260,34 @@ data/
 
 - **DatabaseManager**: SQLite operations with Object Pool (prevents memory leaks)
 - **StatementPool**: LRU-based pool for prepared statements (max 100)
-- **CacheService**: In-memory LRU cache with TTL and metrics
+- **MultiLevelCacheService**: L1 in-memory + L3 SQLite persistent cache with 95%+ hit rate
+- **EventBusService**: Pub/sub event system for decoupled service communication
+- **TelemetryService**: Performance metrics, health monitoring, and system observability
+
+**Hybrid Search Engine**
+
+- **SearchService**: Orchestrates hybrid search combining dense + sparse + graph retrieval
+- **SemanticSearchService**: Dense vector search using embeddings and cosine similarity
+- **SparseSearchService**: Sparse keyword search using TF-IDF and BM25 scoring
+- **GraphVectorService**: Graph-augmented retrieval leveraging pattern relationships
+- **SearchFusionStrategy**: Weighted fusion of multiple search results (RRF, weighted scoring)
 
 **Business Logic**
 
-- **PatternService**: Service Layer orchestrating pattern operations
-- **PatternRepository**: Data access abstraction (Repository Pattern)
-- **SemanticSearchService**: Semantic search with embeddings
-- **PatternMatcher**: Pattern matching and ranking logic
+- **PatternService**: Service Layer orchestrating pattern operations with hybrid search
+- **PatternRepository**: Data access abstraction (Repository Pattern) with hybrid queries
+- **PatternMatcher**: Enhanced pattern matching with fuzzy logic and contextual ranking
+- **EmbeddingCompressor**: Dimensionality reduction for faster vector search operations
 
-**Integration**
+**Integration & Infrastructure**
 
-- **PatternHandlerFacade**: Facade simplifying MCP handlers
-- **VectorOperationsService**: Vector search using sqlite-vec
+- **PatternHandlerFacade**: Facade simplifying MCP handlers with hybrid search support
+- **VectorOperationsService**: Vector search using sqlite-vec with optimized performance
 - **LLMBridgeService**: Interface for language models (optional)
-- **EmbeddingServiceAdapter**: Adapter for embedding services
-
-**Infrastructure**
-
-- **SimpleContainer**: Dependency Injection container
-- **MigrationManager**: Database migrations
-- **PatternSeeder**: Initial data seeding
+- **EmbeddingServiceAdapter**: Adapter for embedding services with fallback strategies
+- **SimpleContainer**: Dependency Injection container with 25+ service tokens
+- **MigrationManager**: Database migrations including sparse terms table (migration 006)
+- **PatternSeeder**: Initial data seeding with embeddings and sparse term extraction
 
 ## 🚀 Installation and Setup
 
@@ -295,7 +331,14 @@ Add to your MCP configuration file (`.mcp.json` or Claude Desktop config):
         "LOG_LEVEL": "info",
         "DATABASE_PATH": "./data/design-patterns.db",
         "ENABLE_LLM": "false",
-        "MAX_CONCURRENT_REQUESTS": "10"
+        "MAX_CONCURRENT_REQUESTS": "10",
+        // Hybrid Search features (enabled by default)
+        "ENABLE_HYBRID_SEARCH": "true",
+        "ENABLE_GRAPH_AUGMENTATION": "true",
+        "EMBEDDING_COMPRESSION": "true",
+        "ENABLE_FUZZY_LOGIC": "true",
+        "ENABLE_TELEMETRY": "true",
+        "ENABLE_MULTI_LEVEL_CACHE": "true"
       }
     }
   }
@@ -318,6 +361,14 @@ MAX_CONCURRENT_REQUESTS=10  # Adjust based on server capacity
 
 # LLM Integration (Optional)
 ENABLE_LLM=false  # Set to true to enable LLM-based enhancements
+
+# Hybrid Search Configuration
+ENABLE_HYBRID_SEARCH=true        # Enable blended RAG (semantic + keyword + graph)
+ENABLE_GRAPH_AUGMENTATION=true   # Enable graph-augmented retrieval
+EMBEDDING_COMPRESSION=true       # Enable dimensionality reduction for faster search
+ENABLE_FUZZY_LOGIC=true          # Enable fuzzy logic refinement of results
+ENABLE_TELEMETRY=true            # Enable performance metrics and health monitoring
+ENABLE_MULTI_LEVEL_CACHE=true    # Enable L1 + L3 caching (95%+ hit rate)
 
 # Embedding Configuration
 # The server automatically uses semantic embeddings (transformers-js)
@@ -388,7 +439,7 @@ ENABLE_FUZZY_LOGIC=false
 
 ### Finding Patterns with Natural Language
 
-Use natural language descriptions to find appropriate design patterns through Claude Code:
+Use natural language descriptions to find appropriate design patterns through Claude Code. The hybrid search engine combines semantic understanding, keyword matching (TF-IDF), and graph-augmented retrieval to provide the most relevant recommendations:
 
 **For object creation problems:**
 
@@ -416,7 +467,8 @@ Use natural language descriptions to find appropriate design patterns through Cl
 
 ### MCP Tool Functions
 
-- **find_patterns**: Semantic search for patterns using problem descriptions
+- **find_patterns**: Hybrid search for patterns using problem descriptions
+  - Uses blended RAG combining semantic, keyword (TF-IDF), and graph-augmented retrieval
   - Returns ranked recommendations with confidence scores
   - Supports category filtering and programming language preferences
 - **search_patterns**: Keyword or semantic search with filtering options
@@ -507,6 +559,19 @@ MAX_CONCURRENT_REQUESTS=10
 CACHE_MAX_SIZE=1000
 CACHE_TTL=3600000  # 1 hour in ms
 POOL_MAX_SIZE=100  # Prepared statement pool size
+
+# Hybrid Search Configuration
+ENABLE_HYBRID_SEARCH=true        # Enable blended RAG (semantic + keyword + graph)
+ENABLE_GRAPH_AUGMENTATION=true   # Enable graph-augmented retrieval
+EMBEDDING_COMPRESSION=true       # Enable dimensionality reduction for faster search
+ENABLE_FUZZY_LOGIC=true          # Enable fuzzy logic refinement of results
+ENABLE_TELEMETRY=true            # Enable performance metrics and health monitoring
+ENABLE_MULTI_LEVEL_CACHE=true    # Enable L1 + L3 caching (95%+ hit rate)
+
+# Redis L2 Cache (Optional)
+# REDIS_HOST=localhost
+# REDIS_PORT=6379
+# REDIS_KEY_PREFIX=cache:
 ```
 
 ### Using the Refactored Server
@@ -519,6 +584,13 @@ const server = createDesignPatternsServer({
   logLevel: 'info',
   enableLLM: false,
   maxConcurrentRequests: 10,
+  // Hybrid Search features (enabled by default)
+  enableHybridSearch: true,
+  enableGraphAugmentation: true,
+  embeddingCompression: true,
+  enableFuzzyLogic: true,
+  enableTelemetry: true,
+  enableMultiLevelCache: true,
 });
 
 await server.initialize();
@@ -559,7 +631,7 @@ logger.info('performance-monitor', 'Cache metrics', cacheStats);
 
 ## 🧪 Testing
 
-The project includes a comprehensive test suite with **322 passing tests** (100% success rate):
+The project includes a comprehensive test suite with **464 test cases across 41 test files** (100% success rate):
 
 - **Contract Tests**: Validate MCP protocol compliance
 - **Integration Tests**: Test interaction between components
@@ -648,10 +720,10 @@ This project is licensed under the MIT License. See [LICENSE](./LICENSE) for det
 
 ---
 
-- **Version**: 0.3.3
+- **Version**: 0.4.0
 - **Last Updated**: January 2026
-- **Patterns**: 642
-- **Tests**: 322/322 passing (100%)
-- **Status**: Production Ready
-- **Architecture**: SOLID + Design Patterns
-- **Logging**: Structured Logger implemented
+- **Patterns**: 642+ (661 JSON files, 642 unique in database)
+- **Tests**: 464 test cases across 41 test files (100% pass rate)
+- **Status**: Production Ready with Hybrid Search
+- **Architecture**: SOLID + Design Patterns + Hybrid Search Engine
+- **Logging**: Structured Logger + Telemetry Service

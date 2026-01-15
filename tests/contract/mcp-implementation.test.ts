@@ -4,23 +4,73 @@
  */
 
 import { describe, test, expect, beforeAll } from 'vitest';
-import { MCPToolsHandler } from '../../src/lib/mcp-tools.js';
-import { MCPResourcesHandler } from '../../src/lib/mcp-resources.js';
+import {
+  MCPToolsHandler,
+  PatternMatcher,
+  SemanticSearch,
+  DatabaseManager as ToolsDatabaseManager,
+  PatternService,
+  CodeAnalysisResult,
+  PatternRecommendation,
+  SearchResult,
+  CategoryInfo,
+  LanguageInfo,
+  ServerStats
+} from '../../src/lib/mcp-tools.js';
+import {
+  MCPResourcesHandler,
+  DatabaseManager as ResourcesDatabaseManager
+} from '../../src/lib/mcp-resources.js';
+import { Pattern } from '../../src/models/pattern.js';
+import { PatternRequest } from '../../src/models/request.js';
 import {
   CallToolRequest,
   ReadResourceRequest,
   ListResourcesRequest,
 } from '@modelcontextprotocol/sdk/types.js';
 
+interface CategoryResponse {
+  category: string;
+  pattern_count: number;
+  description?: string;
+  complexity_distribution: {
+    Low: number;
+    Medium: number;
+    High: number;
+  };
+}
+
+interface ServerInfoResponse {
+  server_version: string;
+  mcp_protocol_version: string;
+  total_patterns: number;
+  database_type: string;
+  semantic_search_enabled: boolean;
+  supported_languages: string[];
+  llm_providers: Array<{
+    name: string;
+    available: boolean;
+    configured: boolean;
+  }>;
+  performance_stats: {
+    avg_response_time_ms: number;
+    total_requests: number;
+    cache_hit_rate: number;
+  };
+  uptime_seconds: number;
+  memory_usage_mb: number;
+}
+
+// Helper type to satisfy both interfaces
+interface MockDatabaseManager extends ToolsDatabaseManager, ResourcesDatabaseManager {}
+
 describe('MCP Implementation Tests', () => {
   let toolsHandler: MCPToolsHandler;
   let resourcesHandler: MCPResourcesHandler;
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   beforeAll(async () => {
-    const patternMatcher = {
-      // eslint-disable-next-line @typescript-eslint/require-await
-      findSimilarPatterns: async (_request: unknown) => [
+    const patternMatcher: PatternMatcher = {
+      findSimilarPatterns: async (_request: PatternRequest): Promise<PatternRecommendation[]> => [
         {
           pattern: {
             id: 'singleton',
@@ -59,8 +109,7 @@ describe('MCP Implementation Tests', () => {
           context: 'General purpose application',
         },
       ],
-      // eslint-disable-next-line @typescript-eslint/require-await
-      analyzeCode: async (_code: string, _language: string) => ({
+      analyzeCode: async (_code: string, _language: string): Promise<CodeAnalysisResult> => ({
         patterns: [
           {
             name: 'Singleton',
@@ -73,16 +122,23 @@ describe('MCP Implementation Tests', () => {
           {
             type: 'improvement',
             message: 'Consider using dependency injection',
-            severity: 'info' as const,
+            severity: 'info',
           },
         ],
         summary: 'Code analysis completed',
+        identifiedPatterns: [
+            {
+            name: 'Singleton',
+            confidence: 0.8,
+            location: 'line 1',
+            description: 'Code appears to implement singleton pattern',
+          }
+        ]
       }),
     };
 
-    const semanticSearch = {
-      // eslint-disable-next-line @typescript-eslint/require-await
-      search: async (_query: string, _options?: unknown) => [
+    const semanticSearch: SemanticSearch = {
+      search: async (_query: string, _options?: unknown): Promise<SearchResult[]> => [
         {
           pattern: {
             id: 'singleton',
@@ -118,20 +174,15 @@ describe('MCP Implementation Tests', () => {
       ],
     };
 
-    const patternService = {
-      // eslint-disable-next-line @typescript-eslint/require-await
-      getPatternById: async (_id: string) => null,
-      // eslint-disable-next-line @typescript-eslint/require-await
-      getAllPatterns: async () => [],
-      // eslint-disable-next-line @typescript-eslint/require-await
-      savePattern: async (_pattern: unknown) => {},
-      // eslint-disable-next-line @typescript-eslint/require-await
-      updatePattern: async (_id: string, _updates: unknown) => {},
+    const patternService: PatternService = {
+      getPatternById: async (_id: string): Promise<Pattern | null> => null,
+      getAllPatterns: async (): Promise<Pattern[]> => [],
+      savePattern: async (_pattern: Pattern): Promise<void> => {},
+      updatePattern: async (_id: string, _updates: Partial<Pattern>): Promise<void> => {},
     };
 
-    const databaseManager = {
-      // eslint-disable-next-line @typescript-eslint/require-await
-      searchPatterns: async (_query: string, _options?: unknown) => [
+    const databaseManager: MockDatabaseManager = {
+      searchPatterns: async (_query: string, _options?: unknown): Promise<SearchResult[]> => [
         {
           pattern: {
             id: 'factory-method',
@@ -171,12 +222,9 @@ describe('MCP Implementation Tests', () => {
           score: 0.7,
         },
       ],
-      // eslint-disable-next-line @typescript-eslint/require-await
-      updatePattern: async (_id: string, _updates: unknown) => {},
-      // eslint-disable-next-line @typescript-eslint/require-await
-      savePattern: async (_pattern: unknown) => {},
-      // eslint-disable-next-line @typescript-eslint/require-await
-      getAllPatterns: async () => [
+      updatePattern: async (_id: string, _updates: Partial<Pattern>): Promise<void> => {},
+      savePattern: async (_pattern: Pattern): Promise<void> => {},
+      getAllPatterns: async (): Promise<Pattern[]> => [
         {
           id: 'singleton',
           name: 'Singleton',
@@ -207,8 +255,7 @@ describe('MCP Implementation Tests', () => {
           updatedAt: new Date(),
         },
       ],
-      // eslint-disable-next-line @typescript-eslint/require-await
-      getPatternById: async (id: string) => {
+      getPatternById: async (id: string): Promise<Pattern | null> => {
         if (id === 'singleton') {
           return {
             id: 'singleton',
@@ -242,28 +289,20 @@ describe('MCP Implementation Tests', () => {
         }
         return null;
       },
-      // eslint-disable-next-line @typescript-eslint/require-await
-      getPatternCategories: async () => [
+      getPatternCategories: async (): Promise<CategoryInfo[]> => [
         {
-          id: 1,
           name: 'Creational',
-          description: 'Patterns for object creation',
-          patternCount: 5,
-          typicalUseCases: 'Object instantiation, resource management',
-          createdAt: new Date(),
-          updatedAt: new Date(),
           count: 5,
+          description: 'Patterns for object creation',
         },
       ],
-      // eslint-disable-next-line @typescript-eslint/require-await
-      getSupportedLanguages: async () => [
+      getSupportedLanguages: async (): Promise<LanguageInfo[]> => [
         {
           language: 'typescript',
           count: 150,
         },
       ],
-      // eslint-disable-next-line @typescript-eslint/require-await
-      getServerStats: async () => ({
+      getServerStats: async (): Promise<ServerStats> => ({
         totalPatterns: 622,
         totalCategories: 12,
         avgResponseTime: 150,
@@ -272,23 +311,16 @@ describe('MCP Implementation Tests', () => {
       }),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     toolsHandler = new MCPToolsHandler({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-      patternMatcher: patternMatcher as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-      semanticSearch: semanticSearch as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-      databaseManager: databaseManager as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-      patternService: patternService as any,
+      patternMatcher,
+      semanticSearch,
+      databaseManager,
+      patternService,
       preferences: new Map(),
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     resourcesHandler = new MCPResourcesHandler({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-      databaseManager: databaseManager as any,
+      databaseManager,
       serverVersion: '0.1.0',
       totalPatterns: 200,
     });
@@ -412,8 +444,7 @@ describe('MCP Implementation Tests', () => {
       expect(content).toHaveProperty('mimeType');
       expect(content.mimeType).toBe('application/json');
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const patterns = JSON.parse(content.text) as unknown;
+      const patterns = JSON.parse(content.text) as Pattern[];
       expect(Array.isArray(patterns)).toBe(true);
     });
 
@@ -431,8 +462,7 @@ describe('MCP Implementation Tests', () => {
       const content = response.contents[0];
       expect(content.mimeType).toBe('application/json');
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pattern = JSON.parse(content.text) as unknown;
+      const pattern = JSON.parse(content.text) as Pattern;
       expect(pattern).toHaveProperty('id');
       expect(pattern).toHaveProperty('name');
       expect(pattern).toHaveProperty('category');
@@ -452,8 +482,7 @@ describe('MCP Implementation Tests', () => {
       const content = response.contents[0];
       expect(content.mimeType).toBe('application/json');
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const categories = JSON.parse(content.text) as unknown;
+      const categories = JSON.parse(content.text) as CategoryResponse[];
       expect(Array.isArray(categories)).toBe(true);
     });
 
@@ -471,8 +500,7 @@ describe('MCP Implementation Tests', () => {
       const content = response.contents[0];
       expect(content.mimeType).toBe('application/json');
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const serverInfo = JSON.parse(content.text) as unknown;
+      const serverInfo = JSON.parse(content.text) as ServerInfoResponse;
       expect(serverInfo).toHaveProperty('server_version');
       expect(serverInfo).toHaveProperty('total_patterns');
     });

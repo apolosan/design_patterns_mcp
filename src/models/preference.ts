@@ -5,6 +5,8 @@
 
 export type PreferenceCategory = 'search' | 'display' | 'llm' | 'performance' | 'general';
 
+export type PreferenceValue = string | number | boolean | null | { [key: string]: PreferenceValue } | PreferenceValue[];
+
 export interface UserPreference {
   /** Unique preference ID */
   id: number;
@@ -12,11 +14,12 @@ export interface UserPreference {
   /** Preference identifier */
   settingKey: string;
 
-   /** Preference value (flexible type) */
-   settingValue: unknown;
+  /** Preference value (flexible type) */
+  settingValue: PreferenceValue;
 
   /** Human-readable description */
   description?: string;
+
 
   /** Settings category */
   category: PreferenceCategory;
@@ -33,7 +36,7 @@ export interface UserPreference {
  */
 export interface CreateUserPreferenceInput {
   settingKey: string;
-  settingValue: unknown;
+  settingValue: PreferenceValue;
   category: PreferenceCategory;
   description?: string;
 }
@@ -48,7 +51,7 @@ export interface UpdateUserPreferenceInput extends Partial<CreateUserPreferenceI
 /**
  * Default user preferences
  */
-export const DEFAULT_PREFERENCES: Record<string, unknown> = {
+export const DEFAULT_PREFERENCES: Record<string, PreferenceValue> = {
   search_max_results: 5,
   search_include_examples: true,
   search_complexity_filter: 'any',
@@ -88,7 +91,7 @@ export interface PreferenceCategoryConfig {
   preferences: Array<{
     key: string;
     type: 'string' | 'number' | 'boolean' | 'json' | 'enum';
-     defaultValue: unknown;
+    defaultValue: PreferenceValue;
     description: string;
     validation?: {
       min?: number;
@@ -103,8 +106,8 @@ export interface PreferenceCategoryConfig {
  * User preference manager interface
  */
 export interface PreferenceManager {
-   get<T = unknown>(key: string): T | undefined;
-   set(key: string, value: unknown): Promise<void>;
+  get<T extends PreferenceValue = PreferenceValue>(key: string): T | undefined;
+  set(key: string, value: PreferenceValue): Promise<void>;
   getAll(): Promise<UserPreference[]>;
   getByCategory(category: PreferenceCategory): Promise<UserPreference[]>;
   reset(key: string): Promise<void>;

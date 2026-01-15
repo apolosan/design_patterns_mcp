@@ -19,7 +19,23 @@ import { HealthCheckService } from '../health/health-check-service.js';
 import { DatabaseHealthCheck } from '../health/database-health-check.js';
 import { VectorOperationsHealthCheck } from '../health/vector-operations-health-check.js';
 import { LLMBridgeHealthCheck } from '../health/llm-bridge-health-check.js';
+import { CacheService } from '../services/cache.js';
 import type { MCPServerConfig } from '../mcp-server.js';
+
+// New services for Blended RAG
+import { HybridSearchEngine } from '../services/hybrid-search-engine.js';
+import { EmbeddingCompressor } from '../services/embedding-compressor.js';
+import { AdvancedEmbeddingCompressor, createAdvancedEmbeddingCompressor } from '../services/advanced-embedding-compressor.js';
+import { TelemetryService } from '../services/telemetry-service.js';
+import { GraphVectorService } from '../services/graph-vector-service.js';
+import { SearchMediator } from '../handlers/search-mediator.js';
+import { HybridSearchCombiner } from '../handlers/hybrid-search-combiner.js';
+import { SemanticSearchHandler } from '../handlers/semantic-search-handler.js';
+import { KeywordSearchHandler } from '../handlers/keyword-search-handler.js';
+import { RecommendationBuilder } from '../handlers/recommendation-builder.js';
+import { FuzzyInferenceEngine } from '../services/fuzzy-inference.js';
+import { FuzzyDefuzzificationEngine } from '../services/fuzzy-defuzzification.js';
+import { MultiLevelCache, createMultiLevelCache, CacheServiceInterface } from '../services/multi-level-cache.js';
 
 export const TOKENS = {
   // Database
@@ -33,6 +49,22 @@ export const TOKENS = {
   PATTERN_MATCHER: Symbol('PatternMatcher'),
   VECTOR_OPERATIONS: Symbol('VectorOperationsService'),
   LLM_BRIDGE: Symbol('LLMBridgeService'),
+
+  // New Blended RAG Services
+  HYBRID_SEARCH_ENGINE: Symbol('HybridSearchEngine'),
+  EMBEDDING_COMPRESSOR: Symbol('EmbeddingCompressor'),
+  TELEMTRY_SERVICE: Symbol('TelemetryService'),
+  GRAPH_VECTOR_SERVICE: Symbol('GraphVectorService'),
+  SEARCH_MEDIATOR: Symbol('SearchMediator'),
+  HYBRID_SEARCH_COMBINER: Symbol('HybridSearchCombiner'),
+  SEMANTIC_SEARCH_HANDLER: Symbol('SemanticSearchHandler'),
+  KEYWORD_SEARCH_HANDLER: Symbol('KeywordSearchHandler'),
+  RECOMMENDATION_BUILDER: Symbol('RecommendationBuilder'),
+  FUZZY_INFERENCE: Symbol('FuzzyInferenceEngine'),
+  FUZZY_DEFUZZIFICATION: Symbol('FuzzyDefuzzificationEngine'),
+
+  // Multi-Level Cache
+  MULTI_LEVEL_CACHE_SERVICE: Symbol('MultiLevelCacheService'),
 
   // Repositories
   PATTERN_REPOSITORY: Symbol('PatternRepository'),
@@ -58,6 +90,7 @@ export const TOKENS = {
   DATABASE_HEALTH_CHECK: Symbol('DatabaseHealthCheck'),
   VECTOR_OPERATIONS_HEALTH_CHECK: Symbol('VectorOperationsHealthCheck'),
   LLM_BRIDGE_HEALTH_CHECK: Symbol('LLMBridgeHealthCheck'),
+  HYBRID_SEARCH_HEALTH_CHECK: Symbol('HybridSearchHealthCheck'),
 
   // Config
   CONFIG: Symbol('MCPServerConfig'),
@@ -186,13 +219,21 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
   // Register vector operations service
   container.registerSingleton(TOKENS.VECTOR_OPERATIONS, () => {
     const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    const compressor = container.getService<AdvancedEmbeddingCompressor | EmbeddingCompressor>(TOKENS.EMBEDDING_COMPRESSOR);
     return new VectorOperationsService(db, {
       model: 'all-MiniLM-L6-v2',
       dimensions: 384,
       similarityThreshold: 0.3,
       maxResults: 10,
       cacheEnabled: true,
-    });
+      enableCompression: true,
+      compressionConfig: {
+        targetVariance: 0.95,
+        maxDimensions: 128,
+        quantizationBits: 8,
+        minAccuracyDrop: 0.05,
+      },
+    }, compressor);
   });
 
   // Register semantic search service
@@ -286,6 +327,135 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
     });
   });
 
+  // Register cache service (legacy - for backward compatibility)
+  container.registerSingleton(TOKENS.CACHE_SERVICE, () => {
+    return new CacheService();
+  });
+
+  // Register Multi-Level Cache Service (new - Phase 2.2)
+  container.registerSingleton(TOKENS.MULTI_LEVEL_CACHE_SERVICE, () => {
+    const db = container.has(TOKENS.DATABASE_MANAGER)
+      ? container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER)
+      : undefined;
+    const telemetry = container.has(TOKENS.TELEMTRY_SERVICE)
+      ? container.getService<TelemetryService>(TOKENS.TELEMTRY_SERVICE)
+      : undefined;
+    return createMultiLevelCache(db, telemetry);
+  });
+
+  // Register new Blended RAG services
+
+  // Embedding Compressor (Advanced)
+  container.registerSingleton(TOKENS.EMBEDDING_COMPRESSOR, () => {
+    // Use advanced compressor with configuration from arXiv 2402.06761
+    return createAdvancedEmbeddingCompressor({
+      targetVariance: 0.95,
+      maxDimensions: 128,
+      quantizationBits: 8,
+      useKnowledgeDistillation: true,
+      productQuantizationClusters: 256,
+      adaptiveThreshold: 0.7,
+      minAccuracyDrop: 0.05,
+    });
+  });
+
+  // Telemetry Service (singleton)
+  container.registerSingleton(TOKENS.TELEMTRY_SERVICE, () => {
+    const enableTelemetry = config.enableTelemetry !== false;
+    return new TelemetryService({
+      enabled: enableTelemetry,
+      logTraces: config.logLevel === 'debug',
+      logMetrics: true,
+      logEvaluations: true,
+      sampleRate: 1.0,
+      retentionHours: 24,
+    });
+  });
+
+  // Graph Vector Service
+  container.registerSingleton(TOKENS.GRAPH_VECTOR_SERVICE, () => {
+    const vectorOps = container.getService<VectorOperationsService>(TOKENS.VECTOR_OPERATIONS);
+    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    const telemetry = container.getService<TelemetryService>(TOKENS.TELEMTRY_SERVICE);
+    return new GraphVectorService(vectorOps, db, {
+      k: 10,
+      maxHops: 2,
+      edgeWeightThreshold: 0.2,
+      useMetadataEdges: true,
+      rebuildInterval: 3600000,
+    }, telemetry);
+  });
+
+  // Hybrid Search Engine
+  container.registerSingleton(TOKENS.HYBRID_SEARCH_ENGINE, () => {
+    const vectorOps = container.getService<VectorOperationsService>(TOKENS.VECTOR_OPERATIONS);
+    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    const cache = container.getService<CacheService>(TOKENS.CACHE_SERVICE);
+    const telemetry = container.getService<TelemetryService>(TOKENS.TELEMTRY_SERVICE);
+    return new HybridSearchEngine(vectorOps, db, cache, {
+      denseWeight: 0.6,
+      sparseWeight: 0.4,
+      boostExactMatches: true,
+      minDiversityScore: 0.15,
+      maxResults: 10,
+      similarityThreshold: 0.3,
+    }, telemetry);
+  });
+
+  // Search Handlers
+  container.registerSingleton(TOKENS.SEMANTIC_SEARCH_HANDLER, () => {
+    const vectorOps = container.getService<VectorOperationsService>(TOKENS.VECTOR_OPERATIONS);
+    const cache = container.getService<CacheService>(TOKENS.CACHE_SERVICE);
+    return new SemanticSearchHandler(vectorOps, cache, {
+      maxResults: 20,
+      minConfidence: 0.05,
+      similarityThreshold: 0.3,
+    });
+  });
+
+  container.registerSingleton(TOKENS.KEYWORD_SEARCH_HANDLER, () => {
+    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    return new KeywordSearchHandler(db, {
+      maxResults: 20,
+      minConfidence: 0.05,
+      broadSearchThreshold: 0.01,
+    });
+  });
+
+  container.registerSingleton(TOKENS.HYBRID_SEARCH_COMBINER, () => {
+    return new HybridSearchCombiner();
+  });
+
+  container.registerSingleton(TOKENS.RECOMMENDATION_BUILDER, () => {
+    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    return new RecommendationBuilder(db);
+  });
+
+  // Fuzzy Logic Engines
+  container.registerSingleton(TOKENS.FUZZY_INFERENCE, () => {
+    return new FuzzyInferenceEngine();
+  });
+
+  container.registerSingleton(TOKENS.FUZZY_DEFUZZIFICATION, () => {
+    return new FuzzyDefuzzificationEngine();
+  });
+
+  // Search Mediator (main orchestrator)
+  container.registerSingleton(TOKENS.SEARCH_MEDIATOR, () => {
+    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    const vectorOps = container.getService<VectorOperationsService>(TOKENS.VECTOR_OPERATIONS);
+    const cache = container.getService<CacheService>(TOKENS.CACHE_SERVICE);
+    return new SearchMediator(db, vectorOps, cache, {
+      maxResults: 5,
+      minConfidence: 0.05,
+      useSemanticSearch: true,
+      useKeywordSearch: true,
+      useHybridSearch: true,
+      useFuzzyRefinement: config.enableFuzzyLogic ?? true,
+      cacheResultsTTL: 1800000,
+    });
+  });
+
   // Register individual health checks
   container.registerSingleton(TOKENS.DATABASE_HEALTH_CHECK, () => {
     const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
@@ -304,6 +474,43 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
     return new LLMBridgeHealthCheck(llmBridge);
   });
 
+  // Hybrid search health check
+  container.registerSingleton(TOKENS.HYBRID_SEARCH_HEALTH_CHECK, () => {
+    const hybridEngine = container.getService<HybridSearchEngine>(TOKENS.HYBRID_SEARCH_ENGINE);
+    const telemetry = container.getService<TelemetryService>(TOKENS.TELEMTRY_SERVICE);
+    
+    // Simple health check for hybrid search
+    return {
+      name: 'HybridSearch',
+      tags: ['search', 'hybrid', 'critical'],
+      check: async () => {
+        const health = telemetry.getHealthMetrics();
+        const stats = hybridEngine.getStats();
+        
+        // Check if search rate is reasonable (not too high to indicate errors)
+        const isHealthy = health.errorRate < 0.1 && health.avgLatency < 5000;
+        
+        return {
+          name: 'HybridSearch',
+          status: isHealthy ? 'healthy' : 'unhealthy',
+          message: isHealthy ? 'Search engine operational' : 'Search engine performance degraded',
+          timestamp: new Date().toISOString(),
+          duration: 0,
+          tags: ['search', 'hybrid', 'critical'],
+          metadata: {
+            searchRate: health.searchRate,
+            avgLatency: health.avgLatency,
+            errorRate: health.errorRate,
+            cacheHitRate: health.cacheHitRate,
+            sparseStats: stats.sparseStats,
+          },
+        };
+      },
+      timeout: 5000,
+      isEnabled: () => true,
+    } as any; // Type assertion for HealthCheck interface
+  });
+
   // Register health checks with the service
   container.registerSingleton(TOKENS.HEALTH_CHECK_SERVICE, () => {
     const healthService = new HealthCheckService({
@@ -320,6 +527,7 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
     healthService.registerHealthCheck(vectorCheck);
     healthService.registerHealthCheck(llmCheck);
 
+    // Note: Hybrid search health check is optional and registered separately if needed
     return healthService;
   });
 

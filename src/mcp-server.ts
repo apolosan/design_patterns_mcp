@@ -42,6 +42,11 @@ export interface MCPServerConfig {
   enableLLM: boolean;
   maxConcurrentRequests: number;
   enableFuzzyLogic?: boolean;
+  // New Blended RAG features
+  enableTelemetry?: boolean;
+  enableHybridSearch?: boolean;
+  enableGraphAugmentation?: boolean;
+  embeddingCompression?: boolean;
 }
 
 interface PatternRow {
@@ -208,72 +213,8 @@ class DesignPatternsMCPServer {
     }
 
     // Initialize services
-    this.vectorOps = new VectorOperationsService(this.db, {
-      model: 'all-MiniLM-L6-v2',
-      dimensions: 384,
-      similarityThreshold: 0.3,
-      maxResults: 10,
-      cacheEnabled: true,
-    });
-
-    // Initialize semantic search service
-    this.semanticSearch = new SemanticSearchService(this.db, this.vectorOps, {
-      modelName: 'all-MiniLM-L6-v2',
-      maxResults: 10,
-      similarityThreshold: 0.3,
-      contextWindow: 512,
-      useQueryExpansion: false,
-      useReRanking: true,
-    });
-
-    this.patternMatcher = new PatternMatcher(this.db, this.vectorOps, {
-      maxResults: 5,
-      minConfidence: 0.05, // Lower threshold for more results
-      useSemanticSearch: true,
-      useKeywordSearch: true,
-      useHybridSearch: true,
-      semanticWeight: 0.7,
-      keywordWeight: 0.3,
-        useFuzzyRefinement: this.config.enableFuzzyLogic ?? true, // Enable fuzzy refinement by default
-    });
-
-    if (this.config.enableLLM) {
-      this.llmBridge = new LLMBridgeService(this.db, {
-        provider: 'ollama',
-        model: 'llama3.2',
-        maxTokens: 2000,
-        temperature: 0.3,
-        timeout: 30000, // 30 seconds
-      });
-    }
-
-    // Get the directory of the current module
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-
-    // Resolve path relative to project root
-    // When running from src/, no need to go up
-    // When running from dist/src/, go up two levels
-    const isCompiled = __dirname.includes('dist');
-    const projectRoot = isCompiled
-      ? path.resolve(__dirname, '..', '..')
-      : path.resolve(__dirname, '..');
-    const patternsPath = path.join(projectRoot, 'data', 'patterns');
-
-    this.migrationManager = new MigrationManager(this.db);
-    this.patternSeeder = new PatternSeeder(this.db, {
-      patternsPath,
-      batchSize: 100,
-      skipExisting: true,
-    });
-
-    // Initialize rate limiter
-    this.rateLimiter = new MCPRateLimiter({
-      maxRequestsPerMinute: 60,
-      maxRequestsPerHour: 1000,
-      maxConcurrentRequests: this.config.maxConcurrentRequests,
-      burstLimit: 20,
-    });
+    // Note: Services are already initialized from DI container above
+    // These lines are kept for backward compatibility fallback only
 
     // Initialize MCP server
     this.server = new Server(

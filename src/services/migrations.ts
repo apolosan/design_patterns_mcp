@@ -7,7 +7,7 @@ import { logger } from './logger.js';
 import fs from 'fs';
 import path from 'path';
 
-interface Migration {
+export interface Migration {
   id: string;
   name: string;
   up: string;
@@ -222,7 +222,7 @@ export class MigrationManager {
 
       // Determine overall success
       const hasFailures = failed.length > 0;
-      const success = !hasFailures || (options.continueOnError && executed.length > 0);
+      const success = !hasFailures || ((options.continueOnError ?? false) && executed.length > 0);
 
       let message: string;
       if (success && !hasFailures) {
@@ -238,8 +238,8 @@ export class MigrationManager {
         message,
         executed,
         failed,
-        error: hasFailures ? failed[0].error : (undefined as Error | undefined),
-      } as MigrationResult;
+        error: hasFailures ? failed[0].error : undefined,
+      };
     } catch (error) {
       return {
         success: false,
@@ -254,7 +254,7 @@ export class MigrationManager {
   /**
    * Execute a single migration
    */
-  private async executeMigration(migration: Migration): Promise<void> {
+  protected async executeMigration(migration: Migration): Promise<void> {
     // Check if this is a DDL-only migration (CREATE, ALTER, DROP statements)
     const isDDLMigration = this.isDDLMigration(migration.up);
 
@@ -276,7 +276,7 @@ export class MigrationManager {
   /**
    * Check if migration contains only DDL statements
    */
-  private isDDLMigration(sql: string): boolean {
+  protected isDDLMigration(sql: string): boolean {
     const statements = sql
       .split(';')
       .map(s => s.trim())
@@ -292,7 +292,7 @@ export class MigrationManager {
   /**
    * Execute DDL migration directly
    */
-  private executeDDLMigration(migration: Migration): void {
+  protected executeDDLMigration(migration: Migration): void {
     // Split migration SQL into individual statements
     const statements = migration.up
       .split(';')
@@ -334,7 +334,7 @@ export class MigrationManager {
   /**
    * Validate DDL migration execution - ensure tables/indexes were actually created
    */
-  private async validateDDLMigration(migration: Migration): Promise<void> {
+  protected async validateDDLMigration(migration: Migration): Promise<void> {
     const statements = await Promise.resolve(migration.up
       .split(';')
       .map(s => s.trim())
@@ -366,7 +366,7 @@ export class MigrationManager {
   /**
    * Extract created object names from DDL statement
    */
-  private extractCreatedObjects(sql: string): string[] {
+  protected extractCreatedObjects(sql: string): string[] {
     const objects: string[] = [];
     const upperSql = sql.toUpperCase();
 
@@ -394,7 +394,7 @@ export class MigrationManager {
   /**
    * Check if database object exists
    */
-  private objectExists(objectName: string): boolean {
+  protected objectExists(objectName: string): boolean {
     try {
       // Check if it's a table
       const tableCheck = this.db.query(
@@ -466,10 +466,13 @@ export class MigrationManager {
   private dropObject(objectName: string): void {
     try {
       // Check if it's a table
-      const tableCheck = this.db.query('SELECT type FROM sqlite_master WHERE name=?', [objectName]);
+      const tableCheck = this.db.query<{ type: string }>(
+        'SELECT type FROM sqlite_master WHERE name=?',
+        [objectName]
+      );
 
       if (tableCheck.length > 0) {
-        const type = (tableCheck[0] as { type: string }).type;
+        const type = tableCheck[0].type;
         if (type === 'table') {
           this.db.execDDL(`DROP TABLE IF EXISTS ${objectName}`);
         } else if (type === 'index') {
@@ -521,7 +524,7 @@ export class MigrationManager {
   /**
    * Execute migration with retry logic
    */
-  private async executeMigrationWithRetry(
+  protected async executeMigrationWithRetry(
     migration: Migration,
     options: MigrationOptions
   ): Promise<void> {
@@ -748,7 +751,7 @@ export class MigrationManager {
    * Calculate checksum for migration content
    * Uses SHA-256 for robust, content-based hashing
    */
-  private calculateChecksum(content: string): string {
+  protected calculateChecksum(content: string): string {
     // Normalize content: remove comments, extra whitespace, and empty lines
     const normalizedContent = this.normalizeMigrationContent(content);
 
@@ -1188,7 +1191,7 @@ export class MigrationManager {
   }
 }
 
-interface MigrationOptions {
+export interface MigrationOptions {
   validateFirst?: boolean;
   continueOnError?: boolean;
   maxRetries?: number;

@@ -1,4 +1,5 @@
 /** MCP Tool Argument Types & Guards */
+import { PreferenceValue } from '../models/preference.js';
 
 export interface SuggestPatternArgs {
   query: string;
@@ -86,7 +87,7 @@ export function isGetConfigArgs(args: unknown): args is GetConfigArgs {
 }
 
 export interface SetConfigArgs {
-  settings: Record<string, unknown>;
+  settings: Record<string, PreferenceValue>;
   category: 'search' | 'display' | 'llm' | 'performance';
 }
 
