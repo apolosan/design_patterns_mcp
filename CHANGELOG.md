@@ -5,6 +5,19 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-01-15
+
+### Added
+
+#### Database Schema Enhancements
+
+- Extended patterns table with additional fields: when_to_use, benefits, drawbacks, use_cases
+- Added pattern_relationships table for storing pattern relationships and dependencies
+- Added pattern_implementations table for code examples by language and approach
+- Updated migration test to validate complete schema integrity
+
+---
+
 ## [0.4.0] - 2026-01-14
 
 ### 🎉 **Hybrid Search Engine & Blended RAG Architecture**

@@ -34,6 +34,10 @@ describe('Blended RAG Integration', () => {
         name TEXT NOT NULL,
         category TEXT NOT NULL,
         description TEXT NOT NULL,
+        when_to_use TEXT,
+        benefits TEXT,
+        drawbacks TEXT,
+        use_cases TEXT,
         complexity TEXT NOT NULL,
         tags TEXT,
         code_examples TEXT,
@@ -43,6 +47,36 @@ describe('Blended RAG Integration', () => {
       )
     `);
     
+    // Create pattern_relationships table
+    await db.execDDL(`
+      CREATE TABLE pattern_relationships (
+        id TEXT PRIMARY KEY,
+        source_pattern_id TEXT NOT NULL,
+        target_pattern_id TEXT NOT NULL,
+        type TEXT NOT NULL,
+        strength REAL DEFAULT 1.0,
+        description TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (source_pattern_id) REFERENCES patterns(id) ON DELETE CASCADE,
+        FOREIGN KEY (target_pattern_id) REFERENCES patterns(id) ON DELETE CASCADE
+      )
+    `);
+
+    // Create pattern_implementations table
+    await db.execDDL(`
+      CREATE TABLE pattern_implementations (
+        id TEXT PRIMARY KEY,
+        pattern_id TEXT NOT NULL,
+        language TEXT NOT NULL,
+        approach TEXT NOT NULL,
+        code TEXT NOT NULL,
+        explanation TEXT NOT NULL,
+        dependencies TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (pattern_id) REFERENCES patterns(id) ON DELETE CASCADE
+      )
+    `);
+
     // Create sparse_terms table for hybrid search engine
     await db.execDDL(`
       CREATE TABLE sparse_terms (

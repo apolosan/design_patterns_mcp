@@ -134,7 +134,7 @@ describe('Database Migration', () => {
     expect(hasRequiredColumns).toBe(true);
   });
 
-  it('should validate migration integrity', () => {
+   it('should validate migration integrity', () => {
     // Check if all expected tables have data
     const tablesWithData = dbManager.query<TableName>(`
       SELECT name FROM sqlite_master
@@ -144,6 +144,41 @@ describe('Database Migration', () => {
     const integrityValid = tablesWithData && tablesWithData.length >= 2;
 
     expect(integrityValid).toBe(true);
+  });
+
+  it('should verify complete patterns table schema', () => {
+    // Get all columns from the patterns table
+    const columns = dbManager.query<ColumnInfo>(`
+      PRAGMA table_info(patterns)
+    `);
+
+    // Extract column names
+    const columnNames = columns.map(col => col.name);
+
+    // Required columns that should be present
+    const requiredColumns = [
+      'id', 'name', 'category', 'description',
+      'when_to_use', 'benefits', 'drawbacks', 'use_cases',
+      'complexity', 'tags', 'created_at', 'updated_at'
+    ];
+
+    // Check if all required columns are present
+    const allColumnsPresent = requiredColumns.every(col => columnNames.includes(col));
+
+    expect(allColumnsPresent).toBe(true);
+    expect(columnNames.length).toBeGreaterThanOrEqual(requiredColumns.length);
+
+    // Verify column types for critical columns
+    const idColumn = columns.find(col => col.name === 'id');
+    const nameColumn = columns.find(col => col.name === 'name');
+    const categoryColumn = columns.find(col => col.name === 'category');
+
+    expect(idColumn).toBeDefined();
+    expect(idColumn?.type).toBe('TEXT');
+    expect(nameColumn).toBeDefined();
+    expect(nameColumn?.type).toBe('TEXT');
+    expect(categoryColumn).toBeDefined();
+    expect(categoryColumn?.type).toBe('TEXT');
   });
 
   // Mutation Testing: Test edge cases and error conditions

@@ -1,6 +1,6 @@
 {
   "name": "design-patterns-mcp",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 642+ patterns using semantic search, vector embeddings, and blended RAG hybrid search",
   "main": "dist/mcp-server.js",
   "module": "dist/mcp-server.js",

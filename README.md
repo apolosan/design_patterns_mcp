@@ -20,9 +20,9 @@ The **Design Patterns MCP Server** is a specialized server that integrates with 
 - 🏗️ **SOLID Architecture**: Clean, maintainable, and testable codebase
 - 🛡️ **Production Ready**: 464 test cases across 41 test files, zero memory leaks, graceful degradation
 
-### 🆕 Project Status (v0.4.0)
+### 🆕 Project Status (v0.4.1)
 
-**Latest Updates (January 2026)**
+**Latest Updates (January 2026 - v0.4.1)**
 
 - ✅ **Hybrid Search Engine**: Blended RAG combining dense (vector) + sparse (TF-IDF) + graph augmentation
 - ✅ **Event Bus System**: Pub/sub event system for decoupled service communication
@@ -720,10 +720,10 @@ This project is licensed under the MIT License. See [LICENSE](./LICENSE) for det
 
 ---
 
-- **Version**: 0.4.0
+- **Version**: 0.4.1
 - **Last Updated**: January 2026
 - **Patterns**: 642+ (661 JSON files, 642 unique in database)
 - **Tests**: 464 test cases across 41 test files (100% pass rate)
-- **Status**: Production Ready with Hybrid Search
+- **Status**: Production Ready with Extended Schema
 - **Architecture**: SOLID + Design Patterns + Hybrid Search Engine
 - **Logging**: Structured Logger + Telemetry Service
