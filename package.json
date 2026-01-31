@@ -1,7 +1,7 @@
 {
   "name": "design-patterns-mcp",
-  "version": "0.4.1",
-  "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 642+ patterns using semantic search, vector embeddings, and blended RAG hybrid search",
+  "version": "0.4.2",
+  "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 685+ patterns using semantic search, vector embeddings, TF-IDF keyword search, and blended RAG hybrid search with graph augmentation",
   "main": "dist/mcp-server.js",
   "module": "dist/mcp-server.js",
   "types": "dist/mcp-server.d.ts",
@@ -36,21 +36,21 @@
   ],
   "type": "module",
   "scripts": {
-    "prepare": "npm run build",
-    "build": "tsc && npm run build:copy-data",
+    "prepare": "bun run build",
+    "build": "tsc && bun run build:copy-data",
     "build:copy-data": "cp -r data dist/ 2>/dev/null || mkdir -p dist/data",
     "postbuild": "chmod +x dist/src/mcp-server.js dist/src/cli/*.js 2>/dev/null || true",
-    "start": "npm run build && node dist/src/mcp-server.js",
+    "start": "bun run build && bun dist/src/mcp-server.js",
     "dev": "bun --hot src/mcp-server.ts",
     "test": "vitest run",
     "lint": "eslint src/**/*.ts tests/**/*.ts",
     "lint:fix": "eslint src/**/*.ts tests/**/*.ts --fix",
     "typecheck": "tsc --noEmit",
-    "db:setup": "npm run build && npm run migrate && npm run seed && npm run generate-embeddings && npm run setup-relationships && rm :memory:*",
-    "migrate": "npm run build && node dist/src/cli/migrate.js",
-    "seed": "npm run build && node dist/src/cli/seed.js",
-    "setup-relationships": "npm run build && node dist/src/cli/setup-relationships.js",
-    "generate-embeddings": "npm run build && node dist/src/cli/generate-embeddings.js"
+    "db:setup": "bun run build && bun run migrate && bun run seed && bun run generate-embeddings && bun run setup-relationships && rm :memory:*",
+    "migrate": "bun run build && bun dist/src/cli/migrate.js",
+    "seed": "bun run build && bun dist/src/cli/seed.js",
+    "setup-relationships": "bun run build && bun dist/src/cli/setup-relationships.js",
+    "generate-embeddings": "bun run build && bun dist/src/cli/generate-embeddings.js"
   },
   "repository": {
     "type": "git",
@@ -95,7 +95,6 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0",
-    "npm": ">=8.0.0",
     "bun": ">=1.0.0"
   },
   "os": [
@@ -110,7 +109,7 @@
   "preferGlobal": true,
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.bunjs.org/"
   },
   "contributors": [
     {

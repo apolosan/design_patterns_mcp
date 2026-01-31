@@ -1,0 +1,35 @@
+{
+  "id": "windowing-pattern",
+  "name": "Windowing Pattern",
+  "category": "Stream Processing",
+  "description": "Defines strategies for grouping events into temporal windows for aggregation",
+  "when_to_use": "Temporal aggregations\nMonitoring and alerting\nReal-time analytics\nTime-series analysis",
+  "benefits": "Temporal grouping\nFlexible window types\nIncremental processing\nEfficient aggregation",
+  "drawbacks": "Window management complexity\nLate data handling\nMemory requirements\nTrigger complexity",
+  "use_cases": "Rolling averages\nCounting metrics\nSession analysis\nTime-based alerts",
+  "complexity": "Medium",
+  "tags": [
+    "stream-processing",
+    "windowing",
+    "aggregation",
+    "tumbling"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Windowing Pattern: group events by time windows\n\ntype WindowType = \"tumbling\" | \"sliding\" | \"session\" | \"global\";\n\ninterface Window {\n  id: string;\n  type: WindowType;\n  start: Date;\n  end: Date;\n  key?: string;\n}\n\ninterface WindowConfig {\n  type: WindowType;\n  sizeMs: number;\n  slideMs?: number;\n  timeoutMs?: number;\n  allowedLatenessMs?: number;\n}\n\nclass WindowAssigner {\n  private config: WindowConfig;\n  private windows: Map<string, Window[]> = new Map();\n\n  constructor(config: WindowConfig) {\n    this.config = config;\n  }\n\n  assign(eventTime: Date, key?: string): Window[] {\n    switch (this.config.type) {\n      case \"tumbling\":\n        return this.assignTumblingWindows(eventTime, key);\n      case \"sliding\":\n        return this.assignSlidingWindows(eventTime, key);\n      case \"session\":\n        return this.assignSessionWindows(eventTime, key);\n      case \"global\":\n        return this.assignGlobalWindow(key);\n      default:\n        return [];\n    }\n  }\n\n  private assignTumblingWindows(eventTime: Date, key?: string): Window[] {\n    const windowStart = this.truncateToWindow(eventTime);\n    const windowId = this.getWindowId(windowStart, key);\n\n    if (!this.windows.has(windowId)) {\n      this.windows.set(windowId, [{\n        id: windowId,\n        type: \"tumbling\",\n        start: windowStart,\n        end: new Date(windowStart.getTime() + this.config.sizeMs),\n        key\n      }]);\n    }\n\n    return this.windows.get(windowId)!;\n  }\n\n  private assignSlidingWindows(eventTime: Date, key?: string): Window[] {\n    const windows: Window[] = [];\n    const slideMs = this.config.slideMs || this.config.sizeMs;\n    const windowEnd = eventTime.getTime() + this.config.sizeMs;\n\n    for (let start = eventTime.getTime() - this.config.sizeMs;\n         start < windowEnd;\n         start += slideMs) {\n      const windowStart = new Date(start);\n      const windowId = this.getWindowId(windowStart, key);\n\n      if (!this.windows.has(windowId)) {\n        this.windows.set(windowId, [{\n          id: windowId,\n          type: \"sliding\",\n          start: windowStart,\n          end: new Date(start + this.config.sizeMs),\n          key\n        }]);\n      }\n\n      windows.push(...this.windows.get(windowId)!);\n    }\n\n    return windows;\n  }\n\n  private assignSessionWindows(eventTime: Date, key?: string): Window[] {\n    const sessionId = key || \"default\";\n    const timeoutMs = this.config.timeoutMs || this.config.sizeMs;\n\n    const existingWindow = this.findActiveSession(sessionId, eventTime, timeoutMs);\n    if (existingWindow) {\n      return [existingWindow];\n    }\n\n    const newWindow: Window = {\n      id: `${sessionId}-${eventTime.getTime()}`,\n      type: \"session\",\n      start: eventTime,\n      end: new Date(eventTime.getTime() + timeoutMs),\n      key: sessionId\n    };\n\n    const keyWindows = this.windows.get(sessionId) || [];\n    keyWindows.push(newWindow);\n    this.windows.set(sessionId, keyWindows);\n\n    return [newWindow];\n  }\n\n  private assignGlobalWindow(key?: string): Window[] {\n    const windowId = `global-${key || \"default\"}`;\n\n    if (!this.windows.has(windowId)) {\n      this.windows.set(windowId, [{\n        id: windowId,\n        type: \"global\",\n        start: new Date(0),\n        end: new Date(8640000000000000),\n        key\n      }]);\n    }\n\n    return this.windows.get(windowId)!;\n  }\n\n  private truncateToWindow(date: Date): Date {\n    const windowSize = this.config.sizeMs;\n    return new Date(Math.floor(date.getTime() / windowSize) * windowSize);\n  }\n\n  private getWindowId(windowStart: Date, key?: string): string {\n    return `${this.config.type}-${windowStart.toISOString()}-${key || \"default\"}`;\n  }\n\n  private findActiveSession(sessionId: string, eventTime: Date, timeoutMs: number): Window | null {\n    const keyWindows = this.windows.get(sessionId);\n    if (!keyWindows) return null;\n\n    return keyWindows.find(w =>\n      eventTime.getTime() < w.end.getTime() &&\n      eventTime.getTime() >= w.start.getTime() - timeoutMs\n    ) || null;\n  }\n\n  getActiveWindows(): Window[] {\n    return Array.from(this.windows.values()).flat();\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "event-time-processing",
+      "type": "complements",
+      "description": "Windowing is often used with event time processing"
+    },
+    {
+      "target_pattern_id": "trigger-policy",
+      "type": "uses",
+      "description": "Windowing requires trigger policies for output timing"
+    }
+  ]
+}

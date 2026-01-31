@@ -1,0 +1,35 @@
+{
+  "id": "adapter-pattern-cloud-native",
+  "name": "Adapter Pattern (Cloud Native)",
+  "category": "Cloud Native",
+  "description": "Normalizes interfaces of legacy or heterogeneous applications for modern system integration",
+  "when_to_use": "Legacy system integration\nAPI normalization\nMulti-vendor systems\nCloud migration preparation",
+  "benefits": "Legacy integration\nInterface standardization\nIncremental migration\nReduced coupling",
+  "drawbacks": "Translation complexity\nPerformance overhead\nMaintenance burden\nDebugging complexity",
+  "use_cases": "Legacy app modernization\nMulti-cloud integration\nAPI gateway adapters\nProtocol converters",
+  "complexity": "Medium",
+  "tags": [
+    "cloud-native",
+    "adapter",
+    "integration",
+    "legacy"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Adapter Pattern: normalize legacy interfaces\n\ninterface ModernApi {\n  createResource(resource: Resource): Promise<Resource>;\n  getResource(id: string): Promise<Resource | null>;\n  updateResource(id: string, updates: Partial<Resource>): Promise<Resource>;\n  deleteResource(id: string): Promise<void>;\n}\n\ninterface LegacyApi {\n  legacyCreate(data: any): string;\n  legacyRead(id: string): any;\n  legacyUpdate(id: string, data: any): boolean;\n  legacyDelete(id: string): boolean;\n}\n\ninterface Resource {\n  id: string;\n  name: string;\n  type: string;\n  createdAt: Date;\n  metadata: Record<string, any>;\n}\n\nclass LegacyApiAdapter implements ModernApi {\n  constructor(private legacyApi: LegacyApi) {}\n\n  async createResource(resource: Resource): Promise<Resource> {\n    const legacyData = this.toLegacyFormat(resource);\n    const legacyId = this.legacyApi.legacyCreate(legacyData);\n\n    return this.fromLegacyFormat(this.legacyApi.legacyRead(legacyId));\n  }\n\n  async getResource(id: string): Promise<Resource | null> {\n    const legacyData = this.legacyApi.legacyRead(id);\n    if (!legacyData) return null;\n    return this.fromLegacyFormat(legacyData);\n  }\n\n  async updateResource(id: string, updates: Partial<Resource>): Promise<Resource> {\n    const current = await this.getResource(id);\n    if (!current) throw new Error(\"Resource not found\");\n\n    const merged = { ...current, ...updates };\n    const legacyData = this.toLegacyFormat(merged);\n    this.legacyApi.legacyUpdate(id, legacyData);\n\n    return this.fromLegacyFormat(this.legacyApi.legacyRead(id));\n  }\n\n  async deleteResource(id: string): Promise<void> {\n    const success = this.legacyApi.legacyDelete(id);\n    if (!success) throw new Error(\"Failed to delete resource\");\n  }\n\n  private toLegacyFormat(resource: Resource): any {\n    return {\n      legacy_name: resource.name,\n      legacy_type: resource.type,\n      legacy_meta: JSON.stringify(resource.metadata)\n    };\n  }\n\n  private fromLegacyFormat(legacyData: any): Resource {\n    return {\n      id: legacyData.legacy_id,\n      name: legacyData.legacy_name,\n      type: legacyData.legacy_type,\n      createdAt: new Date(legacyData.legacy_created_at),\n      metadata: JSON.parse(legacyData.legacy_meta || \"{}\")\n    };\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "anti-corruption-layer",
+      "type": "similar-to",
+      "description": "Adapter pattern is similar to anti-corruption layer"
+    },
+    {
+      "target_pattern_id": "strangler-fig",
+      "type": "uses",
+      "description": "Adapter can be used during strangler fig migration"
+    }
+  ]
+}

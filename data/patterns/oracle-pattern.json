@@ -1,0 +1,35 @@
+{
+  "id": "oracle-pattern",
+  "name": "Oracle Pattern",
+  "category": "Blockchain",
+  "description": "Provides external data to smart contracts in a decentralized and trustless manner",
+  "when_to_use": "DeFi price feeds\nInsurance claim verification\nSports betting\nAny external data need",
+  "benefits": "Trustless data\nDecentralization\nMultiple sources\nEconomic security",
+  "drawbacks": "Centralization risk\nLatency\nCost\nData quality",
+  "use_cases": "Price feeds\nWeather data\nSports results\nIoT data",
+  "complexity": "High",
+  "tags": [
+    "blockchain",
+    "oracle",
+    "external-data",
+    "defi"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Oracle Pattern: provide external data to smart contracts\n\ninterface OracleRequest {\n  id: string;\n  query: string;\n  dataSource: string;\n  parameters: Record<string, any>;\n  requester: string;\n  reward: number;\n  status: \"pending\" | \"fulfilled\" | \"disputed\";\n  createdAt: Date;\n  fulfilledAt?: Date;\n}\n\ninterface OracleResponse {\n  value: any;\n  source: string;\n  timestamp: Date;\n  provider: string;\n  signature: string;\n}\n\ninterface DataSource {\n  name: string;\n  type: \"api\" | \"webhook\" | \"hardware\";\n  reliability: number;\n  updateFrequency: number;\n}\n\nclass OracleService {\n  private requests: Map<string, OracleRequest> = new Map();\n  private dataSources: Map<string, DataSource> = new Map();\n  private providers: Map<string, OracleProvider> = new Map();\n  private aggregationStrategy: AggregationStrategy;\n  private blockchain: BlockchainClient;\n\n  constructor(aggregationStrategy: AggregationStrategy, blockchain: BlockchainClient) {\n    this.aggregationStrategy = aggregationStrategy;\n    this.blockchain = blockchain;\n  }\n\n  async requestData(\n    query: string,\n    dataSource: string,\n    parameters: Record<string, any>,\n    requester: string,\n    reward: number\n  ): Promise<string> {\n    const request: OracleRequest = {\n      id: crypto.randomUUID(),\n      query,\n      dataSource,\n      parameters,\n      requester,\n      reward,\n      status: \"pending\",\n      createdAt: new Date()\n    };\n\n    this.requests.set(request.id, request);\n\n    await this.notifyProviders(request);\n\n    return request.id;\n  }\n\n  async fulfillRequest(\n    requestId: string,\n    value: any,\n    provider: string\n  ): Promise<FulfillmentResult> {\n    const request = this.requests.get(requestId);\n    if (!request || request.status !== \"pending\") {\n      return { success: false, error: \"Request not found or not pending\" };\n    }\n\n    const response: OracleResponse = {\n      value,\n      source: request.dataSource,\n      timestamp: new Date(),\n      provider,\n      signature: await this.signResponse(provider, requestId, value)\n    };\n\n    const updatedRequest = await this.processResponse(request, response);\n    if (updatedRequest.status === \"fulfilled\") {\n      await this.blockchain.submitOracleAnswer(requestId, response);\n    }\n\n    return { success: true, requestId, value };\n  }\n\n  async aggregateResponses(requestId: string): Promise<any> {\n    const request = this.requests.get(requestId);\n    if (!request) return null;\n\n    const responses = await this.getResponsesForRequest(requestId);\n    if (responses.length === 0) return null;\n\n    return this.aggregationStrategy.aggregate(responses);\n  }\n\n  async disputeResponse(requestId: string, disputer: string, reason: string): Promise<DisputeResult> {\n    const request = this.requests.get(requestId);\n    if (!request) {\n      return { success: false, error: \"Request not found\" };\n    }\n\n    await this.blockchain.createDispute({\n      requestId,\n      disputer,\n      reason,\n      bond: await this.getDisputeBond()\n    });\n\n    return { success: true, requestId, disputeId: crypto.randomUUID() };\n  }\n\n  private async notifyProviders(request: OracleRequest): Promise<void> {\n    for (const [, provider] of this.providers) {\n      if (provider.subscribedSources.has(request.dataSource)) {\n        await provider.notify(request);\n      }\n    }\n  }\n\n  private async processResponse(request: OracleRequest, response: OracleResponse): Promise<OracleRequest> {\n    const existingResponses = await this.getResponsesForRequest(request.id);\n    existingResponses.push(response);\n\n    if (existingResponses.length >= this.getRequiredResponses(request.dataSource)) {\n      const aggregatedValue = this.aggregationStrategy.aggregate(existingResponses);\n      request.status = \"fulfilled\";\n      request.fulfilledAt = new Date();\n    }\n\n    this.requests.set(request.id, request);\n    return request;\n  }\n\n  private async getResponsesForRequest(requestId: string): Promise<OracleResponse[]> {\n    return [];\n  }\n\n  private async signResponse(provider: string, requestId: string, value: any): Promise<string> {\n    return crypto.randomUUID();\n  }\n\n  private getRequiredResponses(dataSource: string): number {\n    return 3;\n  }\n\n  private async getDisputeBond(): Promise<number> {\n    return 100;\n  }\n\n  addProvider(provider: OracleProvider): void {\n    this.providers.set(provider.id, provider);\n  }\n\n  addDataSource(dataSource: DataSource): void {\n    this.dataSources.set(dataSource.name, dataSource);\n  }\n}\n\ninterface OracleProvider {\n  id: string;\n  name: string;\n  subscribedSources: Set<string>;\n  notify(request: OracleRequest): Promise<void>;\n}\n\ninterface AggregationStrategy {\n  aggregate(responses: OracleResponse[]): any;\n}\n\ninterface BlockchainClient {\n  submitOracleAnswer(requestId: string, response: OracleResponse): Promise<void>;\n  createDispute(dispute: any): Promise<void>;\n}\n\ninterface FulfillmentResult {\n  success: boolean;\n  requestId?: string;\n  value?: any;\n  error?: string;\n}\n\ninterface DisputeResult {\n  success: boolean;\n  requestId?: string;\n  disputeId?: string;\n  error?: string;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "smart-contract-pattern",
+      "type": "uses",
+      "description": "Smart contracts often need oracles for external data"
+    },
+    {
+      "target_pattern_id": "data-timestamping",
+      "type": "complements",
+      "description": "Oracles can use timestamping for data verification"
+    }
+  ]
+}

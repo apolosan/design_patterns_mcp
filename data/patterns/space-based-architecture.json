@@ -1,0 +1,35 @@
+{
+  "id": "space-based-architecture",
+  "name": "Space-Based Architecture",
+  "category": "Architecture",
+  "description": "Uses shared memory grids for high performance and scalability by eliminating database bottlenecks",
+  "when_to_use": "High-performance requirements\nLow-latency systems\nAggressive caching needs\nScalable state management",
+  "benefits": "Extremely low latency\nHorizontal scalability\nNo database bottleneck\nIn-memory processing",
+  "drawbacks": "Cost of memory\nData volatility\nComplexity in persistence\nLimited data size",
+  "use_cases": "Real-time analytics\nGaming servers\nFinancial trading\nHigh-traffic web applications",
+  "complexity": "High",
+  "tags": [
+    "architecture",
+    "space-based",
+    "in-memory",
+    "high-performance"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Space-Based Architecture: tuple space for in-memory processing\n\n// Tuple Space (shared memory grid)\ninterface TupleSpace {\n  write(tuple: any): Promise<void>;\n  read(pattern: any): Promise<any>;\n  take(pattern: any): Promise<any>;\n  notify(pattern: any, callback: (tuple: any) => void): void;\n}\n\n// Processing Grid\nclass ProcessingGrid {\n  private tupleSpace: TupleSpace;\n  private workers: Worker[] = [];\n\n  constructor(tupleSpace: TupleSpace) {\n    this.tupleSpace = tupleSpace;\n  }\n\n  async processTask(task: any): Promise<any> {\n    await this.tupleSpace.write({ type: \"task\", data: task, status: \"pending\" });\n\n    return new Promise((resolve) => {\n      this.tupleSpace.notify(\n        { type: \"result\", taskId: task.id },\n        (result) => resolve(result)\n      );\n    });\n  }\n}\n\n// Data Grid\nclass DataGrid {\n  private cache: Map<string, any> = new Map();\n  private replicas: number = 2;\n\n  async get(key: string): Promise<any> {\n    return this.cache.get(key);\n  }\n\n  async put(key: string, value: any): Promise<void> {\n    this.cache.set(key, value);\n    // Replicate to other nodes\n  }\n\n  async invalidate(key: string): Promise<void> {\n    this.cache.delete(key);\n  }\n}\n\n// Reliable Messaging\nclass ReliableMessaging {\n  private pendingMessages: Map<string, { message: any; retries: number }> = new Map();\n\n  async send(destination: string, message: any): Promise<void> {\n    const id = crypto.randomUUID();\n    this.pendingMessages.set(id, { message, retries: 0 });\n    // Send to message bus\n  }\n\n  async handleAck(ackId: string): Promise<void> {\n    this.pendingMessages.delete(ackId);\n  }\n\n  async retry(): Promise<void> {\n    // Retry failed messages\n  }\n}\n\n// Space-based pattern eliminates database as bottleneck\n// All state kept in memory grid\n// Processing distributed across nodes"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "cache-aside",
+      "type": "enhances",
+      "description": "Space-based architecture extends caching concepts to in-memory grids"
+    },
+    {
+      "target_pattern_id": "distributed-cache",
+      "type": "uses",
+      "description": "Space-based architecture uses distributed caching as core component"
+    }
+  ]
+}

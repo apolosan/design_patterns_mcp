@@ -1,0 +1,35 @@
+{
+  "id": "saga-pattern",
+  "name": "Saga Pattern",
+  "category": "Event-Driven",
+  "description": "Coordinates distributed transactions across multiple services using sequence of local transactions with compensation",
+  "when_to_use": "Cross-service transactions\nLong-running business processes\nMicroservices without distributed transactions\nDistributed order processing",
+  "benefits": "No two-phase commit\nLong-running transactions\nService independence\nCompensation handling",
+  "drawbacks": "Eventual consistency\nCompensation complexity\nDebugging difficulty\nRace conditions",
+  "use_cases": "Order processing\nBooking systems\nMulti-step workflows\nDistributed payments",
+  "complexity": "High",
+  "tags": [
+    "event-driven",
+    "distributed-transaction",
+    "compensation",
+    "saga"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Saga Pattern: distributed transactions with compensation\n\ninterface SagaStep {\n  name: string;\n  execute: (context: SagaContext) => Promise<StepResult>;\n  compensate: (context: SagaContext) => Promise<void>;\n}\n\ninterface SagaContext {\n  orderId: string;\n  customerId: string;\n  items: OrderItem[];\n  paymentId?: string;\n  inventoryReserved?: boolean;\n  shippingScheduled?: boolean;\n  emailSent?: boolean;\n}\n\ninterface StepResult {\n  success: boolean;\n  data?: any;\n}\n\nclass OrderSaga {\n  private steps: SagaStep[] = [\n    {\n      name: \"validate_order\",\n      execute: async (ctx) => ({ success: true }),\n      compensate: async (ctx) => {}\n    },\n    {\n      name: \"process_payment\",\n      execute: async (ctx) => {\n        const paymentId = await this.paymentService.charge(ctx.customerId, ctx.items);\n        return { success: true, data: { paymentId } };\n      },\n      compensate: async (ctx) => {\n        if (ctx.paymentId) {\n          await this.paymentService.refund(ctx.paymentId);\n        }\n      }\n    },\n    {\n      name: \"reserve_inventory\",\n      execute: async (ctx) => {\n        await this.inventoryService.reserve(ctx.items);\n        return { success: true, data: { inventoryReserved: true } };\n      },\n      compensate: async (ctx) => {\n        if (ctx.inventoryReserved) {\n          await this.inventoryService.release(ctx.items);\n        }\n      }\n    }\n  ];\n\n  async execute(context: SagaContext): Promise<SagaResult> {\n    const executedSteps: string[] = [];\n\n    try {\n      for (const step of this.steps) {\n        const result = await step.execute(context);\n        if (!result.success) {\n          await this.rollback(executedSteps, context);\n          return { success: false, failedStep: step.name };\n        }\n        executedSteps.push(step.name);\n        Object.assign(context, result.data);\n      }\n\n      return { success: true };\n    } catch (error) {\n      await this.rollback(executedSteps, context);\n      return { success: false, error: (error as Error).message };\n    }\n  }\n\n  private async rollback(executedSteps: string[], context: SagaContext): Promise<void> {\n    const reversedSteps = [...executedSteps].reverse();\n\n    for (const stepName of reversedSteps) {\n      const step = this.steps.find(s => s.name === stepName);\n      if (step && step.compensate) {\n        await step.compensate(context);\n      }\n    }\n  }\n\n  private paymentService = { charge: async () => \"pay_123\", refund: async () => {} };\n  private inventoryService = { reserve: async () => {}, release: async () => {} };\n}\n\ninterface SagaResult {\n  success: boolean;\n  failedStep?: string;\n  error?: string;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "event-sourcing",
+      "type": "complements",
+      "description": "Sagas often use event sourcing for audit trail"
+    },
+    {
+      "target_pattern_id": "outbox-pattern",
+      "type": "uses",
+      "description": "Outbox pattern ensures reliable saga event publishing"
+    }
+  ]
+}

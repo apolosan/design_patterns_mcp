@@ -1,0 +1,35 @@
+{
+  "id": "chaos-engineering",
+  "name": "Chaos Engineering Patterns",
+  "category": "Resilience",
+  "description": "Proactively tests system resilience through controlled fault injection",
+  "when_to_use": "Resilience validation\nFailover testing\nSingle point of failure identification\nProduction resilience testing",
+  "benefits": "Proactive issue discovery\nSystem hardening\nConfidence in resilience\nReduced incident severity",
+  "drawbacks": "Production risk\nComplexity in experiment design\nPotential customer impact\nResource intensive",
+  "use_cases": "Failure mode testing\nDisaster recovery validation\nAuto-scaling testing\nDependency failure testing",
+  "complexity": "High",
+  "tags": [
+    "resilience",
+    "chaos-engineering",
+    "fault-injection",
+    "testing"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "interface ChaosExperiment {\n  id: string;\n  name: string;\n  target: string;\n  fault: FaultInjection;\n  steadyState: SteadyStateAssertion;\n  status: \"pending\" | \"running\" | \"passed\" | \"failed\" | \"stopped\";\n}\n\ninterface FaultInjection {\n  type: \"latency\" | \"termination\" | \"blackhole\" | \"corruption\" | \"cpu-stress\";\n  parameters: Record<string, any>;\n  duration: number;\n}\n\ninterface SteadyStateAssertion {\n  metric: string;\n  operator: \"<\" | \">\" | \"==\" | \">=\" | \"<=\";\n  threshold: number;\n}\n\nclass ChaosController {\n  private experiments: Map<string, ChaosExperiment> = new Map();\n\n  async createExperiment(\n    name: string,\n    target: string,\n    fault: FaultInjection,\n    steadyState: SteadyStateAssertion\n  ): Promise<ChaosExperiment> {\n    const experiment: ChaosExperiment = {\n      id: `exp-${Date.now()}`,\n      name,\n      target,\n      fault,\n      steadyState,\n      status: \"pending\"\n    };\n\n    this.experiments.set(experiment.id, experiment);\n    return experiment;\n  }\n\n  async runExperiment(experimentId: string): Promise<boolean> {\n    const experiment = this.experiments.get(experimentId);\n    if (!experiment) throw new Error(\"Experiment not found\");\n\n    experiment.status = \"running\";\n\n    try {\n      await this.injectFault(experiment.target, experiment.fault);\n      const isSteady = await this.verifySteadyState(experiment.steadyState);\n      experiment.status = isSteady ? \"passed\" : \"failed\";\n      return isSteady;\n    } finally {\n      await this.stopFault(experiment.target, experiment.fault);\n    }\n  }\n\n  async abortExperiment(experimentId: string): Promise<void> {\n    const experiment = this.experiments.get(experimentId);\n    if (experiment && experiment.status === \"running\") {\n      await this.stopFault(experiment.target, experiment.fault);\n      experiment.status = \"stopped\";\n    }\n  }\n\n  private async injectFault(target: string, fault: FaultInjection): Promise<void> {\n    switch (fault.type) {\n      case \"latency\":\n        console.log(`Injecting ${fault.parameters.ms}ms latency to ${target}`);\n        break;\n      case \"termination\":\n        console.log(`Terminating ${target}`);\n        break;\n      case \"blackhole\":\n        console.log(`Dropping all traffic to ${target}`);\n        break;\n    }\n  }\n\n  private async stopFault(target: string, fault: FaultInjection): Promise<void> {\n    console.log(`Stopping fault injection on ${target}`);\n  }\n\n  private async verifySteadyState(assertion: SteadyStateAssertion): Promise<boolean> {\n    console.log(`Verifying steady state: ${assertion.metric} ${assertion.operator} ${assertion.threshold}`);\n    return true;\n  }\n\n  getExperiment(experimentId: string): ChaosExperiment | undefined {\n    return this.experiments.get(experimentId);\n  }\n\n  listExperiments(): ChaosExperiment[] {\n    return Array.from(this.experiments.values());\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "circuit-breaker",
+      "type": "validates",
+      "description": "Chaos engineering can validate circuit breaker effectiveness"
+    },
+    {
+      "target_pattern_id": "bulkhead-pattern",
+      "type": "validates",
+      "description": "Chaos experiments can verify bulkhead isolation effectiveness"
+    }
+  ]
+}

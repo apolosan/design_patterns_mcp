@@ -1,0 +1,35 @@
+{
+  "id": "react-pattern",
+  "name": "ReAct Pattern",
+  "category": "Agentic AI",
+  "description": "Integrates reasoning (Thought) and action (Action) in an iterative cycle for complex problem solving",
+  "when_to_use": "Multi-step problem resolution\nQA with external knowledge\nInteractive dialogue\nComplex task planning",
+  "benefits": "Balanced reasoning and action\nHandles uncertainty well\nTransparent thought process\nAdaptable to changing environments",
+  "drawbacks": "Increased token usage\nMay over-think simple problems\nComplex orchestration",
+  "use_cases": "Question answering systems\nResearch assistants\nInteractive chatbots\nAutonomous agents",
+  "complexity": "Medium",
+  "tags": [
+    "agentic-ai",
+    "reasoning",
+    "reasoning-and-acting",
+    "orchestration"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "type ActionType = \"search\" | \"lookup\" | \"answer\" | \"reason\";\n\ninterface ReActStep {\n  thought: string;\n  action: ActionType;\n  actionInput: Record<string, any>;\n  observation: string;\n}\n\nclass ReActAgent {\n  private maxSteps: number = 10;\n\n  async solve(question: string): Promise<string> {\n    const steps: ReActStep[] = [];\n    let context = question;\n\n    for (let i = 0; i < this.maxSteps; i++) {\n      const thought = await this.reason(context, steps);\n      const action = await this.decideAction(thought);\n      const actionInput = await this.prepareActionInput(thought, action);\n      const observation = await this.executeAction(action, actionInput);\n\n      steps.push({ thought, action, actionInput, observation });\n\n      if (this.isFinalAnswer(observation)) {\n        return this.extractAnswer(observation);\n      }\n\n      context = this.updateContext(context, observation);\n    }\n\n    return \"Maximum steps reached\";\n  }\n\n  private async reason(context: string, steps: ReActStep[]): Promise<string> {\n    const recentSteps = steps.slice(-3);\n    return `Given context: ${context}, and recent steps: ${JSON.stringify(recentSteps)}, what should I do next?`;\n  }\n\n  private async decideAction(thought: string): Promise<ActionType> {\n    return \"search\";\n  }\n\n  private async prepareActionInput(thought: string, action: ActionType): Promise<Record<string, any>> {\n    return { query: \"sample query\" };\n  }\n\n  private async executeAction(action: ActionType, input: Record<string, any>): Promise<string> {\n    return `Observation from ${action}: result data`;\n  }\n\n  private isFinalAnswer(observation: string): boolean {\n    return observation.includes(\"final answer\");\n  }\n\n  private extractAnswer(observation: string): string {\n    return observation.replace(\"final answer:\", \"\").trim();\n  }\n\n  private updateContext(context: string, observation: string): string {\n    return `${context}\\nObservation: ${observation}`;\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "tool-use-pattern",
+      "type": "requires",
+      "description": "ReAct typically uses tools for action execution"
+    },
+    {
+      "target_pattern_id": "planning-pattern",
+      "type": "relates-to",
+      "description": "ReAct and planning work together for complex task decomposition"
+    }
+  ]
+}

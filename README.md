@@ -1,324 +1,142 @@
-# Design Patterns MCP Server 🎯
+# Design Patterns MCP Server
 
-An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using hybrid search (semantic + keyword + graph augmentation). This project offers access to a comprehensive catalog of **642+ design patterns** through a natural language interface with advanced blended RAG architecture.
+[![Version](https://img.shields.io/badge/version-0.4.2-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Test Status](https://img.shields.io/badge/tests-464%20%7C%20100%25-brightgreen.svg)](#testing)
+[![Patterns](https://img.shields.io/badge/patterns-685%2B-orange.svg)](#available-pattern-categories)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-## 📋 Overview
+An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using hybrid search (semantic + keyword + graph augmentation). Access **685+ design patterns** across 90+ categories through a natural language interface with advanced blended RAG architecture.
 
-The **Design Patterns MCP Server** is a specialized server that integrates with AI assistants (like Claude, Cursor) to provide intelligent design pattern recommendations. It uses advanced semantic search technologies to find the most appropriate patterns based on natural language problem descriptions.
+## Quick Start
 
-### ✨ Key Features
+```bash
+# Clone and setup
+git clone https://github.com/apolosan/design_patterns_mcp.git
+cd design_patterns_mcp
 
-- 🔍 **Hybrid Search Engine**: Blended RAG combining semantic, keyword (TF-IDF), and graph-augmented retrieval
-- 📚 **Comprehensive Catalog**: 642+ patterns organized in 90+ categories
-- 🎯 **Contextual Recommendations**: Suggestions based on programming language and domain
-- ⚡ **Vector & Sparse Search**: SQLite vector extensions + TF-IDF keyword search for optimal recall
-- 🌐 **Multi-language**: Support for multiple programming languages
-- 🔧 **MCP Integration**: Compatible with Claude Code, Cursor and other MCP clients
-- 🚀 **High Performance**: Object Pool pattern prevents memory leaks, optimized queries
-- 💾 **Multi-Level Caching**: LRU cache with 85%+ hit rate + event-driven cache invalidation
-- 📝 **Structured Logging & Telemetry**: Professional logging system with service-based organization and performance metrics
-- 🏗️ **SOLID Architecture**: Clean, maintainable, and testable codebase
-- 🛡️ **Production Ready**: 464 test cases across 41 test files, zero memory leaks, graceful degradation
+# Install dependencies
+bun install
 
-### 🆕 Project Status (v0.4.1)
+# Build and setup database
+bun run db:setup
 
-**Latest Updates (January 2026 - v0.4.1)**
+# Start the server
+bun run dev
+```
 
-- ✅ **Hybrid Search Engine**: Blended RAG combining dense (vector) + sparse (TF-IDF) + graph augmentation
-- ✅ **Event Bus System**: Pub/sub event system for decoupled service communication
-- ✅ **Telemetry Service**: Comprehensive performance metrics and health monitoring
-- ✅ **MultiLevelCache Service**: L1 in-memory + L3 SQLite persistent cache with 95%+ hit rate
-- ✅ **Graph Vector Service**: Graph-augmented retrieval for pattern relationships
-- ✅ **Embedding Compressor**: Dimensionality reduction for faster vector search
-- ✅ **Search Handlers**: Strategy pattern for hybrid search result fusion
-- ✅ **Health Events**: Real-time system health monitoring and alerting
-- ✅ **Migration 006**: Sparse terms table for TF-IDF keyword search
-- ✅ **100% Test Pass Rate**: 464 test cases across 41 test files - Production Ready!
-- ✅ **Perfect Build**: 0 TypeScript compilation errors, 0 critical errors
-- ✅ **Sanitized Codebase**: Unused files removed, clean imports, optimized structure
-- ✅ **Circuit Breaker Pattern**: Protection against cascade failures in external services
-- ✅ **Command Pattern CLI**: Complete CLI command standardization (seed, migrate, embeddings)
-- ✅ **Health Check Pattern**: Systematic monitoring of Database, VectorOps, LLM services
-- ✅ **Builder Pattern**: Fluent configuration with validation and dev/prod presets
-- ✅ **Strategy Pattern Logging**: Interchangeable logging system with 4 available strategies
-- ✅ **Full DI Container**: Dependency injection with 15+ tokens, maximum testability
-- ✅ **Architecture Excellence**: SOLID principles, clean architecture, high cohesion/low coupling
-- ✅ **Optimized Performance**: Big O complexity analyzed, N+1 queries prevented, efficient bundle
-- ✅ **Type Safety 100%**: Zero 'any'/'unknown' types, type guards and assertions across entire codebase
-- ✅ **Zero Memory Leaks**: Object Pool pattern with bounded management (max 100 statements)
-- ✅ **642+ Patterns**: Comprehensive catalog with code examples across 90+ categories (661 JSON files, 642 unique patterns)
-- ✅ **MCP Protocol Compliance**: Perfect integration with Claude, Cursor and other MCP clients
+Configure in your MCP client (Claude Desktop, Cursor, etc.) and start discovering patterns through natural language queries.
 
-**Architecture Refactoring (v0.2.x)**
+## Features
 
-- ✅ **Object Pool Pattern**: Eliminates memory leaks with bounded prepared statements (max 100)
-- ✅ **Service Layer**: Centralized business logic with `PatternService`
-- ✅ **Facade Pattern**: Simplified handlers via `PatternHandlerFacade`
-- ✅ **Dependency Injection**: Full DI Container integration for testability
-- ✅ **Smart Caching**: LRU cache with 85%+ hit rate and TTL support
-- ✅ **Code Quality**: 40% reduction in main server file (704→422 lines)
-- ✅ **Design Patterns Applied**: Retry Pattern, Graceful Degradation, Simple Lock, Error Recovery, Database Transaction, Fail-Fast, Schema Versioning, Data Preservation
+| Feature | Description |
+|---------|-------------|
+| **Hybrid Search Engine** | Blended RAG combining semantic, keyword (TF-IDF), and graph-augmented retrieval |
+| **685+ Patterns** | Comprehensive catalog across 12 major categories |
+| **MCP Integration** | Seamless integration with Claude, Cursor, and other MCP clients |
+| **Multi-Level Caching** | L1 in-memory + L3 SQLite cache with 95%+ hit rate |
+| **Event Bus System** | Decoupled service communication via pub/sub |
+| **Telemetry & Health** | Real-time performance metrics and system monitoring |
+| **SOLID Architecture** | Clean, maintainable codebase following best practices |
+| **Production Ready** | 464 test cases with 100% pass rate |
 
-### 🗂️ Available Pattern Categories (642 Patterns)
+## Available Pattern Categories
 
-#### **Classic Design Patterns (GoF)**
+| Category | Count | Examples |
+|----------|-------|----------|
+| **Classic GoF Patterns** | 34 | Factory, Builder, Observer, Strategy, Command |
+| **Architectural Patterns** | 56 | MVC, Clean Architecture, Hexagonal, DDD |
+| **Microservices & Cloud** | 39 | Circuit Breaker, Saga, Service Mesh |
+| **Data Engineering** | 54 | Repository, CQRS, Event Sourcing |
+| **AI/ML & MLOps** | 46 | RAG, Fine-Tuning, Model Compression |
+| **React Patterns** | 27 | Hooks, Server Components, Performance |
+| **Blockchain & Web3** | 115 | DeFi, NFTs, Smart Contracts, MEV |
+| **Concurrency & Reactive** | 45 | Producer-Consumer, Actor Model |
+| **Security** | 21 | OAuth, RBAC, Zero Trust |
+| **Functional Programming** | 26 | Monads, Functors, Higher-Order Functions |
 
-- **Creational** (8): Factory, Builder, Singleton, Prototype, Abstract Factory
-- **Structural** (10): Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy
-- **Behavioral** (16): Observer, Strategy, Command, State, Chain of Responsibility, Iterator, Mediator, Memento, Template Method, Visitor, Interpreter
-
-#### **Architectural & Enterprise** (56 patterns)
-
-- **Architectural** (15): MVC, MVP, MVVM, Clean Architecture, Hexagonal, Layered, Event-Driven
-- **Enterprise** (24): Repository, Unit of Work, Service Layer, Dependency Injection
-- **Domain-Driven Design** (17): Aggregate, Value Object, Entity, Domain Event, Bounded Context
-
-#### **Microservices & Cloud** (39 patterns)
-
-- **Microservices** (22): Circuit Breaker, Event Sourcing, CQRS, Saga, Service Mesh
-- **Cloud-Native** (14): Auto-scaling, Load Balancing, Service Discovery
-- **Serverless** (1): Function as a Service patterns
-- **DevOps** (1): CI/CD patterns
-- **Infrastructure** (1): IaC patterns
-
-#### **Data Engineering & Management** (54 patterns)
-
-- **Data Access** (10): Active Record, Data Mapper, Query Object
-- **Data Engineering** (4): ETL, Data Pipeline, Stream Processing
-- **Data Storage** (3): Partitioning, Sharding, Replication
-- **Data Quality** (3): Validation, Cleansing, Monitoring
-- **Data Query** (7): WHERE Filtering, CASE Expression, CTE, Window Functions
-- **Data Ingestion** (8): Batch, Streaming, CDC
-- **Data Flow** (3): Data Lineage, Data Catalog
-- **Data Security** (3): Encryption, Masking, Access Control
-- **Data Observability** (3): Monitoring, Alerting, Logging
-- **Data Value** (5): Monetization, Governance, Quality Metrics
-- **Data Management** (4): Lifecycle, Archival, Retention
-- **Big Data Analysis** (5): Distributed Computing patterns
-
-#### **AI/ML & MLOps** (46 patterns)
-
-- **AI/ML** (38): Model Training, RAG, Few-Shot Learning, Fine-Tuning, Inference Optimization
-- **MLOps** (1): Model Deployment, Monitoring, A/B Testing
-- **Machine Learning** (3): Model Compression, Knowledge Distillation, Model Parallelism
-- **AI Governance** (5): Ethics, Bias Mitigation, Interpretability
-
-#### **React Patterns** (27 patterns)
-
-- **React Fundamentals** (5): Components, Props, State
-- **React Hooks** (6): useState, useEffect, Custom Hooks
-- **React Server Components** (2): RSC, Streaming
-- **React State Management** (1): Context, Redux patterns
-- **React Performance** (1): Memoization, Code Splitting
-- **React Forms** (2): Controlled, Uncontrolled
-- **React Routing** (1): Navigation patterns
-- **React Styling** (2): CSS-in-JS, Tailwind
-- **React Testing** (1): Testing Library, E2E
-- **React Components** (1): Composition patterns
-- **React Error Handling** (1): Error Boundaries
-- **React UI** (2): Accessibility, Responsive Design
-- **React Best Practices** (1): Code organization
-- **React Modern** (1): React 19 features
-
-#### **Blockchain & Web3** (115 patterns)
-
-- **DeFi Protocols**: AMM (6), Lending (10), Stablecoin (2), Yield (1), Derivatives (2), Vault (2), Tokenomics (3)
-- **NFT Patterns** (14): Minting, Marketplace, Metadata
-- **NFT Royalty** (2): EIP-2981, Custom royalties
-- **NFT Storage** (1): IPFS, Arweave integration
-- **Smart Contract**: Security (6), Upgradeability (1), Access Control (3), Factory (2), Gas Optimization (5)
-- **DAO Patterns**: Governance (11), Treasury (2)
-- **Cross-Chain** (8): Bridge, Relay, Atomic Swap
-- **Layer 2**: Scaling (7), Data Availability (1)
-- **Account Abstraction** (5): ERC-4337, Session Keys
-- **MEV** (3): Protection, Extraction, Ordering
-- **Privacy** (2): Zero-Knowledge (3), Stealth Addresses
-- **Real World Assets** (3): Tokenization, Oracle integration
-- **Token Economics** (3): Vesting, Distribution
-- **Restaking** (2): EigenLayer patterns
-- **Sustainable Blockchain** (3): Energy efficiency
-- **Modular Blockchain** (1): Celestia, Avail
-- **Intent-Based Architecture** (3): User intents, Solvers
-- **Web3 Frontend** (8): Wallet connection, Transaction handling
-- **AI & Blockchain** (2): AI + Web3 integration
-
-#### **Performance & Optimization** (24 patterns)
-
-- **Performance** (20): Caching, Lazy Loading, Object Pool, Connection Pooling
-- **Caching** (4): Cache-Aside, Write-Through, Read-Through
-
-#### **Concurrency & Reactive** (45 patterns)
-
-- **Concurrency** (27): Producer-Consumer, Thread Pool, Actor Model, Lock-Free
-- **Reactive** (18): Observer, Publisher-Subscriber, Reactive Streams, Backpressure
-
-#### **Integration & Messaging** (21 patterns)
-
-- **Integration** (18): Message Queue, Event Bus, API Gateway, ESB
-- **Messaging** (3): Publish-Subscribe, Point-to-Point
-
-#### **Testing & Quality** (20 patterns)
-
-- **Testing** (20): Test Double, Page Object, Builder Pattern for tests, Contract Testing
-
-#### **Development Practices** (40 patterns)
-
-- **Functional** (26): Monads, Functors, Higher-Order Functions, Immutability
-- **Error Management** (7): Exception Handling, Retry, Circuit Breaker
-- **Idempotency** (7): Idempotent Operations, Request Deduplication
-
-#### **Mobile & IoT** (24 patterns)
-
-- **Mobile** (10): Model-View-Intent, Redux patterns, Offline-First
-- **IoT** (13): Device Twin, Telemetry Ingestion, Edge Processing
-- **Edge Computing** (1): Edge Analytics
-
-#### **Game Development** (16 patterns)
-
-- **Game Development** (16): State Machine, Component System, Object Pool, Command Pattern
-
-#### **Embedded Systems** (5 patterns)
-
-- **Embedded Systems** (5): State Machine, Table-Driven State Machine, Circular Buffer, Watchdog Timer, Interrupt Service Routine
-
-#### **Security** (21 patterns)
-
-- **Security** (21): Authentication, Authorization, Data Protection, OWASP Top 10
-
-#### **Storage & Infrastructure** (5 patterns)
-
-- **Storage** (4): File System, Object Storage, Database patterns
-- **Infrastructure** (1): IaC patterns
-
-#### **Others**
-
-- **Anti-Patterns** (15): Common mistakes and their solutions
-- **Reliability** (1): Fault tolerance patterns
-- **Development & Deployment** (2): CI/CD patterns
-- **Development & Testing** (3): TDD, BDD patterns
-
-## 🏗️ Project Architecture
-
-### Hybrid Search Architecture (v0.4.0)
+## Architecture
 
 ```
 src/
-├── adapters/           # Adapters for external services (LLM, Embeddings, Compressors)
-├── builders/           # Builders for complex objects and search queries
-├── cli/                # Command line interface
-├── core/               # Core domain logic and DI Container
-│   └── container.ts    # Dependency Injection Container with 25+ TOKENS
-├── db/                 # Database configuration and migrations (6 migrations)
-├── events/             # Event bus system for decoupled communication
-│   ├── event-bus.ts    # Pub/sub event system
-│   └── events/         # Domain events (SearchCompleted, CacheHit, HealthEvent)
-├── facades/            # Facade pattern implementations
-│   └── pattern-handler-facade.ts  # Simplifies MCP handlers
-├── factories/          # Factories for object creation and service instantiation
-├── lib/                # Auxiliary libraries and MCP utilities
-├── models/             # Data models and types (unified Pattern interface)
-├── repositories/       # Data access layer (Repository Pattern)
-│   ├── interfaces.ts   # Repository contracts
-│   └── pattern-repository.ts  # SQLite implementation with hybrid search
-├── search/             # Hybrid search engine components
-│   ├── handlers/       # Search result handlers (dense, sparse, graph)
-│   ├── strategies/     # Search fusion strategies (weighted, reciprocal rank)
-│   └── fusion/         # Result fusion algorithms (RRF, weighted scoring)
-├── services/           # Business services and orchestration
-│   ├── cache/          # Multi-level caching system
-│   │   ├── cache.ts    # L1 in-memory LRU cache
-│   │   ├── multi-level-cache.ts  # L1 + L3 persistent cache
-│   │   └── cache-events.ts       # Event-driven cache invalidation
-│   ├── database-manager.ts  # Database operations with Object Pool
-│   ├── event-bus-service.ts # Event bus service wrapper
-│   ├── graph-vector-service.ts # Graph-augmented retrieval service
-│   ├── pattern-service.ts   # Service Layer for business logic
-│   ├── search-service.ts    # Hybrid search orchestration
-│   ├── semantic-search.ts   # Dense vector search operations
-│   ├── sparse-search.ts     # Sparse (TF-IDF) keyword search
-│   ├── statement-pool.ts    # Object Pool for prepared statements (max 100)
-│   ├── telemetry-service.ts # Performance metrics and health monitoring
-│   └── vector-operations.ts # Vector search using sqlite-vec
-├── strategies/         # Strategy pattern implementations (search, cache, telemetry)
-├── telemetry/          # Telemetry and monitoring
-│   ├── metrics.ts      # Performance metrics collection
-│   ├── health/         # Health check system
-│   └── events/         # Telemetry events and monitoring
-├── types/              # TypeScript type definitions
-├── utils/              # Utility functions (embedding compression, tokenization)
-└── mcp-server.ts       # MCP server with enhanced hybrid search
+├── adapters/              # External service adapters (LLM, embeddings)
+├── cli/                   # CLI commands (migrate, seed, embeddings, setup-relationships)
+├── core/                  # DI Container, configuration builder
+├── db/                    # Database migrations
+├── events/                # Event bus system
+├── handlers/              # MCP request handlers (hybrid search, recommendations)
+├── health/                # Health check services
+├── repositories/          # Data access layer
+├── search/                # Hybrid search engine
+├── services/              # Business services (cache, telemetry, pattern service)
+├── strategies/            # Strategy pattern implementations
+├── types/                 # TypeScript type definitions
+└── mcp-server.ts          # MCP server entry point
 
 data/
-├── patterns/           # JSON files with 661 pattern definitions (642 unique)
-├── design-patterns.db  # SQLite database with embeddings + sparse terms
-└── migrations/         # Database migrations (006_sparse_terms.sql)
+├── patterns/              # 750+ JSON pattern definitions
+└── design-patterns.db     # SQLite database with embeddings
 ```
 
-### 🔧 Main Components
+## Usage
 
-**Core Services**
+### Finding Patterns
 
-- **DatabaseManager**: SQLite operations with Object Pool (prevents memory leaks)
-- **StatementPool**: LRU-based pool for prepared statements (max 100)
-- **MultiLevelCacheService**: L1 in-memory + L3 SQLite persistent cache with 95%+ hit rate
-- **EventBusService**: Pub/sub event system for decoupled service communication
-- **TelemetryService**: Performance metrics, health monitoring, and system observability
+Ask natural language questions through your MCP client:
 
-**Hybrid Search Engine**
+```
+"I need to create complex objects with many optional configurations"
+→ Builder, Abstract Factory, Factory Method
 
-- **SearchService**: Orchestrates hybrid search combining dense + sparse + graph retrieval
-- **SemanticSearchService**: Dense vector search using embeddings and cosine similarity
-- **SparseSearchService**: Sparse keyword search using TF-IDF and BM25 scoring
-- **GraphVectorService**: Graph-augmented retrieval leveraging pattern relationships
-- **SearchFusionStrategy**: Weighted fusion of multiple search results (RRF, weighted scoring)
+"How to handle service failures gracefully in distributed systems?"
+→ Circuit Breaker, Bulkhead, Retry, Fallback
 
-**Business Logic**
+"What pattern helps with state-dependent behavior in React?"
+→ State Machine, Observer, useReducer
 
-- **PatternService**: Service Layer orchestrating pattern operations with hybrid search
-- **PatternRepository**: Data access abstraction (Repository Pattern) with hybrid queries
-- **PatternMatcher**: Enhanced pattern matching with fuzzy logic and contextual ranking
-- **EmbeddingCompressor**: Dimensionality reduction for faster vector search operations
+"How to implement secure authentication and authorization?"
+→ OAuth 2.0, RBAC, JWT, Zero Trust
+```
 
-**Integration & Infrastructure**
+### MCP Tools
 
-- **PatternHandlerFacade**: Facade simplifying MCP handlers with hybrid search support
-- **VectorOperationsService**: Vector search using sqlite-vec with optimized performance
-- **LLMBridgeService**: Interface for language models (optional)
-- **EmbeddingServiceAdapter**: Adapter for embedding services with fallback strategies
-- **SimpleContainer**: Dependency Injection container with 25+ service tokens
-- **MigrationManager**: Database migrations including sparse terms table (migration 006)
-- **PatternSeeder**: Initial data seeding with embeddings and sparse term extraction
+| Tool | Description |
+|------|-------------|
+| `find_patterns` | Hybrid search for patterns using problem descriptions |
+| `search_patterns` | Keyword or semantic search with filtering |
+| `get_pattern_details` | Comprehensive pattern information with code examples |
+| `count_patterns` | Statistics about available patterns |
+| `get_health_status` | System health and service status |
 
-## 🚀 Installation and Setup
+## Installation
 
 ### Prerequisites
 
 - Node.js >= 18.0.0
-- npm >= 8.0.0 or Bun >= 1.0.0
+- Bun >= 1.0.0 (recommended) or npm >= 8.0.0
 
-### Installation
+### Setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/design-patterns-mcp.git
-cd design-patterns-mcp
-
 # Install dependencies
-npm install
+bun install
 
-# Configure environment variables (optional)
-cp .env.example .env
+# Build project
+bun run build
 
-# Build the project
-npm run build
+# Complete database setup (migrate + seed + embeddings + relationships)
+bun run db:setup
 
-# Setup the database
-npm run db:setup
+# Or run steps individually
+bun run migrate
+bun run seed
+bun run generate-embeddings
+bun run setup-relationships
 ```
 
 ### MCP Configuration
 
-Add to your MCP configuration file (`.mcp.json` or Claude Desktop config):
+Add to your `.mcp.json` or Claude Desktop configuration:
 
 ```json
 {
@@ -330,9 +148,6 @@ Add to your MCP configuration file (`.mcp.json` or Claude Desktop config):
       "env": {
         "LOG_LEVEL": "info",
         "DATABASE_PATH": "./data/design-patterns.db",
-        "ENABLE_LLM": "false",
-        "MAX_CONCURRENT_REQUESTS": "10",
-        // Hybrid Search features (enabled by default)
         "ENABLE_HYBRID_SEARCH": "true",
         "ENABLE_GRAPH_AUGMENTATION": "true",
         "EMBEDDING_COMPRESSION": "true",
@@ -345,385 +160,101 @@ Add to your MCP configuration file (`.mcp.json` or Claude Desktop config):
 }
 ```
 
-### Production Configuration
+## Environment Variables
 
-For production deployment, configure the following environment variables:
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `LOG_LEVEL` | `info` | Logging level (debug, info, warn, error) |
+| `DATABASE_PATH` | `./data/design-patterns.db` | SQLite database path |
+| `ENABLE_HYBRID_SEARCH` | `true` | Enable blended RAG search |
+| `ENABLE_GRAPH_AUGMENTATION` | `true` | Enable pattern relationship traversal |
+| `EMBEDDING_COMPRESSION` | `true` | Dimensionality reduction |
+| `ENABLE_FUZZY_LOGIC` | `true` | Fuzzy logic result refinement |
+| `ENABLE_TELEMETRY` | `true` | Performance metrics |
+| `ENABLE_MULTI_LEVEL_CACHE` | `true` | L1 + L3 caching |
+| `MAX_CONCURRENT_REQUESTS` | `10` | Request concurrency limit |
+| `CACHE_MAX_SIZE` | `1000` | Cache size limit |
+| `CACHE_TTL` | `3600000` | Cache TTL in milliseconds |
 
-```bash
-# Database Configuration
-DATABASE_PATH=./data/design-patterns.db
-
-# Logging Configuration
-LOG_LEVEL=info  # Options: debug, info, warn, error
-
-# Performance Configuration
-MAX_CONCURRENT_REQUESTS=10  # Adjust based on server capacity
-
-# LLM Integration (Optional)
-ENABLE_LLM=false  # Set to true to enable LLM-based enhancements
-
-# Hybrid Search Configuration
-ENABLE_HYBRID_SEARCH=true        # Enable blended RAG (semantic + keyword + graph)
-ENABLE_GRAPH_AUGMENTATION=true   # Enable graph-augmented retrieval
-EMBEDDING_COMPRESSION=true       # Enable dimensionality reduction for faster search
-ENABLE_FUZZY_LOGIC=true          # Enable fuzzy logic refinement of results
-ENABLE_TELEMETRY=true            # Enable performance metrics and health monitoring
-ENABLE_MULTI_LEVEL_CACHE=true    # Enable L1 + L3 caching (95%+ hit rate)
-
-# Embedding Configuration
-# The server automatically uses semantic embeddings (transformers-js)
-# for optimal search performance. No additional configuration needed.
-```
-
-#### Embedding Strategy
-
-The server uses **transformers-js** for semantic embeddings by default, providing:
-- High-quality semantic search results
-- Contextual pattern matching
-- Multi-language support
-- Automatic fallback to simple-hash if transformers unavailable
-
-#### Performance Optimization
-
-- **Vector Search**: Efficient similarity search using cosine similarity
-- **LRU Caching**: 85%+ cache hit rate reduces database load
-- **Connection Pooling**: Prevents database connection exhaustion
-- **Batch Processing**: Optimized embedding generation and search operations
-
-### Fuzzy Logic Enhancement
-
-The server incorporates **fuzzy logic** as a complementary layer to semantic search, providing more nuanced and human-like pattern recommendations.
-
-#### How Fuzzy Logic Complements Semantic Search
-
-1. **Multi-Dimensional Evaluation**: While semantic search provides similarity scores, fuzzy logic evaluates patterns across multiple dimensions:
-   - **Semantic Similarity**: How well the pattern matches the query conceptually
-   - **Keyword Match Strength**: Direct keyword relevance
-   - **Pattern Complexity**: Appropriateness based on pattern complexity
-   - **Contextual Fit**: Language compatibility and domain relevance
-
-2. **Fuzzy Membership Functions**: Each dimension is mapped to fuzzy sets (Low/Medium/High) using:
-   - **Triangular functions** for semantic similarity
-   - **Trapezoidal functions** for keyword strength
-   - **Discrete functions** for pattern complexity
-   - **Gaussian functions** for contextual fit
-
-3. **Fuzzy Inference Rules**: 8 expert rules combine these dimensions:
-   ```
-   IF semantic_similarity IS high AND keyword_match IS strong THEN relevance IS very_high
-   IF semantic_similarity IS medium AND contextual_fit IS good THEN relevance IS high
-   IF contextual_fit IS poor THEN relevance IS low
-   ```
-
-4. **Defuzzification**: Converts fuzzy outputs back to crisp confidence scores using centroid method
-
-#### Benefits
-
-- **More Accurate Ranking**: Considers multiple factors beyond pure similarity
-- **Context Awareness**: Adapts recommendations based on programming language and complexity
-- **Human-like Reasoning**: Mimics expert pattern selection decisions
-- **Configurable**: Can be enabled/disabled via `ENABLE_FUZZY_LOGIC` environment variable
-
-#### Configuration
-
-```bash
-# Enable fuzzy logic refinement (default: enabled)
-ENABLE_FUZZY_LOGIC=true
-
-# Disable fuzzy logic for pure semantic search
-ENABLE_FUZZY_LOGIC=false
-```
-```
-
-## 📖 Usage
-
-### Finding Patterns with Natural Language
-
-Use natural language descriptions to find appropriate design patterns through Claude Code. The hybrid search engine combines semantic understanding, keyword matching (TF-IDF), and graph-augmented retrieval to provide the most relevant recommendations:
-
-**For object creation problems:**
-
-- "I need to create complex objects with many optional configurations"
-- "How can I create different variations of similar objects?"
-- "What pattern helps with step-by-step object construction?"
-
-**For behavioral problems:**
-
-- "I need to notify multiple components when data changes"
-- "How to decouple command execution from the invoker?"
-- "What pattern helps with state-dependent behavior?"
-
-**For architectural problems:**
-
-- "How to structure a microservices communication system?"
-- "What pattern helps with distributed system resilience?"
-- "How to implement clean separation between layers?"
-
-**For React development:**
-
-- "How to manage state in React 18/19?"
-- "What patterns work with React Server Components?"
-- "How to optimize React performance?"
-
-### MCP Tool Functions
-
-- **find_patterns**: Hybrid search for patterns using problem descriptions
-  - Uses blended RAG combining semantic, keyword (TF-IDF), and graph-augmented retrieval
-  - Returns ranked recommendations with confidence scores
-  - Supports category filtering and programming language preferences
-- **search_patterns**: Keyword or semantic search with filtering options
-  - Supports hybrid search (keyword + semantic)
-  - Filter by category, tags, complexity
-- **get_pattern_details**: Get comprehensive information about specific patterns
-  - Includes code examples in multiple languages
-  - Shows similar patterns and relationships
-  - Displays implementations and use cases
-- **count_patterns**: Statistics about available patterns by category
-  - Optional detailed breakdown by category
-
-## 🛠️ Available Commands
+## Commands
 
 ```bash
 # Development
-npm run build        # Build for production
-npm run dev          # Run in development mode
-npm start            # Start production server
-
-# Testing & Quality
-npm test             # Run all tests
-npm run lint         # Check code quality
-npm run lint:fix     # Fix linting issues
-npm run typecheck    # Check TypeScript types
+bun run build        # Compile TypeScript
+bun run dev          # Development with hot reload
+bun run start        # Build and start production server
 
 # Database
-npm run db:setup     # Complete database setup (migrate + seed + embeddings)
-npm run migrate      # Run database migrations
-npm run seed         # Populate with initial data
-npm run generate-embeddings  # Generate embeddings for semantic search
+bun run db:setup     # Complete database setup
+bun run migrate      # Run migrations
+bun run seed         # Seed pattern data
+bun run generate-embeddings  # Generate semantic embeddings
+bun run setup-relationships  # Setup pattern relationships
+
+# Quality
+bun run test         # Run all tests
+bun run lint         # Check code quality
+bun run lint:fix     # Auto-fix linting issues
+bun run typecheck    # TypeScript type checking
 ```
 
-## 🎯 Usage Examples
+## Testing
 
-### Problem-Based Pattern Discovery
+The project includes **464 test cases across 41 test files** with 100% pass rate:
 
-**Distributed Systems:**
-
-- "I need a pattern for handling service failures gracefully" → Circuit Breaker, Bulkhead
-- "How to implement eventual consistency in distributed data?" → Event Sourcing, CQRS
-- "What pattern helps with service discovery and load balancing?" → Service Registry, API Gateway
-
-**Data Validation:**
-
-- "I need to validate complex business rules on input data" → Specification Pattern
-- "How to compose validation rules dynamically?" → Chain of Responsibility
-- "What pattern separates validation logic from business logic?" → Strategy Pattern
-
-**Performance Optimization:**
-
-- "I need to cache expensive computations efficiently" → Cache-Aside, Write-Through
-- "How to implement lazy loading for large datasets?" → Lazy Loading, Virtual Proxy
-- "What pattern helps with connection pooling?" → Object Pool Pattern
-
-### Category-Specific Searches
-
-**Enterprise Applications:**
-
-- "Show me enterprise patterns for data access" → Repository, Unit of Work, Data Mapper
-- "What patterns help with dependency injection?" → DI Container, Service Locator
-- "How to implement domain-driven design?" → Aggregate, Value Object, Bounded Context
-
-**Security Implementation:**
-
-- "I need authentication and authorization patterns" → RBAC, OAuth 2.0, JWT
-- "What patterns help with secure data handling?" → Encryption at Rest, Defense in Depth
-- "How to implement role-based access control?" → RBAC Pattern, Policy-Based Access
-
-## 🔧 Advanced Configuration
-
-### Environment Variables
-
-```env
-# Database configuration
-DATABASE_PATH=./data/design-patterns.db
-
-# Logging configuration
-LOG_LEVEL=info  # debug | info | warn | error
-
-# LLM integration (optional)
-ENABLE_LLM=false
-LLM_PROVIDER=ollama
-LLM_MODEL=llama3.2
-
-# Performance tuning
-MAX_CONCURRENT_REQUESTS=10
-CACHE_MAX_SIZE=1000
-CACHE_TTL=3600000  # 1 hour in ms
-POOL_MAX_SIZE=100  # Prepared statement pool size
-
-# Hybrid Search Configuration
-ENABLE_HYBRID_SEARCH=true        # Enable blended RAG (semantic + keyword + graph)
-ENABLE_GRAPH_AUGMENTATION=true   # Enable graph-augmented retrieval
-EMBEDDING_COMPRESSION=true       # Enable dimensionality reduction for faster search
-ENABLE_FUZZY_LOGIC=true          # Enable fuzzy logic refinement of results
-ENABLE_TELEMETRY=true            # Enable performance metrics and health monitoring
-ENABLE_MULTI_LEVEL_CACHE=true    # Enable L1 + L3 caching (95%+ hit rate)
-
-# Redis L2 Cache (Optional)
-# REDIS_HOST=localhost
-# REDIS_PORT=6379
-# REDIS_KEY_PREFIX=cache:
-```
-
-### Using the Refactored Server
-
-```typescript
-import { createDesignPatternsServer, TOKENS } from './mcp-server.js';
-
-const server = createDesignPatternsServer({
-  databasePath: './data/design-patterns.db',
-  logLevel: 'info',
-  enableLLM: false,
-  maxConcurrentRequests: 10,
-  // Hybrid Search features (enabled by default)
-  enableHybridSearch: true,
-  enableGraphAugmentation: true,
-  embeddingCompression: true,
-  enableFuzzyLogic: true,
-  enableTelemetry: true,
-  enableMultiLevelCache: true,
-});
-
-await server.initialize();
-await server.start();
-
-// Access services via DI Container (for testing)
-const container = server.getContainer();
-const patternService = container.get(TOKENS.PATTERN_SERVICE);
-const cache = container.get(TOKENS.CACHE_SERVICE);
-```
-
-### Performance Monitoring
-
-```typescript
-// Get Object Pool metrics
-const db = container.get(TOKENS.DATABASE_MANAGER);
-const poolMetrics = db.getPoolMetrics();
-logger.info('performance-monitor', 'Object Pool metrics', poolMetrics);
-// {
-//   size: 87,
-//   hits: 15420,
-//   misses: 234,
-//   evictions: 12,
-//   hitRate: 0.985  // 98.5%
-// }
-
-// Get Cache metrics
-const cache = container.get(TOKENS.CACHE_SERVICE);
-const cacheStats = cache.getStats();
-logger.info('performance-monitor', 'Cache metrics', cacheStats);
-// {
-//   hits: 8765,
-//   misses: 1234,
-//   size: 876,
-//   hitRate: 0.876  // 87.6%
-// }
-```
-
-## 🧪 Testing
-
-The project includes a comprehensive test suite with **464 test cases across 41 test files** (100% success rate):
-
-- **Contract Tests**: Validate MCP protocol compliance
-- **Integration Tests**: Test interaction between components
-- **Performance Tests**: Evaluate search and vectorization performance
-- **Unit Tests**: Test individual components in isolation
+- **Contract Tests**: MCP protocol compliance validation
+- **Integration Tests**: Component interaction tests
+- **Performance Tests**: Search and vectorization benchmarks
+- **Unit Tests**: Individual component tests
 
 ```bash
+# Run all tests
+bun run test
+
 # Run specific test suites
-npm run test:unit -- --grep "PatternMatcher"
-npm run test:integration -- --grep "database"
-npm run test:performance -- --timeout 30000
-npm run test:contract  # MCP protocol compliance
+bun run test:unit -- --grep "PatternService"
+bun run test:integration -- --grep "database"
+bun run test:performance -- --timeout 30000
 ```
 
-### Test Coverage
+## Architecture Patterns
 
-- MCP Protocol: ✅ 100%
-- Core Services: ✅ 95%+
-- Performance: ✅ Comprehensive benchmarks
-- Database: ✅ Full migration & seeding tests
+This project implements the patterns it documents:
 
-## 🏗️ Architecture Patterns Used
+| Pattern | Implementation |
+|---------|----------------|
+| Repository | `repositories/pattern-repository.ts` |
+| Service Layer | `services/pattern-service.ts` |
+| Object Pool | `services/statement-pool.ts` |
+| Dependency Injection | `core/container.ts` |
+| Strategy | `strategies/search-strategy.ts` |
+| Event Bus | `events/event-bus.ts` |
+| Multi-Level Cache | `services/multi-level-cache.ts` |
+| Builder | `core/config-builder.ts` |
 
-This project practices what it preaches by implementing:
+## Contributing
 
-| Pattern                  | Location                             | Purpose                      |
-| ------------------------ | ------------------------------------ | ---------------------------- |
-| **Repository**           | `repositories/pattern-repository.ts` | Data access abstraction      |
-| **Service Layer**        | `services/pattern-service.ts`        | Business logic orchestration |
-| **Object Pool**          | `services/statement-pool.ts`         | Resource management          |
-| **Facade**               | `facades/pattern-handler-facade.ts`  | Simplified interface         |
-| **Dependency Injection** | `core/container.ts`                  | Inversion of control         |
-| **Strategy**             | `strategies/search-strategy.ts`      | Interchangeable algorithms   |
-| **Factory**              | `factories/service-factory.ts`       | Object creation              |
-| **Singleton**            | Via DI Container                     | Single instance management   |
-| **Adapter**              | `adapters/llm-adapter.ts`            | External service integration |
-| **Logger**               | `utils/logger.ts`                    | Structured logging system    |
+Contributions are welcome! Please read our contributing guidelines before submitting PRs.
 
-## 🤝 Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Make changes following SOLID principles
+4. Run tests and linting
+5. Submit a pull request
 
-We welcome contributions! Here's how:
+## License
 
-1. Fork the project
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes following our code style
-4. Run tests (`npm test`) and ensure they pass
-5. Run linting (`npm run lint:fix`)
-6. Commit your changes (`git commit -am 'Add amazing feature'`)
-7. Push to the branch (`git push origin feature/amazing-feature`)
-8. Open a Pull Request
+MIT License - see [LICENSE](LICENSE) for details.
 
-### Development Guidelines
-
-- Follow SOLID principles
-- Write tests for new features
-- Update documentation
-- Use TypeScript strict mode
-- Use structured logging (`logger.info('service-name', message)`) instead of `console.log`
-- Follow existing code patterns
-
-## 📜 License
-
-This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
-
-## 🔗 Useful Links
+## Resources
 
 - [Model Context Protocol](https://modelcontextprotocol.io/)
-- [SQLite Vector Extension](https://github.com/asg017/sqlite-vec)
+- [sqlite-vec](https://github.com/asg017/sqlite-vec)
 - [Design Patterns Catalog](https://refactoring.guru/design-patterns)
-- [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
-- [Refactoring Guide](./REFACTORING_GUIDE.md)
-
-## 📞 Support
-
-- 🐛 **Issues**: Report bugs through [GitHub Issues](https://github.com/your-org/design-patterns-mcp/issues)
-- 💬 **Discussions**: Join [GitHub Discussions](https://github.com/your-org/design-patterns-mcp/discussions)
-- 📧 **Email**: apolosan@protonmail.com
-- 📚 **Documentation**: Comprehensive architecture and refactoring details available in project documentation
-
-## 🙏 Acknowledgments
-
-- Design patterns from the software engineering community
-- MCP protocol by Anthropic
-- SQLite and sqlite-vec for efficient storage and search
-- Open source contributors
 
 ---
 
-- **Version**: 0.4.1
-- **Last Updated**: January 2026
-- **Patterns**: 642+ (661 JSON files, 642 unique in database)
-- **Tests**: 464 test cases across 41 test files (100% pass rate)
-- **Status**: Production Ready with Extended Schema
-- **Architecture**: SOLID + Design Patterns + Hybrid Search Engine
-- **Logging**: Structured Logger + Telemetry Service
+**Version**: 0.4.2  
+**Last Updated**: January 2026  
+**Patterns**: 685+ (750+ JSON files)  
+**Tests**: 464 test cases | 100% pass rate

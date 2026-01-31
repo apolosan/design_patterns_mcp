@@ -462,8 +462,18 @@ export class PatternSeeder {
           }
           actualTargetId = targetPattern.id;
         } else {
-          // Assume it's already an ID
+          // Assume it's already an ID - but verify it exists
           actualTargetId = targetPatternId;
+          const targetPatternExists = this.db.queryOne<{ id: string }>(
+            'SELECT id FROM patterns WHERE id = ?',
+            [actualTargetId]
+          );
+          if (!targetPatternExists) {
+            console.warn(
+              `Target pattern ID not found: ${actualTargetId} (referenced by ${sourcePatternId})`
+            );
+            return false;
+          }
         }
       } else {
         console.warn(`Invalid targetPatternId for pattern ${sourcePatternId}:`, targetPatternId);

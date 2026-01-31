@@ -1,0 +1,35 @@
+{
+  "id": "on-chain-aggregation",
+  "name": "On-Chain Aggregation Pattern",
+  "category": "Blockchain",
+  "description": "Aggregates off-chain transactions and publishes proofs on-chain for scalability and cost reduction",
+  "when_to_use": "High-volume transactions\nLayer-2 solutions\nPayment channels\nRollups",
+  "benefits": "Scalability\nCost reduction\nThroughput increase\nPrivacy preservation",
+  "drawbacks": "Complexity\nData availability\nWithdrawal delays\nChallenge periods",
+  "use_cases": "Rollups\nPayment channels\nBatch payments\nAggregated proofs",
+  "complexity": "Very High",
+  "tags": [
+    "blockchain",
+    "aggregation",
+    "layer-2",
+    "scalability"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// On-Chain Aggregation: batch transactions with proof\n\ninterface AggregatedBatch {\n  id: string;\n  transactions: BatchTransaction[];\n  merkleRoot: string;\n  aggregatedValue: number;\n  createdAt: Date;\n  expiresAt: Date;\n}\n\ninterface BatchTransaction {\n  id: string;\n  from: string;\n  to: string;\n  value: number;\n  data: string;\n  nonce: number;\n  signature: string;\n}\n\ninterface AggregationProof {\n  batchId: string;\n  merkleProof: string[];\n  aggregatedStateRoot: string;\n  withdrawalsRoot: string;\n  compressedSize: number;\n}\n\nclass OnChainAggregator {\n  private pendingTransactions: Map<string, BatchTransaction> = new Map();\n  private batches: Map<string, AggregatedBatch> = new Map();\n  private blockchain: BlockchainClient;\n  private aggregationThreshold: number = 100;\n  private batchTimeout: number = 300000;\n\n  constructor(blockchain: BlockchainClient, threshold: number = 100) {\n    this.blockchain = blockchain;\n    this.aggregationThreshold = threshold;\n  }\n\n  async addTransaction(tx: Omit<BatchTransaction, \"id\" | \"nonce\" | \"signature\">): Promise<string> {\n    const nonce = await this.getNextNonce(tx.from);\n    const txWithId: BatchTransaction = {\n      ...tx,\n      id: crypto.randomUUID(),\n      nonce,\n      signature: await this.signTransaction(tx, nonce)\n    };\n\n    this.pendingTransactions.set(txWithId.id, txWithId);\n\n    if (this.pendingTransactions.size >= this.aggregationThreshold) {\n      await this.createAndSubmitBatch();\n    }\n\n    return txWithId.id;\n  }\n\n  async createAndSubmitBatch(): Promise<AggregatedBatch | null> {\n    const transactions = Array.from(this.pendingTransactions.values());\n    if (transactions.length === 0) return null;\n\n    const batch = await this.createBatch(transactions);\n    this.batches.set(batch.id, batch);\n\n    const proof = await this.generateProof(batch);\n    await this.submitToChain(batch, proof);\n\n    this.pendingTransactions.clear();\n    return batch;\n  }\n\n  private async createBatch(transactions: BatchTransaction[]): Promise<AggregatedBatch> {\n    const merkleTree = await this.buildMerkleTree(transactions.map(t => this.hashTransaction(t)));\n\n    return {\n      id: crypto.randomUUID(),\n      transactions,\n      merkleRoot: merkleTree.root,\n      aggregatedValue: transactions.reduce((sum, t) => sum + t.value, 0),\n      createdAt: new Date(),\n      expiresAt: new Date(Date.now() + this.batchTimeout)\n    };\n  }\n\n  private async generateProof(batch: AggregatedBatch): Promise<AggregationProof> {\n    const merkleProof = await this.generateMerkleProof(batch);\n\n    return {\n      batchId: batch.id,\n      merkleProof,\n      aggregatedStateRoot: crypto.randomUUID(),\n      withdrawalsRoot: crypto.randomUUID(),\n      compressedSize: this.compressBatch(batch)\n    };\n  }\n\n  private async submitToChain(batch: AggregatedBatch, proof: AggregationProof): Promise<void> {\n    await this.blockchain.submitAggregatedProof({\n      batchId: batch.id,\n      merkleRoot: batch.merkleRoot,\n      aggregatedStateRoot: proof.aggregatedStateRoot,\n      withdrawalsRoot: proof.withdrawalsRoot,\n      compressedData: proof.compressedSize\n    });\n\n    console.log(`Batch ${batch.id} submitted with ${batch.transactions.length} transactions`);\n  }\n\n  async verifyInclusion(txId: string, batchId: string): Promise<boolean> {\n    const batch = this.batches.get(batchId);\n    if (!batch) return false;\n\n    const tx = batch.transactions.find(t => t.id === txId);\n    if (!tx) return false;\n\n    const onChainVerification = await this.blockchain.verifyBatchInclusion(\n      batchId,\n      this.hashTransaction(tx)\n    );\n\n    return onChainVerification;\n  }\n\n  async withdraw(txId: string, batchId: string, recipient: string): Promise<WithdrawResult> {\n    const batch = this.batches.get(batchId);\n    if (!batch) {\n      return { success: false, error: \"Batch not found\" };\n    }\n\n    const tx = batch.transactions.find(t => t.id === txId);\n    if (!tx) {\n      return { success: false, error: \"Transaction not found\" };\n    }\n\n    const withdrawalProof = await this.blockchain.createWithdrawalProof(\n      batchId,\n      txId,\n      recipient\n    );\n\n    return {\n      success: true,\n      amount: tx.value,\n      recipient,\n      proof: withdrawalProof\n    };\n  }\n\n  private hashTransaction(tx: BatchTransaction): string {\n    return crypto.createHash(\"sha256\")\n      .update(JSON.stringify(tx))\n      .digest(\"hex\");\n  }\n\n  private async buildMerkleTree(leaves: string[]): Promise<MerkleTreeResult> {\n    return { root: crypto.randomUUID(), proof: [] };\n  }\n\n  private async generateMerkleProof(batch: AggregatedBatch): Promise<string[]> {\n    return [];\n  }\n\n  private compressBatch(batch: AggregatedBatch): number {\n    return 0;\n  }\n\n  private async getNextNonce(from: string): Promise<number> {\n    return 0;\n  }\n\n  private async signTransaction(tx: Omit<BatchTransaction, \"id\" | \"nonce\" | \"signature\">, nonce: number): Promise<string> {\n    return crypto.randomUUID();\n  }\n}\n\ninterface MerkleTreeResult {\n  root: string;\n  proof: string[];\n}\n\ninterface BlockchainClient {\n  submitAggregatedProof(proof: any): Promise<void>;\n  verifyBatchInclusion(batchId: string, txHash: string): Promise<boolean>;\n  createWithdrawalProof(batchId: string, txId: string, recipient: string): Promise<string>;\n}\n\ninterface WithdrawResult {\n  success: boolean;\n  amount: number;\n  recipient: string;\n  proof?: string;\n  error?: string;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "rollup",
+      "type": "uses",
+      "description": "Rollups use on-chain aggregation for L2 scaling"
+    },
+    {
+      "target_pattern_id": "zk-proof",
+      "type": "uses",
+      "description": "Aggregation can use ZK proofs for verification"
+    }
+  ]
+}

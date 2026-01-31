@@ -1,0 +1,35 @@
+{
+  "id": "event-time-processing",
+  "name": "Event Time Processing Pattern",
+  "category": "Stream Processing",
+  "description": "Processes events based on when they occurred rather than when they were received",
+  "when_to_use": "Real-time analytics\nFinancial event systems\nOrder-sensitive processing\nDistributed systems with out-of-order events",
+  "benefits": "Correct ordering\nTemporal accuracy\nOut-of-order handling\nAudit compliance",
+  "drawbacks": "Watermark complexity\nLate event handling\nBuffer requirements\nLatency vs correctness trade-off",
+  "use_cases": "Financial transactions\nIoT sensor data\nClickstream analysis\nAudit logging",
+  "complexity": "High",
+  "tags": [
+    "stream-processing",
+    "event-time",
+    "time-management",
+    "ordering"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Event Time Processing: process events by occurrence time\n\ninterface Event {\n  id: string;\n  type: string;\n  payload: any;\n  eventTime: Date;\n  processingTime: Date;\n  watermark: Date;\n}\n\ninterface EventTimeConfig {\n  watermarkDelayMs: number;\n  lateEventGraceMs: number;\n  allowedLatenessMs: number;\n}\n\nclass EventTimeProcessor {\n  private eventBuffer: Map<string, Event[]> = new Map();\n  private currentWatermark: Date = new Date();\n  private config: EventTimeConfig;\n\n  constructor(config: Partial<EventTimeConfig> = {}) {\n    this.config = {\n      watermarkDelayMs: 5000,\n      lateEventGraceMs: 1000,\n      allowedLatenessMs: 60000,\n      ...config\n    };\n  }\n\n  async process(event: Event): Promise<void> {\n    const eventTimeKey = this.getEventTimeKey(event.eventTime);\n    const buffer = this.eventBuffer.get(eventTimeKey) || [];\n\n    if (this.isLate(event)) {\n      await this.handleLateEvent(event);\n      return;\n    }\n\n    buffer.push(event);\n    buffer.sort((a, b) => a.eventTime.getTime() - b.eventTime.getTime());\n    this.eventBuffer.set(eventTimeKey, buffer);\n\n    this.updateWatermark();\n    await this.processWatermark();\n  }\n\n  private getEventTimeKey(eventTime: Date): string {\n    const windowStart = new Date(eventTime);\n    windowStart.setMinutes(0, 0, 0);\n    return windowStart.toISOString();\n  }\n\n  private isLate(event: Event): boolean {\n    const now = Date.now();\n    const eventTime = event.eventTime.getTime();\n    const watermarkTime = this.currentWatermark.getTime();\n\n    return eventTime < watermarkTime - this.config.allowedLatenessMs;\n  }\n\n  private async handleLateEvent(event: Event): Promise<void> {\n    console.log(`Late event received: ${event.id}, eventTime: ${event.eventTime}`);\n  }\n\n  private updateWatermark(): void {\n    const oldestUnprocessedTime = this.findOldestUnprocessedEventTime();\n    if (oldestUnprocessedTime) {\n      const newWatermark = new Date(oldestUnprocessedTime.getTime() - this.config.watermarkDelayMs);\n      if (newWatermark > this.currentWatermark) {\n        this.currentWatermark = newWatermark;\n      }\n    }\n  }\n\n  private findOldestUnprocessedEventTime(): Date | null {\n    let oldest: Date | null = null;\n    for (const [, events] of this.eventBuffer) {\n      for (const event of events) {\n        if (!oldest || event.eventTime < oldest) {\n          oldest = event.eventTime;\n        }\n      }\n    }\n    return oldest;\n  }\n\n  private async processWatermark(): Promise<void> {\n    const readyEvents = this.extractReadyEvents();\n    for (const event of readyEvents) {\n      await this.executeProcessingLogic(event);\n    }\n  }\n\n  private extractReadyEvents(): Event[] {\n    const ready: Event[] = [];\n    for (const [key, events] of this.eventBuffer) {\n      const windowStart = new Date(key);\n      if (windowStart <= this.currentWatermark) {\n        ready.push(...events);\n        this.eventBuffer.delete(key);\n      }\n    }\n    return ready;\n  }\n\n  private async executeProcessingLogic(event: Event): Promise<void> {\n    console.log(`Processing event ${event.id} at event time ${event.eventTime}`);\n  }\n\n  getWatermark(): Date {\n    return this.currentWatermark;\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "watermark-pattern",
+      "type": "uses",
+      "description": "Event time processing uses watermarks for progress tracking"
+    },
+    {
+      "target_pattern_id": "windowing-pattern",
+      "type": "complements",
+      "description": "Event time processing often uses windowing for aggregations"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "pattern-matching-cep",
+  "name": "Pattern Matching (CEP) Pattern",
+  "category": "Stream Processing",
+  "description": "Detects complex patterns in event streams using sequence matching and temporal constraints",
+  "when_to_use": "Fraud detection\nSystem monitoring\nIoT event correlation\nComplex alerting",
+  "benefits": "Pattern detection\nComplex event correlation\nEarly warning\nAutomated response",
+  "drawbacks": "Pattern complexity\nPerformance overhead\nState management\nFalse positives",
+  "use_cases": "Fraud detection\nAnomaly detection\nBehavior analysis\nProcess monitoring",
+  "complexity": "High",
+  "tags": [
+    "stream-processing",
+    "cep",
+    "pattern-matching",
+    "complex-event"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Complex Event Processing: detect patterns in streams\n\ninterface Event {\n  id: string;\n  type: string;\n  payload: Record<string, any>;\n  timestamp: Date;\n}\n\ninterface PatternDefinition {\n  id: string;\n  name: string;\n  sequence: PatternStep[];\n  windowMs: number;\n  quantifier?: Quantifier;\n}\n\ninterface PatternStep {\n  type: string;\n  conditions: Condition[];\n  var?: string;\n}\n\ninterface Condition {\n  field: string;\n  operator: \"==\" | \"!=\" | \">\" | \"<\" | \">=\" | \"<=\" | \"contains\" | \"matches\";\n  value: any;\n}\n\ninterface Quantifier {\n  min: number;\n  max?: number;\n  greedy: boolean;\n}\n\ninterface MatchResult {\n  patternId: string;\n  events: Event[];\n  startTime: Date;\n  endTime: Date;\n  score: number;\n}\n\nclass CEPEngine {\n  private patterns: Map<string, PatternDefinition> = new Map();\n  private activeMatches: Map<string, MatchState[]> = new Map();\n  private eventBuffer: Event[] = [];\n\n  registerPattern(pattern: PatternDefinition): void {\n    this.patterns.set(pattern.id, pattern);\n  }\n\n  processEvent(event: Event): MatchResult[] {\n    const matches: MatchResult[] = [];\n\n    for (const pattern of this.patterns.values()) {\n      const newMatches = this.matchAgainstPattern(event, pattern);\n      matches.push(...newMatches);\n    }\n\n    this.eventBuffer.push(event);\n    this.cleanupOldEvents();\n\n    return matches;\n  }\n\n  private matchAgainstPattern(event: Event, pattern: PatternDefinition): MatchResult[] {\n    const matches: MatchResult[] = [];\n    const existingMatches = this.activeMatches.get(pattern.id) || [];\n    const newMatches: MatchState[] = [];\n\n    for (const matchState of existingMatches) {\n      const updatedState = this.advanceState(matchState, event, pattern);\n      if (updatedState.completed) {\n        matches.push(this.createMatchResult(pattern, updatedState));\n      } else if (updatedState.active) {\n        newMatches.push(updatedState);\n      }\n    }\n\n    const initialMatches = this.findInitialMatches(event, pattern);\n    newMatches.push(...initialMatches);\n\n    if (newMatches.length > 0) {\n      this.activeMatches.set(pattern.id, newMatches);\n    }\n\n    return matches;\n  }\n\n  private findInitialMatches(event: Event, pattern: PatternDefinition): MatchState[] {\n    const matches: MatchState[] = [];\n    const firstStep = pattern.sequence[0];\n\n    if (this.matchesStep(event, firstStep)) {\n      matches.push({\n        patternId: pattern.id,\n        currentStep: 1,\n        events: [event],\n        startTime: event.timestamp,\n        lastMatchTime: event.timestamp\n      });\n    }\n\n    return matches;\n  }\n\n  private advanceState(\n    state: MatchState,\n    event: Event,\n    pattern: PatternDefinition\n  ): { completed: boolean; active: boolean } {\n    const currentStepDef = pattern.sequence[state.currentStep];\n    if (!currentStepDef) {\n      return { completed: true, active: false };\n    }\n\n    if (this.matchesStep(event, currentStepDef)) {\n      state.events.push(event);\n      state.currentStep++;\n      state.lastMatchTime = event.timestamp;\n\n      if (state.currentStep >= pattern.sequence.length) {\n        return { completed: true, active: false };\n      }\n    }\n\n    const elapsed = event.timestamp.getTime() - state.startTime.getTime();\n    if (elapsed > pattern.windowMs) {\n      return { completed: false, active: false };\n    }\n\n    return { completed: false, active: true };\n  }\n\n  private matchesStep(event: Event, step: PatternStep): boolean {\n    if (event.type !== step.type) return false;\n\n    for (const condition of step.conditions) {\n      const value = this.getFieldValue(event, condition.field);\n      if (!this.evaluateCondition(value, condition.operator, condition.value)) {\n        return false;\n      }\n    }\n\n    return true;\n  }\n\n  private getFieldValue(event: Event, field: string): any {\n    if (field === \"type\") return event.type;\n    if (field === \"timestamp\") return event.timestamp;\n    return event.payload[field];\n  }\n\n  private evaluateCondition(value: any, operator: string, expected: any): boolean {\n    switch (operator) {\n      case \"==\": return value === expected;\n      case \"!=\": return value !== expected;\n      case \">\": return value > expected;\n      case \"<\": return value < expected;\n      case \">=\": return value >= expected;\n      case \"<=\": return value <= expected;\n      case \"contains\": return String(value).includes(expected);\n      case \"matches\": return new RegExp(expected).test(String(value));\n      default: return false;\n    }\n  }\n\n  private createMatchResult(pattern: PatternDefinition, state: MatchState): MatchResult {\n    return {\n      patternId: pattern.id,\n      events: state.events,\n      startTime: state.startTime,\n      endTime: state.events[state.events.length - 1].timestamp,\n      score: 1.0\n    };\n  }\n\n  private cleanupOldEvents(): void {\n    const cutoff = Date.now() - 300000;\n    this.eventBuffer = this.eventBuffer.filter(e => e.timestamp.getTime() > cutoff);\n  }\n}\n\ninterface MatchState {\n  patternId: string;\n  currentStep: number;\n  events: Event[];\n  startTime: Date;\n  lastMatchTime: Date;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "stateful-processing",
+      "type": "requires",
+      "description": "Pattern matching requires stateful processing"
+    },
+    {
+      "target_pattern_id": "windowing-pattern",
+      "type": "uses",
+      "description": "Pattern matching often uses time windows for constraints"
+    }
+  ]
+}

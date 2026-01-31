@@ -1,0 +1,35 @@
+{
+  "id": "registry-pattern-typed",
+  "name": "Registry Pattern (Typed)",
+  "category": "Functional",
+  "description": "Implements type-safe dynamic registration and lookup of implementations",
+  "when_to_use": "Plugin systems\nStrategy pattern\nExtensible architectures\nDependency injection",
+  "benefits": "Type safety\nDynamic registration\nExtensibility\nDecoupling",
+  "drawbacks": "Complexity\nRuntime errors possible\nTesting challenges\nInitialization order",
+  "use_cases": "Plugin architectures\nStrategy selection\nService discovery\nHandler registration",
+  "complexity": "Medium",
+  "tags": [
+    "functional",
+    "registry",
+    "dynamic-registration",
+    "type-safe"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Registry Pattern: type-safe dynamic registration\n\n// Type-level registry using phantom types\ntype RegistryKey<T> = { readonly _phantom: T };\n\ninterface RegistrySchema {\n  [key: string]: Registration<any>;\n}\n\ninterface Registration<T> {\n  key: RegistryKey<T>;\n  factory: () => T;\n  dependencies: string[];\n  lifecycle: \"singleton\" | \"transient\";\n}\n\n// Type-safe registry\nclass TypeRegistry {\n  private registrations: Map<string, Registration<any>> = new Map();\n  private instances: Map<string, any> = new Map();\n\n  register<T>(\n    key: RegistryKey<T>,\n    factory: () => T,\n    options: {\n      lifecycle?: \"singleton\" | \"transient\";\n      dependencies?: string[];\n    } = {}\n  ): void {\n    const keyName = this.getKeyName(key);\n\n    this.registrations.set(keyName, {\n      key,\n      factory,\n      dependencies: options.dependencies ?? [],\n      lifecycle: options.lifecycle ?? \"singleton\"\n    });\n  }\n\n  resolve<T>(key: RegistryKey<T>): T {\n    const keyName = this.getKeyName(key);\n    const registration = this.registrations.get(keyName);\n\n    if (!registration) {\n      throw new Error(`No registration found for key: ${keyName}`);\n    }\n\n    if (registration.lifecycle === \"singleton\") {\n      if (!this.instances.has(keyName)) {\n        this.instances.set(keyName, this.createInstance(registration));\n      }\n      return this.instances.get(keyName);\n    }\n\n    return this.createInstance(registration);\n  }\n\n  private createInstance<T>(registration: Registration<T>): T {\n    if (registration.dependencies.length === 0) {\n      return registration.factory();\n    }\n\n    const dependencies = registration.dependencies.map(depKey => {\n      const depRegistration = this.registrations.get(depKey);\n      if (!depRegistration) {\n        throw new Error(`Dependency not found: ${depKey}`);\n      }\n      return this.resolve(depRegistration.key as any);\n    });\n\n    return this.instantiate(registration.factory, dependencies);\n  }\n\n  private instantiate<T>(factory: () => T, dependencies: any[]): T {\n    return factory();\n  }\n\n  private getKeyName(key: RegistryKey<any>): string {\n    return key.toString();\n  }\n\n  getRegistrations(): string[] {\n    return Array.from(this.registrations.keys());\n  }\n\n  clear(): void {\n    this.registrations.clear();\n    this.instances.clear();\n  }\n}\n\n// Plugin registry example\nclass PluginRegistry {\n  private plugins: Map<string, Plugin> = new Map();\n  private registry: TypeRegistry;\n\n  constructor(registry: TypeRegistry) {\n    this.registry = registry;\n  }\n\n  registerPlugin<T extends Plugin>(\n    pluginId: string,\n    factory: () => T,\n    dependencies: string[] = []\n  ): void {\n    this.plugins.set(pluginId, {\n      id: pluginId,\n      factory,\n      enabled: true\n    } as any);\n  }\n\n  getPlugin<T extends Plugin>(pluginId: string): T | null {\n    const plugin = this.plugins.get(pluginId);\n    if (!plugin || !plugin.enabled) return null;\n\n    return plugin.factory() as T;\n  }\n\n  getPluginsByType<T extends Plugin>(type: { new (...args: any[]): T }): T[] {\n    return Array.from(this.plugins.values())\n      .filter(p => p.enabled && p.factory() instanceof type)\n      .map(p => p.factory() as T);\n  }\n\n  async initializeAll(): Promise<void> {\n    for (const plugin of this.plugins.values()) {\n      if (plugin.enabled && \"initialize\" in plugin.factory()) {\n        await (plugin.factory() as any).initialize();\n      }\n    }\n  }\n}\n\n// Strategy registry\nclass StrategyRegistry<S, C> {\n  private strategies: Map<string, Strategy<S, C>> = new Map();\n  private defaultKey: string | null = null;\n\n  register(\n    key: string,\n    strategy: Strategy<S, C>,\n    options: { default?: boolean } = {}\n  ): void {\n    this.strategies.set(key, strategy);\n\n    if (options.default || this.defaultKey === null) {\n      this.defaultKey = key;\n    }\n  }\n\n  get(key: string): Strategy<S, C> | null {\n    return this.strategies.get(key) || null;\n  }\n\n  getDefault(): Strategy<S, C> | null {\n    return this.defaultKey ? this.strategies.get(this.defaultKey) || null : null;\n  }\n\n  select(context: C): Strategy<S, C> {\n    for (const [key, strategy] of this.strategies) {\n      if (strategy.canHandle(context)) {\n        return strategy;\n      }\n    }\n\n    const defaultStrategy = this.getDefault();\n    if (defaultStrategy) return defaultStrategy;\n\n    throw new Error(\"No strategy found for context\");\n  }\n\n  listKeys(): string[] {\n    return Array.from(this.strategies.keys());\n  }\n}\n\ninterface Plugin {\n  id: string;\n  initialize?(): Promise<void>;\n}\n\ninterface Strategy<S, C> {\n  canHandle(context: C): boolean;\n  execute(context: C): S;\n}\n\n// Usage example\ninterface Logger {\n  log(message: string): void;\n}\n\nconst loggerKey: RegistryKey<Logger> = { _phantom: \"Logger\" } as any;\nconst registry = new TypeRegistry();\n\nregistry.register(loggerKey, () => new ConsoleLogger());\n\nconst logger = registry.resolve(loggerKey);\nlogger.log(\"Hello from registry!\");\n\nclass ConsoleLogger implements Logger {\n  log(message: string): void {\n    console.log(`[LOG] ${message}`);\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "strategy-pattern",
+      "type": "dynamic-version",
+      "description": "Registry enables dynamic strategy selection"
+    },
+    {
+      "target_pattern_id": "dependency-injection",
+      "type": "related-to",
+      "description": "Registry patterns often implement DI"
+    }
+  ]
+}

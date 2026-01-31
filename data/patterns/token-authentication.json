@@ -1,0 +1,35 @@
+{
+  "id": "token-authentication",
+  "name": "Token-Based Authentication Pattern",
+  "category": "Security",
+  "description": "Implements stateless authentication using tokens like JWT issued by identity providers",
+  "when_to_use": "Scalable APIs\nSingle-page applications\nMicroservices with high request rates\nStateless architectures",
+  "benefits": "Statelessness\nScalability\nCross-domain authentication\nPerformance",
+  "drawbacks": "Token size\nRevocation complexity\nToken exposure risk\nAlgorithm vulnerabilities",
+  "use_cases": "REST APIs\nSPA authentication\nMobile app backends\nMicroservices auth",
+  "complexity": "Medium",
+  "tags": [
+    "security",
+    "authentication",
+    "token",
+    "jwt"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Token-Based Authentication with JWT\n\ninterface TokenPayload {\n  sub: string;\n  email: string;\n  roles: string[];\n  exp: number;\n  iat: number;\n  iss: string;\n  aud: string;\n}\n\nclass TokenAuthenticator {\n  private secretKey: string;\n  private issuer: string;\n  private audience: string;\n  private tokenStore: TokenStore;\n\n  constructor(config: TokenConfig) {\n    this.secretKey = config.secretKey;\n    this.issuer = config.issuer;\n    this.audience = config.audience;\n    this.tokenStore = config.tokenStore;\n  }\n\n  async generateToken(payload: Omit<TokenPayload, \"iat\" | \"exp\" | \"iss\" | \"aud\">): Promise<string> {\n    const now = Math.floor(Date.now() / 1000);\n    const fullPayload: TokenPayload = {\n      ...payload,\n      iat: now,\n      exp: now + 3600,\n      iss: this.issuer,\n      aud: this.audience\n    };\n\n    const header = { alg: \"HS256\", typ: \"JWT\" };\n    const encodedHeader = this.base64UrlEncode(JSON.stringify(header));\n    const encodedPayload = this.base64UrlEncode(JSON.stringify(fullPayload));\n    const signature = this.sign(`${encodedHeader}.${encodedPayload}`);\n\n    return `${encodedHeader}.${encodedPayload}.${signature}`;\n  }\n\n  async validateToken(token: string): Promise<TokenValidationResult> {\n    try {\n      const [headerB64, payloadB64, signature] = token.split(\".\");\n      const payload = JSON.parse(this.base64UrlDecode(payloadB64)) as TokenPayload;\n\n      const isExpired = payload.exp < Math.floor(Date.now() / 1000);\n      if (isExpired) {\n        return { valid: false, error: \"Token expired\" };\n      }\n\n      const isRevoked = await this.tokenStore.isRevoked(token);\n      if (isRevoked) {\n        return { valid: false, error: \"Token revoked\" };\n      }\n\n      const expectedSignature = this.sign(`${headerB64}.${payloadB64}`);\n      if (signature !== expectedSignature) {\n        return { valid: false, error: \"Invalid signature\" };\n      }\n\n      return { valid: true, payload };\n    } catch (error) {\n      return { valid: false, error: \"Invalid token format\" };\n    }\n  }\n\n  async refreshToken(refreshToken: string): Promise<string | null> {\n    const result = await this.validateToken(refreshToken);\n    if (!result.valid) return null;\n\n    const { sub, email, roles } = result.payload!;\n    return this.generateToken({ sub, email, roles });\n  }\n\n  async revokeToken(token: string): Promise<void> {\n    await this.tokenStore.revoke(token);\n  }\n\n  private sign(data: string): string {\n    return crypto.createHmac(\"sha256\", this.secretKey).update(data).digest(\"base64url\");\n  }\n\n  private base64UrlEncode(str: string): string {\n    return Buffer.from(str).toString(\"base64url\");\n  }\n\n  private base64UrlDecode(str: string): string {\n    return Buffer.from(str, \"base64url\").toString();\n  }\n}\n\ninterface TokenConfig {\n  secretKey: string;\n  issuer: string;\n  audience: string;\n  tokenStore: TokenStore;\n}\n\ninterface TokenValidationResult {\n  valid: boolean;\n  error?: string;\n  payload?: TokenPayload;\n}\n\ninterface TokenStore {\n  isRevoked(token: string): Promise<boolean>;\n  revoke(token: string): Promise<void>;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "oauth2-authorization",
+      "type": "uses",
+      "description": "OAuth 2.0 often issues tokens for authentication"
+    },
+    {
+      "target_pattern_id": "secrets-management",
+      "type": "uses",
+      "description": "Token secrets require secrets management"
+    }
+  ]
+}

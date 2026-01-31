@@ -1,0 +1,35 @@
+{
+  "id": "multi-signature",
+  "name": "Multi-Signature Pattern",
+  "category": "Blockchain",
+  "description": "Requires multiple parties to authorize transactions providing distributed control and security",
+  "when_to_use": "Corporate wallets\nTreasury management\nDAO governance\nInheritance mechanisms",
+  "benefits": "Distributed control\nReduced single point of failure\nEnhanced security\nGovernance participation",
+  "drawbacks": "Coordination complexity\nTransaction delays\nKey management\nSigner availability",
+  "use_cases": "Corporate treasuries\nDAO operations\nEscrow services\nJoint accounts",
+  "complexity": "Medium",
+  "tags": [
+    "blockchain",
+    "multi-signature",
+    "security",
+    "governance"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Multi-Signature: require multiple signers for transactions\n\ninterface MultiSigConfig {\n  threshold: number;\n  signers: string[];\n  maxSigners: number;\n  expiryTime: number;\n}\n\ninterface PendingTransaction {\n  id: string;\n  tx: Transaction;\n  signatures: Map<string, Signature>;\n  createdAt: Date;\n  expiresAt: Date;\n  status: \"pending\" | \"executed\" | \"expired\" | \"cancelled\";\n}\n\ninterface Signature {\n  signer: string;\n  signedAt: Date;\n  signature: string;\n}\n\ninterface Transaction {\n  to: string;\n  value: number;\n  data: string;\n  nonce: number;\n}\n\nclass MultiSigWallet {\n  private config: MultiSigConfig;\n  private pendingTransactions: Map<string, PendingTransaction> = new Map();\n  private nonce: number = 0;\n  private blockchain: BlockchainClient;\n\n  constructor(config: MultiSigConfig, blockchain: BlockchainClient) {\n    this.config = config;\n    this.blockchain = blockchain;\n  }\n\n  async submitTransaction(\n    proposer: string,\n    to: string,\n    value: number,\n    data: string = \"\"\n  ): Promise<string> {\n    if (!this.config.signers.includes(proposer)) {\n      throw new Error(\"Proposer not authorized\");\n    }\n\n    const tx: Transaction = {\n      to,\n      value,\n      data,\n      nonce: this.nonce++\n    };\n\n    const pendingTx: PendingTransaction = {\n      id: crypto.randomUUID(),\n      tx,\n      signatures: new Map(),\n      createdAt: new Date(),\n      expiresAt: new Date(Date.now() + this.config.expiryTime),\n      status: \"pending\"\n    };\n\n    this.pendingTransactions.set(pendingTx.id, pendingTx);\n\n    return pendingTx.id;\n  }\n\n  async signTransaction(txId: string, signer: string, signature: string): Promise<SignResult> {\n    const pendingTx = this.pendingTransactions.get(txId);\n    if (!pendingTx) {\n      return { success: false, error: \"Transaction not found\" };\n    }\n\n    if (pendingTx.status !== \"pending\") {\n      return { success: false, error: \"Transaction not pending\" };\n    }\n\n    if (!this.config.signers.includes(signer)) {\n      return { success: false, error: \"Signer not authorized\" };\n    }\n\n    if (pendingTx.signatures.has(signer)) {\n      return { success: false, error: \"Already signed\" };\n    }\n\n    const isValid = await this.verifySignature(signer, pendingTx.tx, signature);\n    if (!isValid) {\n      return { success: false, error: \"Invalid signature\" };\n    }\n\n    pendingTx.signatures.set(signer, {\n      signer,\n      signedAt: new Date(),\n      signature\n    });\n\n    if (pendingTx.signatures.size >= this.config.threshold) {\n      await this.executeTransaction(pendingTx);\n    }\n\n    return {\n      success: true,\n      signaturesCollected: pendingTx.signatures.size,\n      threshold: this.config.threshold\n    };\n  }\n\n  async executeTransaction(pendingTx: PendingTransaction): Promise<void> {\n    const sortedSignatures = Array.from(pendingTx.signatures.values())\n      .sort((a, b) => a.signedAt.getTime() - b.signedAt.getTime());\n\n    const combinedSignatures = sortedSignatures.map(s => s.signature).join(\"\");\n\n    await this.blockchain.submitMultiSigTransaction({\n      to: pendingTx.tx.to,\n      value: pendingTx.tx.value,\n      data: pendingTx.tx.data,\n      signatures: combinedSignatures\n    });\n\n    pendingTx.status = \"executed\";\n    console.log(`Multi-sig transaction ${pendingTx.id} executed`);\n  }\n\n  async cancelTransaction(txId: string, canceller: string): Promise<CancellationResult> {\n    const pendingTx = this.pendingTransactions.get(txId);\n    if (!pendingTx) {\n      return { success: false, error: \"Transaction not found\" };\n    }\n\n    if (!this.config.signers.includes(canceller)) {\n      return { success: false, error: \"Canceller not authorized\" };\n    }\n\n    pendingTx.status = \"cancelled\";\n    return { success: true, txId };\n  }\n\n  async getPendingTransactions(): Promise<PendingTransaction[]> {\n    return Array.from(this.pendingTransactions.values())\n      .filter(tx => tx.status === \"pending\");\n  }\n\n  async getTransactionDetails(txId: string): Promise<PendingTransaction | null> {\n    return this.pendingTransactions.get(txId) || null;\n  }\n\n  private async verifySignature(signer: string, tx: Transaction, signature: string): Promise<boolean> {\n    return true;\n  }\n\n  getThreshold(): number {\n    return this.config.threshold;\n  }\n\n  getSigners(): string[] {\n    return [...this.config.signers];\n  }\n}\n\ninterface BlockchainClient {\n  submitMultiSigTransaction(tx: any): Promise<void>;\n}\n\ninterface SignResult {\n  success: boolean;\n  signaturesCollected?: number;\n  threshold?: number;\n  error?: string;\n}\n\ninterface CancellationResult {\n  success: boolean;\n  txId?: string;\n  error?: string;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "dao-governance",
+      "type": "uses",
+      "description": "Multi-sig is often used for DAO treasury management"
+    },
+    {
+      "target_pattern_id": "smart-contract-pattern",
+      "type": "implements",
+      "description": "Multi-sig is typically a smart contract pattern"
+    }
+  ]
+}

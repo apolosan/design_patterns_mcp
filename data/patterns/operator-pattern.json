@@ -1,0 +1,35 @@
+{
+  "id": "operator-pattern",
+  "name": "Operator Pattern",
+  "category": "Cloud Native",
+  "description": "Extends Kubernetes with domain-specific automation for managing stateful applications",
+  "when_to_use": "Database management\nMessage queue operations\nStateful applications\nComplex orchestration in Kubernetes",
+  "benefits": "Domain-specific automation\nSelf-healing\nOperational consistency\nCustom resource management",
+  "drawbacks": "Development complexity\nTesting challenges\nVersion compatibility\nOperator maintenance",
+  "use_cases": "Database operators\nBackup and restore\nScaling automation\nCustom controllers",
+  "complexity": "High",
+  "tags": [
+    "cloud-native",
+    "kubernetes",
+    "operator",
+    "automation"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Operator Pattern: Kubernetes custom controller with domain knowledge\n\ninterface CustomResource {\n  apiVersion: string;\n  kind: string;\n  metadata: { name: string; namespace: string };\n  spec: Record<string, any>;\n  status?: Record<string, any>;\n}\n\ninterface OperatorConfig {\n  crdName: string;\n  resyncPeriod: number;\n  maxRetries: number;\n}\n\nclass OperatorController {\n  private kubeClient: KubernetesClient;\n  private reconcilers: Map<string, Reconciler> = new Map();\n  private config: OperatorConfig;\n\n  constructor(config: OperatorConfig, kubeClient: KubernetesClient) {\n    this.config = config;\n    this.kubeClient = kubeClient;\n  }\n\n  registerReconciler(resourceType: string, reconciler: Reconciler): void {\n    this.reconcilers.set(resourceType, reconciler);\n  }\n\n  async start(): Promise<void> {\n    console.log(`Starting operator for ${this.config.crdName}...`);\n    this.watchResources();\n  }\n\n  private async watchResources(): Promise<void> {\n    const watcher = await this.kubeClient.watch(this.config.crdName);\n\n    for await (const event of watcher) {\n      await this.handleEvent(event);\n    }\n  }\n\n  private async handleEvent(event: WatchEvent): Promise<void> {\n    const { type, object } = event;\n    const reconciler = this.reconcilers.get(object.kind);\n\n    if (!reconciler) {\n      console.warn(`No reconciler found for ${object.kind}`);\n      return;\n    }\n\n    try {\n      await this.reconcileWithRetry(reconciler, object);\n    } catch (error) {\n      console.error(`Reconciliation failed: ${(error as Error).message}`);\n      await this.updateStatus(object, { phase: \"Error\", error: (error as Error).message });\n    }\n  }\n\n  private async reconcileWithRetry(reconciler: Reconciler, resource: CustomResource): Promise<void> {\n    let retries = 0;\n    while (retries < this.config.maxRetries) {\n      try {\n        const result = await reconciler.reconcile(resource);\n        await this.updateStatus(resource, result);\n        return;\n      } catch (error) {\n        retries++;\n        if (retries < this.config.maxRetries) {\n          await this.sleep(Math.pow(2, retries) * 1000);\n        }\n      }\n    }\n    throw new Error(`Max retries exceeded`);\n  }\n\n  private async updateStatus(resource: CustomResource, status: Record<string, any>): Promise<void> {\n    await this.kubeClient.patchStatus(resource, { status });\n  }\n\n  private sleep(ms: number): Promise<void> {\n    return new Promise(resolve => setTimeout(resolve, ms));\n  }\n}\n\ninterface Reconciler {\n  reconcile(resource: CustomResource): Promise<Record<string, any>>;\n}\n\ninterface WatchEvent {\n  type: \"ADDED\" | \"MODIFIED\" | \"DELETED\";\n  object: CustomResource;\n}\n\ninterface KubernetesClient {\n  watch(resourceType: string): Promise<AsyncIterable<WatchEvent>>;\n  patchStatus(resource: CustomResource, body: any): Promise<void>;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "custom-resource-definition",
+      "type": "requires",
+      "description": "Operators use CRDs to extend Kubernetes API"
+    },
+    {
+      "target_pattern_id": "control-loop",
+      "type": "uses",
+      "description": "Operators implement reconciliation control loops"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "mtls",
+  "name": "mTLS Pattern",
+  "category": "Security",
+  "description": "Implements mutual authentication where both client and server present certificates",
+  "when_to_use": "Service-to-service authentication\nZero trust networks\nEncrypted service communication\nService mesh deployments",
+  "benefits": "Mutual authentication\nEncryption\nIdentity verification\nCompliance",
+  "drawbacks": "Certificate management\nInfrastructure complexity\nPerformance overhead\nOperational complexity",
+  "use_cases": "Service mesh\nMicroservices communication\nZero trust architecture\nAPI security",
+  "complexity": "High",
+  "tags": [
+    "security",
+    "mtls",
+    "mutual-authentication",
+    "tls",
+    "certificates"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// mTLS: Mutual TLS for service-to-service authentication\n\ninterface CertificateInfo {\n  subject: string;\n  issuer: string;\n  serialNumber: string;\n  validFrom: Date;\n  validTo: Date;\n  sans: string[];\n}\n\nclass MTLSServer {\n  private serverCert: CertificateInfo;\n  private caCert: CertificateInfo;\n  private certificateAuthority: CertificateAuthority;\n\n  constructor(config: MTLSConfig) {\n    this.serverCert = config.serverCert;\n    this.caCert = config.caCert;\n    this.certificateAuthority = config.certificateAuthority;\n  }\n\n  async handleConnection(socket: TLSSocket): Promise<ConnectionResult> {\n    const clientCert = socket.getPeerCertificate();\n\n    const isValid = this.validateCertificate(clientCert);\n    if (!isValid) {\n      return { authenticated: false, reason: \"Invalid certificate\" };\n    }\n\n    const isTrusted = await this.verifyTrust(clientCert);\n    if (!isTrusted) {\n      return { authenticated: false, reason: \"Certificate not trusted\" };\n    }\n\n    const isNotRevoked = await this.checkRevocation(clientCert);\n    if (!isNotRevoked) {\n      return { authenticated: false, reason: \"Certificate revoked\" };\n    }\n\n    return {\n      authenticated: true,\n      clientId: clientCert.subject,\n      permissions: await this.extractPermissions(clientCert)\n    };\n  }\n\n  private validateCertificate(cert: Certificate): boolean {\n    const now = new Date();\n    return cert.valid_from <= now && cert.valid_to >= now;\n  }\n\n  private async verifyTrust(cert: Certificate): Promise<boolean> {\n    return cert.issuer === this.caCert.subject;\n  }\n\n  private async checkRevocation(cert: Certificate): Promise<boolean> {\n    return true;\n  }\n\n  private async extractPermissions(cert: Certificate): Promise<string[]> {\n    return [\"read\", \"write\"];\n  }\n}\n\nclass CertificateAuthority {\n  async issueCertificate(\n    commonName: string,\n    sans: string[]\n  ): Promise<CertificateInfo> {\n    return {\n      subject: commonName,\n      issuer: \"Internal CA\",\n      serialNumber: crypto.randomUUID(),\n      validFrom: new Date(),\n      validTo: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),\n      sans\n    };\n  }\n\n  async revokeCertificate(serialNumber: string): Promise<void> {\n    console.log(`Revoking certificate: ${serialNumber}`);\n  }\n\n  async getCertificateStatus(serialNumber: string): Promise<\"valid\" | \"revoked\" | \"unknown\"> {\n    return \"valid\";\n  }\n}\n\ninterface MTLSConfig {\n  serverCert: CertificateInfo;\n  caCert: CertificateInfo;\n  certificateAuthority: CertificateAuthority;\n}\n\ninterface ConnectionResult {\n  authenticated: boolean;\n  clientId?: string;\n  permissions?: string[];\n  reason?: string;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "zero-trust-architecture",
+      "type": "uses",
+      "description": "mTLS is a key component of zero trust architecture"
+    },
+    {
+      "target_pattern_id": "service-mesh",
+      "type": "uses",
+      "description": "Service mesh typically uses mTLS for service authentication"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "soa",
+  "name": "Service-Oriented Architecture",
+  "category": "Architecture",
+  "description": "Creates distributed systems with reusable and composable coarse-grained services",
+  "when_to_use": "Enterprise integration\nLegacy modernization\nCross-application functionality sharing\nHeterogeneous system integration",
+  "benefits": "Service reusability\nInteroperability\nBusiness alignment\nGovernance",
+  "drawbacks": "Complexity\nPerformance overhead\nGovernance requirements\nVersioning challenges",
+  "use_cases": "Enterprise systems\nLegacy modernization\nB2B integration\nService marketplaces",
+  "complexity": "High",
+  "tags": [
+    "architecture",
+    "soa",
+    "enterprise",
+    "distributed"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// SOA: coarse-grained services with contracts\n\n// Service Contract (WSDL-like interface)\ninterface CustomerService {\n  getCustomer(id: string): Promise<Customer>;\n  createCustomer(data: CreateCustomerRequest): Promise<Customer>;\n  updateCustomer(id: string, data: UpdateCustomerRequest): Promise<Customer>;\n}\n\ninterface OrderService {\n  createOrder(customerId: string, items: OrderItem[]): Promise<Order>;\n  getOrder(id: string): Promise<Order | null>;\n  cancelOrder(id: string): Promise<boolean>;\n}\n\n// Enterprise Service Bus (ESB)\nclass EnterpriseServiceBus {\n  private services: Map<string, any> = new Map();\n  private messageFormatter: MessageFormatter;\n  private protocolAdapter: ProtocolAdapter;\n\n  registerService(name: string, service: any): void {\n    this.services.set(name, service);\n  }\n\n  async invoke(serviceName: string, operation: string, payload: any): Promise<any> {\n    const service = this.services.get(serviceName);\n    if (!service) throw new Error(\"Service not found\");\n\n    const formattedMessage = this.messageFormatter.format(operation, payload);\n    return this.protocolAdapter.invoke(service, formattedMessage);\n  }\n}\n\n// Service Registry (UDDI-like)\nclass ServiceRegistry {\n  private registry: Map<string, ServiceMetadata> = new Map();\n\n  register(metadata: ServiceMetadata): void {\n    this.registry.set(metadata.name, metadata);\n  }\n\n  discover(requirements: ServiceRequirements): ServiceMetadata[] {\n    return Array.from(this.registry.values())\n      .filter(s => s.capabilities.includes(requirements.capability));\n  }\n}\n\ninterface ServiceMetadata {\n  name: string;\n  version: string;\n  endpoint: string;\n  capabilities: string[];\n  sla: SLA;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "microservices",
+      "type": "evolved-from",
+      "description": "Microservices evolved from SOA principles"
+    },
+    {
+      "target_pattern_id": "api-gateway",
+      "type": "uses",
+      "description": "SOA often uses ESB similar to API gateway"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "state-machine-pattern-typed",
+  "name": "State Machine Pattern (Typed)",
+  "category": "Functional",
+  "description": "Models state transitions explicitly using types ensuring only valid transitions are possible",
+  "when_to_use": "Workflows with defined states\nProtocols\nDocument processing\nBusiness workflows",
+  "benefits": "Type-safe transitions\nImpossible invalid states\nClear state model\nCompile-time safety",
+  "drawbacks": "Complexity\nVerbosity\nLearning curve\nState explosion",
+  "use_cases": "Order processing\nDocument workflows\nProtocols\nGame states",
+  "complexity": "High",
+  "tags": [
+    "functional",
+    "state-machine",
+    "typed",
+    "transitions"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Typed State Machine: transitions as type-safe functions\n\n// State types as empty objects for compile-time safety\ninterface Draft { readonly _tag: \"Draft\"; }\ninterface PendingReview { readonly _tag: \"PendingReview\"; }\ninterface Approved { readonly _tag: \"Approved\"; }\ninterface Rejected { readonly _tag: \"Rejected\"; }\ninterface Published { readonly _tag: \"Published\"; }\n\ntype DocumentState = Draft | PendingReview | Approved | Rejected | Published;\n\n// Document with state\ninterface Document<S extends DocumentState = Draft> {\n  id: string;\n  title: string;\n  content: string;\n  author: string;\n  createdAt: Date;\n  state: S;\n  version: number;\n}\n\n// State transition functions\nfunction submitForReview<S extends Draft>(doc: Document<S>): Document<PendingReview> {\n  return {\n    ...doc,\n    state: { _tag: \"PendingReview\" }\n  } as Document<PendingReview>;\n}\n\nfunction approve<S extends PendingReview>(doc: Document<S>): Document<Approved> {\n  return {\n    ...doc,\n    state: { _tag: \"Approved\" }\n  } as Document<Approved>;\n}\n\nfunction reject<S extends PendingReview>(doc: Document<S>, reason: string): Document<Rejected> {\n  return {\n    ...doc,\n    state: { _tag: \"Rejected\" },\n    content: `${doc.content}\\n\\n--- Rejection Reason ---\\n${reason}`\n  } as Document<Rejected>;\n}\n\nfunction publish<S extends Approved>(doc: Document<S>): Document<Published> {\n  return {\n    ...doc,\n    state: { _tag: \"Published\" },\n    publishedAt: new Date()\n  } as Document<Published>;\n}\n\nfunction revise<S extends Rejected>(doc: Document<S>, newContent: string): Document<Draft> {\n  return {\n    ...doc,\n    state: { _tag: \"Draft\" },\n    content: newContent,\n    version: doc.version + 1\n  } as Document<Draft>;\n}\n\n// Guard conditions\nfunction canSubmit(doc: Document): doc is Document<Draft> {\n  return doc.state._tag === \"Draft\";\n}\n\nfunction canApprove(doc: Document): doc is Document<PendingReview> {\n  return doc.state._tag === \"PendingReview\";\n}\n\nfunction canPublish(doc: Document): doc is Document<Approved> {\n  return doc.state._tag === \"Approved\";\n}\n\n// State machine orchestrator\nclass DocumentWorkflow {\n  private documents: Map<string, Document> = new Map();\n\n  createDocument(title: string, content: string, author: string): Document<Draft> {\n    const doc: Document<Draft> = {\n      id: crypto.randomUUID(),\n      title,\n      content,\n      author,\n      createdAt: new Date(),\n      state: { _tag: \"Draft\" },\n      version: 1\n    };\n\n    this.documents.set(doc.id, doc);\n    return doc;\n  }\n\n  transition(\n    docId: string,\n    action: (doc: Document) => Document<any>\n  ): Document | null {\n    const doc = this.documents.get(docId);\n    if (!doc) return null;\n\n    const newDoc = action(doc);\n    this.documents.set(docId, newDoc);\n    return newDoc;\n  }\n\n  getDocument(docId: string): Document | null {\n    return this.documents.get(docId) || null;\n  }\n\n  getState(docId: string): string | null {\n    return this.documents.get(docId)?.state._tag || null;\n  }\n\n  getAvailableActions(docId: string): string[] {\n    const doc = this.documents.get(docId);\n    if (!doc) return [];\n\n    const actions: string[] = [];\n    if (canSubmit(doc)) actions.push(\"submit\");\n    if (canApprove(doc)) actions.push(\"approve\", \"reject\");\n    if (canPublish(doc)) actions.push(\"publish\");\n    if (doc.state._tag === \"Rejected\") actions.push(\"revise\");\n\n    return actions;\n  }\n}\n\n// Example usage\nconst workflow = new DocumentWorkflow();\n\nlet doc = workflow.createDocument(\"My Article\", \"Content here\", \"author@example.com\");\n\n// doc can be submitted\ndoc = workflow.transition(doc.id, submitForReview)!;\n\n// doc can be approved\nif (canApprove(doc)) {\n  doc = workflow.transition(doc.id, approve)!;\n}\n\n// doc can be published\nif (canPublish(doc)) {\n  doc = workflow.transition(doc.id, publish)!;\n}\n\nconsole.log(workflow.getAvailableActions(doc.id));"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "witness-pattern",
+      "type": "uses",
+      "description": "State machines often use witnesses for state validity"
+    },
+    {
+      "target_pattern_id": "result-type",
+      "type": "uses",
+      "description": "State transitions return Result for error handling"
+    }
+  ]
+}

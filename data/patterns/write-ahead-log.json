@@ -1,0 +1,35 @@
+{
+  "id": "write-ahead-log",
+  "name": "Write-Ahead Log Pattern",
+  "category": "Database",
+  "description": "Persists changes to log before applying them to database for durability and recovery",
+  "when_to_use": "Database transactions\nRecovery requirements\nLog-based replication\nACID compliance",
+  "benefits": "Durability guarantee\nRecovery capability\nReplication support\nCrash recovery",
+  "drawbacks": "Write amplification\nStorage overhead\nRecovery complexity\nCheckpoint management",
+  "use_cases": "Database systems\nTransaction logs\nReplication streams\nAudit trails",
+  "complexity": "High",
+  "tags": [
+    "database",
+    "write-ahead-log",
+    "durability",
+    "recovery"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Write-Ahead Log: persist before apply for durability\n\ninterface WALRecord {\n  lsn: number;\n  transactionId: string;\n  operation: \"BEGIN\" | \"COMMIT\" | \"ROLLBACK\" | \"UPDATE\" | \"INSERT\" | \"DELETE\";\n  beforeImage?: any;\n  afterImage?: any;\n  tableName: string;\n  primaryKey: Record<string, any>;\n  timestamp: Date;\n}\n\ninterface WALConfig {\n  logDirectory: string;\n  segmentSize: number;\n  checkpointInterval: number;\n  flushPolicy: \"immediate\" | \"periodic\";\n}\n\ninterface Checkpoint {\n  lsn: number;\n  timestamp: Date;\n  dirtyPages: string[];\n  transactionTable: Map<string, TransactionInfo>;\n}\n\nclass WriteAheadLog {\n  private logFile: FileHandle;\n  private currentSegment: number = 0;\n  private currentLSN: number = 0;\n  private dirtyPages: Set<string> = new Set();\n  private transactionTable: Map<string, TransactionInfo> = new Map();\n  private config: WALConfig;\n\n  constructor(config: WALConfig) {\n    this.config = config;\n  }\n\n  async beginTransaction(transactionId: string): Promise<void> {\n    const record: WALRecord = {\n      lsn: this.nextLSN(),\n      transactionId,\n      operation: \"BEGIN\",\n      tableName: \"\",\n      primaryKey: {},\n      timestamp: new Date()\n    };\n\n    await this.appendRecord(record);\n    this.transactionTable.set(transactionId, {\n      id: transactionId,\n      status: \"active\",\n      firstLSN: record.lsn,\n      lastLSN: record.lsn\n    });\n  }\n\n  async write(\n    transactionId: string,\n    tableName: string,\n    primaryKey: Record<string, any>,\n    beforeImage: any,\n    afterImage: any\n  ): Promise<void> {\n    const record: WALRecord = {\n      lsn: this.nextLSN(),\n      transactionId,\n      operation: beforeImage ? \"UPDATE\" : \"INSERT\",\n      beforeImage,\n      afterImage,\n      tableName,\n      primaryKey,\n      timestamp: new Date()\n    };\n\n    await this.appendRecord(record);\n\n    const tx = this.transactionTable.get(transactionId);\n    if (tx) {\n      tx.lastLSN = record.lsn;\n    }\n\n    this.dirtyPages.add(`${tableName}:${JSON.stringify(primaryKey)}`);\n  }\n\n  async commit(transactionId: string): Promise<void> {\n    const record: WALRecord = {\n      lsn: this.nextLSN(),\n      transactionId,\n      operation: \"COMMIT\",\n      tableName: \"\",\n      primaryKey: {},\n      timestamp: new Date()\n    };\n\n    await this.appendRecord(record);\n\n    const tx = this.transactionTable.get(transactionId);\n    if (tx) {\n      tx.status = \"committed\";\n      tx.commitLSN = record.lsn;\n    }\n\n    if (this.config.flushPolicy === \"immediate\") {\n      await this.flush();\n    }\n  }\n\n  async rollback(transactionId: string): Promise<void> {\n    const record: WALRecord = {\n      lsn: this.nextLSN(),\n      transactionId,\n      operation: \"ROLLBACK\",\n      tableName: \"\",\n      primaryKey: {},\n      timestamp: new Date()\n    };\n\n    await this.appendRecord(record);\n\n    const tx = this.transactionTable.get(transactionId);\n    if (tx) {\n      tx.status = \"rolled back\";\n    }\n  }\n\n  async checkpoint(): Promise<Checkpoint> {\n    const checkpointLSN = this.currentLSN;\n    const checkpoint: Checkpoint = {\n      lsn: checkpointLSN,\n      timestamp: new Date(),\n      dirtyPages: Array.from(this.dirtyPages),\n      transactionTable: new Map(this.transactionTable)\n    };\n\n    await this.writeCheckpoint(checkpoint);\n    this.dirtyPages.clear();\n\n    console.log(`Checkpoint created at LSN ${checkpointLSN}`);\n    return checkpoint;\n  }\n\n  async recover(checkpoint: Checkpoint): Promise<RecoveryResult> {\n    const transactionsToRedo: string[] = [];\n    const transactionsToUndo: string[] = [];\n\n    for (const [, tx] of checkpoint.transactionTable) {\n      if (tx.status === \"active\") {\n        transactionsToUndo.push(tx.id);\n      } else if (tx.status === \"committed\" && tx.commitLSN! > checkpoint.lsn) {\n        transactionsToRedo.push(tx.id);\n      }\n    }\n\n    for (const txId of transactionsToRedo) {\n      await this.redoTransactions(txId, checkpoint.lsn);\n    }\n\n    for (const txId of transactionsToUndo) {\n      await this.undoTransactions(txId);\n    }\n\n    return {\n      redone: transactionsToRedo.length,\n      undone: transactionsToUndo.length\n    };\n  }\n\n  private async appendRecord(record: WALRecord): Promise<void> {\n    const serialized = JSON.stringify(record) + \"\\n\";\n    await this.logFile.write(serialized);\n    this.currentLSN = record.lsn;\n\n    if (this.currentLSN % this.config.segmentSize === 0) {\n      await this.rotateSegment();\n    }\n  }\n\n  private async flush(): Promise<void> {\n    await this.logFile.flush();\n  }\n\n  private async rotateSegment(): Promise<void> {\n    this.currentSegment++;\n    console.log(`Rotating to segment ${this.currentSegment}`);\n  }\n\n  private nextLSN(): number {\n    return ++this.currentLSN;\n  }\n\n  private async writeCheckpoint(checkpoint: Checkpoint): Promise<void> {}\n  private async redoTransactions(txId: string, fromLSN: number): Promise<void> {}\n  private async undoTransactions(txId: string): Promise<void> {}\n}\n\ninterface TransactionInfo {\n  id: string;\n  status: \"active\" | \"committed\" | \"rolled back\";\n  firstLSN: number;\n  lastLSN: number;\n  commitLSN?: number;\n}\n\ninterface RecoveryResult {\n  redone: number;\n  undone: number;\n}\n\ninterface FileHandle {\n  write(data: string): Promise<void>;\n  flush(): Promise<void>;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "transaction",
+      "type": "uses",
+      "description": "WAL is fundamental for transaction durability"
+    },
+    {
+      "target_pattern_id": "replication",
+      "type": "enables",
+      "description": "WAL enables log-based replication"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "memory-context-management-pattern",
+  "name": "Memory and Context Management Pattern",
+  "category": "Agentic AI",
+  "description": "Manages short-term and long-term memories for AI agents efficiently",
+  "when_to_use": "Agents learning from past interactions\nLong-running dialogue systems\nPersonalized assistants\nExperience-based learning",
+  "benefits": "Persistent context\nLearning from history\nPersonalization\nImproved recall efficiency",
+  "drawbacks": "Storage complexity\nMemory contamination\nPrivacy concerns\nRetrieval accuracy",
+  "use_cases": "Personal AI assistants\nCustomer service with history\nEducational systems\nCollaborative workspaces",
+  "complexity": "High",
+  "tags": [
+    "agentic-ai",
+    "memory-management",
+    "context",
+    "retrieval",
+    "long-term-memory"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "interface Memory {\n  id: string;\n  type: \"working\" | \"episodic\" | \"semantic\" | \"procedural\";\n  content: any;\n  importance: number;\n  timestamp: Date;\n  embedding?: number[];\n}\n\ninterface MemoryQuery {\n  type?: Memory[\"type\"];\n  keywords?: string[];\n  minImportance?: number;\n  timeRange?: { start: Date; end: Date };\n  limit: number;\n}\n\nclass MemoryManager {\n  private workingMemory: Map<string, any> = new Map();\n  private longTermStore: Map<string, Memory> = new Map();\n\n  async store(memory: Omit<Memory, \"id\" | \"timestamp\">): Promise<Memory> {\n    const id = `mem-${Date.now()}-${Math.random().toString(36).slice(2)}`;\n    const fullMemory: Memory = {\n      ...memory,\n      id,\n      timestamp: new Date()\n    };\n\n    if (memory.type === \"working\") {\n      this.workingMemory.set(id, memory.content);\n    } else {\n      this.longTermStore.set(id, fullMemory);\n      await this.generateEmbedding(fullMemory);\n    }\n\n    return fullMemory;\n  }\n\n  async retrieve(query: MemoryQuery): Promise<Memory[]> {\n    let results = Array.from(this.longTermStore.values());\n\n    if (query.type) {\n      results = results.filter(m => m.type === query.type);\n    }\n\n    if (query.minImportance !== undefined) {\n      results = results.filter(m => m.importance >= query.minImportance!);\n    }\n\n    if (query.timeRange) {\n      results = results.filter(m =>\n        m.timestamp >= query.timeRange!.start &&\n        m.timestamp <= query.timeRange!.end\n      );\n    }\n\n    if (query.keywords && query.keywords.length > 0) {\n      results = results.filter(m =>\n        query.keywords!.some(k =>\n          JSON.stringify(m.content).toLowerCase().includes(k.toLowerCase())\n        )\n      );\n    }\n\n    return results.slice(0, query.limit);\n  }\n\n  async summarize(memories: Memory[]): Promise<string> {\n    return `Summary of ${memories.length} memories`;\n  }\n\n  private async generateEmbedding(memory: Memory): Promise<void> {\n    memory.embedding = [0.1, 0.2, 0.3];\n  }\n\n  async getWorkingContext(): Promise<Record<string, any>> {\n    return Object.fromEntries(this.workingMemory);\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "vector-search",
+      "type": "enhances",
+      "description": "Memory retrieval can be enhanced with vector similarity search"
+    },
+    {
+      "target_pattern_id": "context-window",
+      "type": "relates-to",
+      "description": "Memory patterns extend beyond context window limitations"
+    }
+  ]
+}

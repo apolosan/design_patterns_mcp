@@ -1,0 +1,35 @@
+{
+  "id": "container-pattern",
+  "name": "Container Pattern",
+  "category": "Cloud Native",
+  "description": "Collection of patterns for building secure, efficient, and reusable container images",
+  "when_to_use": "CI/CD pipelines\nResource optimization\nSecurity hardening\nApplication bootstrapping",
+  "benefits": "Reduced image size\nImproved security\nFaster builds\nBetter resource utilization",
+  "drawbacks": "Build complexity\nLayer management\nRegistry requirements\nSecurity scanning needs",
+  "use_cases": "Microservices deployment\nCI/CD pipelines\nDevelopment environments\nProduction workloads",
+  "complexity": "Medium",
+  "tags": [
+    "cloud-native",
+    "container",
+    "docker",
+    "kubernetes"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Container Patterns: multi-stage builds, distroless, init containers\n\ninterface ContainerBuildConfig {\n  baseImage: string;\n  buildImage: string;\n  finalImage: string;\n  artifacts: string[];\n  user: string;\n}\n\nclass ContainerBuilder {\n  private config: ContainerBuildConfig;\n\n  constructor(config: Partial<ContainerBuildConfig> = {}) {\n    this.config = {\n      baseImage: \"node:18-alpine\",\n      buildImage: \"node:18-alpine\",\n      finalImage: \"gcr.io/distroless/base\",\n      artifacts: [\"dist/\", \"node_modules/\"],\n      user: \"nonroot\",\n      ...config\n    };\n  }\n\n  generateDockerfile(): string {\n    return `# Multi-stage build for minimal production image\n\n# Build stage\nFROM ${this.config.buildImage} AS builder\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci --only=production\nCOPY . .\nRUN npm run build\n\n# Production stage\nFROM ${this.config.finalImage}\nWORKDIR /app\n\n# Copy artifacts from builder\nCOPY --from=builder /app/dist ./dist\nCOPY --from=builder /app/node_modules ./node_modules\n\n# Use non-root user\nUSER ${this.config.user}\n\nCMD [\"node\", \"dist/index.js\"]\n`;\n  }\n}\n\n// Init container pattern\ninterface InitContainerConfig {\n  initImage: string;\n  initCommand: string[];\n  mainContainerName: string;\n}\n\nclass InitContainerTemplate {\n  generate(initConfig: InitContainerConfig): any {\n    return {\n      apiVersion: \"v1\",\n      kind: \"Pod\",\n      spec: {\n        initContainers: [{\n          name: \"init-myservice\",\n          image: initConfig.initImage,\n          command: initConfig.initCommand\n        }],\n        containers: [{\n          name: initConfig.mainContainerName,\n          image: \"myapp:latest\"\n        }]\n      }\n    };\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "sidecar-pattern",
+      "type": "related-to",
+      "description": "Init containers work alongside main container like sidecars"
+    },
+    {
+      "target_pattern_id": "multi-stage-deployment",
+      "type": "uses",
+      "description": "Container patterns often use multi-stage builds"
+    }
+  ]
+}

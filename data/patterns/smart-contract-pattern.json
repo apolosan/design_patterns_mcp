@@ -1,0 +1,35 @@
+{
+  "id": "smart-contract-pattern",
+  "name": "Smart Contract Pattern",
+  "category": "Blockchain",
+  "description": "Implements self-executing contracts on blockchain with predefined conditions and automatic enforcement",
+  "when_to_use": "Financial contracts\nSupply chain\nVoting systems\nTokenization of assets",
+  "benefits": "Transparency\nImmutability\nTrustlessness\nAutomation",
+  "drawbacks": "Immutability risks\nSecurity vulnerabilities\nLegal uncertainty\nScalability limits",
+  "use_cases": "DeFi protocols\nNFT marketplaces\nSupply chain tracking\nVoting systems",
+  "complexity": "High",
+  "tags": [
+    "blockchain",
+    "smart-contract",
+    "defi",
+    "automation"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Smart Contract: self-executing contracts on blockchain\n\ninterface ContractState {\n  parties: string[];\n  terms: ContractTerm[];\n  status: \"pending\" | \"active\" | \"completed\" | \"terminated\";\n  createdAt: Date;\n  completedAt?: Date;\n}\n\ninterface ContractTerm {\n  id: string;\n  condition: string;\n  action: ContractAction;\n  executed: boolean;\n  executedAt?: Date;\n}\n\ninterface ContractAction {\n  type: \"transfer\" | \"mint\" | \"burn\" | \"emit\" | \"record\";\n  params: Record<string, any>;\n}\n\nclass SmartContract {\n  private state: ContractState;\n  private code: string;\n  private blockchain: BlockchainInterface;\n\n  constructor(code: string, parties: string[], terms: ContractTerm[]) {\n    this.code = code;\n    this.state = {\n      parties,\n      terms,\n      status: \"pending\",\n      createdAt: new Date()\n    };\n  }\n\n  async deploy(blockchain: BlockchainInterface): Promise<string> {\n    this.blockchain = blockchain;\n    const contractAddress = await blockchain.deployContract(this.code);\n    this.state.status = \"active\";\n    return contractAddress;\n  }\n\n  async execute(condition: string, params: Record<string, any>): Promise<ExecutionResult> {\n    const term = this.state.terms.find(t => t.condition === condition && !t.executed);\n    if (!term) {\n      return { success: false, error: \"Condition not found or already executed\" };\n    }\n\n    const conditionsMet = await this.evaluateCondition(term.condition, params);\n    if (!conditionsMet) {\n      return { success: false, error: \"Conditions not met\" };\n    }\n\n    try {\n      await this.executeAction(term.action);\n      term.executed = true;\n      term.executedAt = new Date();\n\n      if (this.state.terms.every(t => t.executed)) {\n        this.state.status = \"completed\";\n        this.state.completedAt = new Date();\n      }\n\n      return { success: true, termId: term.id };\n    } catch (error) {\n      return { success: false, error: (error as Error).message };\n    }\n  }\n\n  private async evaluateCondition(condition: string, params: Record<string, any>): Promise<boolean> {\n    return true;\n  }\n\n  private async executeAction(action: ContractAction): Promise<void> {\n    switch (action.type) {\n      case \"transfer\":\n        await this.transfer(action.params);\n        break;\n      case \"mint\":\n        await this.mint(action.params);\n        break;\n      case \"burn\":\n        await this.burn(action.params);\n        break;\n      case \"emit\":\n        await this.emitEvent(action.params);\n        break;\n      case \"record\":\n        await this.record(action.params);\n        break;\n    }\n  }\n\n  private async transfer(params: Record<string, any>): Promise<void> {\n    await this.blockchain.executeTransaction({\n      type: \"transfer\",\n      from: params.from,\n      to: params.to,\n      amount: params.amount\n    });\n  }\n\n  private async mint(params: Record<string, any>): Promise<void> {\n    await this.blockchain.executeTransaction({\n      type: \"mint\",\n      to: params.to,\n      amount: params.amount\n    });\n  }\n\n  private async burn(params: Record<string, any>): Promise<void> {\n    await this.blockchain.executeTransaction({\n      type: \"burn\",\n      from: params.from,\n      amount: params.amount\n    });\n  }\n\n  private async emitEvent(params: Record<string, any>): Promise<void> {\n    await this.blockchain.emitEvent(params.name, params.data);\n  }\n\n  private async record(params: Record<string, any>): Promise<void> {\n    console.log(\"Recording to blockchain:\", params);\n  }\n\n  getState(): ContractState {\n    return { ...this.state };\n  }\n\n  getTerms(): ContractTerm[] {\n    return [...this.state.terms];\n  }\n}\n\ninterface BlockchainInterface {\n  deployContract(code: string): Promise<string>;\n  executeTransaction(tx: any): Promise<void>;\n  emitEvent(name: string, data: any): Promise<void>;\n}\n\ninterface ExecutionResult {\n  success: boolean;\n  termId?: string;\n  error?: string;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "tokenization",
+      "type": "uses",
+      "description": "Smart contracts often implement tokenization"
+    },
+    {
+      "target_pattern_id": "oracle-pattern",
+      "type": "uses",
+      "description": "Smart contracts may use oracles for external data"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "result-type-pattern",
+  "name": "Result Type Pattern",
+  "category": "Functional",
+  "description": "Represents operations that can fail using discriminated unions for composable error handling",
+  "when_to_use": "Error handling without exceptions\nOperations that may fail\nFunctional error composition\nExplicit error handling",
+  "benefits": "No exceptions\nCompositional\nType-safe\nExplicit error handling",
+  "drawbacks": "Verbosity\nPattern matching required\nError propagation complexity\nLearning curve",
+  "use_cases": "Validation\nIO operations\nAPI calls\nDomain operations",
+  "complexity": "Medium",
+  "tags": [
+    "functional",
+    "error-handling",
+    "result",
+    "either"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Result Type: explicit success/failure without exceptions\n\n// Discriminated union for result\ntype Result<T, E> =\n  | { readonly _tag: \"Ok\"; readonly value: T }\n  | { readonly _tag: \"Err\"; readonly error: E };\n\n// Constructors\nfunction ok<T, E>(value: T): Result<T, E> {\n  return { _tag: \"Ok\", value };\n}\n\nfunction err<T, E>(error: E): Result<T, E> {\n  return { _tag: \"Err\", error };\n}\n\n// Type guards\nfunction isOk<T, E>(result: Result<T, E>): result is { _tag: \"Ok\"; value: T } {\n  return result._tag === \"Ok\";\n}\n\nfunction isErr<T, E>(result: Result<T, E>): result is { _tag: \"Err\"; error: E } {\n  return result._tag === \"Err\";\n}\n\n// Map - transform success value\nfunction map<T, U, E>(\n  result: Result<T, E>,\n  fn: (value: T) => U\n): Result<U, E> {\n  return isOk(result) ? ok(fn(result.value)) : result;\n}\n\n// MapError - transform error value\nfunction mapError<T, E, F>(\n  result: Result<T, E>,\n  fn: (error: E) => F\n): Result<T, F> {\n  return isErr(result) ? err(fn(result.error)) : result;\n}\n\n// AndThen - chain operations that may fail\nfunction andThen<T, U, E>(\n  result: Result<T, E>,\n  fn: (value: T) => Result<U, E>\n): Result<U, E> {\n  return isOk(result) ? fn(result.value) : result;\n}\n\n// OrElse - provide alternative on error\nfunction orElse<T, E>(\n  result: Result<T, E>,\n  fn: (error: E) => Result<T, E>\n): Result<T, E> {\n  return isErr(result) ? fn(result.error) : result;\n}\n\n// GetOrElse - extract value or default\nfunction getOrElse<T, E>(\n  result: Result<T, E>,\n  defaultValue: T\n): T {\n  return isOk(result) ? result.value : defaultValue;\n}\n\n// Result utilities\nconst Result = {\n  ok,\n  err,\n  isOk,\n  isErr,\n  map,\n  mapError,\n  andThen,\n  orElse,\n  getOrElse,\n\n  // Combine multiple results\n  all<T, E>(results: Result<T, E>[]): Result<T[], E> {\n    const values: T[] = [];\n    for (const result of results) {\n      if (isErr(result)) return result;\n      values.push(result.value);\n    }\n    return ok(values);\n  },\n\n  // Try/catch wrapper\n  tryCatch<T, E>(\n    fn: () => T,\n    onError: (error: unknown) => E\n  ): Result<T, E> {\n    try {\n      return ok(fn());\n    } catch (error) {\n      return err(onError(error));\n    }\n  }\n};\n\n// Example domain usage\ninterface ValidationError {\n  field: string;\n  message: string;\n}\n\ntype UserValidationResult = Result<User, ValidationError[]>;\n\nfunction validateUser(input: UserInput): UserValidationResult {\n  const errors: ValidationError[] = [];\n\n  if (!input.email || !input.email.includes(\"@\")) {\n    errors.push({ field: \"email\", message: \"Invalid email\" });\n  }\n\n  if (!input.name || input.name.length < 2) {\n    errors.push({ field: \"name\", message: \"Name too short\" });\n  }\n\n  if (errors.length > 0) {\n    return err(errors);\n  }\n\n  return ok({\n    id: crypto.randomUUID(),\n    email: input.email,\n    name: input.name,\n    createdAt: new Date()\n  });\n}\n\nfunction saveUser(user: User): Result<User, DatabaseError> {\n  return Result.tryCatch(\n    () => database.save(user),\n    (error) => ({ code: \"DB_ERROR\", message: (error as Error).message })\n  );\n}\n\n// Composing operations\nfunction createUser(input: UserInput): Result<User, ValidationError[] | DatabaseError> {\n  return Result.andThen(\n    validateUser(input),\n    (user) => Result.mapError(\n      saveUser(user),\n      (dbError) => [dbError as any]\n    )\n  );\n}\n\n// Pattern matching\nfunction handleCreateUserResult(result: ReturnType<typeof createUser>): string {\n  if (Result.isOk(result)) {\n    return `User created: ${result.value.id}`;\n  }\n\n  const errors = result.error;\n  if (Array.isArray(errors)) {\n    return `Validation failed: ${errors.map(e => e.message).join(\", \")}`;\n  }\n\n  return `Database error: ${(errors as any).message}`;\n}\n\n// Async result (Promise-based)\nasync function asyncCreateUser(input: UserInput): Promise<Result<User, ValidationError[] | DatabaseError>> {\n  const validationResult = validateUser(input);\n  if (Result.isErr(validationResult)) {\n    return validationResult;\n  }\n\n  return saveUser(validationResult.value);\n}\n\n// Railway-oriented programming example\nfunction processOrder(order: OrderInput): Result<OrderConfirmation, OrderError> {\n  return Result.andThen(\n    validateOrder(order),\n    (order) => Result.andThen(\n      checkInventory(order),\n      (inventory) => Result.andThen(\n        processPayment(order),\n        (payment) => confirmOrder(order, inventory, payment)\n      )\n    )\n  );\n}\n\ninterface User { id: string; email: string; name: string; createdAt: Date; }\ninterface UserInput { email: string; name: string; }\ninterface DatabaseError { code: string; message: string; }\ninterface OrderInput {}\ninterface OrderConfirmation {}\ninterface OrderError {}\n\ndeclare const database: { save(user: User): User };\ndeclare function validateOrder(order: OrderInput): Result<any, OrderError>;\ndeclare function checkInventory(order: any): Result<any, OrderError>;\ndeclare function processPayment(order: any): Result<any, OrderError>;\ndeclare function confirmOrder(order: any, inventory: any, payment: any): Result<OrderConfirmation, OrderError>;"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "either-pattern",
+      "type": "similar-to",
+      "description": "Result type is similar to Either pattern"
+    },
+    {
+      "target_pattern_id": "option-pattern",
+      "type": "complements",
+      "description": "Result for errors, Option for optional values"
+    }
+  ]
+}

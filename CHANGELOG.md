@@ -5,6 +5,70 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2026-01-31
+
+### Added
+
+#### New Design Patterns (75+ patterns)
+
+Comprehensive research and integration of new design patterns across 12 major categories:
+
+- **Agentic AI** (8): Reflection, Tool Use, ReAct, Planning, Multi-Agent, Handoff, Memory Management, Human-in-the-Loop
+- **Cloud Native** (8): Sidecar, Ambassador, Adapter, Service Mesh, Container, Operator, Blue-Green, Canary
+- **Resilience** (9): Circuit Breaker, Bulkhead, Retry, Fallback, Timeout, Cache-Aside, Rate Limiting, Deadline, Chaos Engineering
+- **Event-Driven** (9): Saga, Event Sourcing, CQRS, CDC, Event Carried State, Outbox, Competing Consumers, Pub-Sub, Priority Queue
+- **Stream Processing** (6): Event Time, Windowing, Watermark, Stateful Processing, Pattern Matching, Exactly-Once
+- **Architecture** (9): Hexagonal, Clean, Onion, Microservices, SOA, Modular Monolith, Serverless, Event-Driven, Space-Based
+- **Security** (7): Zero Trust, OAuth 2.0, API Gateway Security, Defense in Depth, Secrets Management, Token Auth, mTLS
+- **Database** (7): Data Mesh, Polyglot Persistence, Materialized View, Sharding, CQRS, Event Sourcing, WAL
+- **Blockchain** (6): Smart Contract, Data Timestamping, On-Chain Aggregation, Tokenization, Multi-Signature, Oracle
+- **Edge/IoT** (5): Edge Processing, Device Shadow, Command and Control, Stream Bridging, Hierarchical Edge
+- **API/Integration** (6): API Gateway, BFF, API Composition, Strangler Fig, Anti-Corruption Layer, Versioning
+- **Functional** (5): Witness, State Machine, Parallel Lists, Registry, Result Type
+
+#### New CLI Commands
+
+- **setup-relationships**: New command to establish pattern relationships and dependencies in the database
+
+### Fixed
+
+#### Database Setup Critical Fixes
+
+- **FOREIGN KEY Constraint Error**: Fixed validation in `pattern-seeder.ts` insertRelationship function
+  - Added explicit database query to verify target pattern exists before inserting relationship
+  - Previously assumed any string matching ID regex was valid without database verification
+  - Now returns false with warning if target pattern not found
+  - Result: db:setup completes successfully with 685 patterns and 101 relationships
+
+- **Package.json Engine Duplicate**: Removed duplicate "bun" key from engines section
+  - Fixed JSON structure issue preventing proper dependency resolution
+
+- **Malformed JSON**: Rewrote `api-versioning.json` with valid JSON structure
+  - Resolved parsing errors blocking database seeding
+
+### Changed
+
+#### Pattern Catalog Updates
+
+- **Pattern Count**: 642 → 685+ patterns
+- **JSON Files**: 661 → 750+ pattern definition files
+- **Categories**: 90+ categories maintained and expanded
+- **Code Examples**: Updated with TypeScript implementations for new patterns
+
+### Documentation
+
+- **AGENTS.md**: Added comprehensive project documentation including architecture patterns, coding standards, SOLID principles, DI Container, Hybrid Search Engine, and troubleshooting guide
+- **README.md**: Professional GitHub-style layout with badges, tables, and updated metrics
+
+### Technical Details
+
+- **Total Patterns**: 685+ (750+ JSON files)
+- **Test Cases**: 464 tests maintained with 100% pass rate
+- **Build Status**: 0 TypeScript compilation errors
+- **Database**: Successfully seeds with 685 patterns and 101 relationships
+
+---
+
 ## [0.4.1] - 2026-01-15
 
 ### Added

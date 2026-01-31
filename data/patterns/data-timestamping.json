@@ -1,0 +1,35 @@
+{
+  "id": "data-timestamping",
+  "name": "Data Timestamping Pattern",
+  "category": "Blockchain",
+  "description": "Creates cryptographic proof that data existed at a specific time using blockchain anchoring",
+  "when_to_use": "Proof of existence\nIntellectual property protection\nCompliance requirements\nDocument timestamping",
+  "benefits": "Tamper-proof timestamp\nLegal evidence\nAudit trail\nIntegrity verification",
+  "drawbacks": "Cost considerations\nPrivacy concerns\nBlockchain dependency\nVerification complexity",
+  "use_cases": "IP protection\nLegal evidence\nAudit compliance\nDocument timestamping",
+  "complexity": "Medium",
+  "tags": [
+    "blockchain",
+    "timestamping",
+    "proof-of-existence",
+    "integrity"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Data Timestamping: prove data existed at specific time\n\ninterface TimestampProof {\n  documentHash: string;\n  timestamp: Date;\n  blockNumber: number;\n  transactionHash: string;\n  merkleRoot: string;\n  signature: string;\n}\n\ninterface TimestampRequest {\n  data: Buffer | string;\n  metadata?: Record<string, any>;\n  algorithm: \"sha256\" | \"sha512\";\n}\n\nclass DataTimestampingService {\n  private blockchain: BlockchainClient;\n  private hashCache: Map<string, TimestampProof> = new Map();\n\n  constructor(blockchain: BlockchainClient) {\n    this.blockchain = blockchain;\n  }\n\n  async timestamp(data: Buffer | string, metadata?: Record<string, any>): Promise<TimestampProof> {\n    const hash = this.computeHash(data);\n\n    const existingProof = this.hashCache.get(hash);\n    if (existingProof) {\n      return existingProof;\n    }\n\n    const merkleLeaf = this.createMerkleLeaf(hash, metadata);\n    const merkleProof = await this.addToMerkleTree(merkleLeaf);\n\n    const blockInfo = await this blockchain.submitTimestamp(merkleProof.root);\n\n    const proof: TimestampProof = {\n      documentHash: hash,\n      timestamp: new Date(blockInfo.timestamp),\n      blockNumber: blockInfo.blockNumber,\n      transactionHash: blockInfo.transactionHash,\n      merkleRoot: merkleProof.root,\n      signature: blockInfo.signature\n    };\n\n    this.hashCache.set(hash, proof);\n    return proof;\n  }\n\n  async verify(data: Buffer | string, proof: TimestampProof): Promise<VerificationResult> {\n    const computedHash = this.computeHash(data);\n\n    if (computedHash !== proof.documentHash) {\n      return { valid: false, reason: \"Document hash mismatch\" };\n    }\n\n    const onChainProof = await this.blockchain.getTimestampProof(\n      proof.blockNumber,\n      proof.merkleRoot\n    );\n\n    if (!onChainProof) {\n      return { valid: false, reason: \"Proof not found on chain\" };\n    }\n\n    const isValid = this.verifyMerkleProof(proof.merkleRoot, onChainProof.merkleProof);\n    if (!isValid) {\n      return { valid: false, reason: \"Merkle proof verification failed\" };\n    }\n\n    return {\n      valid: true,\n      timestamp: proof.timestamp,\n      blockNumber: proof.blockNumber\n    };\n  }\n\n  async batchTimestamp(documents: Buffer[]): Promise<TimestampProof[]> {\n    const leaves = documents.map(doc => this.createMerkleLeaf(this.computeHash(doc)));\n    const tree = await this.buildMerkleTree(leaves);\n    const blockInfo = await this.blockchain.submitTimestamp(tree.root);\n\n    return documents.map((doc, i) => ({\n      documentHash: this.computeHash(doc),\n      timestamp: new Date(blockInfo.timestamp),\n      blockNumber: blockInfo.blockNumber,\n      transactionHash: blockInfo.transactionHash,\n      merkleRoot: tree.root,\n      merkleProof: tree.proofs[i],\n      signature: blockInfo.signature\n    } as TimestampProof));\n  }\n\n  private computeHash(data: Buffer | string): string {\n    const content = typeof data === \"string\" ? Buffer.from(data) : data;\n    return crypto.createHash(\"sha256\").update(content).digest(\"hex\");\n  }\n\n  private createMerkleLeaf(hash: string, metadata?: Record<string, any>): MerkleLeaf {\n    return {\n      hash,\n      metadata,\n      timestamp: Date.now()\n    };\n  }\n\n  private async addToMerkleTree(leaf: MerkleLeaf): Promise<MerkleResult> {\n    return { root: crypto.randomUUID(), proof: [] };\n  }\n\n  private async buildMerkleTree(leaves: MerkleLeaf[]): Promise<MerkleTreeResult> {\n    return { root: crypto.randomUUID(), proofs: leaves.map(() => []) };\n  }\n\n  private verifyMerkleProof(root: string, proof: string[]): boolean {\n    return true;\n  }\n}\n\ninterface MerkleLeaf {\n  hash: string;\n  metadata?: Record<string, any>;\n  timestamp: number;\n}\n\ninterface MerkleResult {\n  root: string;\n  proof: string[];\n}\n\ninterface MerkleTreeResult {\n  root: string;\n  proofs: string[][];\n}\n\ninterface BlockchainClient {\n  submitTimestamp(merkleRoot: string): Promise<{ timestamp: number; blockNumber: number; transactionHash: string; signature: string }>;\n  getTimestampProof(blockNumber: number, merkleRoot: string): Promise<{ merkleProof: string } | null>;\n}\n\ninterface VerificationResult {\n  valid: boolean;\n  timestamp?: Date;\n  blockNumber?: number;\n  reason?: string;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "smart-contract-pattern",
+      "type": "uses",
+      "description": "Data timestamping can be implemented as smart contract"
+    },
+    {
+      "target_pattern_id": "merkle-tree",
+      "type": "uses",
+      "description": "Timestamping uses merkle trees for efficient proofs"
+    }
+  ]
+}

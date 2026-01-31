@@ -1,0 +1,35 @@
+{
+  "id": "stateful-processing",
+  "name": "Stateful Processing Pattern",
+  "category": "Stream Processing",
+  "description": "Maintains and manages state across event processing for aggregations and windowed operations",
+  "when_to_use": "Aggregations\nJoins between streams\nMachine learning features\nPattern matching",
+  "benefits": "Context preservation\nCorrect aggregations\nComplex event processing\nFeature computation",
+  "drawbacks": "State management complexity\nCheckpoint overhead\nScaling challenges\nState reconstruction",
+  "use_cases": "Rolling counts\nStream joins\nSession tracking\nReal-time analytics",
+  "complexity": "High",
+  "tags": [
+    "stream-processing",
+    "stateful",
+    "aggregation",
+    "checkpoint"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Stateful Processing: maintain state across events\n\ninterface StateBackend {\n  get(key: string): Promise<any>;\n  put(key: string, value: any): Promise<void>;\n  delete(key: string): Promise<void>;\n  snapshot(): Promise<Snapshot>;\n  restore(snapshot: Snapshot): Promise<void>;\n}\n\ninterface Snapshot {\n  id: string;\n  timestamp: Date;\n  state: Map<string, any>;\n}\n\nclass StatefulProcessor<K, S, O> {\n  private state: Map<K, S> = new Map();\n  private stateBackend: StateBackend;\n  private checkpointInterval: number;\n  private lastCheckpoint: number = 0;\n\n  constructor(stateBackend: StateBackend, checkpointInterval: number = 60000) {\n    this.stateBackend = stateBackend;\n    this.checkpointInterval = checkpointInterval;\n  }\n\n  async process(input: O): Promise<O[]> {\n    const key = this.extractKey(input);\n    const currentState = await this.getState(key);\n    const newState = this.updateState(currentState, input);\n    await this.setState(key, newState);\n\n    await this.checkpointIfNeeded();\n\n    return this.shouldEmit(newState) ? this.emit(input, newState) : [];\n  }\n\n  protected extractKey(input: O): K {\n    return input as any;\n  }\n\n  protected updateState(currentState: S | null, input: O): S {\n    return input as any;\n  }\n\n  protected shouldEmit(state: S): boolean {\n    return false;\n  }\n\n  protected emit(input: O, state: S): O[] {\n    return [];\n  }\n\n  private async getState(key: K): Promise<S | null> {\n    const existing = this.state.get(key);\n    if (existing) return existing;\n\n    const fromBackend = await this.stateBackend.get(key as string);\n    if (fromBackend) {\n      this.state.set(key, fromBackend);\n      return fromBackend;\n    }\n\n    return null;\n  }\n\n  private async setState(key: K, state: S): Promise<void> {\n    this.state.set(key, state);\n  }\n\n  private async checkpointIfNeeded(): Promise<void> {\n    const now = Date.now();\n    if (now - this.lastCheckpoint >= this.checkpointInterval) {\n      await this.checkpoint();\n    }\n  }\n\n  async checkpoint(): Promise<Snapshot> {\n    const snapshot: Snapshot = {\n      id: crypto.randomUUID(),\n      timestamp: new Date(),\n      state: new Map(this.state)\n    };\n\n    await this.stateBackend.snapshot();\n    this.lastCheckpoint = Date.now();\n\n    console.log(`Checkpoint created: ${snapshot.id}`);\n    return snapshot;\n  }\n\n  async restore(snapshot: Snapshot): Promise<void> {\n    this.state = new Map(snapshot.state);\n    await this.stateBackend.restore(snapshot);\n    console.log(`Restored from checkpoint: ${snapshot.id}`);\n  }\n\n  async close(): Promise<void> {\n    await this.checkpoint();\n  }\n\n  getStateSize(): number {\n    return this.state.size;\n  }\n}\n\n// Example: Count aggregation by key\nclass CountingProcessor extends StatefulProcessor<string, { count: number }, { key: string; value: number }> {\n  protected updateState(currentState: { count: number } | null, input: { key: string; value: number }): { count: number } {\n    return { count: (currentState?.count || 0) + input.value };\n  }\n\n  protected shouldEmit(state: { count: number }): boolean {\n    return state.count % 10 === 0;\n  }\n\n  protected emit(input: { key: string; value: number }, state: { count: number }): { key: string; count: number }[] {\n    return [{ key: input.key, count: state.count }];\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "checkpoint",
+      "type": "uses",
+      "description": "Stateful processing uses checkpoints for fault tolerance"
+    },
+    {
+      "target_pattern_id": "windowing-pattern",
+      "type": "complements",
+      "description": "Windowed operations require stateful processing"
+    }
+  ]
+}

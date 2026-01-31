@@ -1,0 +1,35 @@
+{
+  "id": "sidecar-pattern",
+  "name": "Sidecar Pattern",
+  "category": "Cloud Native",
+  "description": "Deploys secondary container alongside main application container for infrastructure concerns",
+  "when_to_use": "Multiple apps needing same infrastructure\nSeparation of infrastructure from business logic\nCross-cutting concerns\nMicroservices standardization",
+  "benefits": "Infrastructure modularity\nTechnology independence\nReusability\nSeparation of concerns",
+  "drawbacks": "Resource overhead\nNetwork complexity\nConfiguration complexity\nDebugging challenges",
+  "use_cases": "Service mesh proxies\nLogging and monitoring\nSecret injection\nProtocol translation",
+  "complexity": "Low",
+  "tags": [
+    "cloud-native",
+    "deployment",
+    "sidecar",
+    "container"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Sidecar Pattern: secondary container handling infrastructure\n\ninterface PodSpec {\n  containers: Container[];\n  volumes: Volume[];\n}\n\ninterface Container {\n  name: string;\n  image: string;\n  ports: number[];\n  env: EnvVar[];\n  volumeMounts: VolumeMount[];\n}\n\ninterface VolumeMount {\n  name: string;\n  mountPath: string;\n}\n\ninterface EnvVar {\n  name: string;\n  value: string;\n}\n\ninterface Volume {\n  name: string;\n  configMap?: { name: string };\n  secret?: { secretName: string };\n}\n\nclass PodSidecarBuilder {\n  private mainContainer: Container;\n  private sidecars: Container[] = [];\n  private volumes: Volume[] = [];\n\n  constructor(mainImage: string) {\n    this.mainContainer = {\n      name: \"main\",\n      image: mainImage,\n      ports: [8080],\n      env: [],\n      volumeMounts: []\n    };\n  }\n\n  addSidecar(container: Omit<Container, \"name\">): PodSidecarBuilder {\n    const sidecar: Container = {\n      ...container,\n      name: `sidecar-${this.sidecars.length + 1}`\n    };\n    this.sidecars.push(sidecar);\n    return this;\n  }\n\n  addEnvoySidecar(): PodSidecarBuilder {\n    return this.addSidecar({\n      image: \"envoyproxy/envoy:latest\",\n      ports: [15001],\n      env: [\n        { name: \"ENVOY_UID\", value: \"0\" }\n      ],\n      volumeMounts: [\n        { name: \"envoy-config\", mountPath: \"/etc/envoy\" }\n      ]\n    });\n  }\n\n  addLoggingSidecar(): PodSidecarBuilder {\n    return this.addSidecar({\n      image: \"fluent/fluent-bit:latest\",\n      ports: [],\n      env: [],\n      volumeMounts: [\n        { name: \"logs\", mountPath: \"/var/log\" }\n      ]\n    });\n  }\n\n  addVolume(name: string, configMapOrSecret: { name: string }): PodSidecarBuilder {\n    this.volumes.push({\n      name,\n      ...configMapOrSecret\n    });\n    return this;\n  }\n\n  build(): PodSpec {\n    return {\n      containers: [this.mainContainer, ...this.sidecars],\n      volumes: this.volumes\n    };\n  }\n}\n\n// Usage: Add infrastructure concerns via sidecars\nconst pod = new PodSidecarBuilder(\"my-app:latest\")\n  .addEnvoySidecar()\n  .addLoggingSidecar()\n  .addVolume(\"envoy-config\", { name: \"envoy-configmap\" })\n  .build();"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "service-mesh",
+      "type": "uses",
+      "description": "Service mesh typically deploys proxies as sidecars"
+    },
+    {
+      "target_pattern_id": "ambassador",
+      "type": "related-to",
+      "description": "Sidecar and ambassador patterns serve similar purposes"
+    }
+  ]
+}

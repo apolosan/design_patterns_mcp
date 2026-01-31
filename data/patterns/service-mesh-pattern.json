@@ -1,0 +1,35 @@
+{
+  "id": "service-mesh-pattern",
+  "name": "Service Mesh Pattern",
+  "category": "Cloud Native",
+  "description": "Dedicated infrastructure layer for managing service-to-service communication with transparency",
+  "when_to_use": "Microservices in production\nHigh security requirements\nGranular observability\nConsistent traffic management",
+  "benefits": "Transparent networking\nSecurity without code changes\nObservability\nTraffic management\nFailure recovery",
+  "drawbacks": "Infrastructure complexity\nResource overhead\nLearning curve\nDebugging complexity",
+  "use_cases": "Microservices communication\nmTLS encryption\nDistributed tracing\nTraffic shifting",
+  "complexity": "High",
+  "tags": [
+    "cloud-native",
+    "service-mesh",
+    "microservices",
+    "infrastructure"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Service Mesh: transparent infrastructure for service communication\n\ninterface ServiceMeshConfig {\n  controlPlaneUrl: string;\n  mtlsEnabled: boolean;\n  tracingEnabled: boolean;\n  metricsEnabled: boolean;\n}\n\nclass ServiceMesh {\n  private controlPlane: ControlPlaneClient;\n  private sidecarProxies: Map<string, SidecarProxy> = new Map();\n  private config: ServiceMeshConfig;\n\n  constructor(config: ServiceMeshConfig) {\n    this.config = config;\n    this.controlPlane = new ControlPlaneClient(config.controlPlaneUrl);\n  }\n\n  async registerService(serviceName: string, endpoints: string[]): Promise<void> {\n    await this.controlPlane.registerService({\n      name: serviceName,\n      endpoints,\n      mtlsEnabled: this.config.mtlsEnabled,\n      labels: { \"app\": serviceName }\n    });\n\n    console.log(`Service ${serviceName} registered with mesh`);\n  }\n\n  async configureTrafficRules(\n    serviceName: string,\n    rules: TrafficRule[]\n  ): Promise<void> {\n    await this.controlPlane.pushConfig({\n      serviceName,\n      trafficRules: rules\n    });\n  }\n\n  async setupResilience(\n    serviceName: string,\n    config: ResilienceConfig\n  ): Promise<void> {\n    await this.controlPlane.pushConfig({\n      serviceName,\n      resilience: {\n        circuitBreaker: config.circuitBreaker,\n        retryPolicy: config.retry,\n        timeout: config.timeout\n      }\n    });\n  }\n\n  async getMetrics(serviceName: string): Promise<ServiceMetrics> {\n    return this.controlPlane.getMetrics(serviceName);\n  }\n\n  async getTracing(serviceName: string, traceId: string): Promise<TraceInfo> {\n    return this.controlPlane.getTrace(traceId);\n  }\n}\n\ninterface TrafficRule {\n  destination: string;\n  match?: Record<string, string>;\n  route: { weight: number; subset?: string }[];\n}\n\ninterface ResilienceConfig {\n  circuitBreaker: { maxRequests: number; interval: number; timeout: number };\n  retry: { attempts: number; backoff: string };\n  timeout: number;\n}\n\ninterface ServiceMetrics {\n  requestsTotal: number;\n  requestsError: number;\n  latencyMsP50: number;\n  latencyMsP99: number;\n}\n\nclass ControlPlaneClient {\n  constructor(private url: string) {}\n\n  async registerService(service: any): Promise<void> {}\n  async pushConfig(config: any): Promise<void> {}\n  async getMetrics(serviceName: string): Promise<ServiceMetrics> {\n    return { requestsTotal: 0, requestsError: 0, latencyMsP50: 0, latencyMsP99: 0 };\n  }\n  async getTrace(traceId: string): Promise<TraceInfo> {\n    return { spans: [] };\n  }\n}\n\nclass SidecarProxy {\n  private config: any;\n\n  updateConfig(config: any): void {\n    this.config = config;\n  }\n\n  start(): void {}\n  stop(): void {}\n}\n\ninterface TraceInfo {\n  spans: TraceSpan[];\n}\n\ninterface TraceSpan {\n  operationName: string;\n  duration: number;\n  tags: Record<string, string>;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "sidecar-pattern",
+      "type": "uses",
+      "description": "Service mesh deploys proxies as sidecars"
+    },
+    {
+      "target_pattern_id": "mtls",
+      "type": "uses",
+      "description": "Service mesh typically uses mTLS for encryption"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "zero-trust-architecture",
+  "name": "Zero Trust Architecture",
+  "category": "Security",
+  "description": "Protects systems where no user or service is implicitly trusted, requiring authentication for every request",
+  "when_to_use": "Cloud environments\nRemote work scenarios\nSensitive data protection\nCompliance requirements",
+  "benefits": "Enhanced security posture\nReduced attack surface\nContinuous validation\nMicro-segmentation",
+  "drawbacks": "Complexity\nUser experience impact\nImplementation cost\nManagement overhead",
+  "use_cases": "Enterprise security\nCloud migration\nRemote access\nData protection",
+  "complexity": "High",
+  "tags": [
+    "security",
+    "zero-trust",
+    "authentication",
+    "authorization"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Zero Trust Architecture: never trust, always verify\n\ninterface TrustEvaluation {\n  isAuthenticated: boolean;\n  isAuthorized: boolean;\n  riskScore: number;\n  deviceCompliant: boolean;\n  locationTrusted: boolean;\n}\n\nclass ZeroTrustEngine {\n  private policyEngine: PolicyEngine;\n  private identityProvider: IdentityProvider;\n  private deviceManager: DeviceManager;\n\n  async evaluateRequest(\n    request: Request,\n    context: SecurityContext\n  ): Promise<TrustEvaluation> {\n    const [auth, device, location] = await Promise.all([\n      this.authenticate(request),\n      this.assessDevice(request.deviceId),\n      this.assessLocation(request.origin)\n    ]);\n\n    const riskScore = this.calculateRisk(auth, device, location);\n    const policy = await this.policyEngine.evaluate(context, riskScore);\n\n    return {\n      isAuthenticated: auth,\n      isAuthorized: policy.allowed,\n      riskScore,\n      deviceCompliant: device.compliant,\n      locationTrusted: location.trusted\n    };\n  }\n\n  private async authenticate(request: Request): Promise<boolean> {\n    const token = request.headers.get(\"Authorization\");\n    return this.identityProvider.validate(token);\n  }\n\n  private async assessDevice(deviceId: string): Promise<{ compliant: boolean }> {\n    return this.deviceManager.checkCompliance(deviceId);\n  }\n\n  private async assessLocation(origin: string): Promise<{ trusted: boolean }> {\n    return { trusted: true };\n  }\n\n  private calculateRisk(...factors: any[]): number {\n    return 0.3;\n  }\n}\n\nclass PolicyEngine {\n  async evaluate(context: SecurityContext, riskScore: number): Promise<{ allowed: boolean }> {\n    return { allowed: riskScore < 0.7 };\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "token-authentication",
+      "type": "requires",
+      "description": "Zero trust requires strong token-based authentication"
+    },
+    {
+      "target_pattern_id": "mtls",
+      "type": "complements",
+      "description": "mTLS provides service-to-service zero trust verification"
+    }
+  ]
+}

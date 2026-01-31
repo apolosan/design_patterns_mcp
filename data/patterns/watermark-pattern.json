@@ -1,0 +1,35 @@
+{
+  "id": "watermark-pattern",
+  "name": "Watermark Pattern",
+  "category": "Stream Processing",
+  "description": "Tracks progress in event time to handle delayed events and trigger window completion",
+  "when_to_use": "Event time processing\nOut-of-order event handling\nWindow completion triggers\nLate event management",
+  "benefits": "Progress tracking\nLate event handling\nWindow completion\nCorrectness guarantees",
+  "drawbacks": "Watermark computation complexity\nLate data management\nTuning difficulty\nProgress stall detection",
+  "use_cases": "Real-time analytics\nEvent-driven systems\nTemporal aggregations\nCompliance reporting",
+  "complexity": "High",
+  "tags": [
+    "stream-processing",
+    "watermark",
+    "completeness",
+    "progress"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Watermark Pattern: track progress for event time processing\n\ninterface WatermarkConfig {\n  maxLagMs: number;\n  minCount: number;\n  idleTimeoutMs: number;\n  gracePeriodMs: number;\n}\n\ninterface Event {\n  id: string;\n  eventTime: Date;\n  value: any;\n}\n\nclass WatermarkGenerator {\n  private config: WatermarkConfig;\n  private eventTimes: Date[] = [];\n  private lastEventTime: Date | null = null;\n  private lastWatermark: Date = new Date();\n  private isIdle: boolean = false;\n\n  constructor(config: Partial<WatermarkConfig> = {}) {\n    this.config = {\n      maxLagMs: config.maxLagMs ?? 5000,\n      minCount: config.minCount ?? 100,\n      idleTimeoutMs: config.idleTimeoutMs ?? 60000,\n      gracePeriodMs: config.gracePeriodMs ?? 1000,\n      ...config\n    };\n  }\n\n  processEvent(event: Event): Date {\n    this.eventTimes.push(event.eventTime);\n    this.lastEventTime = event.eventTime;\n    this.isIdle = false;\n\n    return this.generateWatermark();\n  }\n\n  generateWatermark(): Date {\n    const now = Date.now();\n\n    if (this.isIdle) {\n      const idleWatermark = new Date(now - this.config.idleTimeoutMs);\n      return idleWatermark > this.lastWatermark ? idleWatermark : this.lastWatermark;\n    }\n\n    const watermarkByTime = this.calculateWatermarkByTime(now);\n    const watermarkByCount = this.calculateWatermarkByCount();\n\n    const watermark = watermarkByTime < watermarkByCount ? watermarkByTime : watermarkByCount;\n\n    if (watermark > this.lastWatermark) {\n      this.lastWatermark = watermark;\n    }\n\n    return this.lastWatermark;\n  }\n\n  private calculateWatermarkByTime(now: number): Date {\n    return new Date(now - this.config.maxLagMs);\n  }\n\n  private calculateWatermarkByCount(): Date {\n    if (this.eventTimes.length < this.config.minCount) {\n      return new Date(0);\n    }\n\n    const sortedTimes = [...this.eventTimes].sort((a, b) => a.getTime() - b.getTime());\n    const percentileIndex = Math.floor(sortedTimes.length * 0.95);\n    const percentileTime = sortedTimes[percentileIndex];\n\n    return new Date(percentileTime.getTime() - this.config.gracePeriodMs);\n  }\n\n  markIdle(): void {\n    this.isIdle = true;\n  }\n\n  getWatermark(): Date {\n    return this.lastWatermark;\n  }\n\n  getLag(): number {\n    if (!this.lastEventTime) return 0;\n    return Date.now() - this.lastEventTime.getTime();\n  }\n}\n\nclass LateEventHandler {\n  private gracePeriodMs: number;\n  private lateEvents: Event[] = [];\n\n  constructor(gracePeriodMs: number = 60000) {\n    this.gracePeriodMs = gracePeriodMs;\n  }\n\n  handleLateEvent(event: Event, currentWatermark: Date): LateEventDecision {\n    const eventTime = event.eventTime.getTime();\n    const watermarkTime = currentWatermark.getTime();\n    const lateBy = watermarkTime - eventTime;\n\n    if (lateBy <= this.gracePeriodMs) {\n      return { action: \"process\", reason: \"Within grace period\" };\n    }\n\n    if (lateBy > this.gracePeriodMs * 10) {\n      return { action: \"drop\", reason: \"Too late\" };\n    }\n\n    this.lateEvents.push(event);\n    return { action: \"sideInput\", reason: \"Added to side input\" };\n  }\n\n  getLateEvents(): Event[] {\n    return [...this.lateEvents];\n  }\n\n  clear(): void {\n    this.lateEvents = [];\n  }\n}\n\ninterface LateEventDecision {\n  action: \"process\" | \"drop\" | \"sideInput\";\n  reason: string;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "event-time-processing",
+      "type": "uses",
+      "description": "Watermarks are essential for event time processing"
+    },
+    {
+      "target_pattern_id": "windowing-pattern",
+      "type": "uses",
+      "description": "Windowing uses watermarks to determine when to output results"
+    }
+  ]
+}

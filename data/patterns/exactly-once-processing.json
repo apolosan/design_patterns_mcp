@@ -1,0 +1,35 @@
+{
+  "id": "exactly-once-processing",
+  "name": "Exactly-Once Processing Pattern",
+  "category": "Stream Processing",
+  "description": "Guarantees each event is processed exactly once, neither more nor less, even with failures",
+  "when_to_use": "Financial systems\nBilling processing\nAny application where duplication is unacceptable\nCritical data pipelines",
+  "benefits": "No data loss\nNo duplication\nCorrect results\nFault tolerance",
+  "drawbacks": "Performance overhead\nImplementation complexity\nState management\nIdempotency requirements",
+  "use_cases": "Financial transactions\nBilling systems\nOrder processing\nAudit-critical systems",
+  "complexity": "Very High",
+  "tags": [
+    "stream-processing",
+    "exactly-once",
+    "fault-tolerance",
+    "reliability"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Exactly-Once Processing: guarantee no loss or duplication\n\ninterface Event {\n  id: string;\n  source: string;\n  payload: any;\n  timestamp: Date;\n  sequenceNumber: number;\n}\n\ninterface ExactlyOnceConfig {\n  idempotencyWindowMs: number;\n  deduplicationKey: string;\n  checkpointInterval: number;\n}\n\nclass ExactlyOnceProcessor {\n  private processedEvents: Map<string, ProcessedEvent> = new Map();\n  private pendingWrites: Map<string, WriteBatch> = new Map();\n  private config: ExactlyOnceConfig;\n  private checkpointStore: CheckpointStore;\n  private offsetStore: OffsetStore;\n\n  constructor(config: ExactlyOnceConfig, checkpointStore: CheckpointStore, offsetStore: OffsetStore) {\n    this.config = config;\n    this.checkpointStore = checkpointStore;\n    this.offsetStore = offsetStore;\n  }\n\n  async process(event: Event): Promise<ProcessingResult> {\n    const deduplicationKey = this.getDeduplicationKey(event);\n\n    if (await this.isDuplicate(deduplicationKey)) {\n      return { success: true, duplicated: true, eventId: event.id };\n    }\n\n    try {\n      await this.beginTransaction();\n\n      await this.processEventInternal(event);\n\n      await this.markProcessed(deduplicationKey, event);\n\n      await this.commitTransaction();\n\n      return { success: true, duplicated: false, eventId: event.id };\n    } catch (error) {\n      await this.rollbackTransaction();\n      throw error;\n    }\n  }\n\n  private async processEventInternal(event: Event): Promise<void> {\n    const batch: WriteBatch = {\n      id: crypto.randomUUID(),\n      operations: [],\n      eventId: event.id,\n      timestamp: new Date()\n    };\n\n    batch.operations.push({\n      type: \"upsert\",\n      entity: \"events\",\n      key: event.id,\n      value: event.payload\n    });\n\n    this.pendingWrites.set(batch.id, batch);\n  }\n\n  private async isDuplicate(key: string): Promise<boolean> {\n    const processed = this.processedEvents.get(key);\n    if (!processed) return false;\n\n    const isWithinWindow = Date.now() - processed.timestamp.getTime() < this.config.idempotencyWindowMs;\n    return isWithinWindow;\n  }\n\n  private getDeduplicationKey(event: Event): string {\n    return `${event.source}-${event.sequenceNumber}`;\n  }\n\n  private async markProcessed(key: string, event: Event): Promise<void> {\n    this.processedEvents.set(key, {\n      key,\n      eventId: event.id,\n      timestamp: new Date(),\n      offset: event.sequenceNumber\n    });\n  }\n\n  private async beginTransaction(): Promise<void> {\n    console.log(\"Beginning exactly-once transaction\");\n  }\n\n  private async commitTransaction(): Promise<void> {\n    for (const [, batch] of this.pendingWrites) {\n      await this.executeBatch(batch);\n    }\n    this.pendingWrites.clear();\n\n    const checkpoint = await this.createCheckpoint();\n    await this.checkpointStore.save(checkpoint);\n\n    console.log(\"Exactly-once transaction committed\");\n  }\n\n  private async rollbackTransaction(): Promise<void> {\n    this.pendingWrites.clear();\n    console.log(\"Transaction rolled back\");\n  }\n\n  private async executeBatch(batch: WriteBatch): Promise<void> {\n    console.log(`Executing batch: ${batch.id}`);\n  }\n\n  private async createCheckpoint(): Promise<Checkpoint> {\n    return {\n      id: crypto.randomUUID(),\n      timestamp: new Date(),\n      offsets: new Map(this.offsetStore.getAll()),\n      processedEvents: new Map(this.processedEvents)\n    };\n  }\n\n  async recover(checkpoint: Checkpoint): Promise<void> {\n    console.log(\"Recovering from checkpoint\");\n    this.processedEvents = new Map(checkpoint.processedEvents);\n  }\n}\n\ninterface ProcessedEvent {\n  key: string;\n  eventId: string;\n  timestamp: Date;\n  offset: number;\n}\n\ninterface WriteBatch {\n  id: string;\n  operations: WriteOperation[];\n  eventId: string;\n  timestamp: Date;\n}\n\ninterface WriteOperation {\n  type: \"upsert\" | \"delete\" | \"insert\";\n  entity: string;\n  key: string;\n  value?: any;\n}\n\ninterface Checkpoint {\n  id: string;\n  timestamp: Date;\n  offsets: Map<string, number>;\n  processedEvents: Map<string, ProcessedEvent>;\n}\n\ninterface CheckpointStore {\n  save(checkpoint: Checkpoint): Promise<void>;\n  load(): Promise<Checkpoint | null>;\n}\n\ninterface OffsetStore {\n  getAll(): Map<string, number>;\n  commit(partition: string, offset: number): Promise<void>;\n}\n\ninterface ProcessingResult {\n  success: boolean;\n  duplicated: boolean;\n  eventId: string;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "checkpoint",
+      "type": "requires",
+      "description": "Exactly-once processing requires regular checkpoints"
+    },
+    {
+      "target_pattern_id": "stateful-processing",
+      "type": "requires",
+      "description": "Exactly-once requires stateful processing with strong guarantees"
+    }
+  ]
+}

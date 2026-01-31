@@ -1,0 +1,35 @@
+{
+  "id": "oauth2-authorization",
+  "name": "OAuth 2.0 Authorization Patterns",
+  "category": "Security",
+  "description": "Implements secure delegated authorization using OAuth 2.0 flows for different client types",
+  "when_to_use": "Third-party access\nAPI authorization\nSingle sign-on\nMobile applications",
+  "benefits": "Delegated authorization\nUser consent\nScope-based access\nToken revocation",
+  "drawbacks": "Flow complexity\nToken management\nSecurity misconfigurations\nPKCE requirements",
+  "use_cases": "Social login\nAPI access delegation\nService-to-service auth\nMobile app authorization",
+  "complexity": "Medium",
+  "tags": [
+    "security",
+    "oauth",
+    "authorization",
+    "authentication"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// OAuth 2.0 Authorization Patterns\n\nenum GrantType {\n  AUTHORIZATION_CODE = \"authorization_code\",\n  CLIENT_CREDENTIALS = \"client_credentials\",\n  DEVICE_CODE = \"urn:ietf:params:oauth:grant-type:device_code\",\n  REFRESH_TOKEN = \"refresh_token\"\n}\n\ninterface OAuthClient {\n  clientId: string;\n  clientSecret: string;\n  redirectUris: string[];\n  allowedScopes: string[];\n}\n\nclass AuthorizationServer {\n  private clients: Map<string, OAuthClient> = new Map();\n  private authorizationCodes: Map<string, AuthCode> = new Map();\n  private refreshTokens: Map<string, TokenSet> = new Map();\n\n  async authorize(\n    request: AuthorizationRequest\n  ): Promise<{ redirectUri: string; state: string }> {\n    const client = this.clients.get(request.clientId);\n    if (!client || !client.redirectUris.includes(request.redirectUri)) {\n      throw new Error(\"Invalid client\");\n    }\n\n    const authCode = this.generateAuthCode();\n    this.authorizationCodes.set(authCode.code, {\n      code: authCode.code,\n      clientId: request.clientId,\n      redirectUri: request.redirectUri,\n      scope: request.scope,\n      nonce: request.nonce,\n      expiresAt: Date.now() + 600000\n    });\n\n    return {\n      redirectUri: `${request.redirectUri}?code=${authCode.code}&state=${request.state}`,\n      state: request.state\n    };\n  }\n\n  async token(request: TokenRequest): Promise<TokenSet> {\n    switch (request.grantType) {\n      case GrantType.AUTHORIZATION_CODE:\n        return this.handleAuthorizationCodeGrant(request);\n      case GrantType.CLIENT_CREDENTIALS:\n        return this.handleClientCredentialsGrant(request);\n      case GrantType.REFRESH_TOKEN:\n        return this.handleRefreshTokenGrant(request);\n      default:\n        throw new Error(\"Unsupported grant type\");\n    }\n  }\n\n  private async handleAuthorizationCodeGrant(request: TokenRequest): Promise<TokenSet> {\n    const authCode = this.authorizationCodes.get(request.code!);\n    if (!authCode || authCode.expiresAt < Date.now()) {\n      throw new Error(\"Invalid or expired authorization code\");\n    }\n\n    return this.generateTokens(authCode.scope);\n  }\n\n  private async handleClientCredentialsGrant(request: TokenRequest): Promise<TokenSet> {\n    return this.generateTokens([\"api:read\", \"api:write\"]);\n  }\n\n  private async handleRefreshTokenGrant(request: TokenRequest): Promise<TokenSet> {\n    return this.refreshTokens.get(request.refreshToken!)!;\n  }\n\n  private generateAuthCode(): { code: string } {\n    return { code: crypto.randomUUID() };\n  }\n\n  private generateTokens(scope: string[]): TokenSet {\n    return {\n      accessToken: crypto.randomUUID(),\n      refreshToken: crypto.randomUUID(),\n      tokenType: \"Bearer\",\n      expiresIn: 3600\n    };\n  }\n}\n\ninterface AuthCode {\n  code: string;\n  clientId: string;\n  redirectUri: string;\n  scope: string;\n  nonce: string;\n  expiresAt: number;\n}\n\ninterface TokenSet {\n  accessToken: string;\n  refreshToken: string;\n  tokenType: string;\n  expiresIn: number;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "token-authentication",
+      "type": "uses",
+      "description": "OAuth 2.0 issues tokens for authentication"
+    },
+    {
+      "target_pattern_id": "pkce",
+      "type": "uses",
+      "description": "PKCE enhances OAuth 2.0 security for public clients"
+    }
+  ]
+}

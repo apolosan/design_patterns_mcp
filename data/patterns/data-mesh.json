@@ -1,0 +1,35 @@
+{
+  "id": "data-mesh",
+  "name": "Data Mesh Pattern",
+  "category": "Database",
+  "description": "Organizes data in large organizations as decentralized domains with federated governance and self-serve infrastructure",
+  "when_to_use": "Large organizations with multiple data teams\nDistributed data governance\nDemocratization of data\nDomain-driven data ownership",
+  "benefits": "Domain ownership\nScalable governance\nSelf-serve platform\nData product thinking",
+  "drawbacks": "Organizational change complexity\nTechnical standardization\nData discovery challenges\nCross-domain dependencies",
+  "use_cases": "Enterprise data platforms\nMulti-team data organizations\nData governance at scale\nData product marketplaces",
+  "complexity": "Very High",
+  "tags": [
+    "database",
+    "data-mesh",
+    "data-governance",
+    "domain-driven"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Data Mesh: domain-driven data organization\n\ninterface DataProduct {\n  id: string;\n  name: string;\n  domain: string;\n  owner: DataTeam;\n  schema: SchemaDefinition;\n  qualityMetrics: QualityMetrics;\n  accessPolicy: AccessPolicy;\n  endpoints: DataEndpoint[];\n}\n\ninterface DataDomain {\n  id: string;\n  name: string;\n  description: string;\n  dataProducts: DataProduct[];\n  ownerTeam: DataTeam;\n  dependencies: string[];\n}\n\ninterface DataTeam {\n  id: string;\n  name: string;\n  members: string[];\n  contact: string;\n}\n\ninterface DataEndpoint {\n  type: \"sql\" | \"api\" | \"stream\" | \"file\";\n  url: string;\n  format: string;\n  authentication: string;\n}\n\nclass DataMeshPlatform {\n  private domains: Map<string, DataDomain> = new Map();\n  private productCatalog: Map<string, DataProduct> = new Map();\n  private selfServePlatform: SelfServePlatform;\n\n  registerDomain(domain: DataDomain): void {\n    this.domains.set(domain.id, domain);\n    console.log(`Domain ${domain.name} registered`);\n  }\n\n  registerDataProduct(product: DataProduct): void {\n    this.validateSchema(product.schema);\n    this.validateQualityMetrics(product.qualityMetrics);\n\n    this.productCatalog.set(product.id, product);\n\n    if (product.domain) {\n      const domain = this.domains.get(product.domain);\n      if (domain) {\n        domain.dataProducts.push(product);\n      }\n    }\n  }\n\n  async discoverProducts(query: ProductQuery): Promise<DataProduct[]> {\n    return Array.from(this.productCatalog.values())\n      .filter(product => this.matchesQuery(product, query));\n  }\n\n  async requestAccess(productId: string, teamId: string, purpose: string): Promise<AccessRequest> {\n    const product = this.productCatalog.get(productId);\n    if (!product) throw new Error(\"Product not found\");\n\n    return this.selfServePlatform.requestAccess(product, teamId, purpose);\n  }\n\n  private validateSchema(schema: SchemaDefinition): void {\n    if (!schema.fields || schema.fields.length === 0) {\n      throw new Error(\"Schema must have at least one field\");\n    }\n  }\n\n  private validateQualityMetrics(metrics: QualityMetrics): void {\n    if (metrics.completeness < 0 || metrics.completeness > 1) {\n      throw new Error(\"Completeness must be between 0 and 1\");\n    }\n  }\n\n  private matchesQuery(product: DataProduct, query: ProductQuery): boolean {\n    if (query.domain && product.domain !== query.domain) return false;\n    if (query.owner && product.owner.id !== query.owner) return false;\n    if (query.keywords && !query.keywords.some(k => product.name.includes(k))) return false;\n    return true;\n  }\n}\n\ninterface ProductQuery {\n  domain?: string;\n  owner?: string;\n  keywords?: string[];\n  minQuality?: number;\n}\n\ninterface SchemaDefinition {\n  fields: SchemaField[];\n  version: string;\n  format: string;\n}\n\ninterface SchemaField {\n  name: string;\n  type: string;\n  nullable: boolean;\n  description?: string;\n}\n\ninterface QualityMetrics {\n  completeness: number;\n  accuracy: number;\n  timeliness: number;\n  uniqueness: number;\n}\n\ninterface AccessPolicy {\n  public: boolean;\n  allowedTeams: string[];\n  restrictedFields?: string[];\n}\n\ninterface AccessRequest {\n  id: string;\n  productId: string;\n  teamId: string;\n  purpose: string;\n  status: \"pending\" | \"approved\" | \"rejected\";\n  createdAt: Date;\n}\n\nclass SelfServePlatform {\n  async requestAccess(product: DataProduct, teamId: string, purpose: string): Promise<AccessRequest> {\n    return {\n      id: crypto.randomUUID(),\n      productId: product.id,\n      teamId,\n      purpose,\n      status: \"pending\",\n      createdAt: new Date()\n    };\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "domain-driven-design",
+      "type": "applies",
+      "description": "Data mesh applies DDD principles to data organization"
+    },
+    {
+      "target_pattern_id": "self-service-infrastructure",
+      "type": "requires",
+      "description": "Data mesh requires self-serve infrastructure platform"
+    }
+  ]
+}

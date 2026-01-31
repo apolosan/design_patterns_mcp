@@ -1,0 +1,35 @@
+{
+  "id": "deadline-pattern",
+  "name": "Deadline Pattern",
+  "category": "Resilience",
+  "description": "Propagates time constraints across service call chains allowing services to make early-exit decisions",
+  "when_to_use": "Multi-dependency systems\nLatency-critical services\nDistributed tracing with deadlines\nService orchestration",
+  "benefits": "Time-based coordination\nEarly failure detection\nResource optimization\nEnd-to-end latency control",
+  "drawbacks": "Deadline propagation complexity\nTime estimation difficulty\nCascading cancellations\nDebugging complexity",
+  "use_cases": "Distributed transactions\nService orchestration\nAPI gateways\nBatch processing pipelines",
+  "complexity": "High",
+  "tags": [
+    "resilience",
+    "deadline",
+    "temporal-coordination",
+    "time-budget"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "interface Deadline {\n  deadline: number;\n  remaining: number;\n  isExpired: boolean;\n}\n\ninterface DeadlineContext {\n  deadline: Deadline;\n  parentSpan?: string;\n  spanId: string;\n}\n\nclass DeadlineManager {\n  private staticContexts: Map<string, DeadlineContext> = new Map();\n\n  createDeadline(timeoutMs: number, parentContext?: DeadlineContext): DeadlineContext {\n    const spanId = this.generateSpanId();\n    const deadline: Deadline = {\n      deadline: Date.now() + timeoutMs,\n      remaining: timeoutMs,\n      isExpired: false\n    };\n\n    return {\n      deadline,\n      parentSpan: parentContext?.spanId,\n      spanId\n    };\n  }\n\n  propagateDeadline(context: DeadlineContext, estimatedCost: number): DeadlineContext {\n    const remaining = context.deadline.deadline - Date.now();\n\n    return {\n      deadline: {\n        deadline: context.deadline.deadline,\n        remaining,\n        isExpired: remaining <= 0\n      },\n      parentSpan: context.spanId,\n      spanId: this.generateSpanId()\n    };\n  }\n\n  allocateTimeBudget(context: DeadlineContext, fraction: number): DeadlineContext {\n    const allocated = Math.floor(context.deadline.remaining * fraction);\n\n    return {\n      deadline: {\n        deadline: context.deadline.deadline,\n        remaining: allocated,\n        isExpired: allocated <= 0\n      },\n      parentSpan: context.spanId,\n      spanId: this.generateSpanId()\n    };\n  }\n\n  shouldContinue(context: DeadlineContext): boolean {\n    if (context.deadline.isExpired) {\n      return false;\n    }\n    const remaining = context.deadline.deadline - Date.now();\n    return remaining > 0;\n  }\n\n  getRemainingTime(context: DeadlineContext): number {\n    return Math.max(0, context.deadline.deadline - Date.now());\n  }\n\n  private generateSpanId(): string {\n    return `span-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;\n  }\n\n  injectContext(context: DeadlineContext): Record<string, string> {\n    return {\n      \"deadline-ms\": context.deadline.deadline.toString(),\n      \"span-id\": context.spanId\n    };\n  }\n\n  extractContext(headers: Record<string, string>): DeadlineContext | null {\n    const deadlineMs = headers[\"deadline-ms\"];\n    const spanId = headers[\"span-id\"];\n\n    if (!deadlineMs || !spanId) {\n      return null;\n    }\n\n    const deadline = parseInt(deadlineMs);\n    return {\n      deadline: {\n        deadline,\n        remaining: Math.max(0, deadline - Date.now()),\n        isExpired: Date.now() >= deadline\n      },\n      spanId\n    };\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "timeout-pattern",
+      "type": "enhances",
+      "description": "Deadline extends timeout by propagating constraints across service calls"
+    },
+    {
+      "target_pattern_id": "distributed-tracing",
+      "type": "relates-to",
+      "description": "Deadline patterns often integrate with distributed tracing systems"
+    }
+  ]
+}

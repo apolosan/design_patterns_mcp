@@ -1,0 +1,35 @@
+{
+  "id": "outbox-pattern",
+  "name": "Outbox Pattern",
+  "category": "Event-Driven",
+  "description": "Guarantees reliable event delivery by storing events in the same transaction as data changes",
+  "when_to_use": "Event-driven systems\nReliable messaging\nDual-write prevention\nTransactional outbox",
+  "benefits": "Reliable delivery\nDual-write solution\nTransactional integrity\nSimple implementation",
+  "drawbacks": "Message relay complexity\nEvent ordering\nDuplicate handling\nImplementation overhead",
+  "use_cases": "Microservices events\nDatabase-triggered messaging\nReliable publish/subscribe\nTransactional messaging",
+  "complexity": "Medium",
+  "tags": [
+    "event-driven",
+    "outbox",
+    "reliability",
+    "transaction"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Outbox Pattern: reliable event delivery via transactional outbox\n\ninterface OutboxMessage {\n  id: string;\n  aggregateType: string;\n  aggregateId: string;\n  type: string;\n  payload: any;\n  createdAt: Date;\n  processedAt?: Date;\n  retryCount: number;\n  error?: string;\n}\n\ninterface OutboxConfig {\n  batchSize: number;\n  maxRetries: number;\n  pollIntervalMs: number;\n}\n\nclass OutboxProcessor {\n  private outboxTable: Map<string, OutboxMessage> = new Map();\n  private messageBroker: MessageBroker;\n  private config: OutboxConfig;\n\n  constructor(config: OutboxConfig, messageBroker: MessageBroker) {\n    this.config = config;\n    this.messageBroker = messageBroker;\n  }\n\n  async processTransaction(\n    businessLogic: () => Promise<void>\n  ): Promise<void> {\n    const outboxMessages: OutboxMessage[] = [];\n\n    try {\n      await this.beginTransaction();\n\n      await businessLogic();\n\n      outboxMessages.push(...this.collectOutboxMessages());\n      await this.saveToOutbox(outboxMessages);\n\n      await this.commitTransaction();\n    } catch (error) {\n      await this.rollbackTransaction();\n      throw error;\n    }\n\n    await this.publishOutboxMessages(outboxMessages);\n  }\n\n  async startRelay(): Promise<void> {\n    console.log(\"Starting outbox relay...\");\n    while (true) {\n      await this.relayMessages();\n      await this.sleep(this.config.pollIntervalMs);\n    }\n  }\n\n  private async relayMessages(): Promise<void> {\n    const unprocessed = Array.from(this.outboxTable.values())\n      .filter(m => !m.processedAt)\n      .slice(0, this.config.batchSize);\n\n    for (const message of unprocessed) {\n      try {\n        await this.messageBroker.publish(message.type, message.payload);\n        message.processedAt = new Date();\n      } catch (error) {\n        message.retryCount++;\n        message.error = (error as Error).message;\n        if (message.retryCount >= this.config.maxRetries) {\n          message.processedAt = new Date();\n        }\n      }\n    }\n  }\n\n  private collectOutboxMessages(): OutboxMessage[] {\n    return [\n      {\n        id: crypto.randomUUID(),\n        aggregateType: \"Order\",\n        aggregateId: \"123\",\n        type: \"ORDER_CREATED\",\n        payload: { orderId: \"123\", total: 100 },\n        createdAt: new Date(),\n        retryCount: 0\n      }\n    ];\n  }\n\n  private async beginTransaction(): Promise<void> {}\n  private async commitTransaction(): Promise<void> {}\n  private async rollbackTransaction(): Promise<void> {}\n  private async saveToOutbox(messages: OutboxMessage[]): Promise<void> {\n    messages.forEach(m => this.outboxTable.set(m.id, m));\n  }\n  private sleep(ms: number): Promise<void> {\n    return new Promise(resolve => setTimeout(resolve, ms));\n  }\n}\n\nclass MessageBroker {\n  async publish(type: string, payload: any): Promise<void> {\n    console.log(`Publishing ${type}:`, payload);\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "saga-pattern",
+      "type": "uses",
+      "description": "Sagas use outbox for reliable event publishing"
+    },
+    {
+      "target_pattern_id": "change-data-capture",
+      "type": "complements",
+      "description": "Outbox can be used with CDC for reliable messaging"
+    }
+  ]
+}

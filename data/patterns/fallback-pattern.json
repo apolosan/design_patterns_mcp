@@ -1,0 +1,35 @@
+{
+  "id": "fallback-pattern",
+  "name": "Fallback Pattern",
+  "category": "Resilience",
+  "description": "Provides alternative behavior when primary operation fails, enabling graceful degradation",
+  "when_to_use": "Non-critical functionalities\nCacheable data\nGraceful degradation\nAlternative service routing",
+  "benefits": "Graceful degradation\nUser experience preservation\nFlexibility in failure handling\nCaching integration",
+  "drawbacks": "Fallback quality maintenance\nStale data risk\nComplexity in fallback logic\nDebugging difficulty",
+  "use_cases": "Cached data fallback\nDefault values\nAlternative service routing\nDegraded feature modes",
+  "complexity": "Low",
+  "tags": [
+    "resilience",
+    "fallback",
+    "graceful-degradation",
+    "degradation"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "type FallbackHandler<T> = (error: Error, context: Record<string, any>) => Promise<T>;\n\ninterface FallbackConfig<T> {\n  fallback: FallbackHandler<T>;\n  fallbackOn: (error: Error) => boolean;\n  enableCacheFallback: boolean;\n  cacheKey?: string;\n  cacheTtlMs?: number;\n}\n\nclass FallbackExecutor<T> {\n  private cache: Map<string, { data: T; expiry: number }> = new Map();\n\n  constructor(private config: FallbackConfig<T>) {}\n\n  async execute(\n    primary: () => Promise<T>,\n    context: Record<string, any> = {}\n  ): Promise<T> {\n    try {\n      return await primary();\n    } catch (error) {\n      if (!this.config.fallbackOn(error as Error)) {\n        throw error;\n      }\n\n      if (this.config.enableCacheFallback) {\n        const cached = this.getFromCache();\n        if (cached !== null) {\n          return cached;\n        }\n      }\n\n      return this.config.fallback(error as Error, context);\n    }\n  }\n\n  private getFromCache(): T | null {\n    if (!this.config.cacheKey) return null;\n\n    const cached = this.cache.get(this.config.cacheKey);\n    if (cached && cached.expiry > Date.now()) {\n      return cached.data;\n    }\n\n    this.cache.delete(this.config.cacheKey);\n    return null;\n  }\n\n  setCache(key: string, data: T, ttlMs: number): void {\n    this.cache.set(key, { data, expiry: Date.now() + ttlMs });\n  }\n\n  clearCache(): void {\n    this.cache.clear();\n  }\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "circuit-breaker",
+      "type": "complements",
+      "description": "Fallback provides alternative when circuit breaker opens"
+    },
+    {
+      "target_pattern_id": "cache-aside",
+      "type": "complements",
+      "description": "Cache-aside is often used as fallback data source"
+    }
+  ]
+}

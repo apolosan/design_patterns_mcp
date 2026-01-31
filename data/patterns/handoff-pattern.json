@@ -1,0 +1,36 @@
+{
+  "id": "handoff-pattern",
+  "name": "Handoff Pattern",
+  "category": "Agentic AI",
+  "description": "Manages smooth transitions between agents or between agent and human modes with full context transfer",
+  "when_to_use": "Escalation systems\nMulti-competence assistants\nHuman-computer transitions\nSpecialized routing",
+  "benefits": "Seamless transitions\nContext preservation\nClear responsibility boundaries\nFlexibility in agent routing",
+  "drawbacks": "Context transfer complexity\nPotential information loss\nHandoff latency\nCoordination overhead",
+  "use_cases": "Customer support escalation\nTechnical support routing\nHuman-in-the-loop scenarios\nSpecialized domain transfer",
+  "complexity": "Medium",
+  "tags": [
+    "agentic-ai",
+    "handoff",
+    "transfer",
+    "escalation",
+    "context-transfer"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "interface HandoffContext {\n  conversationHistory: Array<{ role: string; content: string }>;\n  currentState: Record<string, any>;\n  userPreferences: Record<string, any>;\n  taskProgress: string;\n  metadata: Record<string, any>;\n}\n\ninterface HandoffTarget {\n  id: string;\n  type: \"agent\" | \"human\";\n  capabilities: string[];\n  priority: number;\n}\n\nclass HandoffManager {\n  private contextStore: Map<string, HandoffContext> = new Map();\n\n  async initiateHandoff(\n    fromAgent: string,\n    toTarget: HandoffTarget,\n    context: HandoffContext,\n    reason: string\n  ): Promise<HandoffResult> {\n    const sessionId = this.generateSessionId();\n    this.contextStore.set(sessionId, context);\n\n    const transferResult = await this.transferContext(sessionId, toTarget);\n\n    if (!transferResult.success) {\n      throw new Error(`Handoff failed: ${transferResult.error}`);\n    }\n\n    return {\n      sessionId,\n      handoffTime: new Date(),\n      fromAgent,\n      toTarget: toTarget.id,\n      contextPreserved: true,\n      reason\n    };\n  }\n\n  async receiveHandoff(sessionId: string): Promise<HandoffContext> {\n    const context = this.contextStore.get(sessionId);\n    if (!context) {\n      throw new Error(`Session not found: ${sessionId}`);\n    }\n    this.contextStore.delete(sessionId);\n    return context;\n  }\n\n  private async transferContext(sessionId: string, target: HandoffTarget): Promise<{ success: boolean; error?: string }> {\n    const context = this.contextStore.get(sessionId);\n    if (!context) {\n      return { success: false, error: \"Context not found\" };\n    }\n    return { success: true };\n  }\n\n  private generateSessionId(): string {\n    return `handoff-${Date.now()}-${Math.random().toString(36).slice(2)}`;\n  }\n}\n\ninterface HandoffResult {\n  sessionId: string;\n  handoffTime: Date;\n  fromAgent: string;\n  toTarget: string;\n  contextPreserved: boolean;\n  reason: string;\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "human-in-the-loop",
+      "type": "related-to",
+      "description": "Handoff is a key component of human-in-the-loop systems"
+    },
+    {
+      "target_pattern_id": "context-management",
+      "type": "requires",
+      "description": "Handoff requires robust context and state management"
+    }
+  ]
+}

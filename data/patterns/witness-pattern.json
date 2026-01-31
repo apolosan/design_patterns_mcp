@@ -1,0 +1,35 @@
+{
+  "id": "witness-pattern",
+  "name": "Witness Pattern",
+  "category": "Functional",
+  "description": "Uses types to represent and enforce business constraints at compile-time",
+  "when_to_use": "Compile-time validation\nDomain modeling\nBusiness rules enforcement\nType-level constraints",
+  "benefits": "Compile-time safety\nDomain correctness\nNo runtime errors\nSelf-documenting constraints",
+  "drawbacks": "Complexity\nLearning curve\nCompilation overhead\nType system limits",
+  "use_cases": "Validated domains\nBusiness rules\nAPI contracts\nState machines",
+  "complexity": "High",
+  "tags": [
+    "functional",
+    "type-system",
+    "witness",
+    "domain-modeling"
+  ],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// Witness Pattern: types as compile-time witnesses for constraints\n\n// Witnesses for type-level constraints\nclass Positive { private readonly _: unique symbol; }\nclass NonEmpty { private readonly _: unique symbol; }\nclass Email { private readonly _: unique symbol; }\nclass InRange<Min extends number, Max extends number> { private readonly _: unique symbol; }\n\n// Smart constructors that serve as witnesses\nfunction positive(value: number): Positive & number {\n  if (value <= 0) throw new Error(\"Value must be positive\");\n  return value as Positive & number;\n}\n\nfunction nonEmpty<T>(value: T[]): NonEmpty & T[] {\n  if (value.length === 0) throw new Error(\"Array must not be empty\");\n  return value as NonEmpty & T[];\n}\n\nfunction email(value: string): Email & string {\n  const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n  if (!emailRegex.test(value)) throw new Error(\"Invalid email format\");\n  return value as Email & string;\n}\n\nfunction inRange<Min extends number, Max extends number>(\n  value: number,\n  min: Min,\n  max: Max\n): InRange<Min, Max> & number {\n  if (value < min || value > max) {\n    throw new Error(`Value must be between ${min} and ${max}`);\n  }\n  return value as InRange<Min, Max> & number;\n}\n\n// Using witnesses in domain types\ninterface Account {\n  id: string;\n  email: Email & string;\n  balance: Positive & number;\n  transactions: NonEmpty & Transaction[];\n}\n\ninterface Transaction {\n  id: string;\n  amount: InRange<1, 10000> & number;\n  description: string;\n}\n\n// Functions that require witnesses\nfunction calculateInterest(\n  principal: Positive & number,\n  rate: InRange<0, 100> & number,\n  time: Positive & number\n): Positive & number {\n  return positive(principal * (1 + rate / 100) * time);\n}\n\nfunction transfer(\n  from: Account,\n  to: Account,\n  amount: Positive & number\n): { from: Account; to: Account } {\n  if (amount > from.balance) {\n    throw new Error(\"Insufficient balance\");\n  }\n\n  return {\n    from: {\n      ...from,\n      balance: positive(from.balance - amount)\n    },\n    to: {\n      ...to,\n      balance: positive(to.balance + amount)\n    }\n  };\n}\n\n// Witnesses for complex constraints\nclass ValidatedOrder {\n  private readonly _: unique symbol;\n}\n\ninterface OrderInput {\n  items: { productId: string; quantity: number }[];\n  customerEmail: string;\n  shippingAddress: string;\n}\n\nfunction validateOrder(input: OrderInput): ValidatedOrder & OrderInput {\n  if (!input.items || input.items.length === 0) {\n    throw new Error(\"Order must have at least one item\");\n  }\n\n  const emailValue = email(input.customerEmail);\n\n  return {\n    ...input,\n    customerEmail: emailValue\n  } as ValidatedOrder & OrderInput;\n}\n\nfunction processOrder(order: ValidatedOrder & OrderInput): OrderResult {\n  return {\n    orderId: crypto.randomUUID(),\n    ...order\n  };\n}"
+    }
+  },
+  "relationships": [
+    {
+      "target_pattern_id": "state-machine-pattern",
+      "type": "uses",
+      "description": "Witness pattern often used to model state machine transitions"
+    },
+    {
+      "target_pattern_id": "result-type",
+      "type": "complements",
+      "description": "Witness for valid values, Result for error handling"
+    }
+  ]
+}
