@@ -1,6 +1,6 @@
 # Design Patterns MCP Server
 
-[![Version](https://img.shields.io/badge/version-0.4.2-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
+[![Version](https://img.shields.io/badge/version-0.4.3-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Test Status](https://img.shields.io/badge/tests-464%20%7C%20100%25-brightgreen.svg)](#testing)
 [![Patterns](https://img.shields.io/badge/patterns-685%2B-orange.svg)](#available-pattern-categories)
@@ -175,6 +175,49 @@ Add to your `.mcp.json` or Claude Desktop configuration:
 | `MAX_CONCURRENT_REQUESTS` | `10` | Request concurrency limit |
 | `CACHE_MAX_SIZE` | `1000` | Cache size limit |
 | `CACHE_TTL` | `3600000` | Cache TTL in milliseconds |
+| `TRANSPORT_MODE` | `stdio` | Transport mode (stdio/http) |
+| `HTTP_PORT` | `3000` | HTTP port (http mode) |
+| `MCP_ENDPOINT` | `/mcp` | MCP endpoint path |
+| `HEALTH_CHECK_PATH` | `/health` | Health check path |
+| `SKIP_DB_SETUP` | `false` | Skip database setup |
+
+## Docker Deployment
+
+### Quick Start
+
+```bash
+# Build
+docker build -t design-patterns-mcp .
+
+# Run HTTP mode
+docker run -p 3000:3000 -e TRANSPORT_MODE=http design-patterns-mcp
+
+# Run stdio mode (default)
+docker run design-patterns-mcp
+```
+
+### Docker Compose
+
+```bash
+docker compose up --build -d
+```
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TRANSPORT_MODE` | `stdio` | Transport mode (stdio/http) |
+| `HTTP_PORT` | `3000` | HTTP port (http mode) |
+| `MCP_ENDPOINT` | `/mcp` | MCP endpoint path |
+| `HEALTH_CHECK_PATH` | `/health` | Health check path |
+| `DATABASE_PATH` | `/app/data/design-patterns.db` | SQLite database path |
+| `LOG_LEVEL` | `info` | Logging level |
+| `SKIP_DB_SETUP` | `false` | Skip database setup |
+
+### Endpoints (HTTP mode)
+
+- `GET /health` - Health check
+- `POST /mcp` - MCP JSON-RPC endpoint
 
 ## Commands
 
@@ -254,7 +297,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Version**: 0.4.2  
+**Version**: 0.4.3  
 **Last Updated**: January 2026  
 **Patterns**: 685+ (750+ JSON files)  
 **Tests**: 464 test cases | 100% pass rate

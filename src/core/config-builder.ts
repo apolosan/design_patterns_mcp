@@ -25,6 +25,11 @@ export interface MCPServerConfig {
     l3?: { enabled?: boolean; tableName?: string };
     global?: { writeStrategy?: 'write-through' | 'write-back' };
   };
+  // HTTP Transport (Docker deployment)
+  transportMode?: 'stdio' | 'http';
+  httpPort?: number;
+  mcpEndpoint?: string;
+  healthCheckPath?: string;
 }
 
 interface ConfigBuilderState {
@@ -39,6 +44,11 @@ interface ConfigBuilderState {
   embeddingCompression?: boolean;
   enableMultiLevelCache?: boolean;
   cacheConfig?: MCPServerConfig['cacheConfig'];
+  // HTTP Transport (Docker deployment)
+  transportMode?: 'stdio' | 'http';
+  httpPort?: number;
+  mcpEndpoint?: string;
+  healthCheckPath?: string;
 }
 
 export class MCPServerConfigBuilder {
@@ -131,10 +141,60 @@ export class MCPServerConfigBuilder {
   }
 
   /**
-   * Configure multi-level cache settings
-   */
+    * Configure multi-level cache settings
+    */
   withCacheConfig(config: MCPServerConfig['cacheConfig']): this {
     this.state.cacheConfig = config;
+    return this;
+  }
+
+  /**
+   * Set transport mode (stdio or http)
+   */
+  withTransportMode(mode: 'stdio' | 'http'): this {
+    if (!mode || (mode !== 'stdio' && mode !== 'http')) {
+      throw new Error('Transport mode must be "stdio" or "http"');
+    }
+    this.state.transportMode = mode;
+    return this;
+  }
+
+  /**
+   * Set HTTP port for Streamable HTTP transport
+   */
+  withHttpPort(port: number): this {
+    if (!Number.isInteger(port) || port < 1 || port > 65535) {
+      throw new Error('HTTP port must be an integer between 1 and 65535');
+    }
+    this.state.httpPort = port;
+    return this;
+  }
+
+  /**
+   * Set MCP endpoint path for HTTP transport
+   */
+  withMcpEndpoint(endpoint: string): this {
+    if (!endpoint || typeof endpoint !== 'string') {
+      throw new Error('MCP endpoint must be a non-empty string');
+    }
+    if (!endpoint.startsWith('/')) {
+      throw new Error('MCP endpoint must start with "/"');
+    }
+    this.state.mcpEndpoint = endpoint;
+    return this;
+  }
+
+  /**
+   * Set health check path for HTTP transport
+   */
+  withHealthCheckPath(path: string): this {
+    if (!path || typeof path !== 'string') {
+      throw new Error('Health check path must be a non-empty string');
+    }
+    if (!path.startsWith('/')) {
+      throw new Error('Health check path must start with "/"');
+    }
+    this.state.healthCheckPath = path;
     return this;
   }
 
@@ -167,6 +227,11 @@ export class MCPServerConfigBuilder {
       // Multi-Level Cache (Phase 2.2)
       enableMultiLevelCache: this.state.enableMultiLevelCache ?? true,
       cacheConfig: this.state.cacheConfig,
+      // HTTP Transport (Docker deployment)
+      transportMode: this.state.transportMode ?? 'stdio',
+      httpPort: this.state.httpPort ?? 3000,
+      mcpEndpoint: this.state.mcpEndpoint ?? '/mcp',
+      healthCheckPath: this.state.healthCheckPath ?? '/health',
     };
 
     // Additional validation
@@ -244,6 +309,27 @@ export class MCPServerConfigBuilder {
           keyPrefix: process.env.REDIS_KEY_PREFIX ?? 'cache:',
         },
       });
+    }
+
+    // HTTP Transport configuration (Docker deployment)
+    const transportMode = process.env.TRANSPORT_MODE as 'stdio' | 'http';
+    if (transportMode && (transportMode === 'stdio' || transportMode === 'http')) {
+      builder.withTransportMode(transportMode);
+    }
+
+    const httpPort = parseInt(process.env.HTTP_PORT ?? '0');
+    if (!isNaN(httpPort) && httpPort > 0 && httpPort <= 65535) {
+      builder.withHttpPort(httpPort);
+    }
+
+    const mcpEndpoint = process.env.MCP_ENDPOINT;
+    if (mcpEndpoint) {
+      builder.withMcpEndpoint(mcpEndpoint);
+    }
+
+    const healthCheckPath = process.env.HEALTH_CHECK_PATH;
+    if (healthCheckPath) {
+      builder.withHealthCheckPath(healthCheckPath);
     }
 
     return builder;

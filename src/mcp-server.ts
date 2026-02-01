@@ -7,6 +7,7 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
 import {
   CallToolRequestSchema,
   ReadResourceRequestSchema,
@@ -42,44 +43,112 @@ export interface MCPServerConfig {
   enableLLM: boolean;
   maxConcurrentRequests: number;
   enableFuzzyLogic?: boolean;
-  // New Blended RAG features
   enableTelemetry?: boolean;
   enableHybridSearch?: boolean;
   enableGraphAugmentation?: boolean;
   embeddingCompression?: boolean;
+  transportMode?: 'stdio' | 'http';
+  httpPort?: number;
+  mcpEndpoint?: string;
+  healthCheckPath?: string;
 }
 
-interface PatternRow {
-  id: string;
-  name: string;
-  category: string;
-  description?: string;
-  when_to_use?: string;
-  benefits?: string;
-  drawbacks?: string;
-  use_cases?: string;
-  complexity?: string;
-  tags?: string;
-  examples?: string;
-  created_at?: string;
+interface PatternRow { id: string; name: string; category: string; description?: string; when_to_use?: string; benefits?: string; drawbacks?: string; use_cases?: string; complexity?: string; tags?: string; examples?: string; created_at?: string; }
+interface PatternExample { language: string; code: string; description?: string; explanation?: string; }
+interface CountResult { count: number; }
+interface PatternImplementation { language: string; code: string; explanation?: string; }
+
+// Stateless HTTP handler functions (reusable across server instances)
+function createHttpToolHandlers(db: DatabaseManager, patternMatcher: PatternMatcher, semanticSearch: SemanticSearchService, rateLimiter: MCPRateLimiter) {
+  return {
+    tools: [
+      {
+        name: 'find_patterns',
+        description: 'Find design patterns matching a problem description using semantic search',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            query: { type: 'string', description: 'Natural language description of the problem or requirements' },
+            categories: { type: 'array', items: { type: 'string' }, description: 'Optional: Pattern categories to search in' },
+            maxResults: { type: 'number', description: 'Maximum number of recommendations to return', default: 5 },
+            programmingLanguage: { type: 'string', description: 'Target programming language for implementation examples' },
+          },
+          required: ['query'],
+        },
+      },
+      {
+        name: 'search_patterns',
+        description: 'Search patterns by keyword or semantic similarity',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            query: { type: 'string', description: 'Search query' },
+            searchType: { type: 'string', enum: ['keyword', 'semantic', 'hybrid'], default: 'hybrid' },
+            limit: { type: 'number', default: 10 },
+          },
+          required: ['query'],
+        },
+      },
+      {
+        name: 'get_pattern_details',
+        description: 'Get detailed information about a specific pattern',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            patternId: { type: 'string', description: 'Pattern ID to get details for' },
+          },
+          required: ['patternId'],
+        },
+      },
+      {
+        name: 'count_patterns',
+        description: 'Get the total number of design patterns in the database',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            includeDetails: { type: 'boolean', description: 'Include breakdown by category', default: false },
+          },
+        },
+      },
+      {
+        name: 'get_health_status',
+        description: 'Get the health status of all system services',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            checkName: { type: 'string', description: 'Optional: Check only a specific health check by name' },
+            tags: { type: 'array', items: { type: 'string' }, description: 'Optional: Filter health checks by tags' },
+          },
+        },
+      },
+    ],
+    handleFindPatterns: async (args: unknown) => {
+      const validatedArgs = InputValidator.validateFindPatternsArgs(args);
+      const request = { id: crypto.randomUUID(), query: validatedArgs.query, categories: validatedArgs.categories, maxResults: validatedArgs.maxResults, programmingLanguage: validatedArgs.programmingLanguage };
+      const recommendations = await patternMatcher.findMatchingPatterns(request);
+      return { content: [{ type: 'text', text: `Found ${recommendations.length} pattern recommendations:\n\n${recommendations.map((rec, i) => `${i + 1}. **${rec.pattern.name}** (${rec.pattern.category})\n   Confidence: ${(rec.confidence * 100).toFixed(1)}%\n   Rationale: ${rec.justification.primaryReason}\n   Benefits: ${rec.justification.benefits.join(', ')}`).join('\n')}` }] };
+    },
+    handleSearchPatterns: async (args: unknown) => {
+      const validatedArgs = InputValidator.validateSearchPatternsArgs(args);
+      const results = await semanticSearch.search({ text: validatedArgs.query, filters: {}, options: { limit: validatedArgs.limit, includeMetadata: true } });
+      return { content: [{ type: 'text', text: `Search results for "${validatedArgs.query}":\n\n${results.map((r, i) => `${i + 1}. **${r.pattern.name}** (${r.pattern.category})\n   Score: ${(r.score * 100).toFixed(1)}%\n   Description: ${r.pattern.description}`).join('\n')}` }] };
+    },
+    handleCountPatterns: (args: unknown) => {
+      const validatedArgs = InputValidator.validateCountPatternsArgs(args);
+      const totalResult = db.queryOne<{ total: number }>('SELECT COUNT(*) as total FROM patterns');
+      const total = totalResult?.total ?? 0;
+      if (validatedArgs.includeDetails) {
+        const breakdown = db.query<{ category: string; count: number }>('SELECT category, COUNT(*) as count FROM patterns GROUP BY category ORDER BY count DESC');
+        return { content: [{ type: 'text', text: `## Total Design Patterns: ${total}\n\n### Breakdown by Category:\n${breakdown.map(item => `- **${item.category}**: ${item.count} patterns`).join('\n')}\n\n*Total patterns from all sources: ${total}*` }] };
+      }
+      return { content: [{ type: 'text', text: `Total design patterns in database: **${total}**` }] };
+    },
+  };
 }
 
-interface PatternExample {
-  language: string;
-  code: string;
-  description?: string;
-  explanation?: string;
-}
-
-interface CountResult {
-  count: number;
-}
-
-interface PatternImplementation {
-  language: string;
-  code: string;
-  explanation?: string;
-}
+interface PatternRow { id: string; name: string; category: string; description?: string; when_to_use?: string; benefits?: string; drawbacks?: string; use_cases?: string; complexity?: string; tags?: string; examples?: string; created_at?: string; }
+interface PatternImplementation { language: string; code: string; explanation?: string; }
+interface CountResult { count: number; }
 
 class DesignPatternsMCPServer {
   private server: Server;
@@ -220,7 +289,7 @@ class DesignPatternsMCPServer {
     this.server = new Server(
       {
         name: 'design-patterns-mcp',
-        version: '0.1.0',
+        version: '0.4.3',
       },
       {
         capabilities: {
@@ -830,6 +899,38 @@ class DesignPatternsMCPServer {
     this.logger.info('mcp-server', 'Server started and listening on stdio');
   }
 
+  async startHttp(): Promise<void> {
+    const port = this.config.httpPort || 3000;
+    const healthPath = this.config.healthCheckPath || '/health';
+    const mcpServer = this.server;
+
+    Bun.serve({
+      port,
+      idleTimeout: 255,
+      async fetch(req: Request): Promise<Response> {
+        const url = new URL(req.url);
+
+        if (url.pathname === healthPath || url.pathname === '/health') {
+          return new Response('OK', { status: 200 });
+        }
+
+        if (url.pathname === '/mcp' || url.pathname.startsWith('/mcp/')) {
+          const transport = new WebStandardStreamableHTTPServerTransport({
+            sessionIdGenerator: undefined,
+            enableJsonResponse: true,
+          });
+
+          await mcpServer.connect(transport);
+          return transport.handleRequest(req);
+        }
+
+        return new Response('Not Found', { status: 404 });
+      },
+    });
+
+    this.logger.info('mcp-server', `HTTP server listening on port ${port}`);
+  }
+
   async stop(): Promise<void> {
     try {
       await this.db.close();
@@ -866,7 +967,15 @@ async function main(): Promise<void> {
 
   try {
     await server.initialize();
-    await server.start();
+
+    const transportMode = config.transportMode ?? 'stdio';
+    if (transportMode === 'http') {
+      logger.info('main', 'Starting server in HTTP mode');
+      await server.startHttp();
+    } else {
+      logger.info('main', 'Starting server in stdio mode');
+      await server.start();
+    }
   } catch (error) {
     logger.error(
       'main',
