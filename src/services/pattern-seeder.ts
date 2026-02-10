@@ -6,6 +6,7 @@ import { DatabaseManager } from './database-manager.js';
 import { Pattern } from '../models/pattern.js';
 import { logger } from './logger.js';
 import { isObject } from '../utils/type-guards.js';
+import { validatePattern, validateRelationship, ValidationResult as SchemaValidationResult } from '../utils/pattern-schema-validation.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -80,7 +81,15 @@ export class PatternSeeder {
           if (!this.isValidPattern(pattern)) {
              logger.warn('pattern-seeder', `Skipping invalid pattern in file ${file}`, { patternData: String(pattern) });
              continue;
-          }
+           }
+
+           const schemaResult = validatePattern(pattern);
+           if (!schemaResult.valid) {
+             logger.warn('pattern-seeder', `Schema validation warnings in file ${file}`, {
+               errors: schemaResult.errors.map(e => `${e.field}: ${e.message}`),
+               warnings: schemaResult.warnings.map(w => `${w.field}: ${w.message}`)
+             });
+           }
 
           const typedPattern = pattern;
           allPatterns.push(typedPattern);

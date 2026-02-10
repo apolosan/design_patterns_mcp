@@ -5,6 +5,89 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.4] - 2026-02-09
+
+### Added
+
+#### MCP Tools Improvements
+
+- **get_health_status Tool**: Enhanced health check reporting with detailed system status
+  - Returns comprehensive health report with overall status (HEALTHY, DEGRADED, UNHEALTHY, UNKNOWN)
+  - Includes timestamp, duration, and summary counts for each status category
+  - Displays individual check results with detailed information
+  - Supports filtering by specific check name or tags
+  - Integration with HealthCheckService for real-time monitoring
+
+- **Pattern ID in Search Results**: Pattern IDs now included in query responses
+  - `find_patterns` tool returns pattern ID for each recommendation
+  - `search_patterns` tool includes pattern ID in search results
+  - Facilitates detailed pattern lookup via `get_pattern_details` tool
+  - Format: `ID: <pattern-id>` displayed alongside pattern name and category
+
+#### Infrastructure Updates
+
+- **HTTP Transport Support**: Added HTTP mode alongside stdio transport
+  - New configuration options: `transportMode`, `httpPort`, `mcpEndpoint`, `healthCheckPath`
+  - Supports both `stdio` (default) and `http` transport modes
+  - Health endpoint available at configurable path (default: `/health`)
+  - MCP endpoint available at `/mcp` for HTTP mode
+
+### Changed
+
+- **Configuration Builder**: Extended with Docker and HTTP transport settings
+- **Input Validation**: Added validation for new health status arguments
+
+---
+
+## [0.4.3] - 2026-02-01
+
+### Added
+
+#### Docker Support
+
+- **Dockerfile**: Complete containerization setup for quick universal startup
+  - Multi-stage build for optimized image size
+  - Bun runtime for fast execution
+  - Health check endpoint support
+  - Production-ready configuration
+
+- **Docker Compose**: `docker-compose.yml` for easy orchestration
+  - Pre-configured environment variables
+  - Volume mapping for database persistence
+  - HTTP mode support out of the box
+
+- **Entrypoint Script**: `entrypoint.sh` with intelligent startup logic
+  - Automatic database setup on first run
+  - Transport mode configuration (stdio/http)
+  - Health check endpoint
+  - Graceful shutdown handling
+
+- **Environment Configuration**: `.env.example` with all Docker-related settings
+  - `TRANSPORT_MODE`: Choose between stdio (default) and http
+  - `HTTP_PORT`: Configure HTTP server port (default: 3000)
+  - `MCP_ENDPOINT`: MCP endpoint path (default: /mcp)
+  - `HEALTH_CHECK_PATH`: Health check endpoint path (default: /health)
+
+- **Dockerignore**: `.dockerignore` for optimized build context
+  - Excludes node_modules, test files, and development artifacts
+  - Reduces build time and image size
+
+- **Documentation**: 
+  - `QUICKSTART.md`: Step-by-step Docker setup guide
+  - Updated `README.md` with Docker deployment section
+  - Test scripts: `test-mcp-http.js` and `test-mcp-stdio.js`
+
+### Technical Details
+
+- **Base Image**: Oven/bun:latest for latest Bun runtime
+- **Working Directory**: /app
+- **Default Transport**: stdio (configurable via environment)
+- **HTTP Mode Port**: 3000 (configurable)
+- **Health Endpoint**: /health (configurable)
+- **Database Path**: /app/data/design-patterns.db (Docker path)
+
+---
+
 ## [0.4.2] - 2026-01-31
 
 ### Added

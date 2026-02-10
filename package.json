@@ -1,6 +1,6 @@
 {
   "name": "design-patterns-mcp",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 685+ patterns using semantic search, vector embeddings, TF-IDF keyword search, and blended RAG hybrid search with graph augmentation",
   "main": "dist/mcp-server.js",
   "module": "dist/mcp-server.js",
@@ -37,8 +37,7 @@
   "type": "module",
   "scripts": {
     "prepare": "bun run build",
-    "build": "tsc && bun run build:copy-data",
-    "build:copy-data": "cp -r data dist/ 2>/dev/null || mkdir -p dist/data",
+    "build": "tsc",
     "postbuild": "chmod +x dist/src/mcp-server.js dist/src/cli/*.js 2>/dev/null || true",
     "start": "bun run build && bun dist/src/mcp-server.js",
     "dev": "bun --hot src/mcp-server.ts",
@@ -46,11 +45,13 @@
     "lint": "eslint src/**/*.ts tests/**/*.ts",
     "lint:fix": "eslint src/**/*.ts tests/**/*.ts --fix",
     "typecheck": "tsc --noEmit",
-    "db:setup": "bun run build && bun run migrate && bun run seed && bun run generate-embeddings && bun run setup-relationships && rm :memory:*",
+    "db:setup": "bun run build && bun run migrate && bun run seed && bun run generate-embeddings && bun run setup-relationships && rm :memory:* 2>/dev/null || true",
     "migrate": "bun run build && bun dist/src/cli/migrate.js",
     "seed": "bun run build && bun dist/src/cli/seed.js",
     "setup-relationships": "bun run build && bun dist/src/cli/setup-relationships.js",
-    "generate-embeddings": "bun run build && bun dist/src/cli/generate-embeddings.js"
+    "generate-embeddings": "bun run build && bun dist/src/cli/generate-embeddings.js",
+    "integrity-check": "bun run build && bun dist/src/cli/integrity-check.js",
+    "integrity-check:schema": "bun run build && bun dist/src/cli/integrity-check.js --schema"
   },
   "repository": {
     "type": "git",

@@ -168,6 +168,8 @@ dist
 # Allow specific production databases
 !data/design-patterns.db
 !data/patterns.db
+.data/
+.data/*
 
 # Temporary SQLite files
 *.db-journal
@@ -215,3 +217,6 @@ opencode.json
 
 # Others
 worktrees/
+.chunkhound.json
+.aim/
+.feature-workflow/

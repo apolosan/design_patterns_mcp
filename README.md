@@ -1,6 +1,6 @@
 # Design Patterns MCP Server
 
-[![Version](https://img.shields.io/badge/version-0.4.3-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
+[![Version](https://img.shields.io/badge/version-0.4.4-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Test Status](https://img.shields.io/badge/tests-464%20%7C%20100%25-brightgreen.svg)](#testing)
 [![Patterns](https://img.shields.io/badge/patterns-685%2B-orange.svg)](#available-pattern-categories)
@@ -297,7 +297,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Version**: 0.4.3  
-**Last Updated**: January 2026  
+**Version**: 0.4.4  
+**Last Updated**: February 2026  
 **Patterns**: 685+ (750+ JSON files)  
 **Tests**: 464 test cases | 100% pass rate

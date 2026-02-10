@@ -35,6 +35,9 @@ import { SimpleContainer, configureContainer, TOKENS } from './core/container.js
 import { MCPServerConfigBuilder } from './core/config-builder.js';
 import { HealthCheckService } from './health/health-check-service.js';
 import { HealthStatus } from './health/types.js';
+import { DatabaseHealthCheck } from './health/database-health-check.js';
+import { VectorOperationsHealthCheck } from './health/vector-operations-health-check.js';
+import { LLMBridgeHealthCheck } from './health/llm-bridge-health-check.js';
 import type { Logger } from './services/logger.js';
 
 export interface MCPServerConfig {
@@ -126,12 +129,12 @@ function createHttpToolHandlers(db: DatabaseManager, patternMatcher: PatternMatc
       const validatedArgs = InputValidator.validateFindPatternsArgs(args);
       const request = { id: crypto.randomUUID(), query: validatedArgs.query, categories: validatedArgs.categories, maxResults: validatedArgs.maxResults, programmingLanguage: validatedArgs.programmingLanguage };
       const recommendations = await patternMatcher.findMatchingPatterns(request);
-      return { content: [{ type: 'text', text: `Found ${recommendations.length} pattern recommendations:\n\n${recommendations.map((rec, i) => `${i + 1}. **${rec.pattern.name}** (${rec.pattern.category})\n   Confidence: ${(rec.confidence * 100).toFixed(1)}%\n   Rationale: ${rec.justification.primaryReason}\n   Benefits: ${rec.justification.benefits.join(', ')}`).join('\n')}` }] };
+      return { content: [{ type: 'text', text: `Found ${recommendations.length} pattern recommendations:\n\n${recommendations.map((rec, i) => `${i + 1}. **${rec.pattern.name}** (${rec.pattern.category})\n   ID: ${rec.pattern.id}\n   Confidence: ${(rec.confidence * 100).toFixed(1)}%\n   Rationale: ${rec.justification.primaryReason}\n   Benefits: ${rec.justification.benefits.join(', ')}`).join('\n')}` }] };
     },
     handleSearchPatterns: async (args: unknown) => {
       const validatedArgs = InputValidator.validateSearchPatternsArgs(args);
       const results = await semanticSearch.search({ text: validatedArgs.query, filters: {}, options: { limit: validatedArgs.limit, includeMetadata: true } });
-      return { content: [{ type: 'text', text: `Search results for "${validatedArgs.query}":\n\n${results.map((r, i) => `${i + 1}. **${r.pattern.name}** (${r.pattern.category})\n   Score: ${(r.score * 100).toFixed(1)}%\n   Description: ${r.pattern.description}`).join('\n')}` }] };
+      return { content: [{ type: 'text', text: `Search results for "${validatedArgs.query}":\n\n${results.map((r, i) => `${i + 1}. **${r.pattern.name}** (${r.pattern.category})\n   ID: ${r.pattern.id}\n   Score: ${(r.score * 100).toFixed(1)}%\n   Description: ${r.pattern.description}`).join('\n')}` }] };
     },
     handleCountPatterns: (args: unknown) => {
       const validatedArgs = InputValidator.validateCountPatternsArgs(args);
@@ -251,6 +254,15 @@ class DesignPatternsMCPServer {
           timeout: 30000, // 30 seconds
         });
       }
+
+      // Register health checks (fallback mode)
+      const dbCheck = new DatabaseHealthCheck(this.db);
+      const vectorCheck = new VectorOperationsHealthCheck(this.vectorOps);
+      const llmCheck = new LLMBridgeHealthCheck(this.llmBridge || null);
+
+      this.healthCheckService.registerHealthCheck(dbCheck);
+      this.healthCheckService.registerHealthCheck(vectorCheck);
+      this.healthCheckService.registerHealthCheck(llmCheck);
 
       // Get the directory of the current module
       const __filename = fileURLToPath(import.meta.url);
@@ -513,6 +525,7 @@ class DesignPatternsMCPServer {
               .map(
                 (rec, index) =>
                   `${index + 1}. **${rec.pattern.name}** (${rec.pattern.category})\n` +
+                  `   ID: ${rec.pattern.id}\n` +
                   `   Confidence: ${(rec.confidence * 100).toFixed(1)}%\n` +
                   `   Rationale: ${rec.justification.primaryReason}\n` +
                   `   Benefits: ${rec.justification.benefits.join(', ')}\n`
@@ -546,6 +559,7 @@ class DesignPatternsMCPServer {
               .map(
                 (result, index) =>
                   `${index + 1}. **${result.pattern.name}** (${result.pattern.category})\n` +
+                  `   ID: ${result.pattern.id}\n` +
                   `   Score: ${(result.score * 100).toFixed(1)}%\n` +
                   `   Description: ${result.pattern.description}\n`
               )
@@ -837,7 +851,7 @@ class DesignPatternsMCPServer {
   private handleReadServerInfo(): { contents: Array<{ uri: string; mimeType: string; text: string }> } {
     const info = {
       name: 'Design Patterns MCP Server',
-      version: '0.1.0',
+      version: '0.4.3',
       status: 'running',
       database: {
         path: this.config.databasePath,

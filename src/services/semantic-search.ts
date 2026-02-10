@@ -34,6 +34,7 @@ interface SearchQuery {
 interface SearchResult {
   patternId: string;
   pattern: {
+    id: string;
     name: string;
     category: string;
     description: string;
@@ -134,6 +135,7 @@ export class SemanticSearchService {
       const searchResults: SearchResult[] = finalResults.map((result, index) => ({
         patternId: result.patternId,
         pattern: {
+          id: result.patternId,
           name: result.pattern?.name ?? 'Unknown Pattern',
           category: result.pattern?.category ?? 'Unknown',
           description: result.pattern?.description ?? 'No description available',
@@ -382,6 +384,7 @@ export class SemanticSearchService {
         .map((result, index) => ({
           patternId: result.patternId,
           pattern: {
+            id: result.patternId,
             name: result.pattern?.name ?? 'Unknown Pattern',
             category: result.pattern?.category ?? 'Unknown',
             description: result.pattern?.description ?? 'No description available',
