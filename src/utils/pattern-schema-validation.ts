@@ -2,7 +2,6 @@
  * Pattern Schema Validation
  * Validates pattern JSON files against defined schema
  */
-import { Pattern } from '../models/pattern.js';
 
 const RELATIONSHIP_TYPES = [
   'uses', 'extends', 'implements', 'requires', 'validates',
@@ -163,7 +162,7 @@ export function validateRelationship(data: unknown, fieldPrefix: string): Valida
   return { valid: errors.length === 0, errors, warnings };
 }
 
-export function validatePatternFile(filePath: string, content: string): ValidationResult {
+export function validatePatternFile(_filePath: string, content: string): ValidationResult {
   let parsed: unknown;
   try {
     parsed = JSON.parse(content);

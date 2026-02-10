@@ -22,8 +22,6 @@ import {
   CacheMetrics,
   CompressedData,
   CacheLevel,
-  TelemetryCacheEvent,
-  inferKeyType,
   MultiLevelCacheStats,
   L2CacheStats,
   L3CacheStats,
@@ -271,35 +269,34 @@ export class MultiLevelCache implements AsyncCacheServiceInterface {
     }
   }
 
-  private recordTelemetry(key: string, hit: boolean, level: CacheLevel, latencyMs: number): void {
+  private recordTelemetry(key: string, hit: boolean): void {
     if (!this.config.global.telemetryEnabled || !this.telemetry) return;
     this.telemetry.recordCacheHit(key, hit);
   }
 
   async get<T>(key: string, guard?: (value: unknown) => value is T): Promise<T | null> {
-    const startTime = Date.now();
 
     const l1Result = this.getFromL1(key, guard);
     if (l1Result.data !== null) {
-      this.recordTelemetry(key, true, 'L1', Date.now() - startTime);
+      this.recordTelemetry(key, true);
       return l1Result.data;
     }
-
+    
     const l2Result = await this.getFromL2<T>(key, guard);
     if (l2Result.data !== null) {
       this.setToL1(key, l2Result.data, this.config.l2.defaultTTL);
-      this.recordTelemetry(key, true, 'L2', Date.now() - startTime);
+      this.recordTelemetry(key, true);
       return l2Result.data;
     }
-
+    
     const l3Result = this.getFromL3<T>(key, guard);
     if (l3Result.data !== null) {
       this.setToL1(key, l3Result.data, this.config.l3.defaultTTL);
-      this.recordTelemetry(key, true, 'L3', Date.now() - startTime);
+      this.recordTelemetry(key, true);
       return l3Result.data;
     }
-
-    this.recordTelemetry(key, false, 'L1', Date.now() - startTime);
+    
+    this.recordTelemetry(key, false);
     this.metrics.misses++;
     this.metrics.levelStats.L1.misses++;
 

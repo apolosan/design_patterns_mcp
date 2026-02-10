@@ -7,7 +7,7 @@ import initSqlJs, { Database, Statement, SqlJsStatic } from 'sql.js';
 import path from 'path';
 import fs from 'fs';
 import { logger } from './logger.js';
-import { StatementPool, SqlValue, SqlParams } from './statement-pool.js';
+import { StatementPool, SqlValue } from './statement-pool.js';
 
 // sql.js type imports are available from @types/sql.js
 
@@ -63,14 +63,32 @@ export class DatabaseManager {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       this.db = new this.SQL.Database(dbData);
 
-      // Enable foreign keys
+      // Enable foreign keys and optimize performance
       if (this.db) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         this.db.run('PRAGMA foreign_keys = ON');
 
-        // Set cache size for better performance
+        // Performance optimizations for read-heavy workloads
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        this.db.run('PRAGMA cache_size = 1000');
+        this.db.run('PRAGMA page_size = 4096');
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        this.db.run('PRAGMA cache_size = -20000');
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        this.db.run('PRAGMA mmap_size = 268435456');
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        this.db.run('PRAGMA journal_mode = WAL');
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        this.db.run('PRAGMA synchronous = NORMAL');
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        this.db.run('PRAGMA temp_store = MEMORY');
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        this.db.run('PRAGMA optimize');
       }
 
       logger.info('database-manager', `Database initialized: ${this.config.filename}`);

@@ -2,17 +2,16 @@
  * Pattern Matcher Service for Design Patterns MCP Server
  * Matches user queries to appropriate design patterns using multiple strategies
  */
-import { DatabaseManager } from './database-manager.js';
+import type { PatternRepository } from '../repositories/interfaces.js';
 import { VectorOperationsService } from './vector-operations.js';
 import { PatternRecommendation, ImplementationGuidance, AlternativePattern } from '../models/recommendation.js';
 import { PatternAnalyzer } from './pattern-analyzer.js';
 import { CacheService } from './cache.js';
 import { structuredLogger } from '../utils/logger.js';
-import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
+import { parseTags } from '../utils/parse-tags.js';
 import { EmbeddingServiceAdapter } from '../adapters/embedding-service-adapter.js';
 import { FuzzyInferenceEngine } from './fuzzy-inference.js';
 import { FuzzyDefuzzificationEngine } from './fuzzy-defuzzification.js';
-import { PatternMembershipFunctions } from './fuzzy-membership.js';
 
 // Define CodeAnalysisResult interface locally since it's not exported in compiled JS
 interface CodeAnalysisResult {
@@ -247,7 +246,7 @@ class DynamicAlphaTuner {
 
 
 export class PatternMatcher {
-  private db: DatabaseManager;
+  private patternRepo: PatternRepository;
   private vectorOps: VectorOperationsService;
   private config: PatternMatcherConfig;
   private patternAnalyzer: PatternAnalyzer;
@@ -255,24 +254,20 @@ export class PatternMatcher {
   private cache: CacheService;
   private fuzzyInferenceEngine: FuzzyInferenceEngine;
   private fuzzyDefuzzificationEngine: FuzzyDefuzzificationEngine;
-  private fuzzyMembershipFunctions: PatternMembershipFunctions;
   private dynamicAlphaTuner: DynamicAlphaTuner;
 
   constructor(
-    db: DatabaseManager,
+    patternRepo: PatternRepository,
     vectorOps: VectorOperationsService,
     config: PatternMatcherConfig,
     cache?: CacheService
   ) {
-    this.db = db;
+    this.patternRepo = patternRepo;
     this.vectorOps = vectorOps;
     this.config = config;
     this.patternAnalyzer = new PatternAnalyzer();
     this.cache = cache ?? new CacheService();
     this.dynamicAlphaTuner = new DynamicAlphaTuner();
-
-    // Initialize fuzzy logic components
-    this.fuzzyMembershipFunctions = new PatternMembershipFunctions();
     this.fuzzyInferenceEngine = new FuzzyInferenceEngine();
     this.fuzzyDefuzzificationEngine = new FuzzyDefuzzificationEngine();
 
@@ -313,7 +308,7 @@ export class PatternMatcher {
       const matchingTime = Date.now() - matchingStartTime;
 
       const buildingStartTime = Date.now();
-      let recommendations = this.buildRecommendations(matches, request);
+      let recommendations = await this.buildRecommendations(matches, request);
       const buildingTime = Date.now() - buildingStartTime;
 
       // Apply fuzzy refinement if enabled
@@ -323,7 +318,7 @@ export class PatternMatcher {
           patternCount: recommendations.length,
           query: request.query
         });
-        recommendations = this.applyFuzzyRefinement(recommendations, request);
+        recommendations = await this.applyFuzzyRefinement(recommendations, request);
       }
       const fuzzyTime = this.config.useFuzzyRefinement ? Date.now() - fuzzyStartTime : 0;
 
@@ -488,14 +483,7 @@ export class PatternMatcher {
         params.push(...request.categories);
       }
 
-      const patterns = this.db.query<{
-        id: string;
-        name: string;
-        category: string;
-        description: string;
-        complexity: string;
-        tags: string;
-       }>(sql, params);
+      const patterns = await this.patternRepo.findAllSummaries();
 
        for (const pattern of patterns) {
          const parsedTags = parseTags(pattern.tags);
@@ -546,15 +534,10 @@ export class PatternMatcher {
       const queryWords = await Promise.resolve(this.tokenizeQuery(request.query));
       const matches: MatchResult[] = [];
 
-      // Get all patterns (no category filter)
-      const patterns = this.db.query<{
-        id: string;
-        name: string;
-        category: string;
-        description: string;
-        complexity: string;
-        tags: string;
-      }>(`SELECT id, name, category, description, complexity, tags FROM patterns`);
+      const allPatterns = await this.patternRepo.findAllSummaries();
+      const patterns = request.categories && request.categories.length > 0
+        ? allPatterns.filter(p => request.categories!.includes(p.category))
+        : allPatterns;
 
       for (const pattern of patterns) {
         const parsedTags = parseTags(pattern.tags);
@@ -657,10 +640,10 @@ export class PatternMatcher {
   /**
    * Apply fuzzy refinement to pattern recommendations
    */
-  private applyFuzzyRefinement(
+   private async applyFuzzyRefinement(
     recommendations: PatternRecommendation[],
     request: PatternRequest
-  ): PatternRecommendation[] {
+  ): Promise<PatternRecommendation[]> {
     const startTime = Date.now();
     let processedCount = 0;
     let failedCount = 0;
@@ -673,7 +656,7 @@ export class PatternMatcher {
 
         // Extract features for fuzzy evaluation
         const pattern = recommendation.pattern;
-        const detailedPattern = this.getDetailedPattern(pattern.id);
+        const detailedPattern = await this.getDetailedPattern(pattern.id);
 
         if (!detailedPattern) continue;
 
@@ -684,7 +667,7 @@ export class PatternMatcher {
         const fuzzyInput = {
           semanticSimilarity: recommendation.confidence, // Use current confidence as semantic score
           keywordMatchStrength: this.calculateKeywordStrength(recommendation.justification.supportingReasons),
-          patternComplexity: detailedPattern.complexity || 'Medium',
+          patternComplexity: detailedPattern.complexity,
           contextualFit,
           programmingLanguage: request.programmingLanguage,
           patternId: pattern.id,
@@ -798,15 +781,15 @@ export class PatternMatcher {
   /**
    * Build pattern recommendations from matches
    */
-  private buildRecommendations(
+   private async buildRecommendations(
     matches: MatchResult[],
     request: PatternRequest
-  ): PatternRecommendation[] {
+  ): Promise<PatternRecommendation[]> {
     const recommendations: PatternRecommendation[] = [];
 
     for (let i = 0; i < matches.length; i++) {
       const match = matches[i];
-      const pattern = this.getDetailedPattern(match.pattern.id);
+      const pattern = await this.getDetailedPattern(match.pattern.id);
 
       if (pattern) {
         const recommendation: PatternRecommendation = {
@@ -829,8 +812,8 @@ export class PatternMatcher {
             benefits: pattern.benefits || [],
             drawbacks: pattern.drawbacks || [],
           },
-          implementation: this.generateImplementationGuidance(pattern, request),
-          alternatives: this.findAlternatives(pattern.id, matches),
+          implementation: await this.generateImplementationGuidance(pattern, request),
+          alternatives: await this.findAlternatives(pattern.id, matches),
           context: {
             projectContext: this.extractProjectContext(request),
             teamContext: this.extractTeamContext(request),
@@ -1005,11 +988,11 @@ export class PatternMatcher {
   /**
    * Generate implementation guidance
    */
-  private generateImplementationGuidance(
+  private async generateImplementationGuidance(
     pattern: DetailedPattern,
     request: PatternRequest
-  ): ImplementationGuidance {
-    const implementations = this.getPatternImplementations(
+  ): Promise<ImplementationGuidance> {
+    const implementations = await this.getPatternImplementations(
       pattern.id,
       request.programmingLanguage
     );
@@ -1022,7 +1005,7 @@ export class PatternMatcher {
         'Test the implementation',
         'Refactor as needed',
       ],
-      examples: implementations.map((impl: PatternImplementation) => ({
+      examples: implementations.map(impl => ({
         language: impl.language,
         title: `${pattern.name} in ${impl.language}`,
         code: impl.code,
@@ -1048,20 +1031,8 @@ export class PatternMatcher {
   /**
    * Find alternative patterns
    */
-  private findAlternatives(patternId: string, allMatches: MatchResult[]): AlternativePattern[] {
-    // Get related patterns from database
-    const relatedPatterns = this.db.query<{
-      target_pattern_id: string;
-      type: string;
-      description: string;
-    }>(
-      `
-      SELECT target_pattern_id, type, description
-      FROM pattern_relationships
-      WHERE source_pattern_id = ? AND type IN ('alternative', 'similar')
-    `,
-      [patternId]
-    );
+  private async findAlternatives(patternId: string, allMatches: MatchResult[]): Promise<AlternativePattern[]> {
+    const relatedPatterns = await this.patternRepo.findRelatedPatterns(patternId, ['alternative', 'similar']);
 
     return relatedPatterns.slice(0, 3).map(rel => {
       const foundPattern = allMatches.find(m => m.pattern.id === rel.target_pattern_id)?.pattern;
@@ -1078,29 +1049,8 @@ export class PatternMatcher {
   /**
    * Get detailed pattern information
    */
-  private getDetailedPattern(patternId: string): DetailedPattern | null {
-    const pattern = this.db.queryOne<{
-      id: string;
-      name: string;
-      category: string;
-      description: string;
-      when_to_use: string | null;
-      benefits: string | null;
-      drawbacks: string | null;
-      use_cases: string | null;
-      complexity: string | null;
-      tags: string | null;
-      created_at: string;
-      updated_at: string;
-    }>(
-      `
-      SELECT id, name, category, description, when_to_use, benefits, drawbacks,
-             use_cases, complexity, tags, created_at, updated_at
-      FROM patterns WHERE id = ?
-    `,
-      [patternId]
-    );
-
+  private async getDetailedPattern(patternId: string): Promise<DetailedPattern | null> {
+    const pattern = await this.patternRepo.findById(patternId);
     if (!pattern) return null;
 
     return {
@@ -1108,33 +1058,22 @@ export class PatternMatcher {
       name: pattern.name,
       category: pattern.category,
       description: pattern.description,
-      when_to_use: parseArrayProperty(pattern.when_to_use, 'when_to_use'),
-      benefits: parseArrayProperty(pattern.benefits, 'benefits'),
-      drawbacks: parseArrayProperty(pattern.drawbacks, 'drawbacks'),
-      use_cases: parseArrayProperty(pattern.use_cases, 'use_cases'),
+      when_to_use: pattern.when_to_use,
+      benefits: pattern.benefits,
+      drawbacks: pattern.drawbacks,
+      use_cases: pattern.use_cases,
       complexity: pattern.complexity ?? 'Medium',
-      tags: parseArrayProperty(pattern.tags, 'tags'),
-      created_at: pattern.created_at,
-      updated_at: pattern.updated_at,
+      tags: pattern.tags,
+      created_at: pattern.createdAt.toISOString(),
+      updated_at: pattern.updatedAt.toISOString(),
     };
   }
 
   /**
    * Get pattern implementations
    */
-  private getPatternImplementations(patternId: string, language?: string): PatternImplementation[] {
-    let sql =
-      'SELECT id, language, code, explanation FROM pattern_implementations WHERE pattern_id = ?';
-    const params: string[] = [patternId];
-
-    if (language) {
-      sql += ' AND language = ?';
-      params.push(language);
-    }
-
-    sql += ' ORDER BY language, created_at DESC';
-
-    const implementations = this.db.query<PatternImplementation>(sql, params);
+  private async getPatternImplementations(patternId: string, language?: string): Promise<PatternImplementation[]> {
+    const implementations = await this.patternRepo.findImplementations(patternId, language);
     return implementations.slice(0, 3); // Return top 3 implementations
   }
 
@@ -1162,23 +1101,21 @@ export class PatternMatcher {
   }
 }
 
-// Default configuration
-const DEFAULT_PATTERN_MATCHER_CONFIG: PatternMatcherConfig = {
-  maxResults: 5,
-  minConfidence: 0.3,
-  useSemanticSearch: true,
-  useKeywordSearch: true,
-  useHybridSearch: true,
-  semanticWeight: 0.7,
-  keywordWeight: 0.3,
-};
-
 // Factory function
 export function createPatternMatcher(
-  db: DatabaseManager,
+  patternRepo: PatternRepository,
   vectorOps: VectorOperationsService,
   config?: Partial<PatternMatcherConfig>
 ): PatternMatcher {
-  const finalConfig = { ...DEFAULT_PATTERN_MATCHER_CONFIG, ...config };
-  return new PatternMatcher(db, vectorOps, finalConfig);
+  const finalConfig: PatternMatcherConfig = {
+    maxResults: 5,
+    minConfidence: 0.3,
+    useSemanticSearch: true,
+    useKeywordSearch: true,
+    useHybridSearch: true,
+    semanticWeight: 0.7,
+    keywordWeight: 0.3,
+    ...config,
+  };
+  return new PatternMatcher(patternRepo, vectorOps, finalConfig);
 }

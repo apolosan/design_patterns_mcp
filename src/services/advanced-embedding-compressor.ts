@@ -58,10 +58,8 @@ export interface AdvancedCompressionResult {
 
 /**
  * Knowledge Distillation Trainer for compression
- */
+  */
 class KnowledgeDistillationTrainer {
-  private teacherEmbeddings: Map<string, number[]> = new Map();
-  private studentEmbeddings: Map<string, number[]> = new Map();
 
   /**
    * Train student to mimic teacher embeddings
@@ -656,7 +654,7 @@ export class AdvancedEmbeddingCompressor {
     }
 
     // Calculate reconstruction error
-    const reconstructed = this.dequantize(quantized, scale, zeroPoint, bits);
+    const reconstructed = this.dequantize(quantized, scale, zeroPoint);
     const reconstructionError = this.calculateReconstructionError(embedding, reconstructed);
 
     return {
@@ -739,8 +737,7 @@ export class AdvancedEmbeddingCompressor {
   private dequantize(
     quantized: Int8Array | Uint8Array | Int16Array,
     scale: number,
-    zeroPoint: number,
-    bits: number
+    zeroPoint: number
   ): number[] {
     const result: number[] = [];
     for (let i = 0; i < quantized.length; i++) {

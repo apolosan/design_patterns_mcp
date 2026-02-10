@@ -177,10 +177,6 @@ export class EmbeddingCompressor {
       throw new Error('Need at least 2 embeddings to build PCA basis');
     }
 
-    // Center the data
-    const mean = this.calculateMean(embeddings);
-    const centered = embeddings.map(e => e.map((v, i) => v - mean[i]));
-
     // Compute covariance matrix (simplified - would use SVD in production)
     // For now, return identity basis (placeholder)
     // In production, implement power iteration or use numeric library
@@ -349,23 +345,6 @@ export class EmbeddingCompressor {
     const norm = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0));
     if (norm === 0) return vec;
     return vec.map(val => val / norm);
-  }
-
-  private calculateMean(embeddings: number[][]): number[] {
-    const dims = embeddings[0].length;
-    const mean = new Array(dims).fill(0);
-    
-    for (const emb of embeddings) {
-      for (let i = 0; i < dims; i++) {
-        mean[i] += emb[i];
-      }
-    }
-    
-    for (let i = 0; i < dims; i++) {
-      mean[i] /= embeddings.length;
-    }
-    
-    return mean;
   }
 
   /**

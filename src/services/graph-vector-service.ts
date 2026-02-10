@@ -202,7 +202,7 @@ export class GraphVectorService {
     }
 
     // Add category edges
-    for (const [category, patternIds] of categoryGroups.entries()) {
+    for (const [, patternIds] of categoryGroups.entries()) {
       const weight = 0.15; // Fixed weight for category edges
       for (let i = 0; i < patternIds.length; i++) {
         for (let j = i + 1; j < patternIds.length; j++) {
@@ -226,7 +226,7 @@ export class GraphVectorService {
     }
 
     // Add tag edges
-    for (const [tag, patternIds] of tagGroups.entries()) {
+    for (const [, patternIds] of tagGroups.entries()) {
       const weight = 0.1; // Fixed weight for tag edges
       for (let i = 0; i < patternIds.length; i++) {
         for (let j = i + 1; j < patternIds.length; j++) {
@@ -330,10 +330,8 @@ export class GraphVectorService {
    */
   async multiHopReasoning(
     startPatternId: string,
-    queryEmbedding: number[],
     maxHops: number = 2
   ): Promise<MultiHopResult[]> {
-    const graph = await this.buildKNNGraph();
     const results: MultiHopResult[] = [];
 
     // Get top 3 paths from traversal

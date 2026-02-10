@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { DatabaseManager } from '../../src/services/database-manager';
-import { VectorOperationsService, createVectorOperationsService } from '../../src/services/vector-operations';
-import { PatternMatcher, createPatternMatcher } from '../../src/services/pattern-matcher';
-import { createPatternSeeder } from '../../src/services/pattern-seeder';
+import { DatabaseManager } from '../../src/services/database-manager.js';
+import { VectorOperationsService, createVectorOperationsService } from '../../src/services/vector-operations.js';
+import { PatternMatcher, createPatternMatcher } from '../../src/services/pattern-matcher.js';
+import { createPatternSeeder } from '../../src/services/pattern-seeder.js';
+import { SqlitePatternRepository } from '../../src/repositories/pattern-repository.js';
+import { SqlitePatternSeederRepository } from '../../src/repositories/pattern-seeder-repository.js';
 import path from 'path';
 
 function createFullSchema(dbManager: DatabaseManager): void {
@@ -110,7 +112,8 @@ describe('Pattern Matching with Semantic Search', () => {
     createFullSchema(dbManager);
 
     // Seed patterns for testing
-    const seeder = createPatternSeeder(dbManager, {
+    const patternSeederRepo = new SqlitePatternSeederRepository(dbManager);
+    const seeder = createPatternSeeder(patternSeederRepo, {
       patternsPath: path.resolve(__dirname, '../../data/patterns'),
       batchSize: 10,
       skipExisting: false,
@@ -127,7 +130,8 @@ describe('Pattern Matching with Semantic Search', () => {
     vectorOps = createVectorOperationsService(dbManager);
 
     // Create pattern matcher
-    patternMatcher = createPatternMatcher(dbManager, vectorOps);
+    const patternRepo = new SqlitePatternRepository(dbManager);
+    patternMatcher = createPatternMatcher(patternRepo, vectorOps);
   });
 
   afterAll(async () => {

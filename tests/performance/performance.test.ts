@@ -9,6 +9,7 @@ import { DatabaseManager } from '../../src/services/database-manager';
 import { CacheService } from '../../src/services/cache';
 import { PatternMatcher } from '../../src/services/pattern-matcher';
 import { VectorOperationsService } from '../../src/services/vector-operations';
+import { SqlitePatternRepository } from '../../src/repositories/pattern-repository';
 import { performance } from 'perf_hooks';
 import { getTestDatabaseConfig } from '../helpers/test-db';
 
@@ -42,7 +43,8 @@ describe('Performance Tests', () => {
       cacheEnabled: true,
     });
 
-    patternMatcher = new PatternMatcher(databaseManager, vectorOps, {
+    const patternRepo = new SqlitePatternRepository(databaseManager);
+    patternMatcher = new PatternMatcher(patternRepo, vectorOps, {
       maxResults: 5,
       minConfidence: 0.3,
       useSemanticSearch: true,
@@ -134,16 +136,14 @@ describe('Performance Tests', () => {
       const testKey = 'test:pattern:1';
 
       // Test cache set performance
-      const setStart = performance.now();
+      performance.now();
       cacheService.set(testKey, testData, 60000); // 1 minute TTL
-      const setEnd = performance.now();
-      const setTime = setEnd - setStart;
-
+      performance.now();
+      
       // Test cache get performance
-      const getStart = performance.now();
+      performance.now();
       cacheService.get(testKey);
-      const getEnd = performance.now();
-      const getTime = getEnd - getStart;
+      performance.now();
     });
 
     it('should handle cache hits and misses efficiently', () => {

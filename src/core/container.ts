@@ -35,7 +35,10 @@ import { KeywordSearchHandler } from '../handlers/keyword-search-handler.js';
 import { RecommendationBuilder } from '../handlers/recommendation-builder.js';
 import { FuzzyInferenceEngine } from '../services/fuzzy-inference.js';
 import { FuzzyDefuzzificationEngine } from '../services/fuzzy-defuzzification.js';
-import { MultiLevelCache, createMultiLevelCache, CacheServiceInterface } from '../services/multi-level-cache.js';
+import { createMultiLevelCache } from '../services/multi-level-cache.js';
+import { SqlitePatternRepository } from '../repositories/pattern-repository.js';
+import { SqlitePatternSeederRepository } from '../repositories/pattern-seeder-repository.js';
+import type { PatternRepository } from '../repositories/interfaces.js';
 
 export const TOKENS = {
   // Database
@@ -69,6 +72,7 @@ export const TOKENS = {
   // Repositories
   PATTERN_REPOSITORY: Symbol('PatternRepository'),
   RELATIONSHIP_REPOSITORY: Symbol('RelationshipRepository'),
+  PATTERN_SEEDER_REPOSITORY: Symbol('PatternSeederRepository'),
 
   // Adapters
   EMBEDDING_SERVICE_ADAPTER: Symbol('EmbeddingServiceAdapter'),
@@ -216,6 +220,12 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
     });
   });
 
+  // Register Pattern Repository
+  container.registerSingleton(TOKENS.PATTERN_REPOSITORY, () => {
+    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    return new SqlitePatternRepository(db);
+  });
+
   // Register vector operations service
   container.registerSingleton(TOKENS.VECTOR_OPERATIONS, () => {
     const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
@@ -238,9 +248,9 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
 
   // Register semantic search service
   container.registerSingleton(TOKENS.SEMANTIC_SEARCH, () => {
-    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    const patternRepo = container.getService<PatternRepository>(TOKENS.PATTERN_REPOSITORY);
     const vectorOps = container.getService<VectorOperationsService>(TOKENS.VECTOR_OPERATIONS);
-    return new SemanticSearchService(db, vectorOps, {
+    return new SemanticSearchService(patternRepo, vectorOps, {
       modelName: 'all-MiniLM-L6-v2',
       maxResults: 10,
       similarityThreshold: 0.3,
@@ -252,9 +262,9 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
 
   // Register pattern matcher
   container.registerSingleton(TOKENS.PATTERN_MATCHER, () => {
-    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    const patternRepo = container.getService<PatternRepository>(TOKENS.PATTERN_REPOSITORY);
     const vectorOps = container.getService<VectorOperationsService>(TOKENS.VECTOR_OPERATIONS);
-    return new PatternMatcher(db, vectorOps, {
+    return new PatternMatcher(patternRepo, vectorOps, {
       maxResults: 5,
       minConfidence: 0.05,
       useSemanticSearch: true,
@@ -286,9 +296,15 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
     return new MigrationManager(db);
   });
 
+  // Register pattern seeder repository
+  container.registerSingleton(TOKENS.PATTERN_SEEDER_REPOSITORY, () => {
+    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    return new SqlitePatternSeederRepository(db);
+  });
+
   // Register pattern seeder
   container.registerSingleton(TOKENS.PATTERN_SEEDER, () => {
-    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    const patternSeederRepo = container.getService<SqlitePatternSeederRepository>(TOKENS.PATTERN_SEEDER_REPOSITORY);
 
     // Get patterns path
     const __filename = fileURLToPath(import.meta.url);
@@ -299,7 +315,7 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
       : path.resolve(__dirname, '..');
     const patternsPath = path.join(projectRoot, 'data', 'patterns');
 
-    return new PatternSeeder(db, {
+    return new PatternSeeder(patternSeederRepo, {
       patternsPath,
       batchSize: 100,
       skipExisting: true,

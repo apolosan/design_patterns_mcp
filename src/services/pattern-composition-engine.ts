@@ -1,11 +1,10 @@
 /**
  * Pattern Composition Engine
  * Validates pattern composition rules and detects anti-patterns
- * Provides intelligent pattern combination recommendations
- */
-
+  * Provides intelligent pattern combination recommendations
+  */
+ 
 import { Pattern } from '../models/pattern';
-import { PatternAnalyzer } from './pattern-analyzer';
 
 export interface CompositionRule {
   id: string;
@@ -66,14 +65,11 @@ export interface AntiPatternDetection {
 }
 
 export class PatternCompositionEngine {
-  private readonly patternAnalyzer: PatternAnalyzer;
   private readonly compositionRules: CompositionRule[];
-  private readonly compatibilityMatrix: Map<string, Map<string, number>>;
-
+  
   constructor() {
-    this.patternAnalyzer = new PatternAnalyzer();
     this.compositionRules = this.initializeCompositionRules();
-    this.compatibilityMatrix = this.initializeCompatibilityMatrix();
+    this.initializeCompatibilityMatrix();
   }
 
   /**

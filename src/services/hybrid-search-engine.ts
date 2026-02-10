@@ -158,7 +158,7 @@ class SemanticCompressionEngine {
    */
   compress(
     candidates: BlendedResult[],
-    queryEmbedding: number[],
+    _queryEmbedding: number[],
     similarityFn: (a: number[], b: number[]) => number
   ): CompressedResult[] {
     const selected: CompressedResult[] = [];
@@ -211,7 +211,7 @@ class SemanticCompressionEngine {
     return selected;
   }
 
-  private getEmbeddingForPattern(patternId: string): number[] | null {
+  private getEmbeddingForPattern(_patternId: string): number[] | null {
     // This would fetch from vector operations service
     // For now, return null - integration happens at service level
     return null;
@@ -224,7 +224,6 @@ class SemanticCompressionEngine {
 export class HybridSearchEngine {
   private vectorOps: VectorOperationsService;
   private db: DatabaseManager;
-  private cache: CacheService;
   private sparseEncoder: SimpleSparseEncoder;
   private compressionEngine: SemanticCompressionEngine;
   private config: BlendedSearchConfig;
@@ -233,13 +232,12 @@ export class HybridSearchEngine {
   constructor(
     vectorOps: VectorOperationsService,
     db: DatabaseManager,
-    cache: CacheService,
+    _cache: CacheService,
     config?: Partial<BlendedSearchConfig>,
     telemetryService?: TelemetryService
   ) {
     this.vectorOps = vectorOps;
     this.db = db;
-    this.cache = cache;
     this.sparseEncoder = new SimpleSparseEncoder(db);
     this.compressionEngine = new SemanticCompressionEngine({
       targetSize: 10,
@@ -714,9 +712,9 @@ export class HybridSearchEngine {
    * Based on arXiv 2502.18458
    */
   async multiHopReasoning(
-    query: string,
+    _query: string,
     initialResults: BlendedResult[],
-    llmBridge: any // Would be LLM bridge service
+    _llmBridge: any // Would be LLM bridge service
   ): Promise<MultiHopResult[]> {
     const results: MultiHopResult[] = [];
 
@@ -748,7 +746,7 @@ export class HybridSearchEngine {
   async updateAdaptiveWeights(
     userId: string,
     query: string,
-    selectedResults: string[],
+    _selectedResults: string[],
     feedback: 'positive' | 'negative'
   ): Promise<void> {
     const analysis = this.analyzeQuery(query);

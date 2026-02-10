@@ -4,9 +4,9 @@
  */
 
 import { BaseCLICommand } from './base-cli-command.js';
-import { getDatabaseManager } from '../../services/database-manager.js';
-import { getPatternStorageService } from '../../services/pattern-storage.js';
+import { SimpleContainer, TOKENS } from '../../core/container.js';
 import { PatternSeeder } from '../../services/pattern-seeder.js';
+import { SqlitePatternSeederRepository } from '../../repositories/pattern-seeder-repository.js';
 import { logger } from '../../services/logger.js';
 
 export class SeedCommand extends BaseCLICommand {
@@ -14,8 +14,10 @@ export class SeedCommand extends BaseCLICommand {
   readonly description = 'Seeds the database with pattern data from JSON files';
 
   protected async run(_args?: string[]): Promise<void> {
-    const dbManager = getDatabaseManager();
-    const patternStorage = getPatternStorageService();
+    // Create container and get services via DI
+    const container = new SimpleContainer();
+    const dbManager = container.getService<any>(TOKENS.DATABASE_MANAGER);
+    const patternSeederRepo = new SqlitePatternSeederRepository(dbManager);
 
     // Configuration for seeding
     const seederConfig = {
@@ -24,7 +26,7 @@ export class SeedCommand extends BaseCLICommand {
       skipExisting: true,
     };
 
-    const patternSeeder = new PatternSeeder(dbManager, seederConfig);
+    const patternSeeder = new PatternSeeder(patternSeederRepo, seederConfig);
 
     logger.info('seed', 'Starting pattern seeding...');
 
@@ -34,33 +36,24 @@ export class SeedCommand extends BaseCLICommand {
 
     // Log seeding results
     logger.info('seed', 'Database Statistics:');
-    const dbStats = await patternStorage.getPatternStats();
-    logger.info('seed', `  - Total Patterns: ${dbStats.totalPatterns}`);
-    logger.info('seed', `  - Categories: ${dbStats.categories}`);
-    logger.info('seed', `  - Implementations: ${dbStats.implementations}`);
-    logger.info('seed', `  - Embeddings: ${dbStats.embeddings}`);
+    const stats = patternSeeder.getStats();
+    logger.info('seed', `  - Total Patterns: ${stats.totalPatterns}`);
+    logger.info('seed', `  - Implementations: ${stats.totalImplementations}`);
+    logger.info('seed', `  - Relationships: ${stats.totalRelationships}`);
 
     // Get patterns by category
     logger.info('seed', 'Patterns by Category:');
-    const categories = await patternStorage.getCategories();
-    categories.forEach(cat => {
+    stats.patternsByCategory.forEach(cat => {
       logger.info('seed', `  - ${cat.category}: ${cat.count} patterns`);
     });
 
     // Validate data
     logger.info('seed', 'Validating seeded data...');
-    const samplePatterns = await patternStorage.getAllPatterns();
-    if (samplePatterns.length > 0) {
+    const validationResult = patternSeeder.validate();
+    if (validationResult.valid) {
       logger.info('seed', 'Data validation passed');
-      logger.info('seed', 'Sample patterns loaded:');
-      samplePatterns.slice(0, 5).forEach(pattern => {
-        logger.info('seed', `  - ${pattern.name} (${pattern.category})`);
-      });
-      if (samplePatterns.length > 5) {
-        logger.info('seed', `  ... and ${samplePatterns.length - 5} more patterns`);
-      }
     } else {
-      throw new Error('No patterns found in database after seeding');
+      logger.warn('seed', 'Data validation warnings:', { errors: validationResult.errors });
     }
   }
 }

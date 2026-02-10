@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 import { createPatternSeeder } from '../../src/services/pattern-seeder';
+import { SqlitePatternSeederRepository } from '../../src/repositories/pattern-seeder-repository.js';
 import { CloudPatternResult } from '../helpers/test-interfaces';
 import path from 'path';
 
@@ -108,7 +109,8 @@ describe('Cloud-Native Patterns', () => {
     createFullSchema(dbManager);
 
     // Seed patterns for testing
-    const seeder = createPatternSeeder(dbManager, {
+    const patternSeederRepo = new SqlitePatternSeederRepository(dbManager);
+    const seeder = createPatternSeeder(patternSeederRepo, {
       patternsPath: path.resolve(__dirname, '../../data/patterns'),
       batchSize: 10,
       skipExisting: false,

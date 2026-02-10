@@ -167,9 +167,9 @@ describe('EmbeddingCompressor', () => {
 
     it('should respect max dimensions parameter', () => {
       const embeddings = [
-        new Array(384).fill(0).map((_, i) => Math.random()),
-        new Array(384).fill(0).map((_, i) => Math.random()),
-        new Array(384).fill(0).map((_, i) => Math.random()),
+        new Array(384).fill(0).map(() => Math.random()),
+        new Array(384).fill(0).map(() => Math.random()),
+        new Array(384).fill(0).map(() => Math.random()),
       ];
 
       const basis = compressor.buildPCABasis(embeddings, 10);
@@ -288,7 +288,7 @@ describe('EmbeddingCompressor', () => {
 
   describe('Performance', () => {
     it('should compress within reasonable time', () => {
-      const largeEmbedding = new Array(1024).fill(0).map((_, i) => Math.random());
+      const largeEmbedding = new Array(1024).fill(0).map(() => Math.random());
       const largeBasis = new Array(256).fill(0).map((_, i) => 
         new Array(1024).fill(0).map((_, j) => (i === j % 256 ? 1 : 0) * 0.1)
       );

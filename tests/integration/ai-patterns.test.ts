@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { DatabaseManager } from '../../src/services/database-manager';
 import { createPatternSeeder } from '../../src/services/pattern-seeder';
+import { SqlitePatternSeederRepository } from '../../src/repositories/pattern-seeder-repository.js';
 import { MigrationManager } from '../../src/services/migrations';
 import { getTestDatabaseConfig } from '../helpers/test-db';
 import { AIPatternResult } from '../helpers/test-interfaces';
@@ -20,7 +21,8 @@ describe('AI/ML Patterns', () => {
     await migrationManager.migrate();
 
     // Seed patterns for testing
-    const seeder = createPatternSeeder(dbManager, {
+    const patternSeederRepo = new SqlitePatternSeederRepository(dbManager);
+    const seeder = createPatternSeeder(patternSeederRepo, {
       patternsPath: path.resolve(__dirname, '../../data/patterns'),
       batchSize: 10,
       skipExisting: false,

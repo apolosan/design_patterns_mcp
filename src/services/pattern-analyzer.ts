@@ -139,27 +139,11 @@ export class PatternAnalyzer {
       keywords: ['template', 'abstract', 'hook', 'algorithm'],
       patterns: [/abstract\s+\w+\s*\(/i, /protected\s+abstract/i, /final\s+\w+\s*\(/i],
     },
-  };
-
-  // Anti-patterns to detect
-  private readonly antiPatternIndicators = {
-    'God Object': {
-      indicators: ['too many methods', 'too many properties', 'high complexity'],
-      threshold: { methods: 20, properties: 30 },
-    },
-    'Spaghetti Code': {
-      indicators: ['deeply nested', 'goto', 'no structure'],
-      threshold: { nestingLevel: 5 },
-    },
-    'Copy-Paste Programming': {
-      indicators: ['duplicate code', 'similar blocks'],
-      threshold: { duplicateLines: 10 },
-    },
-  };
-
-  /**
-   * Analyze code to detect patterns
-   */
+   };
+ 
+   /**
+    * Analyze code to detect patterns
+    */
   analyzeCode(code: string, language: string): CodeAnalysisResult {
     const identifiedPatterns = this.detectPatterns(code, language);
     const suggestedPatterns = this.suggestPatterns(code, language, identifiedPatterns);
@@ -230,7 +214,7 @@ export class PatternAnalyzer {
    */
   private suggestPatterns(
     code: string,
-    language: string,
+    _language: string,
     identifiedPatterns: DetectedPattern[]
   ): Array<{ pattern: string; reason: string; confidence: number }> {
     const suggestions = [];
@@ -301,7 +285,7 @@ export class PatternAnalyzer {
    */
   private generateImprovements(
     code: string,
-    language: string,
+    _language: string,
     identifiedPatterns: DetectedPattern[]
   ): string[] {
     const improvements: string[] = [];

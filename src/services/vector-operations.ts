@@ -79,7 +79,7 @@ export class VectorOperationsService {
     } else {
       // Use basic compressor
       const basis = this.compressor.buildPCABasis([embedding]);
-      const { compressed, quantized, stats } = this.compressor.compressWithQualityControl(embedding, basis);
+      const { quantized, stats } = this.compressor.compressWithQualityControl(embedding, basis);
       return {
         compressed: quantized.quantized,
         metadata: {

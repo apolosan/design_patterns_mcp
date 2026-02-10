@@ -129,23 +129,6 @@ export class PatternMembershipFunctions {
   }
 
   /**
-   * Evaluate programming language compatibility (bonus factor)
-   */
-  private evaluateLanguageCompatibility(patternTags: string[], requestedLanguage?: string): number {
-    if (!requestedLanguage) return 0.5; // Neutral if no language specified
-
-    const languageTags = ['javascript', 'typescript', 'python', 'java', 'csharp', 'cpp', 'go', 'rust', 'php', 'ruby'];
-    const requestedLangLower = requestedLanguage.toLowerCase();
-
-    // Check if pattern has language-specific implementations or tags
-    const hasLanguageTag = patternTags.some(tag =>
-      languageTags.includes(tag.toLowerCase()) && tag.toLowerCase().includes(requestedLangLower.slice(0, 3))
-    );
-
-    return hasLanguageTag ? 0.8 : 0.3;
-  }
-
-  /**
    * Main evaluation function
    */
   evaluate(input: PatternMembershipInput): FuzzyMembershipResult {

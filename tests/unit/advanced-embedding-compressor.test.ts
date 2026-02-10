@@ -110,7 +110,7 @@ describe('AdvancedEmbeddingCompressor', () => {
       const results = await compressor.batchCompress(embeddings, CompressionTechnique.QUANTIZATION_8BIT);
       
       expect(results).toHaveLength(embeddings.length);
-      results.forEach((result, index) => {
+      results.forEach((result) => {
         expect(result).toBeDefined();
         expect(result.technique).toBe(CompressionTechnique.QUANTIZATION_8BIT);
         expect(result.compressed).toBeDefined();

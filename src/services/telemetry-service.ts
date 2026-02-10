@@ -315,12 +315,8 @@ export class TelemetryService extends EventEmitter {
     }
 
     // Diversity score (unique categories)
-    const categories = new Set<string>();
     // Would need to fetch categories from database
     const diversityScore = 0.5; // Placeholder
-
-    // Semantic coverage
-    const semanticCoverage = recommendations.reduce((sum, r) => sum + r.score, 0) / recommendations.length;
 
     const metrics: EvaluationMetrics = {
       precisionAtK: precisionAtK[precisionAtK.length - 1] ?? 0,
@@ -534,7 +530,7 @@ export class TelemetryService extends EventEmitter {
       /**
        * Semantic correctness evaluator
        */
-      semanticCorrectness: (query: string, results: Array<{ patternId: string; score: number }>): number => {
+      semanticCorrectness: (_query: string, results: Array<{ patternId: string; score: number }>): number => {
         // Check if top results are semantically related to query
         // This would use embedding similarity in production
         const score = results.slice(0, 3).reduce((sum, r) => sum + r.score, 0) / 3;

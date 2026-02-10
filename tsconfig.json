@@ -15,7 +15,13 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["bun-types", "vitest/globals"]
+    "types": ["bun-types", "vitest/globals"],
+    "incremental": true,
+    "isolatedModules": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "moduleDetection": "auto",
+    "removeComments": false
   },
   "include": ["src/**/*", "tests/**/*", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]

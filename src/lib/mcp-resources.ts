@@ -198,23 +198,6 @@ export class DatabaseManagerAdapter implements DatabaseManager {
       cacheHitRate: 0.85,
     });
   }
-
-  private getTypicalUseCases(category: string): string {
-    const useCases: Record<string, string> = {
-      Creational: 'Object instantiation, resource management',
-      Structural: 'Class relationships, interface adaptation',
-      Behavioral: 'Communication, responsibility assignment',
-      Architectural: 'System organization, component interaction',
-      'Cloud-Native': 'Scalability, resilience, distributed systems',
-      Microservices: 'Service decomposition, communication patterns',
-      'AI/ML': 'Model training, inference, data processing',
-      Functional: 'Data transformation, immutability, composition',
-      Reactive: 'Asynchronous processing, event handling',
-      'Anti-Pattern': 'Common mistakes to avoid',
-    };
-
-    return useCases[category] || 'General software design';
-  }
 }
 
 export interface MCPResourcesConfig {
