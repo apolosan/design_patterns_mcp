@@ -129,7 +129,7 @@ function createHttpToolHandlers(db: DatabaseManager, patternMatcher: PatternMatc
       const validatedArgs = InputValidator.validateFindPatternsArgs(args);
       const request = { id: crypto.randomUUID(), query: validatedArgs.query, categories: validatedArgs.categories, maxResults: validatedArgs.maxResults, programmingLanguage: validatedArgs.programmingLanguage };
       const recommendations = await patternMatcher.findMatchingPatterns(request);
-      return { content: [{ type: 'text', text: `Found ${recommendations.length} pattern recommendations:\n\n${recommendations.map((rec, i) => `${i + 1}. **${rec.pattern.name}** (${rec.pattern.category})\n   ID: ${rec.pattern.id}\n   Confidence: ${(rec.confidence * 100).toFixed(1)}%\n   Rationale: ${rec.justification.primaryReason}\n   Benefits: ${rec.justification.benefits.join(', ')}`).join('\n')}` }] };
+      return { content: [{ type: 'text', text: `Found ${recommendations.length} pattern recommendations:\n\n${recommendations.map((rec, i) => `${i + 1}. **${rec.pattern.name}** (${rec.pattern.category})\n   ID: ${rec.pattern.id}\n   Confidence: ${(rec.confidence * 100).toFixed(1)}%\n   Rationale: ${rec.justification.primaryReason}\n   Benefits: ${Array.isArray(rec.justification.benefits) ? rec.justification.benefits.join(', ') : 'N/A'}`).join('\n')}` }] };
     },
     handleSearchPatterns: async (args: unknown) => {
       const validatedArgs = InputValidator.validateSearchPatternsArgs(args);
@@ -528,7 +528,7 @@ class DesignPatternsMCPServer {
                   `   ID: ${rec.pattern.id}\n` +
                   `   Confidence: ${(rec.confidence * 100).toFixed(1)}%\n` +
                   `   Rationale: ${rec.justification.primaryReason}\n` +
-                  `   Benefits: ${rec.justification.benefits.join(', ')}\n`
+                  `   Benefits: ${Array.isArray(rec.justification.benefits) ? rec.justification.benefits.join(', ') : 'N/A'}\n`
               )
               .join('\n'),
         },
