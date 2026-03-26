@@ -160,14 +160,10 @@ dist
 
 .vscode-test
 
-# SQLite databases (except production ones)
+# SQLite databases
 *.db
 *.sqlite
 *.sqlite3
-
-# Allow specific production databases
-!data/design-patterns.db
-!data/patterns.db
 .data/
 .data/*
 

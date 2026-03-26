@@ -15,14 +15,17 @@ An intelligent MCP (Model Context Protocol) server that provides design pattern 
 git clone https://github.com/apolosan/design_patterns_mcp.git
 cd design_patterns_mcp
 
-# Install dependencies
+# Install dependencies and build (using bun)
 bun install
-
-# Build and setup database
 bun run db:setup
 
-# Start the server
-bun run dev
+# Or using npm (if bun is not installed)
+npm install --ignore-scripts
+npx tsc
+node dist/src/cli/migrate.js
+node dist/src/cli/seed.js
+node dist/src/cli/generate-embeddings.js
+node dist/src/cli/setup-relationships.js
 ```
 
 Configure in your MCP client (Claude Desktop, Cursor, etc.) and start discovering patterns through natural language queries.
@@ -115,39 +118,42 @@ Ask natural language questions through your MCP client:
 - Node.js >= 18.0.0
 - Bun >= 1.0.0 (recommended) or npm >= 8.0.0
 
-### Setup
+### Setup with Bun
 
 ```bash
-# Install dependencies
 bun install
-
-# Build project
 bun run build
-
-# Complete database setup (migrate + seed + embeddings + relationships)
 bun run db:setup
+```
 
-# Or run steps individually
-bun run migrate
-bun run seed
-bun run generate-embeddings
-bun run setup-relationships
+### Setup with npm
+
+The `prepare` script in `package.json` requires `bun`. If you don't have `bun` installed, use `--ignore-scripts` to skip it and build manually:
+
+```bash
+npm install --ignore-scripts
+npx tsc
+
+# Setup database
+node dist/src/cli/migrate.js
+node dist/src/cli/seed.js
+node dist/src/cli/generate-embeddings.js
+node dist/src/cli/setup-relationships.js
 ```
 
 ### MCP Configuration
 
-Add to your `.mcp.json` or Claude Desktop configuration:
+Add to your MCP client configuration (Claude Desktop, Cursor, etc.):
 
 ```json
 {
   "mcpServers": {
     "design-patterns": {
       "command": "node",
-      "args": ["dist/src/mcp-server.js"],
-      "cwd": "/path/to/design-patterns-mcp",
+      "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
       "env": {
         "LOG_LEVEL": "info",
-        "DATABASE_PATH": "./data/design-patterns.db",
+        "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db",
         "ENABLE_HYBRID_SEARCH": "true",
         "ENABLE_GRAPH_AUGMENTATION": "true",
         "EMBEDDING_COMPRESSION": "true",
@@ -159,6 +165,8 @@ Add to your `.mcp.json` or Claude Desktop configuration:
   }
 }
 ```
+
+> **Important:** Use absolute paths for both `args` and `DATABASE_PATH`. MCP clients like Cursor do not reliably support the `cwd` field, so relative paths resolve against the user's home directory rather than the project directory. See [QUICKSTART.md](QUICKSTART.md) for client-specific configuration examples.
 
 ## Environment Variables
 
