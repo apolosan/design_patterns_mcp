@@ -10,15 +10,27 @@
 
 ## Setup (Common)
 
+### Using Bun (recommended)
+
 ```bash
-# Install dependencies
 bun install
-
-# Build project
 bun run build
-
-# Complete database setup
 bun run db:setup
+```
+
+### Using npm
+
+The `prepare` lifecycle script in `package.json` requires `bun`. If you don't have `bun` installed, use `--ignore-scripts` to skip it and build manually with `npx tsc`:
+
+```bash
+npm install --ignore-scripts
+npx tsc
+
+# Setup database
+node dist/src/cli/migrate.js
+node dist/src/cli/seed.js
+node dist/src/cli/generate-embeddings.js
+node dist/src/cli/setup-relationships.js
 ```
 
 ---
@@ -82,7 +94,7 @@ bun run test-mcp-http.js http://localhost:3000/mcp
       "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
       "env": {
         "LOG_LEVEL": "info",
-        "DATABASE_PATH": "./data/design-patterns.db",
+        "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db",
         "ENABLE_HYBRID_SEARCH": "true",
         "ENABLE_GRAPH_AUGMENTATION": "true"
       }
@@ -90,8 +102,6 @@ bun run test-mcp-http.js http://localhost:3000/mcp
   }
 }
 ```
-
-**Note:** Claude Desktop uses `command` + `args` arrays. Environment variables are inline with the server config.
 
 ---
 
@@ -107,12 +117,11 @@ bun run test-mcp-http.js http://localhost:3000/mcp
 {
   "mcpServers": {
     "design-patterns": {
-      "type": "stdio",
       "command": "node",
       "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
       "env": {
         "LOG_LEVEL": "info",
-        "DATABASE_PATH": "./data/design-patterns.db",
+        "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db",
         "ENABLE_HYBRID_SEARCH": "true",
         "ENABLE_GRAPH_AUGMENTATION": "true"
       }
@@ -121,12 +130,13 @@ bun run test-mcp-http.js http://localhost:3000/mcp
 }
 ```
 
-**Config interpolation supported:**
+> **Important:** Cursor does not reliably honor the `cwd` field for stdio MCP servers. Always use absolute paths for both `args` and `DATABASE_PATH`. Relative paths will resolve against the user's home directory, causing "Cannot find module" or database errors.
+
+**Project-level config with interpolation:**
 ```json
 {
   "mcpServers": {
     "design-patterns": {
-      "type": "stdio",
       "command": "node",
       "args": ["${workspaceFolder}/dist/src/mcp-server.js"],
       "env": {
@@ -137,6 +147,8 @@ bun run test-mcp-http.js http://localhost:3000/mcp
   }
 }
 ```
+
+> `${workspaceFolder}` interpolation only works in project-level configs (`.cursor/mcp.json`), not in the global `~/.cursor/mcp.json`.
 
 ---
 
@@ -158,7 +170,7 @@ bun run test-mcp-http.js http://localhost:3000/mcp
       "enabled": true,
       "environment": {
         "LOG_LEVEL": "info",
-        "DATABASE_PATH": "./data/design-patterns.db"
+        "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db"
       }
     }
   }
@@ -191,6 +203,7 @@ Create a shared config file and symlink to both locations:
 mkdir -p ~/.config/shared-mcp
 
 # Save as ~/.config/shared-mcp/design-patterns.json
+# Replace /absolute/path/to/design-patterns-mcp with your actual install path
 cat > ~/.config/shared-mcp/design-patterns.json << 'EOF'
 {
   "mcpServers": {
@@ -199,7 +212,7 @@ cat > ~/.config/shared-mcp/design-patterns.json << 'EOF'
       "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
       "env": {
         "LOG_LEVEL": "info",
-        "DATABASE_PATH": "./data/design-patterns.db",
+        "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db",
         "ENABLE_HYBRID_SEARCH": "true",
         "ENABLE_GRAPH_AUGMENTATION": "true",
         "EMBEDDING_COMPRESSION": "true",
@@ -218,8 +231,6 @@ ln -sf ~/.config/shared-mcp/design-patterns.json ~/Library/Application\ Support/
 # Link to Cursor
 ln -sf ~/.config/shared-mcp/design-patterns.json ~/.cursor/mcp.json
 ```
-
-**Note:** For Cursor, add `"type": "stdio"` to the server config if you want explicit type declaration.
 
 ---
 
@@ -277,17 +288,53 @@ ln -sf ~/.config/shared-mcp/design-patterns.json ~/.cursor/mcp.json
 
 ## Troubleshooting
 
+### `npm install` fails with "sh: bun: command not found"
+
+The `prepare` lifecycle script requires `bun`. Either install bun (`curl -fsSL https://bun.sh/install | bash`) or skip the hook:
+
+```bash
+npm install --ignore-scripts
+npx tsc
+```
+
+### Cursor shows "Cannot find module" for the MCP server
+
+Cursor does not reliably honor the `cwd` field in MCP server configs. Use absolute paths:
+
+```json
+{
+  "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
+  "env": {
+    "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db"
+  }
+}
+```
+
+### Cursor shows MCP server errors on startup
+
+The pattern seeder logs warnings about missing cross-references during initialization. Prior to v0.4.4, these used `console.warn()` which writes to stderr — MCP clients like Cursor interpret any stderr output as errors. This was fixed by routing these messages through the structured `logger.warn()`, which writes to stdout and respects the `LOG_LEVEL` setting.
+
+If you see these warnings, rebuild from the latest source:
+
+```bash
+npx tsc    # or: bun run build
+```
+
+Then restart the MCP server in Cursor (`Cmd+Shift+P` → "Developer: Reload Window").
+
+### General reset
+
 ```bash
 # Reset database
 rm data/design-patterns.db
-bun run db:setup
+bun run db:setup    # or use the npm steps above
 
 # Clean build
 rm -rf dist node_modules
-bun install
-bun run build
+bun install         # or: npm install --ignore-scripts
+bun run build       # or: npx tsc
 
-# View Claude Desktop logs
+# View Claude Desktop logs (macOS)
 tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
 ```
 

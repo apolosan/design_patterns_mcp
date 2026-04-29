@@ -307,7 +307,6 @@ class DesignPatternsMCPServer {
         capabilities: {
           resources: {},
           tools: {},
-          prompts: {},
         },
       }
     );

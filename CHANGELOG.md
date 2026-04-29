@@ -870,12 +870,16 @@ Update your `.mcp.json`:
   "mcpServers": {
     "design-patterns": {
       "command": "node",
-      "args": ["dist/src/mcp-server-refactored.js"], // Changed
-      "cwd": "/path/to/design-patterns-mcp"
+      "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
+      "env": {
+        "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db"
+      }
     }
   }
 }
 ```
+
+> **Note:** Use absolute paths. MCP clients like Cursor do not reliably support `cwd`, so relative paths resolve against the user's home directory.
 
 ### Breaking Changes
 

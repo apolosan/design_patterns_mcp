@@ -446,7 +446,7 @@ export class PatternSeeder {
         strength = relationship.strength ?? 1.0;
         description = relationship.description ?? `Related to ${targetPatternId}`;
       } else {
-        console.warn(`Invalid relationship format for pattern ${sourcePatternId}:`, relationship);
+        logger.warn('pattern-seeder', `Invalid relationship format for pattern ${sourcePatternId}`, { relationship: String(relationship) });
         return false;
       }
 
@@ -464,9 +464,7 @@ export class PatternSeeder {
           );
 
           if (!targetPattern) {
-            console.warn(
-              `Target pattern not found: ${targetPatternId} (referenced by ${sourcePatternId})`
-            );
+            logger.warn('pattern-seeder', `Target pattern not found: ${targetPatternId} (referenced by ${sourcePatternId})`);
             return false;
           }
           actualTargetId = targetPattern.id;
@@ -478,14 +476,12 @@ export class PatternSeeder {
             [actualTargetId]
           );
           if (!targetPatternExists) {
-            console.warn(
-              `Target pattern ID not found: ${actualTargetId} (referenced by ${sourcePatternId})`
-            );
+            logger.warn('pattern-seeder', `Target pattern ID not found: ${actualTargetId} (referenced by ${sourcePatternId})`);
             return false;
           }
         }
       } else {
-        console.warn(`Invalid targetPatternId for pattern ${sourcePatternId}:`, targetPatternId);
+        logger.warn('pattern-seeder', `Invalid targetPatternId for pattern ${sourcePatternId}`, { targetPatternId: String(targetPatternId) });
         return false;
       }
 
