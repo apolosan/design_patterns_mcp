@@ -5,6 +5,129 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-06-05
+
+### Added
+
+- **`SearchMediator.searchByType()`**: New method on the Search Mediator that
+  honours the `searchType` argument (`keyword` | `semantic` | `hybrid`) by
+  applying a per-call config override. Replaces the legacy `searchPatternsByType`
+  flow that was ignoring `searchType`. The mediator's base config is never
+  mutated, so concurrent calls in HTTP multi-tenant deployments are race-free.
+- **`SearchConfigOverride` type**: Public, immutable override type for per-call
+  mediator tuning.
+- **Health response cache (`HealthCache`)**: In-memory TTL cache (default
+  5_000 ms, configurable via `HEALTH_CACHE_TTL_MS` env var) for the HTTP
+  `/health` endpoint. Prevents repeated `checkAll()` invocations under
+  high-frequency load-balancer or orchestrator probing.
+- **`SearchByTypeConfigConstraint` logic**: Base-config flags (e.g.
+  `useHybridSearch=false`) are honoured even when the user requests the
+  `hybrid` strategy via `searchByType`. Previously the strategy could
+  re-enable disabled base features.
+- **`scripts/verify-build.mjs`**: Post-build sanity check that ensures all
+  declared entrypoints (`main`, `bin`, CLI commands) exist on disk. Returns
+  exit code 2 when `package.json` is unreadable, 1 when paths are missing,
+  0 on success.
+- **CI build smoke**: `.github/workflows/ci.yml` runs `bun run verify-build`
+  and a 15s stdio smoke (`timeout 15s bun dist/mcp-server.js`) after the
+  build job.
+- **HTTP transport security defaults**: `HTTP_BIND_HOST` defaults to
+  `127.0.0.1` for local-only exposure (set `0.0.0.0` in Docker); optional
+  `HTTP_AUTH_TOKEN` accepted via `Authorization: Bearer` or `X-API-Key`;
+  empty/whitespace tokens are rejected at config-build time.
+- **`docs/CONTRIBUTING.md`** and **`docs/MCP_TOOLS.md`**: New technical
+  documentation covering build hygiene, lockfile policy, deployment
+  variables, and the canonical 5-tool MCP surface.
+- **`docs/README.md`**: Documentation index linking to the technical guides
+  and archiving 13 historical `.md` files that previously cluttered the
+  repository root.
+- **LLM health check honesty**: `LLMBridgeService.getHealthStatus()` now
+  detects placeholder responses and reports `unhealthy` with a clear error
+  message so the default `enableLLM=false` mode does not silently pass.
+- **TDD test coverage for new behaviours**:
+  `tests/unit/search-mediator-immutable.test.ts` (6),
+  `tests/unit/http-health-cache.test.ts` (7),
+  `tests/unit/config-health-cache-ttl.test.ts` (3),
+  `tests/unit/migrations-exports.test.ts` (8),
+  `tests/unit/http-transport-auth.test.ts` (4),
+  `tests/unit/pattern-row-types.test.ts` (5),
+  `tests/unit/verify-build-error-handling.test.ts` (3),
+  `tests/unit/config-http-port-zero.test.ts` (3),
+  `tests/unit/search-mediator-fuzzy-default.test.ts` (2),
+  `tests/unit/build-entrypoints.test.ts` (4),
+  `tests/unit/data-hygiene.test.ts` (1),
+  `tests/unit/mcp-modularization.test.ts` (4),
+  `tests/e2e/mcp-server-binary.test.ts` (1).
+
+### Changed
+
+- **Build entrypoints moved from `dist/src/*` to `dist/*`**: `package.json`
+  `main`, `bin`, `exports`, and all npm scripts now point to canonical
+  `dist/mcp-server.js` etc. The `tsconfig.build.json` has `rootDir: "./src"`
+  to produce the canonical layout. This is a packaging fix; behaviour is
+  unchanged.
+- **`mcp-server.ts` modularized (1416 → 739 lines)**: New modules under
+  `src/mcp/` (`canonical-tools`, `tool-formatters`, `pattern-details-formatter`,
+  `health-formatter`, `http-tool-handlers`, `http-transport`, `health-cache`,
+  `types`). Dead code (`searchPatternsByType`, `keywordSearch`,
+  `semanticSearchWithFallback`, `mergeSearchResults`) removed.
+- **Migrations types extracted**: `src/services/migrations.ts` reduced from
+  1391 → 1204 lines; type definitions live in `src/services/migrations/types.ts`.
+  Re-exports maintained for `Migration`, `MigrationOptions`, `MigrationResult`,
+  `MigrationStatus`, `ValidationResult`, `MigrationHealthStatus`.
+- **Service logging**: `console.error` / `console.warn` in
+  `database-manager.ts`, `vector-operations.ts`, `llm-bridge.ts`,
+  `semantic-search.ts`, `pattern-seeder.ts`, and `pattern-matcher.ts`
+  migrated to the structured logger (`logger.error` / `logger.warn`).
+  `entrypoint.sh` log messages translated from Portuguese to English.
+- **Telemetry diversity score**: Replaced the hard-coded placeholder
+  `0.5` with a real calculation based on unique pattern IDs in the top-k
+  results.
+- **Repository housekeeping**: 13 historical `.md` files moved from the
+  repository root to `docs/archive/`; `PROBLEMAS.md` restored with a
+  historical note on the `benefits.join` regression. `.gitignore` now
+  whitelists `docs/**/*.md`, `CHANGELOG.md`, `AGENTS.md`, `CLAUDE.md`
+  alongside the previous exceptions.
+- **npm metadata**: `publishConfig.registry` corrected to
+  `https://registry.npmjs.org/`; `funding.url` updated to
+  `https://github.com/sponsors/apolosan`.
+
+### Fixed
+
+- **`search_patterns` ignored `searchType`**: The tool now dispatches
+  through `SearchMediator.searchByType`, routing the request to the
+  appropriate handler (keyword, semantic, or hybrid) per call. Previously
+  the argument was accepted but unused.
+- **HTTP `/health` returned plain `"OK"` text**: Now returns a JSON
+  `HealthReport` (200 when healthy, 503 otherwise), matching the MCP
+  health contract. Cached for `HEALTH_CACHE_TTL_MS` to reduce load
+  under high-frequency probing.
+- **`dist/src/*` paths pointed to non-existent files**: `bun run start`,
+  `npm install` bin links, and the Docker entrypoint were all broken
+  because the build emits `dist/*` (not `dist/src/*`). Fixed across
+  `package.json`, `Dockerfile`, `README.md`, `QUICKSTART.md`,
+  `test-mcp-stdio.js`, and the CI workflow.
+- **Race condition in `SearchMediator.searchByType`**: The mediator
+  mutated `this.config` during a call, so concurrent calls in HTTP
+  multi-tenant deployments could interfere. Now config is `readonly`
+  after construction and overrides are passed per call.
+- **LLM placeholder responses treated as healthy**: `LLMBridgeService`
+  detected placeholder content and now correctly reports the bridge as
+  `unhealthy` with an actionable error.
+- **Verification script crashed on missing `package.json`**: Added
+  try/catch with exit codes 1/2 distinguishing missing paths from
+  missing package.json.
+
+### Security
+
+- **HTTP bind host defaults to localhost**: `HTTP_BIND_HOST` defaults
+  to `127.0.0.1`; Docker deployments must explicitly set
+  `HTTP_BIND_HOST=0.0.0.0` to accept external traffic.
+- **Optional bearer-token auth for HTTP transport**: When
+  `HTTP_AUTH_TOKEN` is set, requests must include a matching
+  `Authorization: Bearer` or `X-API-Key` header. Empty tokens are
+  rejected at config-build time.
+
 ## [0.5.1] - 2026-05-13
 
 ### Added

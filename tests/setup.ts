@@ -47,35 +47,24 @@ beforeEach(() => {
 
 // Clean up after tests
 afterAll(async () => {
-  // Wait longer to ensure all file handles are closed
-  await new Promise(resolve => setTimeout(resolve, 500));
-
-  // Force close any remaining database connections
   if (globalThis.testDatabaseManager) {
     try {
       await globalThis.testDatabaseManager.close();
-    } catch (error) {
-      // Ignore close errors
+    } catch {
+      // Ignore close errors during teardown
     }
   }
 
-  // Clean up temp directory with multiple attempts
-  for (let attempt = 1; attempt <= 5; attempt++) {
+  // Brief yield so file handles can close before rmSync
+  await new Promise(resolve => setTimeout(resolve, 50));
+
+  if (existsSync(TEST_DATA_DIR)) {
     try {
-      if (existsSync(TEST_DATA_DIR)) {
-        rmSync(TEST_DATA_DIR, { recursive: true, force: true });
-      }
-      break; // Success, exit loop
-    } catch (error) {
-      if (attempt === 5) {
-        console.warn('Failed to clean up temp directory after 5 attempts:', error);
-      } else {
-        // Wait before retry
-        await new Promise(resolve => setTimeout(resolve, 200 * attempt));
-      }
+      rmSync(TEST_DATA_DIR, { recursive: true, force: true });
+    } catch {
+      // Non-fatal: temp dir may still be locked on some platforms
     }
   }
 
-  // Reset environment
   delete process.env.TEST_DB_PATH;
 });

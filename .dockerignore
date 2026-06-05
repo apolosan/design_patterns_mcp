@@ -6,3 +6,4 @@ node_modules/
 *.log
 package-lock.json
 npm-shrinkwrap.json
+data/.git/

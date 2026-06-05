@@ -27,8 +27,11 @@ export interface MCPServerConfig {
   // HTTP Transport (Docker deployment)
   transportMode?: 'stdio' | 'http';
   httpPort?: number;
+  httpBindHost?: string;
+  httpAuthToken?: string;
   mcpEndpoint?: string;
   healthCheckPath?: string;
+  healthCacheTtlMs?: number;
 }
 
 interface ConfigBuilderState {
@@ -46,8 +49,11 @@ interface ConfigBuilderState {
   // HTTP Transport (Docker deployment)
   transportMode?: 'stdio' | 'http';
   httpPort?: number;
+  httpBindHost?: string;
+  httpAuthToken?: string;
   mcpEndpoint?: string;
   healthCheckPath?: string;
+  healthCacheTtlMs?: number;
 }
 
 export class MCPServerConfigBuilder {
@@ -198,6 +204,40 @@ export class MCPServerConfigBuilder {
   }
 
   /**
+   * Set HTTP bind host (defaults to 127.0.0.1 for local-only exposure)
+   */
+  withHttpBindHost(host: string): this {
+    if (!host || typeof host !== 'string') {
+      throw new Error('HTTP bind host must be a non-empty string');
+    }
+    this.state.httpBindHost = host;
+    return this;
+  }
+
+  /**
+   * Set optional bearer token for HTTP transport authentication
+   */
+  withHttpAuthToken(token: string): this {
+    if (!token || typeof token !== 'string') {
+      throw new Error('HTTP auth token must be a non-empty string');
+    }
+    this.state.httpAuthToken = token;
+    return this;
+  }
+
+  /**
+   * Set TTL (milliseconds) for the /health response cache.
+   * Probes arriving within the TTL receive the same cached report.
+   */
+  withHealthCacheTtl(ttlMs: number): this {
+    if (!Number.isFinite(ttlMs) || ttlMs < 0) {
+      throw new Error('Health cache TTL must be a non-negative finite number');
+    }
+    this.state.healthCacheTtlMs = ttlMs;
+    return this;
+  }
+
+  /**
    * Build configuration with validation and defaults
    */
   build(): MCPServerConfig {
@@ -221,8 +261,11 @@ export class MCPServerConfigBuilder {
       // HTTP Transport (Docker deployment)
       transportMode: this.state.transportMode ?? 'stdio',
       httpPort: this.state.httpPort ?? 3000,
+      httpBindHost: this.state.httpBindHost ?? '127.0.0.1',
+      httpAuthToken: this.state.httpAuthToken,
       mcpEndpoint: this.state.mcpEndpoint ?? '/mcp',
       healthCheckPath: this.state.healthCheckPath ?? '/health',
+      healthCacheTtlMs: this.state.healthCacheTtlMs ?? 5000,
     };
 
     // Additional validation
@@ -321,6 +364,24 @@ export class MCPServerConfigBuilder {
     const healthCheckPath = process.env.HEALTH_CHECK_PATH;
     if (healthCheckPath) {
       builder.withHealthCheckPath(healthCheckPath);
+    }
+
+    const httpBindHost = process.env.HTTP_BIND_HOST;
+    if (httpBindHost) {
+      builder.withHttpBindHost(httpBindHost);
+    }
+
+    const httpAuthToken = process.env.HTTP_AUTH_TOKEN;
+    if (httpAuthToken) {
+      builder.withHttpAuthToken(httpAuthToken);
+    }
+
+    const healthCacheTtlEnv = process.env.HEALTH_CACHE_TTL_MS;
+    if (healthCacheTtlEnv) {
+      const parsed = Number.parseInt(healthCacheTtlEnv, 10);
+      if (Number.isFinite(parsed) && parsed >= 0) {
+        builder.withHealthCacheTtl(parsed);
+      }
     }
 
     return builder;

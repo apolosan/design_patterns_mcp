@@ -27,10 +27,10 @@ npm install --ignore-scripts
 npx tsc
 
 # Setup database
-node dist/src/cli/migrate.js
-node dist/src/cli/seed.js
-node dist/src/cli/generate-embeddings.js
-node dist/src/cli/setup-relationships.js
+node dist/cli/migrate.js
+node dist/cli/seed.js
+node dist/cli/generate-embeddings.js
+node dist/cli/setup-relationships.js
 ```
 
 ---
@@ -44,7 +44,7 @@ node dist/src/cli/setup-relationships.js
 bun run dev
 
 # Or directly
-bun dist/src/mcp-server.js
+bun dist/mcp-server.js
 ```
 
 ### Test with stdio client
@@ -91,7 +91,7 @@ bun run test-mcp-http.js http://localhost:3000/mcp
   "mcpServers": {
     "design-patterns": {
       "command": "node",
-      "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
+      "args": ["/absolute/path/to/design-patterns-mcp/dist/mcp-server.js"],
       "env": {
         "LOG_LEVEL": "info",
         "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db",
@@ -118,7 +118,7 @@ bun run test-mcp-http.js http://localhost:3000/mcp
   "mcpServers": {
     "design-patterns": {
       "command": "node",
-      "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
+      "args": ["/absolute/path/to/design-patterns-mcp/dist/mcp-server.js"],
       "env": {
         "LOG_LEVEL": "info",
         "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db",
@@ -138,7 +138,7 @@ bun run test-mcp-http.js http://localhost:3000/mcp
   "mcpServers": {
     "design-patterns": {
       "command": "node",
-      "args": ["${workspaceFolder}/dist/src/mcp-server.js"],
+      "args": ["${workspaceFolder}/dist/mcp-server.js"],
       "env": {
         "DATABASE_PATH": "${workspaceFolder}/data/design-patterns.db",
         "LOG_LEVEL": "info"
@@ -166,7 +166,7 @@ bun run test-mcp-http.js http://localhost:3000/mcp
   "mcp": {
     "design-patterns": {
       "type": "local",
-      "command": ["node", "/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
+      "command": ["node", "/absolute/path/to/design-patterns-mcp/dist/mcp-server.js"],
       "enabled": true,
       "environment": {
         "LOG_LEVEL": "info",
@@ -209,7 +209,7 @@ cat > ~/.config/shared-mcp/design-patterns.json << 'EOF'
   "mcpServers": {
     "design-patterns": {
       "command": "node",
-      "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
+      "args": ["/absolute/path/to/design-patterns-mcp/dist/mcp-server.js"],
       "env": {
         "LOG_LEVEL": "info",
         "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db",
@@ -303,7 +303,7 @@ Cursor does not reliably honor the `cwd` field in MCP server configs. Use absolu
 
 ```json
 {
-  "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
+  "args": ["/absolute/path/to/design-patterns-mcp/dist/mcp-server.js"],
   "env": {
     "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db"
   }

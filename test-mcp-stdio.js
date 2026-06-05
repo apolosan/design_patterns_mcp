@@ -6,7 +6,7 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
-const SERVER_PATH = process.argv[2] || './dist/src/mcp-server.js';
+const SERVER_PATH = process.argv[2] || './dist/mcp-server.js';
 
 async function main() {
   console.log(`Connecting to STDIO server: ${SERVER_PATH}...`);

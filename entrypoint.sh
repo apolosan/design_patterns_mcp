@@ -12,42 +12,42 @@ mkdir -p "$DATA_DIR"
 
 if [ "$SKIP_DB_SETUP" != "true" ]; then
   if [ ! -f "$DATABASE_PATH" ]; then
-    log_info "Iniciando setup do banco de dados..."
+    log_info "Starting database setup..."
 
     if bun run migrate; then
-      log_info "Migrações aplicadas"
+      log_info "Migrations applied"
     else
-      log_warn "Migrações podem já estar aplicadas"
+      log_warn "Migrations may already be applied"
     fi
 
     if bun run seed; then
-      log_info "Padrões populados"
+      log_info "Patterns seeded"
     else
-      log_error "Falha ao popular padrões"
+      log_error "Failed to seed patterns"
     fi
 
     if bun run generate-embeddings; then
-      log_info "Embeddings gerados"
+      log_info "Embeddings generated"
     else
-      log_warn "Embeddings podem já existir"
+      log_warn "Embeddings may already exist"
     fi
 
     if bun run setup-relationships; then
-      log_info "Relacionamentos configurados"
+      log_info "Relationships configured"
     else
-      log_warn "Relacionamentos podem já existir"
+      log_warn "Relationships may already exist"
     fi
 
-    log_info "Setup do banco concluído!"
+    log_info "Database setup complete"
   else
-    log_info "Banco de dados já existe, pulando setup"
+    log_info "Database already exists, skipping setup"
   fi
 else
-  log_info "Setup do banco pulado (SKIP_DB_SETUP=true)"
+  log_info "Database setup skipped (SKIP_DB_SETUP=true)"
 fi
 
-log_info "Iniciando servidor em modo: $TRANSPORT_MODE"
-log_info " Porta HTTP: $HTTP_PORT"
-log_info " Endpoint MCP: $MCP_ENDPOINT"
+log_info "Starting server in mode: $TRANSPORT_MODE"
+log_info " HTTP port: $HTTP_PORT"
+log_info " MCP endpoint: $MCP_ENDPOINT"
 
 exec "$@"

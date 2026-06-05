@@ -8,6 +8,7 @@ services:
       - "${HTTP_PORT:-3000}:${HTTP_PORT:-3000}"
     environment:
       - TRANSPORT_MODE=${TRANSPORT_MODE:-http}
+      - HTTP_BIND_HOST=${HTTP_BIND_HOST:-0.0.0.0}
       - HTTP_PORT=${HTTP_PORT:-3000}
       - MCP_ENDPOINT=${MCP_ENDPOINT:-/mcp}
       - LOG_LEVEL=${LOG_LEVEL:-info}
@@ -19,7 +20,13 @@ services:
       - design-patterns-data:/app/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/health"]
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "if [ \"${DISABLE_HEALTHCHECK:-0}\" = \"1\" ] || [ \"${TRANSPORT_MODE:-http}\" = \"stdio\" ]; then exit 0; fi; wget -q --spider \"http://127.0.0.1:${HTTP_PORT:-3000}${HEALTH_CHECK_PATH:-/health}\"",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3

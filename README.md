@@ -1,6 +1,6 @@
 # Design Patterns MCP Server
 
-[![Version](https://img.shields.io/badge/version-0.5.1-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
+[![Version](https://img.shields.io/badge/version-0.6.0-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Test Status](https://img.shields.io/badge/tests-525%20%7C%20100%25-brightgreen.svg)](#testing)
 [![Patterns](https://img.shields.io/badge/patterns-705%2B-orange.svg)](#available-pattern-categories)
@@ -22,10 +22,10 @@ bun run db:setup
 # Or using npm (if bun is not installed)
 npm install --ignore-scripts
 npx tsc
-node dist/src/cli/migrate.js
-node dist/src/cli/seed.js
-node dist/src/cli/generate-embeddings.js
-node dist/src/cli/setup-relationships.js
+node dist/cli/migrate.js
+node dist/cli/seed.js
+node dist/cli/generate-embeddings.js
+node dist/cli/setup-relationships.js
 ```
 
 Configure in your MCP client (Claude Desktop, Cursor, etc.) and start discovering patterns through natural language queries.
@@ -140,10 +140,10 @@ npm install --ignore-scripts
 npx tsc
 
 # Setup database
-node dist/src/cli/migrate.js
-node dist/src/cli/seed.js
-node dist/src/cli/generate-embeddings.js
-node dist/src/cli/setup-relationships.js
+node dist/cli/migrate.js
+node dist/cli/seed.js
+node dist/cli/generate-embeddings.js
+node dist/cli/setup-relationships.js
 ```
 
 ### MCP Configuration
@@ -155,7 +155,7 @@ Add to your MCP client configuration (Claude Desktop, Cursor, etc.):
   "mcpServers": {
     "design-patterns": {
       "command": "node",
-      "args": ["/absolute/path/to/design-patterns-mcp/dist/src/mcp-server.js"],
+      "args": ["/absolute/path/to/design-patterns-mcp/dist/mcp-server.js"],
       "env": {
         "LOG_LEVEL": "info",
         "DATABASE_PATH": "/absolute/path/to/design-patterns-mcp/data/design-patterns.db",
@@ -288,9 +288,15 @@ This project implements the patterns it documents:
 | Multi-Level Cache | `services/multi-level-cache.ts` |
 | Builder | `core/config-builder.ts` |
 
+## Vector search (runtime honesty)
+
+The server uses **sql.js** (SQLite WASM) with **in-memory cosine similarity** over stored embeddings. Native **sqlite-vec** (`vec0` virtual tables) is **not** available in this runtime. Semantic search works for the current catalog size (~700 patterns) but does not use indexed native vector tables.
+
+Enable LLM enrichment only when you have a real provider integration — built-in LLM bridge providers return placeholders unless extended.
+
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+Contributions are welcome! See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 1. Fork the repository
 2. Create a feature branch
@@ -305,12 +311,14 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Resources
 
 - [Model Context Protocol](https://modelcontextprotocol.io/)
-- [sqlite-vec](https://github.com/asg017/sqlite-vec)
+- [Vector search notes](docs/CONTRIBUTING.md#vector-search-honesty) (sql.js vs sqlite-vec)
+- [MCP tools surface](docs/MCP_TOOLS.md)
+- [Documentation index](docs/README.md)
 - [Design Patterns Catalog](https://refactoring.guru/design-patterns)
 
 ---
 
-**Version**: 0.5.1  
-**Last Updated**: May 2026  
+**Version**: 0.6.0  
+**Last Updated**: June 2026  
 **Patterns**: 705+ JSON definitions (highlight: **Feature Flag** / Feature Toggle)  
-**Tests**: 525 test cases | 100% pass rate
+**Tests**: 578 test cases | 100% pass rate

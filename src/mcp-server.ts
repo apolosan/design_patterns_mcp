@@ -7,7 +7,6 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
 import {
   CallToolRequestSchema,
   ReadResourceRequestSchema,
@@ -25,11 +24,22 @@ import { LLMBridgeService } from './services/llm-bridge.js';
 import { MigrationManager } from './services/migrations.js';
 import { PatternSeeder } from './services/pattern-seeder.js';
 import { logger } from './services/logger.js';
-import { parseTags, parseArrayProperty, coerceToStringArray } from './utils/parse-tags.js';
 import { MCPRateLimiter } from './utils/rate-limiter.js';
+import { SearchMediator, type SearchStrategy } from './handlers/search-mediator.js';
+import { CacheService } from './services/cache.js';
 import { InputValidator } from './utils/input-validation.js';
 import { SimpleContainer, configureContainer, TOKENS } from './core/container.js';
-import { MCPServerConfigBuilder } from './core/config-builder.js';
+import { MCPServerConfigBuilder, type MCPServerConfig } from './core/config-builder.js';
+import { CANONICAL_TOOL_DEFINITIONS } from './mcp/canonical-tools.js';
+import {
+  buildPatternRequest,
+  formatFindPatternsResult,
+  formatSearchResultsFromRecommendations,
+} from './mcp/tool-formatters.js';
+import { formatPatternDetailsText } from './mcp/pattern-details-formatter.js';
+import { formatHealthReportText } from './mcp/health-formatter.js';
+import { startHttpServer } from './mcp/http-transport.js';
+import type { PatternRow, PatternImplementation, CountResult } from './mcp/types.js';
 import { resolvePatternsPath } from './core/path-resolver.js';
 import { HealthCheckService } from './health/health-check-service.js';
 import { HealthStatus } from './health/types.js';
@@ -38,411 +48,15 @@ import { VectorOperationsHealthCheck } from './health/vector-operations-health-c
 import { LLMBridgeHealthCheck } from './health/llm-bridge-health-check.js';
 import type { Logger } from './services/logger.js';
 
-export interface MCPServerConfig {
-  databasePath: string;
-  logLevel: 'debug' | 'info' | 'warn' | 'error';
-  enableLLM: boolean;
-  maxConcurrentRequests: number;
-  enableFuzzyLogic?: boolean;
-  enableTelemetry?: boolean;
-  enableHybridSearch?: boolean;
-  enableGraphAugmentation?: boolean;
-  embeddingCompression?: boolean;
-  transportMode?: 'stdio' | 'http';
-  httpPort?: number;
-  mcpEndpoint?: string;
-  healthCheckPath?: string;
-}
-
-interface PatternRow {
-  id: string;
-  name: string;
-  category: string;
-  description?: string;
-  when_to_use?: string;
-  benefits?: string;
-  drawbacks?: string;
-  use_cases?: string;
-  complexity?: string;
-  tags?: string;
-  examples?: string;
-  created_at?: string;
-}
-interface PatternExample {
-  language: string;
-  code: string;
-  description?: string;
-  explanation?: string;
-}
-interface CountResult {
-  count: number;
-}
-interface PatternImplementation {
-  language: string;
-  code: string;
-  explanation?: string;
-}
-interface SearchPatternResult {
-  pattern: {
-    id: string;
-    name: string;
-    category: string;
-    description: string;
-    complexity?: string;
-    tags?: string[];
-  };
-  score: number;
-}
-
-function keywordSearch(db: DatabaseManager, query: string, limit: number): SearchPatternResult[] {
-  const normalizedQuery = `%${query}%`;
-  const rows = db.query<PatternRow>(
-    `
-      SELECT id, name, category, description, complexity, tags
-      FROM patterns
-      WHERE name LIKE ? OR description LIKE ? OR category LIKE ? OR tags LIKE ?
-      ORDER BY
-        CASE
-          WHEN LOWER(id) = LOWER(?) THEN 0
-          WHEN LOWER(name) = LOWER(?) THEN 1
-          WHEN LOWER(name) LIKE LOWER(?) THEN 2
-          ELSE 3
-        END,
-        name ASC
-      LIMIT ?
-    `,
-    [
-      normalizedQuery,
-      normalizedQuery,
-      normalizedQuery,
-      normalizedQuery,
-      query,
-      query,
-      normalizedQuery,
-      limit,
-    ]
-  );
-
-  return rows.map((row, index) => ({
-    pattern: {
-      id: row.id,
-      name: row.name,
-      category: row.category,
-      description: row.description ?? '',
-      complexity: row.complexity,
-      tags: parseTags(row.tags),
-    },
-    score: Math.max(0.1, 1 - index * 0.05),
-  }));
-}
-
-async function semanticSearchWithFallback(
-  semanticSearch: SemanticSearchService,
-  query: string,
-  limit: number
-): Promise<SearchPatternResult[]> {
-  const results = await semanticSearch.search({
-    text: query,
-    filters: {},
-    options: {
-      limit,
-      includeMetadata: true,
-    },
-  });
-
-  return results.map(result => ({
-    pattern: {
-      id: result.pattern.id ?? result.patternId,
-      name: result.pattern.name,
-      category: result.pattern.category,
-      description: result.pattern.description,
-      complexity: result.pattern.complexity,
-      tags: result.pattern.tags,
-    },
-    score: result.score,
-  }));
-}
-
-function mergeSearchResults(
-  semanticResults: SearchPatternResult[],
-  keywordResults: SearchPatternResult[],
-  limit: number
-): SearchPatternResult[] {
-  const merged = new Map<string, SearchPatternResult>();
-
-  for (const result of [...keywordResults, ...semanticResults]) {
-    const existing = merged.get(result.pattern.id);
-    if (!existing || result.score > existing.score) {
-      merged.set(result.pattern.id, result);
-    }
-  }
-
-  return Array.from(merged.values())
-    .sort((left, right) => right.score - left.score)
-    .slice(0, limit);
-}
-
-async function searchPatternsByType(
-  db: DatabaseManager,
-  semanticSearch: SemanticSearchService,
-  query: string,
-  searchType: string,
-  limit: number
-): Promise<{ results: SearchPatternResult[]; searchTypeUsed: string; degraded: boolean }> {
-  if (searchType === 'keyword') {
-    return {
-      results: keywordSearch(db, query, limit),
-      searchTypeUsed: 'keyword',
-      degraded: false,
-    };
-  }
-
-  if (searchType === 'semantic') {
-    return {
-      results: await semanticSearchWithFallback(semanticSearch, query, limit),
-      searchTypeUsed: 'semantic',
-      degraded: false,
-    };
-  }
-
-  try {
-    const semanticResults = await semanticSearchWithFallback(
-      semanticSearch,
-      query,
-      Math.ceil(limit / 2)
-    );
-    const keywordResults = keywordSearch(db, query, Math.ceil(limit / 2));
-
-    return {
-      results: mergeSearchResults(semanticResults, keywordResults, limit),
-      searchTypeUsed: 'hybrid',
-      degraded: false,
-    };
-  } catch {
-    return {
-      results: keywordSearch(db, query, limit),
-      searchTypeUsed: 'keyword',
-      degraded: true,
-    };
-  }
-}
-
-function formatSearchResults(
-  query: string,
-  searchTypeUsed: string,
-  degraded: boolean,
-  results: SearchPatternResult[]
-): string {
-  const degradedNotice = degraded
-    ? '\nSemantic search unavailable; falling back to keyword search.\n'
-    : '\n';
-
-  return (
-    `Search results for "${query}" (strategy: ${searchTypeUsed})${degradedNotice}\n` +
-    results
-      .map(
-        (result, index) =>
-          `${index + 1}. **${result.pattern.name}** (${result.pattern.category})\n` +
-          `   ID: ${result.pattern.id}\n` +
-          `   Score: ${(result.score * 100).toFixed(1)}%\n` +
-          `   Description: ${result.pattern.description}`
-      )
-      .join('\n')
-  );
-}
-
-// Stateless HTTP handler functions (reusable across server instances)
-export function createHttpToolHandlers(
-  db: DatabaseManager,
-  patternMatcher: PatternMatcher,
-  semanticSearch: SemanticSearchService,
-  _rateLimiter: MCPRateLimiter
-) {
-  return {
-    tools: [
-      {
-        name: 'find_patterns',
-        description: 'Find design patterns matching a problem description using semantic search',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            query: {
-              type: 'string',
-              description: 'Natural language description of the problem or requirements',
-            },
-            categories: {
-              type: 'array',
-              items: { type: 'string' },
-              description: 'Optional: Pattern categories to search in',
-            },
-            maxResults: {
-              type: 'number',
-              description: 'Maximum number of recommendations to return',
-              default: 5,
-            },
-            programmingLanguage: {
-              type: 'string',
-              description: 'Target programming language for implementation examples',
-            },
-          },
-          required: ['query'],
-        },
-      },
-      {
-        name: 'search_patterns',
-        description: 'Search patterns by keyword or semantic similarity',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            query: { type: 'string', description: 'Search query' },
-            searchType: {
-              type: 'string',
-              enum: ['keyword', 'semantic', 'hybrid'],
-              default: 'hybrid',
-            },
-            limit: { type: 'number', default: 10 },
-          },
-          required: ['query'],
-        },
-      },
-      {
-        name: 'get_pattern_details',
-        description: 'Get detailed information about a specific pattern',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            patternId: { type: 'string', description: 'Pattern ID to get details for' },
-          },
-          required: ['patternId'],
-        },
-      },
-      {
-        name: 'count_patterns',
-        description: 'Get the total number of design patterns in the database',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            includeDetails: {
-              type: 'boolean',
-              description: 'Include breakdown by category',
-              default: false,
-            },
-          },
-        },
-      },
-      {
-        name: 'get_health_status',
-        description: 'Get the health status of all system services',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            checkName: {
-              type: 'string',
-              description: 'Optional: Check only a specific health check by name',
-            },
-            tags: {
-              type: 'array',
-              items: { type: 'string' },
-              description: 'Optional: Filter health checks by tags',
-            },
-          },
-        },
-      },
-    ],
-    handleFindPatterns: async (args: unknown) => {
-      const validatedArgs = InputValidator.validateFindPatternsArgs(args);
-      const request = {
-        id: crypto.randomUUID(),
-        query: validatedArgs.query,
-        categories: validatedArgs.categories,
-        maxResults: validatedArgs.maxResults,
-        programmingLanguage: validatedArgs.programmingLanguage,
-      };
-      const recommendations = await patternMatcher.findMatchingPatterns(request);
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `Found ${recommendations.length} pattern recommendations:\n\n${recommendations.map((rec, i) => `${i + 1}. **${rec.pattern.name}** (${rec.pattern.category})\n   ID: ${rec.pattern.id}\n   Confidence: ${(rec.confidence * 100).toFixed(1)}%\n   Rationale: ${rec.justification.primaryReason}\n   Benefits: ${coerceToStringArray(rec.justification.benefits, 'benefits').join(', ') || 'N/A'}`).join('\n')}`,
-          },
-        ],
-      };
-    },
-    handleSearchPatterns: async (args: unknown) => {
-      const validatedArgs = InputValidator.validateSearchPatternsArgs(args);
-      const searchResult = await searchPatternsByType(
-        db,
-        semanticSearch,
-        validatedArgs.query,
-        validatedArgs.searchType,
-        validatedArgs.limit
-      );
-      return {
-        content: [
-          {
-            type: 'text',
-            text: formatSearchResults(
-              validatedArgs.query,
-              searchResult.searchTypeUsed,
-              searchResult.degraded,
-              searchResult.results
-            ),
-          },
-        ],
-      };
-    },
-    handleCountPatterns: (args: unknown) => {
-      const validatedArgs = InputValidator.validateCountPatternsArgs(args);
-      const totalResult = db.queryOne<{ total: number }>('SELECT COUNT(*) as total FROM patterns');
-      const total = totalResult?.total ?? 0;
-      if (validatedArgs.includeDetails) {
-        const breakdown = db.query<{ category: string; count: number }>(
-          'SELECT category, COUNT(*) as count FROM patterns GROUP BY category ORDER BY count DESC'
-        );
-        return {
-          content: [
-            {
-              type: 'text',
-              text: `## Total Design Patterns: ${total}\n\n### Breakdown by Category:\n${breakdown.map(item => `- **${item.category}**: ${item.count} patterns`).join('\n')}\n\n*Total patterns from all sources: ${total}*`,
-            },
-          ],
-        };
-      }
-      return {
-        content: [{ type: 'text', text: `Total design patterns in database: **${total}**` }],
-      };
-    },
-  };
-}
-
-interface PatternRow {
-  id: string;
-  name: string;
-  category: string;
-  description?: string;
-  when_to_use?: string;
-  benefits?: string;
-  drawbacks?: string;
-  use_cases?: string;
-  complexity?: string;
-  tags?: string;
-  examples?: string;
-  created_at?: string;
-}
-interface PatternImplementation {
-  language: string;
-  code: string;
-  explanation?: string;
-}
-interface CountResult {
-  count: number;
-}
+export type { MCPServerConfig } from './core/config-builder.js';
+export { createHttpToolHandlers } from './mcp/http-tool-handlers.js';
 
 class DesignPatternsMCPServer {
   private server: Server;
   private db: DatabaseManager;
   private vectorOps: VectorOperationsService;
   private patternMatcher: PatternMatcher;
+  private searchMediator: SearchMediator;
   private semanticSearch!: SemanticSearchService;
   private llmBridge: LLMBridgeService | null = null;
   private migrationManager: MigrationManager;
@@ -475,6 +89,7 @@ class DesignPatternsMCPServer {
       this.vectorOps = container.getService<VectorOperationsService>(TOKENS.VECTOR_OPERATIONS);
       this.semanticSearch = container.getService<SemanticSearchService>(TOKENS.SEMANTIC_SEARCH);
       this.patternMatcher = container.getService<PatternMatcher>(TOKENS.PATTERN_MATCHER);
+      this.searchMediator = container.getService<SearchMediator>(TOKENS.SEARCH_MEDIATOR);
       this.migrationManager = container.getService<MigrationManager>(TOKENS.MIGRATION_MANAGER);
       this.patternSeeder = container.getService<PatternSeeder>(TOKENS.PATTERN_SEEDER);
       this.rateLimiter = container.getService<MCPRateLimiter>(TOKENS.RATE_LIMITER);
@@ -531,6 +146,16 @@ class DesignPatternsMCPServer {
         useFuzzyRefinement: this.config.enableFuzzyLogic ?? true, // Enable fuzzy refinement by default
       });
 
+      this.searchMediator = new SearchMediator(this.db, this.vectorOps, new CacheService(), {
+        maxResults: 5,
+        minConfidence: 0.05,
+        useSemanticSearch: true,
+        useKeywordSearch: true,
+        useHybridSearch: this.config.enableHybridSearch ?? true,
+        useFuzzyRefinement: this.config.enableFuzzyLogic ?? true,
+        cacheResultsTTL: 1800000,
+      });
+
       if (this.config.enableLLM) {
         this.llmBridge = new LLMBridgeService(this.db, {
           provider: 'ollama',
@@ -568,15 +193,11 @@ class DesignPatternsMCPServer {
       });
     }
 
-    // Initialize services
-    // Note: Services are already initialized from DI container above
-    // These lines are kept for backward compatibility fallback only
-
     // Initialize MCP server
     this.server = new Server(
       {
         name: 'design-patterns-mcp',
-        version: '0.5.1',
+        version: '0.6.0',
       },
       {
         capabilities: {
@@ -592,109 +213,7 @@ class DesignPatternsMCPServer {
   private setupHandlers(): void {
     // List available tools
     this.server.setRequestHandler(ListToolsRequestSchema, () => {
-      return {
-        tools: [
-          {
-            name: 'find_patterns',
-            description:
-              'Find design patterns matching a problem description using semantic search',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                query: {
-                  type: 'string',
-                  description: 'Natural language description of the problem or requirements',
-                },
-                categories: {
-                  type: 'array',
-                  items: { type: 'string' },
-                  description: 'Optional: Pattern categories to search in',
-                },
-                maxResults: {
-                  type: 'number',
-                  description: 'Maximum number of recommendations to return',
-                  default: 5,
-                },
-                programmingLanguage: {
-                  type: 'string',
-                  description: 'Target programming language for implementation examples',
-                },
-              },
-              required: ['query'],
-            },
-          },
-          {
-            name: 'search_patterns',
-            description: 'Search patterns by keyword or semantic similarity',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                query: {
-                  type: 'string',
-                  description: 'Search query',
-                },
-                searchType: {
-                  type: 'string',
-                  enum: ['keyword', 'semantic', 'hybrid'],
-                  default: 'hybrid',
-                },
-                limit: {
-                  type: 'number',
-                  default: 10,
-                },
-              },
-              required: ['query'],
-            },
-          },
-          {
-            name: 'get_pattern_details',
-            description: 'Get detailed information about a specific pattern',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                patternId: {
-                  type: 'string',
-                  description: 'Pattern ID to get details for',
-                },
-              },
-              required: ['patternId'],
-            },
-          },
-          {
-            name: 'count_patterns',
-            description: 'Get the total number of design patterns in the database',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                includeDetails: {
-                  type: 'boolean',
-                  description: 'Include breakdown by category',
-                  default: false,
-                },
-              },
-            },
-          },
-          {
-            name: 'get_health_status',
-            description: 'Get the health status of all system services',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                checkName: {
-                  type: 'string',
-                  description: 'Optional: Check only a specific health check by name',
-                },
-                tags: {
-                  type: 'array',
-                  items: { type: 'string' },
-                  description:
-                    'Optional: Filter health checks by tags (e.g., ["database", "critical"])',
-                },
-              },
-            },
-          },
-        ],
-      };
+      return { tools: CANONICAL_TOOL_DEFINITIONS };
     });
 
     // Handle tool calls with rate limiting
@@ -780,32 +299,19 @@ class DesignPatternsMCPServer {
   // Tool handlers
   private async handleFindPatterns(args: unknown): Promise<CallToolResult> {
     const validatedArgs = InputValidator.validateFindPatternsArgs(args);
-    const request = {
-      id: crypto.randomUUID(),
-      query: validatedArgs.query,
+    const request = buildPatternRequest(validatedArgs.query, {
       categories: validatedArgs.categories,
       maxResults: validatedArgs.maxResults,
       programmingLanguage: validatedArgs.programmingLanguage,
-    };
+    });
 
-    const recommendations = await this.patternMatcher.findMatchingPatterns(request);
+    const recommendations = await this.searchMediator.search(request);
 
     return {
       content: [
         {
           type: 'text',
-          text:
-            `Found ${recommendations.length} pattern recommendations:\n\n` +
-            recommendations
-              .map(
-                (rec, index) =>
-                  `${index + 1}. **${rec.pattern.name}** (${rec.pattern.category})\n` +
-                  `   ID: ${rec.pattern.id}\n` +
-                  `   Confidence: ${(rec.confidence * 100).toFixed(1)}%\n` +
-                  `   Rationale: ${rec.justification.primaryReason}\n` +
-                  `   Benefits: ${coerceToStringArray(rec.justification.benefits, 'benefits').join(', ') || 'N/A'}\n`
-              )
-              .join('\n'),
+          text: formatFindPatternsResult(recommendations),
         },
       ],
     };
@@ -813,23 +319,23 @@ class DesignPatternsMCPServer {
 
   private async handleSearchPatterns(args: unknown): Promise<CallToolResult> {
     const validatedArgs = InputValidator.validateSearchPatternsArgs(args);
-    const searchResult = await searchPatternsByType(
-      this.db,
-      this.semanticSearch,
-      validatedArgs.query,
-      validatedArgs.searchType,
-      validatedArgs.limit
+    const request = buildPatternRequest(validatedArgs.query, {
+      maxResults: validatedArgs.limit,
+    });
+    const searchResult = await this.searchMediator.searchByType(
+      request,
+      validatedArgs.searchType as SearchStrategy
     );
 
     return {
       content: [
         {
           type: 'text',
-          text: formatSearchResults(
+          text: formatSearchResultsFromRecommendations(
             validatedArgs.query,
             searchResult.searchTypeUsed,
             searchResult.degraded,
-            searchResult.results
+            searchResult.recommendations
           ),
         },
       ],
@@ -894,52 +400,11 @@ class DesignPatternsMCPServer {
       [validatedArgs.patternId]
     );
 
-    // Parse code examples if available
-    let examplesText = '';
-    if (patternData.examples) {
-      try {
-        const examples = JSON.parse(patternData.examples) as Record<string, PatternExample>;
-        const exampleKeys = Object.keys(examples);
-
-        if (exampleKeys.length > 0) {
-          examplesText = '\n\n**Code Examples:**\n';
-          exampleKeys.forEach(lang => {
-            const example = examples[lang];
-            examplesText += `\n### ${lang.charAt(0).toUpperCase() + lang.slice(1)}\n`;
-            if (example.description) {
-              examplesText += `${example.description}\n\n`;
-            }
-            examplesText += `\`\`\`${lang}\n${example.code}\n\`\`\`\n`;
-          });
-        }
-      } catch (e) {
-        // If parsing fails, skip examples
-      }
-    }
-
     return {
       content: [
         {
           type: 'text',
-          text:
-            `# ${patternData.name} (${patternData.category})\n\n` +
-            `**Description:** ${patternData.description ?? 'No description available'}\n\n` +
-            `**When to Use:** ${parseArrayProperty(patternData.when_to_use).join(', ')}\n\n` +
-            `**Benefits:** ${parseArrayProperty(patternData.benefits).join(', ')}\n\n` +
-            `**Drawbacks:** ${parseArrayProperty(patternData.drawbacks).join(', ')}\n\n` +
-            `**Use Cases:** ${parseArrayProperty(patternData.use_cases).join(', ')}\n\n` +
-            `**Complexity:** ${patternData.complexity ?? 'Unknown'}\n\n` +
-            `**Tags:** ${parseTags(patternData.tags).join(', ')}\n` +
-            examplesText +
-            (implementations.length > 0
-              ? `\n\n**Implementations:**\n` +
-                implementations
-                  .map(
-                    impl =>
-                      `\n### ${impl.language}\n\`\`\`${impl.language.toLowerCase()}\n${impl.code}\n\`\`\`\n${impl.explanation}`
-                  )
-                  .join('\n')
-              : ''),
+          text: formatPatternDetailsText(patternData, implementations),
         },
       ],
     };
@@ -1031,43 +496,11 @@ class DesignPatternsMCPServer {
         report = await this.healthCheckService.checkAll();
       }
 
-      // Format the response
-      let response = `## System Health Report\n\n`;
-      response += `**Overall Status:** ${report.overall.toUpperCase()}\n`;
-      response += `**Timestamp:** ${new Date(report.timestamp).toLocaleString()}\n`;
-      response += `**Total Duration:** ${Math.round(report.duration)}ms\n\n`;
-
-      response += `### Summary\n`;
-      response += `- **Total Checks:** ${report.summary.total}\n`;
-      response += `- **Healthy:** ${report.summary.healthy}\n`;
-      response += `- **Degraded:** ${report.summary.degraded}\n`;
-      response += `- **Unhealthy:** ${report.summary.unhealthy}\n`;
-      response += `- **Unknown:** ${report.summary.unknown}\n\n`;
-
-      response += `### Individual Check Results\n\n`;
-      report.checks.forEach((check, index) => {
-        response += `${index + 1}. **${check.name}**\n`;
-        response += `   - **Status:** ${check.status.toUpperCase()}\n`;
-        response += `   - **Duration:** ${Math.round(check.duration)}ms\n`;
-        response += `   - **Message:** ${check.message}\n`;
-
-        if (check.details) {
-          response += `   - **Details:** ${JSON.stringify(check.details, null, 2)}\n`;
-        }
-
-        const healthTags = coerceToStringArray(check.tags, 'tags');
-        if (healthTags.length > 0) {
-          response += `   - **Tags:** ${healthTags.join(', ')}\n`;
-        }
-
-        response += `\n`;
-      });
-
       return {
         content: [
           {
             type: 'text',
-            text: response,
+            text: formatHealthReportText(report),
           },
         ],
       };
@@ -1125,7 +558,7 @@ class DesignPatternsMCPServer {
   } {
     const info = {
       name: 'Design Patterns MCP Server',
-      version: '0.5.1',
+      version: '0.6.0',
       status: 'running',
       database: {
         path: this.config.databasePath,
@@ -1189,37 +622,13 @@ class DesignPatternsMCPServer {
   }
 
   startHttp(): Promise<void> {
-    const port = this.config.httpPort ?? 3000;
-    const healthPath = this.config.healthCheckPath ?? '/health';
-    const mcpEndpoint = this.config.mcpEndpoint ?? '/mcp';
-    const mcpServer = this.server;
-
-    Bun.serve({
-      port,
-      idleTimeout: 255,
-      async fetch(req: Request): Promise<Response> {
-        const url = new URL(req.url);
-
-        if (url.pathname === healthPath || url.pathname === '/health') {
-          return new Response('OK', { status: 200 });
-        }
-
-        if (url.pathname === mcpEndpoint || url.pathname.startsWith(`${mcpEndpoint}/`)) {
-          const transport = new WebStandardStreamableHTTPServerTransport({
-            sessionIdGenerator: undefined,
-            enableJsonResponse: true,
-          });
-
-          await mcpServer.connect(transport);
-          return transport.handleRequest(req);
-        }
-
-        return new Response('Not Found', { status: 404 });
-      },
+    return startHttpServer({
+      config: this.config,
+      mcpServer: this.server,
+      healthService: this.healthCheckService,
+      logger: this.logger,
+      healthCacheTtlMs: this.config.healthCacheTtlMs,
     });
-
-    this.logger.info('mcp-server', `HTTP server listening on port ${port}`);
-    return Promise.resolve();
   }
 
   async stop(): Promise<void> {
@@ -1317,7 +726,11 @@ async function main(): Promise<void> {
 // Run if this is the main module
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(error => {
-    console.error('Fatal error:', error);
+    logger.error(
+      'main',
+      'Fatal error',
+      error instanceof Error ? error : new Error(String(error))
+    );
     process.exit(1);
   });
 }

@@ -199,14 +199,14 @@ logs/
 # Finder (MacOS) folder config
 .DS_Store
 
-# Documentation files (allow important docs)
-# Temporarily disabled to allow important documentation
+# Documentation files (allow essential docs)
 *.md
 !README.md
-!INSTALL_GUIDE.md
+!CHANGELOG.md
 !QUICKSTART.md
-# !AGENTS.md
-# !docs/**/*.md
+!AGENTS.md
+!CLAUDE.md
+!docs/**/*.md
 
 # OpenCode configuration  
 opencode.json
@@ -216,3 +216,10 @@ worktrees/
 .chunkhound.json
 .aim/
 .feature-workflow/
+
+# Accidental git metadata copied into runtime data directory
+data/.git/
+
+# SQLite temp files created by sql.js test fixtures (root-level)
+/:memory:*
+

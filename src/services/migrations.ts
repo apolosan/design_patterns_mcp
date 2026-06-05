@@ -6,21 +6,29 @@ import { DatabaseManager } from './database-manager';
 import { logger } from './logger.js';
 import fs from 'fs';
 import path from 'path';
+import type {
+  Migration,
+  MigrationRecord,
+  MigrationOptions,
+  MigrationResult,
+  MigrationStatus,
+  ValidationResult,
+  MigrationHealthStatus,
+  ChecksumResolutionOptions,
+  ResolutionResult,
+  DryRunResult,
+  DryRunMigrationResult,
+  MigrationFailure,
+} from './migrations/types.js';
 
-export interface Migration {
-  id: string;
-  name: string;
-  up: string;
-  down: string;
-  createdAt: Date;
-}
-
-interface MigrationRecord {
-  id: string;
-  name: string;
-  executedAt: Date;
-  checksum: string;
-}
+export type {
+  Migration,
+  MigrationOptions,
+  MigrationResult,
+  MigrationStatus,
+  ValidationResult,
+  MigrationHealthStatus,
+} from './migrations/types.js';
 
 export class MigrationManager {
   private db: DatabaseManager;
@@ -83,7 +91,7 @@ export class MigrationManager {
         }
       }
     } catch (error) {
-      console.error('Failed to load migrations:', error);
+      logger.error('migrations', 'Failed to load migrations', error instanceof Error ? error : new Error(String(error)));
     }
 
     return migrations;
@@ -100,7 +108,7 @@ export class MigrationManager {
       // Parse migration format: id_name.sql
       const match = filename.match(/^(\d+)_(.+)\.sql$/);
       if (!match) {
-        console.warn(`Invalid migration filename: ${filename}`);
+        logger.warn('migrations', `Invalid migration filename: ${filename}`);
         return null;
       }
 
@@ -133,7 +141,11 @@ export class MigrationManager {
         createdAt: fs.statSync(filePath).birthtime,
       };
     } catch (error) {
-      console.error(`Failed to parse migration ${filename}:`, error);
+      logger.error(
+        'migrations',
+        `Failed to parse migration ${filename}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
       return null;
     }
   }
@@ -1190,202 +1202,3 @@ export class MigrationManager {
     }
   }
 }
-
-export interface MigrationOptions {
-  validateFirst?: boolean;
-  continueOnError?: boolean;
-  maxRetries?: number;
-  retryDelay?: number;
-  dryRun?: boolean;
-  forceChecksumUpdate?: boolean;
-  skipFailedMigrations?: boolean;
-}
-
-interface MigrationFailure {
-  migration: string;
-  error: Error;
-  timestamp: Date;
-}
-
-interface MigrationResult {
-  success: boolean;
-  message: string;
-  executed?: MigrationRecord[];
-  rolledBack?: MigrationRecord[];
-  failed?: MigrationFailure[];
-  error?: Error;
-}
-
-interface MigrationStatus {
-  total: number;
-  executed: number;
-  pending: number;
-  lastExecuted: MigrationRecord | null;
-  nextPending: Migration | null;
-}
-
-interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-  warnings?: string[];
-}
-
-interface MigrationHealthStatus {
-  totalMigrations: number;
-  executedMigrations: number;
-  pendingMigrations: number;
-  checksumMismatches: number;
-  validationErrors: number;
-  healthy: boolean;
-  lastExecuted: MigrationRecord | null;
-  issues: string[];
-}
-
-interface ChecksumResolutionOptions {
-  forceUpdate?: boolean;
-  skipValidation?: boolean;
-}
-
-interface ResolutionResult {
-  success: boolean;
-  message: string;
-  expectedChecksum?: string;
-  actualChecksum?: string;
-}
-
-interface DryRunMigrationResult {
-  migration: string;
-  valid: boolean;
-  errors: string[];
-  checksum: string;
-}
-
-interface DryRunResult {
-  success: boolean;
-  message: string;
-  migrations: DryRunMigrationResult[];
-}
-
-// Initial schema migration (commented out - not currently used)
-/*
-// const INITIAL_SCHEMA_MIGRATION: Migration = {
-  id: '001',
-  name: 'initial_schema',
-  up: `
-    -- Create patterns table
-    CREATE TABLE patterns (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      category TEXT NOT NULL,
-      description TEXT NOT NULL,
-      when_to_use TEXT,
-      benefits TEXT,
-      drawbacks TEXT,
-      use_cases TEXT,
-      complexity TEXT NOT NULL,
-      tags TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    -- Create pattern_implementations table
-    CREATE TABLE pattern_implementations (
-      id TEXT PRIMARY KEY,
-      pattern_id TEXT NOT NULL,
-      language TEXT NOT NULL,
-      approach TEXT NOT NULL,
-      code TEXT NOT NULL,
-      explanation TEXT NOT NULL,
-      dependencies TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (pattern_id) REFERENCES patterns(id) ON DELETE CASCADE
-    );
-
-    -- Create pattern_relationships table
-    CREATE TABLE pattern_relationships (
-      id TEXT PRIMARY KEY,
-      source_pattern_id TEXT NOT NULL,
-      target_pattern_id TEXT NOT NULL,
-      type TEXT NOT NULL,
-      strength REAL DEFAULT 1.0,
-      description TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (source_pattern_id) REFERENCES patterns(id) ON DELETE CASCADE,
-      FOREIGN KEY (target_pattern_id) REFERENCES patterns(id) ON DELETE CASCADE
-    );
-
-    -- Create user_preferences table
-    CREATE TABLE user_preferences (
-      user_id TEXT PRIMARY KEY,
-      preferences TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    -- Create indexes for better performance
-    CREATE INDEX idx_patterns_category ON patterns(category);
-    CREATE INDEX idx_patterns_complexity ON patterns(complexity);
-    CREATE INDEX idx_pattern_implementations_pattern_id ON pattern_implementations(pattern_id);
-    CREATE INDEX idx_pattern_implementations_language ON pattern_implementations(language);
-    CREATE INDEX idx_pattern_relationships_source ON pattern_relationships(source_pattern_id);
-    CREATE INDEX idx_pattern_relationships_target ON pattern_relationships(target_pattern_id);
-    CREATE INDEX idx_pattern_relationships_type ON pattern_relationships(type);
-  `,
-  down: `
-    DROP TABLE IF EXISTS user_preferences;
-    DROP TABLE IF EXISTS pattern_relationships;
-    DROP TABLE IF EXISTS pattern_implementations;
-    DROP TABLE IF EXISTS patterns;
-  `,
-  createdAt: new Date('2024-01-11T00:00:00Z'),
-};
-*/
-
-// Vector search migration (commented out - not currently used)
-/*
-// const VECTOR_SEARCH_MIGRATION: Migration = {
-  id: '002',
-  name: 'vector_search_support',
-  up: `
-    -- Create vector embeddings table
-    CREATE VIRTUAL TABLE pattern_embeddings USING vec0(
-      pattern_id TEXT PRIMARY KEY,
-      embedding FLOAT[384],
-      model TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    -- Create search queries table for analytics
-    CREATE TABLE search_queries (
-      id TEXT PRIMARY KEY,
-      query TEXT NOT NULL,
-      user_id TEXT,
-      results_count INTEGER DEFAULT 0,
-      execution_time_ms INTEGER,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    -- Create pattern usage analytics table
-    CREATE TABLE pattern_usage (
-      id TEXT PRIMARY KEY,
-      pattern_id TEXT NOT NULL,
-      user_id TEXT,
-      context TEXT,
-      rating INTEGER CHECK(rating >= 1 AND rating <= 5),
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (pattern_id) REFERENCES patterns(id) ON DELETE CASCADE
-    );
-
-    -- Create indexes
-    CREATE INDEX IF NOT EXISTS idx_search_queries_created_at ON search_queries(created_at);
-    CREATE INDEX IF NOT EXISTS idx_pattern_usage_pattern_id ON pattern_usage(pattern_id);
-    CREATE INDEX IF NOT EXISTS idx_pattern_usage_created_at ON pattern_usage(created_at);
-  `,
-  down: `
-    DROP TABLE IF EXISTS pattern_usage;
-    DROP TABLE IF EXISTS search_queries;
-    DROP TABLE IF EXISTS pattern_embeddings;
-  `,
-  createdAt: new Date('2024-01-11T00:00:00Z'),
-};
-*/

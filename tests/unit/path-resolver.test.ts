@@ -14,7 +14,7 @@ describe('path-resolver', () => {
   });
 
   it('resolves project root from dist modules', () => {
-    const root = resolveProjectRoot('file:///workspace/design_patterns_mcp/dist/src/mcp-server.js');
+    const root = resolveProjectRoot('file:///workspace/design_patterns_mcp/dist/mcp-server.js');
     expect(root).toBe('/workspace/design_patterns_mcp');
   });
 
@@ -23,7 +23,7 @@ describe('path-resolver', () => {
       '/workspace/design_patterns_mcp/data/patterns'
     );
     expect(
-      resolveDatabasePath(undefined, 'file:///workspace/design_patterns_mcp/dist/src/mcp-server.js')
+      resolveDatabasePath(undefined, 'file:///workspace/design_patterns_mcp/dist/mcp-server.js')
     ).toBe('/workspace/design_patterns_mcp/data/design-patterns.db');
   });
 

@@ -75,7 +75,11 @@ export class DatabaseManager {
 
       logger.info('database-manager', `Database initialized: ${this.config.filename}`);
     } catch (error) {
-      console.error('Failed to initialize database:', error);
+      logger.error(
+        'database-manager',
+        'Failed to initialize database',
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -183,7 +187,11 @@ export class DatabaseManager {
 
       return results;
     } catch (error) {
-      console.error('Query failed:', sql, error);
+      logger.error(
+        'database-manager',
+        `Query failed: ${sql}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -220,7 +228,11 @@ export class DatabaseManager {
 
       return result;
     } catch (error) {
-      console.error('Query failed:', sql, error);
+      logger.error(
+        'database-manager',
+        `Query failed: ${sql}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -297,7 +309,11 @@ export class DatabaseManager {
 
       logger.info('database-manager', 'Database optimized');
     } catch (error) {
-      console.error('Database optimization failed:', error);
+      logger.error(
+        'database-manager',
+        'Database optimization failed',
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -496,7 +512,11 @@ export class DatabaseManager {
       const executionTime = Date.now() - startTime;
       this.updateQueryMetrics(sql, executionTime);
     } catch (error) {
-      console.error('DDL execution failed:', sql, error);
+      logger.error(
+        'database-manager',
+        `DDL execution failed: ${sql}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }

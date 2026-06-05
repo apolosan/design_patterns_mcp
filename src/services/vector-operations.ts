@@ -233,7 +233,11 @@ export class VectorOperationsService {
 
       logger.info('vector-operations', 'Vector index created successfully');
     } catch (error) {
-      console.error('Failed to create vector index:', error);
+      logger.error(
+        'vector-operations',
+        'Failed to create vector index',
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -289,7 +293,11 @@ export class VectorOperationsService {
 
       logger.info('vector-operations', `Stored embedding for pattern: ${patternId}`);
     } catch (error) {
-      console.error(`Failed to store embedding for pattern ${patternId}:`, error);
+      logger.error(
+        'vector-operations',
+        `Failed to store embedding for pattern ${patternId}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -323,7 +331,11 @@ export class VectorOperationsService {
 
       return embedding;
     } catch (error) {
-      console.error(`Failed to retrieve embedding for pattern ${patternId}:`, error);
+      logger.error(
+        'vector-operations',
+        `Failed to retrieve embedding for pattern ${patternId}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
       return null;
     }
   }
@@ -343,7 +355,11 @@ export class VectorOperationsService {
 
       logger.info('vector-operations', `Deleted embedding for pattern: ${patternId}`);
     } catch (error) {
-      console.error(`Failed to delete embedding for pattern ${patternId}:`, error);
+      logger.error(
+        'vector-operations',
+        `Failed to delete embedding for pattern ${patternId}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -368,7 +384,11 @@ export class VectorOperationsService {
       // Fallback to linear search (backward compatibility)
       return this.linearVectorSearch(queryEmbedding, filters, maxResults);
     } catch (error) {
-      console.error('Vector search failed:', error);
+      logger.error(
+        'vector-operations',
+        'Vector search failed',
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -611,7 +631,11 @@ export class VectorOperationsService {
 
       return true;
     } catch (error) {
-      console.error(`Filter check failed for pattern ${patternId}:`, error);
+      logger.error(
+        'vector-operations',
+        `Filter check failed for pattern ${patternId}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
       return false;
     }
   }
@@ -699,7 +723,11 @@ export class VectorOperationsService {
         averageSimilarity: 0.5, // Default value
       };
     } catch (error) {
-      console.error('Failed to get vector stats:', error);
+      logger.error(
+        'vector-operations',
+        'Failed to get vector stats',
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -717,7 +745,11 @@ export class VectorOperationsService {
 
       logger.info('vector-operations', 'All embeddings cleared');
     } catch (error) {
-      console.error('Failed to clear embeddings:', error);
+      logger.error(
+        'vector-operations',
+        'Failed to clear embeddings',
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -754,7 +786,11 @@ export class VectorOperationsService {
 
       logger.info('vector-operations', `Rebuilt embeddings for ${embeddings.length} patterns`);
     } catch (error) {
-      console.error('Failed to rebuild embeddings:', error);
+      logger.error(
+        'vector-operations',
+        'Failed to rebuild embeddings',
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -799,7 +835,11 @@ export class VectorOperationsService {
         patterns: cluster.patterns.map(p => p.id),
       }));
     } catch (error) {
-      console.error('Failed to calculate clusters:', error);
+      logger.error(
+        'vector-operations',
+        'Failed to calculate clusters',
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }

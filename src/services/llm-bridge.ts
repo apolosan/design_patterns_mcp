@@ -3,6 +3,7 @@
  * Provides integration with Large Language Models for enhanced pattern recommendations
  */
 import { DatabaseManager } from './database-manager.js';
+import { logger } from './logger.js';
 import { parseTags, parseArrayProperty } from '../utils/parse-tags.js';
 import { isObject, isTypedArray, isString, isNumber } from '../utils/type-guards.js';
 import type { Pattern } from '../models/pattern.js';
@@ -186,7 +187,7 @@ export class LLMBridgeService {
       const response = await Promise.resolve(this.callLLM(llmRequest));
       return this.parseAnalysisResponse(response.content);
     } catch (error) {
-      console.error('Pattern analysis failed:', error);
+      logger.error('llm-bridge', 'Pattern analysis failed', error instanceof Error ? error : new Error(String(error)));
       return this.getFallbackAnalysis(request);
     }
   }
@@ -206,7 +207,7 @@ export class LLMBridgeService {
       const response = await Promise.resolve(this.callLLM({ prompt, format: 'markdown' }));
       return response.content;
     } catch (error) {
-      console.error('Implementation guidance generation failed:', error);
+      logger.error('llm-bridge', 'Implementation guidance generation failed', error instanceof Error ? error : new Error(String(error)));
       return this.getFallbackImplementationGuidance(patternName, language);
     }
   }
@@ -228,7 +229,7 @@ export class LLMBridgeService {
 
       return response.content;
     } catch (error) {
-      console.error('Pattern relationship explanation failed:', error);
+      logger.error('llm-bridge', 'Pattern relationship explanation failed', error instanceof Error ? error : new Error(String(error)));
       return this.getFallbackRelationshipExplanation(pattern1, pattern2);
     }
   }
@@ -249,7 +250,7 @@ export class LLMBridgeService {
 
       return this.parseCodeExampleResponse(response.content);
     } catch (error) {
-      console.error('Code example generation failed:', error);
+      logger.error('llm-bridge', 'Code example generation failed', error instanceof Error ? error : new Error(String(error)));
       return this.getFallbackCodeExample(patternName, language);
     }
   }
@@ -271,10 +272,10 @@ export class LLMBridgeService {
         return this.mergeEnhancements(baseRecommendations, parsed);
       }
 
-      console.warn('Invalid enhancement format received from LLM');
+      logger.warn('llm-bridge', 'Invalid enhancement format received from LLM');
       return baseRecommendations;
     } catch (error) {
-      console.error('Recommendation enhancement failed:', error);
+      logger.error('llm-bridge', 'Recommendation enhancement failed', error instanceof Error ? error : new Error(String(error)));
       return baseRecommendations;
     }
   }
@@ -473,7 +474,7 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
 
       return response;
     } catch (error) {
-      console.error('LLM call failed:', error);
+      logger.error('llm-bridge', 'LLM call failed', error instanceof Error ? error : new Error(String(error)));
       throw error;
     }
   }
@@ -573,10 +574,10 @@ Respond with enhanced recommendations in the same JSON format, maintaining all e
         return parsed;
       }
 
-      console.warn('LLM response format invalid, using fallback');
+      logger.warn('llm-bridge', 'LLM response format invalid, using fallback');
       return this.getFallbackAnalysis({ problemDescription: 'Invalid response format' });
     } catch (error) {
-      console.error('Failed to parse LLM response:', error);
+      logger.error('llm-bridge', 'Failed to parse LLM response', error instanceof Error ? error : new Error(String(error)));
       return this.getFallbackAnalysis({ problemDescription: 'Unknown' });
     }
   }
@@ -755,13 +756,23 @@ class ${patternName}Example {
     error?: string;
   }> {
     try {
-      // Test LLM with a simple request
-      await Promise.resolve(
+      const response = await Promise.resolve(
         this.callLLM({
           prompt: 'Hello, this is a test.',
           format: 'text',
         })
       );
+
+      if (response.content.includes('placeholder')) {
+        return {
+          healthy: false,
+          provider: this.config.provider,
+          model: this.config.model,
+          lastTest: new Date(),
+          error:
+            'LLM provider returns placeholder responses — enable ENABLE_LLM only with a real integration',
+        };
+      }
 
       return {
         healthy: true,

@@ -406,7 +406,7 @@ export class PatternSeeder {
       this.db.execute(sql, params);
       return true;
     } catch (error) {
-      console.error(`Failed to insert pattern ${pattern.id}:`, error);
+      logger.error('pattern-seeder', `Failed to insert pattern ${pattern.id}`, error instanceof Error ? error : new Error(String(error)));
       return false;
     }
   }
@@ -437,7 +437,7 @@ export class PatternSeeder {
       this.db.execute(sql, params);
       return true;
     } catch (error) {
-      console.error(`Failed to insert implementation for pattern ${patternId}:`, error);
+      logger.error('pattern-seeder', `Failed to insert implementation for pattern ${patternId}`, error instanceof Error ? error : new Error(String(error)));
       return false;
     }
   }
@@ -555,7 +555,7 @@ export class PatternSeeder {
       this.db.execute(sql, params);
       return true;
     } catch (error) {
-      console.error(`Failed to insert relationship for pattern ${sourcePatternId}:`, error);
+      logger.error('pattern-seeder', `Failed to insert relationship for pattern ${sourcePatternId}`, error instanceof Error ? error : new Error(String(error)));
       return false;
     }
   }
@@ -572,7 +572,7 @@ export class PatternSeeder {
 
       return files;
     } catch (error) {
-      console.error('Failed to read pattern files:', error);
+      logger.error('pattern-seeder', 'Failed to read pattern files', error instanceof Error ? error : new Error(String(error)));
       return [];
     }
   }
@@ -594,7 +594,7 @@ export class PatternSeeder {
 
       return parsed;
     } catch (error) {
-      console.error(`Failed to load pattern file ${filePath}:`, error);
+      logger.error('pattern-seeder', `Failed to load pattern file ${filePath}`, error instanceof Error ? error : new Error(String(error)));
       throw error;
     }
   }

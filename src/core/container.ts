@@ -471,7 +471,7 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
       minConfidence: 0.05,
       useSemanticSearch: true,
       useKeywordSearch: true,
-      useHybridSearch: true,
+      useHybridSearch: config.enableHybridSearch ?? true,
       useFuzzyRefinement: config.enableFuzzyLogic ?? true,
       cacheResultsTTL: 1800000,
     });

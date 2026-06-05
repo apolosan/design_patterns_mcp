@@ -157,7 +157,7 @@ export class SemanticSearchService {
 
       return searchResults;
     } catch (error) {
-      console.error('Semantic search failed:', error);
+      logger.error('semantic-search', 'Semantic search failed', error instanceof Error ? error : new Error(String(error)));
       throw error;
     }
   }
@@ -175,7 +175,7 @@ export class SemanticSearchService {
       // Use the embedding adapter to generate embeddings with the same strategy
       return await this.embeddingAdapter.generateEmbedding(text);
     } catch (error) {
-      console.error('Failed to generate embedding in semantic search:', error);
+      logger.error('semantic-search', 'Failed to generate embedding in semantic search', error instanceof Error ? error : new Error(String(error)));
 
       // Fallback to simple hash-based embedding if adapter fails
       return this.generateFallbackEmbedding(text);
@@ -358,7 +358,7 @@ export class SemanticSearchService {
       // Store in database (would be implemented)
       logger.debug('semantic-search', 'Search analytics', analytics);
     } catch (error) {
-      console.error('Failed to log search analytics:', error);
+      logger.error('semantic-search', 'Failed to log search analytics', error instanceof Error ? error : new Error(String(error)));
     }
   }
 
@@ -435,7 +435,7 @@ export class SemanticSearchService {
       // Remove duplicates and limit results
       return [...new Set(suggestions)].slice(0, limit);
     } catch (error) {
-      console.error('Failed to get search suggestions:', error);
+      logger.error('semantic-search', 'Failed to get search suggestions', error instanceof Error ? error : new Error(String(error)));
       return [];
     }
   }
@@ -477,7 +477,7 @@ export class SemanticSearchService {
         searchTrends: {},
       };
     } catch (error) {
-      console.error('Failed to get search stats:', error);
+      logger.error('semantic-search', 'Failed to get search stats', error instanceof Error ? error : new Error(String(error)));
       throw error;
     }
   }
@@ -493,7 +493,7 @@ export class SemanticSearchService {
         const queryResults = await this.search(query);
         results.push(queryResults);
       } catch (error) {
-        console.error(`Batch search failed for query "${query.text}":`, error);
+        logger.error('semantic-search', `Batch search failed for query "${query.text}"`, error instanceof Error ? error : new Error(String(error)));
         results.push([]);
       }
     }

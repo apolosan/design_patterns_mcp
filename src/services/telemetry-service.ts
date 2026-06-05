@@ -320,9 +320,10 @@ export class TelemetryService extends EventEmitter {
       ndcgAtK.push(idcg > 0 ? dcg / idcg : 0);
     }
 
-    // Diversity score (unique categories)
-    // Would need to fetch categories from database
-    const diversityScore = 0.5; // Placeholder
+    // Diversity score: ratio of unique pattern IDs in top-k results
+    const uniqueIds = new Set(recommendations.slice(0, k).map(r => r.patternId));
+    const diversityScore =
+      recommendations.length > 0 ? uniqueIds.size / Math.min(k, recommendations.length) : 0;
 
     const metrics: EvaluationMetrics = {
       precisionAtK: precisionAtK[precisionAtK.length - 1] ?? 0,

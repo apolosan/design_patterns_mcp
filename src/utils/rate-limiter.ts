@@ -4,7 +4,21 @@
  * Provides configurable limits per tool and per client
  */
 
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+
+const clientContext = new AsyncLocalStorage<string>();
+
+/**
+ * Run a function with a request-scoped client key (HTTP multi-tenant support).
+ */
+export function runWithClientKey<T>(clientKey: string, fn: () => T): T {
+  return clientContext.run(clientKey, fn);
+}
+
+function resolveClientKey(): string {
+  return clientContext.getStore() ?? 'default';
+}
 
 interface RateLimitConfig {
   maxRequestsPerMinute: number;
@@ -199,7 +213,11 @@ export class MCPRateLimiter {
     handler: (...args: T) => Promise<R>,
     toolName: string
   ): (...args: T) => Promise<R> {
-    return withRateLimit(handler, () => `tool:${toolName}`, this.limiter);
+    return withRateLimit(
+      handler,
+      () => `client:${resolveClientKey()}:tool:${toolName}`,
+      this.limiter
+    );
   }
 
   /**

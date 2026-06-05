@@ -31,6 +31,21 @@ export interface SearchMediatorConfig {
   cacheResultsTTL: number;
 }
 
+export type SearchStrategy = 'keyword' | 'semantic' | 'hybrid';
+
+/**
+ * Partial config override applied per-call. Each non-undefined field
+ * replaces the base config value. Used by `searchByType` to route between
+ * strategies without mutating the mediator's base config.
+ */
+export type SearchConfigOverride = Partial<SearchMediatorConfig>;
+
+export interface TypedSearchResult {
+  recommendations: PatternRecommendation[];
+  searchTypeUsed: SearchStrategy;
+  degraded: boolean;
+}
+
 const DEFAULT_CONFIG: SearchMediatorConfig = {
   maxResults: 5,
   minConfidence: 0.05,
@@ -53,7 +68,7 @@ export class SearchMediator {
   private fuzzyInferenceEngine: FuzzyInferenceEngine;
   private fuzzyDefuzzificationEngine: FuzzyDefuzzificationEngine;
   private cache: CacheService;
-  private config: SearchMediatorConfig;
+  private readonly config: SearchMediatorConfig;
 
   constructor(
     db: DatabaseManager,
@@ -86,11 +101,103 @@ export class SearchMediator {
   }
 
   /**
+   * Search with an explicit strategy (keyword, semantic, or hybrid).
+   * Used by MCP search_patterns to honor searchType.
+   *
+   * The strategy is applied via a per-call config override, so the mediator's
+   * base config is never mutated and concurrent calls are race-free.
+   */
+  async searchByType(
+    request: PatternRequest,
+    searchType: SearchStrategy
+  ): Promise<TypedSearchResult> {
+    const strategyOverride = this.resolveStrategyConfig(searchType);
+    // Resolve against base config: base flags always win over strategy default
+    // when they would weaken the base configuration (e.g. useHybridSearch=false).
+    // This preserves the user's global flag choice while still routing handlers.
+    const effectiveOverride = this.applyBaseConfigConstraints(strategyOverride);
+
+    try {
+      const recommendations = await this.search(request, effectiveOverride);
+      return {
+        recommendations,
+        searchTypeUsed: searchType,
+        degraded: false,
+      };
+    } catch (error) {
+      structuredLogger.warn('search-mediator', 'Typed search failed, falling back to keyword', {
+        searchType,
+        error: (error as Error).message,
+      });
+
+      const keywordOnlyOverride: SearchConfigOverride = {
+        useSemanticSearch: false,
+        useKeywordSearch: true,
+        useHybridSearch: this.config.useHybridSearch,
+      };
+
+      const fallback = await this.search(request, keywordOnlyOverride);
+      return {
+        recommendations: fallback,
+        searchTypeUsed: 'keyword',
+        degraded: true,
+      };
+    }
+  }
+
+  private resolveStrategyConfig(searchType: SearchStrategy): SearchConfigOverride {
+    switch (searchType) {
+      case 'keyword':
+        return {
+          useSemanticSearch: false,
+          useKeywordSearch: true,
+          useHybridSearch: false,
+        };
+      case 'semantic':
+        return {
+          useSemanticSearch: true,
+          useKeywordSearch: false,
+          useHybridSearch: false,
+        };
+      case 'hybrid':
+      default:
+        return {
+          useSemanticSearch: true,
+          useKeywordSearch: true,
+          useHybridSearch: true,
+        };
+    }
+  }
+
+  /**
+   * Apply base-config constraints to a strategy override. If the base config
+   * disables a feature, the strategy cannot re-enable it for this call.
+   * Other fields (TTL, maxResults) are taken as-is from the strategy.
+   */
+  private applyBaseConfigConstraints(
+    strategyOverride: SearchConfigOverride
+  ): SearchConfigOverride {
+    const baseHybrid = this.config.useHybridSearch;
+    const overrideHybrid = strategyOverride.useHybridSearch;
+    const resolvedHybrid = overrideHybrid === undefined ? baseHybrid : overrideHybrid && baseHybrid;
+
+    return {
+      ...strategyOverride,
+      useHybridSearch: resolvedHybrid,
+      useSemanticSearch: strategyOverride.useSemanticSearch ?? this.config.useSemanticSearch,
+      useKeywordSearch: strategyOverride.useKeywordSearch ?? this.config.useKeywordSearch,
+    };
+  }
+
+  /**
    * Execute a pattern search request
    * Coordinates all search handlers and returns recommendations
    */
-  async search(request: PatternRequest): Promise<PatternRecommendation[]> {
-    const result = await this.searchSafe(request);
+  async search(
+    request: PatternRequest,
+    override: SearchConfigOverride = {}
+  ): Promise<PatternRecommendation[]> {
+    const result = await this.searchSafe(request, override);
     if (isOk(result)) {
       return result.value;
     }
@@ -99,16 +206,19 @@ export class SearchMediator {
   }
 
   /**
-   * Safe version of search that returns a Result type
+   * Safe version of search that returns a Result type.
+   * Accepts an optional config override applied on top of the base config.
    */
   async searchSafe(
-    request: PatternRequest
+    request: PatternRequest,
+    override: SearchConfigOverride = {}
   ): Promise<Result<PatternRecommendation[]>> {
     const startTime = Date.now();
+    const effectiveConfig: SearchMediatorConfig = { ...this.config, ...override };
 
     try {
       // Check cache first
-      const cacheKey = this.buildCacheKey(request);
+      const cacheKey = this.buildCacheKey(request, effectiveConfig);
       const cachedResult = this.cache.get(cacheKey);
 
       if (cachedResult) {
@@ -120,7 +230,7 @@ export class SearchMediator {
       }
 
       // Perform matching
-      const matches = await this.performMatching(request);
+      const matches = await this.performMatching(request, effectiveConfig);
 
       if (matches.length === 0) {
         structuredLogger.warn('search-mediator', 'No matches found', {
@@ -136,7 +246,7 @@ export class SearchMediator {
       );
 
       // Apply fuzzy refinement if enabled
-      if (this.config.useFuzzyRefinement) {
+      if (effectiveConfig.useFuzzyRefinement) {
         recommendations = this.applyFuzzyRefinement(recommendations, request);
       }
 
@@ -144,11 +254,11 @@ export class SearchMediator {
       recommendations.sort((a, b) => b.confidence - a.confidence);
       const finalResults = recommendations.slice(
         0,
-        request.maxResults ?? this.config.maxResults
+        request.maxResults ?? effectiveConfig.maxResults
       );
 
       // Cache results
-      this.cache.set(cacheKey, finalResults, this.config.cacheResultsTTL);
+      this.cache.set(cacheKey, finalResults, effectiveConfig.cacheResultsTTL);
 
       const duration = Date.now() - startTime;
       structuredLogger.info('search-mediator', 'Search completed', {
@@ -176,9 +286,13 @@ export class SearchMediator {
   }
 
   /**
-   * Perform pattern matching using configured strategies
+   * Perform pattern matching using configured strategies.
+   * Uses the provided effective config (base + override) instead of instance state.
    */
-  private async performMatching(request: PatternRequest): Promise<MatchResult[]> {
+  private async performMatching(
+    request: PatternRequest,
+    effectiveConfig: SearchMediatorConfig
+  ): Promise<MatchResult[]> {
     const allMatches: MatchResult[] = [];
 
     // Calculate dynamic alpha for hybrid search
@@ -193,7 +307,7 @@ export class SearchMediator {
     // Execute searches in parallel
     const searchPromises: Promise<MatchResult[]>[] = [];
 
-    if (this.config.useSemanticSearch) {
+    if (effectiveConfig.useSemanticSearch) {
       searchPromises.push(
         this.semanticHandler.search(request).then((matches) =>
           this.hybridCombiner.applySemanticWeight(matches, alphaResult.semanticAlpha)
@@ -201,7 +315,7 @@ export class SearchMediator {
       );
     }
 
-    if (this.config.useKeywordSearch) {
+    if (effectiveConfig.useKeywordSearch) {
       searchPromises.push(
         this.keywordHandler.search(request).then((matches) =>
           this.hybridCombiner.applyKeywordWeight(matches, alphaResult.keywordAlpha)
@@ -223,7 +337,7 @@ export class SearchMediator {
     }
 
     // Combine matches if hybrid search is enabled
-    if (this.config.useHybridSearch && allMatches.length > 0) {
+    if (effectiveConfig.useHybridSearch && allMatches.length > 0) {
       return this.hybridCombiner.combineMatches(allMatches, alphaResult);
     }
 
@@ -349,13 +463,17 @@ export class SearchMediator {
   }
 
   /**
-   * Build cache key for request
+   * Build cache key for request, including the effective config so that
+   * different strategies don't share cache entries.
    */
-  private buildCacheKey(request: PatternRequest): string {
+  private buildCacheKey(request: PatternRequest, effectiveConfig: SearchMediatorConfig): string {
     return `search:${request.query}:${JSON.stringify({
       categories: request.categories?.sort(),
       maxResults: request.maxResults,
       programmingLanguage: request.programmingLanguage,
+      useSemantic: effectiveConfig.useSemanticSearch,
+      useKeyword: effectiveConfig.useKeywordSearch,
+      useHybrid: effectiveConfig.useHybridSearch,
     })}`;
   }
 }

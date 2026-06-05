@@ -1,32 +1,32 @@
 {
   "name": "design-patterns-mcp",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 705+ patterns using semantic search, vector embeddings, TF-IDF keyword search, and blended RAG hybrid search with graph augmentation",
-  "main": "dist/src/mcp-server.js",
-  "module": "dist/src/mcp-server.js",
-  "types": "dist/src/mcp-server.d.ts",
+  "main": "dist/mcp-server.js",
+  "module": "dist/mcp-server.js",
+  "types": "dist/mcp-server.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/src/mcp-server.d.ts",
-      "import": "./dist/src/mcp-server.js",
-      "require": "./dist/src/mcp-server.js"
+      "types": "./dist/mcp-server.d.ts",
+      "import": "./dist/mcp-server.js",
+      "require": "./dist/mcp-server.js"
     },
     "./lib": {
-      "types": "./dist/src/lib/mcp-tools.d.ts",
-      "import": "./dist/src/lib/mcp-tools.js",
-      "require": "./dist/src/lib/mcp-tools.js"
+      "types": "./dist/lib/mcp-tools.d.ts",
+      "import": "./dist/lib/mcp-tools.js",
+      "require": "./dist/lib/mcp-tools.js"
     },
     "./resources": {
-      "types": "./dist/src/lib/mcp-resources.d.ts",
-      "import": "./dist/src/lib/mcp-resources.js",
-      "require": "./dist/src/lib/mcp-resources.js"
+      "types": "./dist/lib/mcp-resources.d.ts",
+      "import": "./dist/lib/mcp-resources.js",
+      "require": "./dist/lib/mcp-resources.js"
     }
   },
   "bin": {
-    "design-patterns-mcp": "./dist/src/mcp-server.js",
-    "design-patterns-migrate": "./dist/src/cli/migrate.js",
-    "design-patterns-seed": "./dist/src/cli/seed.js",
-    "design-patterns-embeddings": "./dist/src/cli/generate-embeddings.js"
+    "design-patterns-mcp": "./dist/mcp-server.js",
+    "design-patterns-migrate": "./dist/cli/migrate.js",
+    "design-patterns-seed": "./dist/cli/seed.js",
+    "design-patterns-embeddings": "./dist/cli/generate-embeddings.js"
   },
   "files": [
     "dist",
@@ -38,20 +38,22 @@
   "scripts": {
     "prepare": "bun run build",
     "build": "rimraf dist && tsc -p tsconfig.build.json",
-    "postbuild": "chmod +x dist/src/mcp-server.js dist/src/cli/*.js 2>/dev/null || true",
-    "start": "bun run build && bun dist/src/mcp-server.js",
+    "postbuild": "chmod +x dist/mcp-server.js dist/cli/*.js 2>/dev/null || true",
+    "verify-build": "node scripts/verify-build.mjs",
+    "start": "bun run build && bun dist/mcp-server.js",
     "dev": "bun --hot src/mcp-server.ts",
     "test": "vitest run",
+    "test:e2e": "bun run build && vitest run tests/e2e",
     "lint": "eslint src/**/*.ts tests/**/*.ts",
     "lint:fix": "eslint src/**/*.ts tests/**/*.ts --fix",
     "typecheck": "tsc --noEmit",
     "db:setup": "bun run build && bun run migrate && bun run seed && bun run generate-embeddings && bun run setup-relationships && rm :memory:* 2>/dev/null || true",
-    "migrate": "bun run build && bun dist/src/cli/migrate.js",
-    "seed": "bun run build && bun dist/src/cli/seed.js",
-    "setup-relationships": "bun run build && bun dist/src/cli/setup-relationships.js",
-    "generate-embeddings": "bun run build && bun dist/src/cli/generate-embeddings.js",
-    "integrity-check": "bun run build && bun dist/src/cli/integrity-check.js",
-    "integrity-check:schema": "bun run build && bun dist/src/cli/integrity-check.js --schema"
+    "migrate": "bun run build && bun dist/cli/migrate.js",
+    "seed": "bun run build && bun dist/cli/seed.js",
+    "setup-relationships": "bun run build && bun dist/cli/setup-relationships.js",
+    "generate-embeddings": "bun run build && bun dist/cli/generate-embeddings.js",
+    "integrity-check": "bun run build && bun dist/cli/integrity-check.js",
+    "integrity-check:schema": "bun run build && bun dist/cli/integrity-check.js --schema"
   },
   "repository": {
     "type": "git",
@@ -110,7 +112,7 @@
   "preferGlobal": true,
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.bunjs.org/"
+    "registry": "https://registry.npmjs.org/"
   },
   "contributors": [
     {
@@ -120,7 +122,7 @@
   ],
   "funding": {
     "type": "github",
-    "url": "https://github.com/sponsors/your-org"
+    "url": "https://github.com/sponsors/apolosan"
   },
   "config": {
     "commitizen": {

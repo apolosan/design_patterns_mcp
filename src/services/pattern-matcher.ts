@@ -707,7 +707,12 @@ export class PatternMatcher {
         processedCount++;
         processedCount++;
 
-        console.log(`🎯 Pattern ${pattern.id}: original=${originalConfidence.toFixed(3)}, fuzzy=${defuzzResult.crispValues.relevance.toFixed(3)}, rules=${fuzzyResult.ruleFirings.length}`);
+        structuredLogger.debug('pattern-matcher', 'Fuzzy refinement applied', {
+          patternId: pattern.id,
+          originalConfidence,
+          fuzzyRelevance: defuzzResult.crispValues.relevance,
+          ruleFirings: fuzzyResult.ruleFirings.length,
+        });
 
         // Log significant changes
         const scoreChange = recommendation.confidence - originalConfidence;
