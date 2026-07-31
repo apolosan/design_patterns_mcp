@@ -28,15 +28,30 @@ export function formatFindPatternsResult(recommendations: PatternRecommendation[
   return (
     `Found ${recommendations.length} pattern recommendations:\n\n` +
     recommendations
-      .map(
-        (rec, index) =>
-          `${index + 1}. **${rec.pattern.name}** (${rec.pattern.category})\n` +
-          `   ID: ${rec.pattern.id}\n` +
-          `   Confidence: ${(rec.confidence * 100).toFixed(1)}%\n` +
-          `   Rationale: ${rec.justification.primaryReason}\n` +
-          `   Benefits: ${coerceToStringArray(rec.justification.benefits, 'benefits').join(', ') || 'N/A'}\n`
-      )
-      .join('\n')
+      .map((rec, index) => {
+        const lines: string[] = [
+          `${index + 1}. **${rec.pattern.name}** (${rec.pattern.category})`,
+          `   ID: ${rec.pattern.id}`,
+          `   Confidence: ${(rec.confidence * 100).toFixed(1)}%`,
+          `   Rationale: ${rec.justification.primaryReason}`,
+          `   Benefits: ${coerceToStringArray(rec.justification.benefits, 'benefits').join(', ') || 'N/A'}`,
+        ];
+
+        // Surface fuzzy reasoning + confidence when populated.
+        const reasoning = rec.justification.fuzzyReasoning;
+        if (reasoning && reasoning.length > 0) {
+          lines.push(`   Fuzzy reasoning: ${reasoning.join(' | ')}`);
+        }
+        if (typeof rec.justification.fuzzyConfidence === 'number') {
+          lines.push(`   Fuzzy confidence: ${(rec.justification.fuzzyConfidence * 100).toFixed(1)}%`);
+        }
+        if (typeof rec.justification.originalConfidence === 'number') {
+          lines.push(`   Pre-fuzzy confidence: ${(rec.justification.originalConfidence * 100).toFixed(1)}%`);
+        }
+
+        return lines.join('\n');
+      })
+      .join('\n\n')
   );
 }
 

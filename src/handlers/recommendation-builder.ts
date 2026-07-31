@@ -92,6 +92,8 @@ export class RecommendationBuilder {
         tags: pattern.tags,
       },
       confidence: match.confidence,
+      semanticScore: match.metadata.semanticScore,
+      keywordScore: match.metadata.keywordScore,
       rank,
       justification: {
         primaryReason: match.reasons[0] || 'Pattern matches query requirements',

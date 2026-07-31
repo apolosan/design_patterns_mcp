@@ -94,6 +94,13 @@ export interface PatternRecommendation {
     fuzzyReasoning?: string[];
     fuzzyConfidence?: number;
     enhancedScoring?: string[];
+    originalConfidence?: number;
+    fuzzyInputFingerprint?: {
+      semanticSimilarity: number;
+      keywordMatchStrength: number;
+      contextualFit: number;
+      patternComplexity: string;
+    };
   };
 
   /** Algorithm confidence in recommendation */

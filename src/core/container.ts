@@ -17,6 +17,7 @@ import { ConsoleLoggingStrategy } from '../strategies/logging-strategy.js';
 import { HealthCheckService } from '../health/health-check-service.js';
 import { DatabaseHealthCheck } from '../health/database-health-check.js';
 import { VectorOperationsHealthCheck } from '../health/vector-operations-health-check.js';
+import { EmbeddingCoverageHealthCheck } from '../health/embedding-coverage-health-check.js';
 import { LLMBridgeHealthCheck } from '../health/llm-bridge-health-check.js';
 import { HealthStatus, type HealthCheck, type HealthCheckResult } from '../health/types.js';
 import { CacheService } from '../services/cache.js';
@@ -92,6 +93,7 @@ export const TOKENS = {
   HEALTH_CHECK_SERVICE: Symbol('HealthCheckService'),
   DATABASE_HEALTH_CHECK: Symbol('DatabaseHealthCheck'),
   VECTOR_OPERATIONS_HEALTH_CHECK: Symbol('VectorOperationsHealthCheck'),
+  EMBEDDING_COVERAGE_HEALTH_CHECK: Symbol('EmbeddingCoverageHealthCheck'),
   LLM_BRIDGE_HEALTH_CHECK: Symbol('LLMBridgeHealthCheck'),
   HYBRID_SEARCH_HEALTH_CHECK: Symbol('HybridSearchHealthCheck'),
 
@@ -488,6 +490,23 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
     return new VectorOperationsHealthCheck(vectorOps);
   });
 
+  container.registerSingleton(TOKENS.EMBEDDING_COVERAGE_HEALTH_CHECK, () => {
+    const vectorOps = container.getService<VectorOperationsService>(TOKENS.VECTOR_OPERATIONS);
+    const db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
+    const coverageProvider = {
+      getTotalVectors: () => vectorOps.getStats().totalVectors,
+      getPatternCount: () => {
+        try {
+          const rows = db.query<{ c: number }>("SELECT COUNT(*) AS c FROM patterns");
+          return rows[0]?.c ?? 0;
+        } catch {
+          return 0;
+        }
+      },
+    };
+    return new EmbeddingCoverageHealthCheck(coverageProvider);
+  });
+
   container.registerSingleton(TOKENS.LLM_BRIDGE_HEALTH_CHECK, () => {
     const llmBridge =
       config.enableLLM && container.has(TOKENS.LLM_BRIDGE)
@@ -549,6 +568,10 @@ export function configureContainer(config: MCPServerConfig): SimpleContainer {
     healthService.registerHealthCheck(dbCheck);
     healthService.registerHealthCheck(vectorCheck);
     healthService.registerHealthCheck(llmCheck);
+    const coverageCheck = container.getService<EmbeddingCoverageHealthCheck>(
+      TOKENS.EMBEDDING_COVERAGE_HEALTH_CHECK
+    );
+    healthService.registerHealthCheck(coverageCheck);
 
     // Note: Hybrid search health check is optional and registered separately if needed
     return healthService;

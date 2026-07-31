@@ -247,7 +247,7 @@ export class SearchMediator {
 
       // Apply fuzzy refinement if enabled
       if (effectiveConfig.useFuzzyRefinement) {
-        recommendations = this.applyFuzzyRefinement(recommendations, request);
+        recommendations = this.applyFuzzyRefinement(recommendations, request, effectiveConfig);
       }
 
       // Sort and limit results
@@ -349,10 +349,14 @@ export class SearchMediator {
    */
   private applyFuzzyRefinement(
     recommendations: PatternRecommendation[],
-    request: PatternRequest
+    request: PatternRequest,
+    effectiveConfig: SearchMediatorConfig = this.config,
   ): PatternRecommendation[] {
     const startTime = Date.now();
     let processedCount = 0;
+    let ruleFiringsCount = 0;
+    let totalConfidenceDelta = 0;
+    const ruleCounts: Record<string, number> = {};
 
     for (const recommendation of recommendations) {
       try {
@@ -366,17 +370,29 @@ export class SearchMediator {
         // Calculate contextual fit
         const contextualFit = this.calculateContextualFit(detailedPattern, request);
 
+        // Capture pre-fuzzy confidence so downstream consumers can compare
+        // raw hybrid score vs the fuzzy-refined score on the same record.
+        const originalConfidence = recommendation.confidence;
+
+        // Decompose the blended hybrid confidence into its semantic and keyword
+        // components so the fuzzy engine does not double-count the same value
+        // inside the smart-default rule. When the underlying MatchResult is
+        // reachable, use its raw scores. Otherwise fall back to alpha-deconvolved
+        // values from the blended confidence.
+        const { semanticComponent, keywordComponent } = this.decomposeHybridScore(
+          recommendation,
+          effectiveConfig,
+        );
+
         // Prepare fuzzy input
         const fuzzyInput = {
-          semanticSimilarity: recommendation.confidence,
-          keywordMatchStrength: this.calculateKeywordStrength(
-            recommendation.justification.supportingReasons
-          ),
+          semanticSimilarity: semanticComponent,
+          keywordMatchStrength: keywordComponent,
           patternComplexity: detailedPattern.complexity || 'Medium',
           contextualFit,
           programmingLanguage: request.programmingLanguage,
           patternId: pattern.id,
-          originalScore: recommendation.confidence,
+          originalScore: originalConfidence,
         };
 
         // Apply fuzzy inference
@@ -391,7 +407,20 @@ export class SearchMediator {
         recommendation.confidence = defuzzResult.crispValues.relevance;
         recommendation.justification.fuzzyReasoning = fuzzyResult.reasoning;
         recommendation.justification.fuzzyConfidence = defuzzResult.confidence;
+        recommendation.justification.originalConfidence = originalConfidence;
+        recommendation.justification.fuzzyInputFingerprint = {
+          semanticSimilarity: semanticComponent,
+          keywordMatchStrength: keywordComponent,
+          contextualFit,
+          patternComplexity: detailedPattern.complexity || 'Medium',
+        };
 
+        // Accumulate telemetry
+        ruleFiringsCount += fuzzyResult.ruleFirings.length;
+        totalConfidenceDelta += defuzzResult.crispValues.relevance - originalConfidence;
+        for (const firing of fuzzyResult.ruleFirings) {
+          ruleCounts[firing.rule] = (ruleCounts[firing.rule] ?? 0) + 1;
+        }
         processedCount++;
       } catch (error) {
         structuredLogger.warn('search-mediator', 'Fuzzy refinement failed for pattern', {
@@ -402,8 +431,15 @@ export class SearchMediator {
     }
 
     const duration = Date.now() - startTime;
-    structuredLogger.debug('search-mediator', 'Fuzzy refinement completed', {
+    const avgConfidenceDelta = processedCount > 0
+      ? totalConfidenceDelta / processedCount
+      : 0;
+
+    structuredLogger.info('search-mediator', 'Fuzzy refinement telemetry', {
       patternsProcessed: processedCount,
+      ruleFiringsCount,
+      avgConfidenceDelta: Number(avgConfidenceDelta.toFixed(4)),
+      rulesFiredDistribution: ruleCounts,
       durationMs: duration,
     });
 
@@ -460,6 +496,40 @@ export class SearchMediator {
     );
 
     return Math.min(1, keywordReasons.length * 0.2 + 0.3);
+  }
+
+  /**
+   * Decompose the blended hybrid confidence into its semantic and keyword
+   * components for the fuzzy engine. When the underlying MatchResult exposes
+   * raw semanticScore/keywordScore, use those directly. Otherwise fall back
+   * to an alpha-deconvolution that respects the configured hybrid weights.
+   * This prevents the smart-default rule from double-counting the blended
+   * confidence as if it were an independent semantic signal.
+   */
+  private decomposeHybridScore(
+    recommendation: PatternRecommendation,
+    effectiveConfig: SearchMediatorConfig,
+  ): { semanticComponent: number; keywordComponent: number } {
+    const blended = recommendation.confidence;
+    const semanticScore = recommendation.semanticScore;
+    const keywordScore = recommendation.keywordScore;
+
+    if (
+      typeof semanticScore === 'number' &&
+      typeof keywordScore === 'number' &&
+      semanticScore + keywordScore > 0
+    ) {
+      return {
+        semanticComponent: Math.min(1, Math.max(0, semanticScore)),
+        keywordComponent: Math.min(1, Math.max(0, keywordScore)),
+      };
+    }
+
+    const alpha = effectiveConfig.useHybridSearch ? 0.7 : 1.0;
+    const semanticComponent = Math.min(1, Math.max(0, blended * alpha));
+    const keywordComponent = Math.min(1, Math.max(0, blended * (1 - alpha)));
+
+    return { semanticComponent, keywordComponent };
   }
 
   /**

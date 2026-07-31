@@ -45,6 +45,7 @@ import { HealthCheckService } from './health/health-check-service.js';
 import { HealthStatus } from './health/types.js';
 import { DatabaseHealthCheck } from './health/database-health-check.js';
 import { VectorOperationsHealthCheck } from './health/vector-operations-health-check.js';
+import { EmbeddingCoverageHealthCheck } from './health/embedding-coverage-health-check.js';
 import { LLMBridgeHealthCheck } from './health/llm-bridge-health-check.js';
 import type { Logger } from './services/logger.js';
 
@@ -170,10 +171,23 @@ class DesignPatternsMCPServer {
       const dbCheck = new DatabaseHealthCheck(this.db);
       const vectorCheck = new VectorOperationsHealthCheck(this.vectorOps);
       const llmCheck = new LLMBridgeHealthCheck(this.llmBridge ?? null);
+      const coverageProvider = {
+        getTotalVectors: () => this.vectorOps.getStats().totalVectors,
+        getPatternCount: () => {
+          try {
+            const rows = this.db.query<{ c: number }>("SELECT COUNT(*) AS c FROM patterns");
+            return rows[0]?.c ?? 0;
+          } catch {
+            return 0;
+          }
+        },
+      };
+      const coverageCheck = new EmbeddingCoverageHealthCheck(coverageProvider);
 
       this.healthCheckService.registerHealthCheck(dbCheck);
       this.healthCheckService.registerHealthCheck(vectorCheck);
       this.healthCheckService.registerHealthCheck(llmCheck);
+      this.healthCheckService.registerHealthCheck(coverageCheck);
 
       const patternsPath = resolvePatternsPath(import.meta.url);
 
