@@ -47,21 +47,28 @@ export class DatabaseManager {
       // Initialize sql.js
       this.SQL = await initSqlJs();
 
-      // Ensure database directory exists
-      const dbDir = path.dirname(this.config.filename);
-      if (!fs.existsSync(dbDir)) {
-        fs.mkdirSync(dbDir, { recursive: true });
+      // Ensure database directory exists (skip for in-memory databases)
+      if (this.config.filename !== ':memory:') {
+        const dbDir = path.dirname(this.config.filename);
+        if (dbDir && !fs.existsSync(dbDir)) {
+          fs.mkdirSync(dbDir, { recursive: true });
+        }
       }
 
-      // Try to load existing database file
+      // For in-memory databases, skip file operations
       let dbData: Uint8Array | undefined;
-      if (fs.existsSync(this.config.filename)) {
-        dbData = new Uint8Array(fs.readFileSync(this.config.filename));
+      if (this.config.filename !== ':memory:') {
+        // Try to load existing database file
+        if (fs.existsSync(this.config.filename)) {
+          dbData = new Uint8Array(fs.readFileSync(this.config.filename));
+        }
       }
 
       // Create database connection
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      this.db = new this.SQL.Database(dbData);
+      this.db = this.config.filename === ':memory:'
+        ? new this.SQL.Database()
+        : new this.SQL.Database(dbData);
 
       // Enable foreign keys
       if (this.db) {

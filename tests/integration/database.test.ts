@@ -34,6 +34,7 @@ describe('Database Operations', () => {
         name TEXT NOT NULL,
         category TEXT NOT NULL,
         description TEXT NOT NULL,
+        complexity TEXT NOT NULL DEFAULT 'Medium',
         tags TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )

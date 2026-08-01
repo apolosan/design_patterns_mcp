@@ -39,17 +39,17 @@ export class PatternMembershipFunctions {
    * Evaluate semantic similarity using triangular membership functions
    */
   private evaluateSemanticSimilarity(score: number): { low: number; medium: number; high: number } {
-    // Triangular fuzzy sets with adjusted boundaries for better discrimination
+    // Triangular fuzzy sets calibrated for realistic cosine similarity range (0.1-0.7)
     let low = 0, medium = 0, high = 0;
 
-    if (score <= 0.4) {
+    if (score <= 0.25) {
       low = 1;
-    } else if (score <= 0.6) {
-      low = (0.6 - score) / 0.2;
-      medium = (score - 0.4) / 0.2;
-    } else if (score <= 0.8) {
-      medium = (0.8 - score) / 0.2;
-      high = (score - 0.6) / 0.2;
+    } else if (score <= 0.45) {
+      low = (0.45 - score) / 0.2;
+      medium = (score - 0.25) / 0.2;
+    } else if (score <= 0.65) {
+      medium = (0.65 - score) / 0.2;
+      high = (score - 0.45) / 0.2;
     } else {
       high = 1;
     }
@@ -61,19 +61,20 @@ export class PatternMembershipFunctions {
    * Evaluate keyword match strength using trapezoidal membership functions
    */
   private evaluateKeywordMatchStrength(score: number): { weak: number; moderate: number; strong: number } {
-    // Trapezoidal fuzzy sets with clearer boundaries
+    // Trapezoidal fuzzy sets calibrated for normalized keyword confidence (0.05-0.50)
     let weak = 0, moderate = 0, strong = 0;
 
-    if (score <= 0.2) {
+    if (score <= 0.1) {
       weak = 1;
-    } else if (score <= 0.4) {
-      weak = (0.4 - score) / 0.2;
-      moderate = (score - 0.2) / 0.2;
-    } else if (score <= 0.6) {
-      moderate = 1;
-    } else if (score <= 0.8) {
-      moderate = (0.8 - score) / 0.2;
-      strong = (score - 0.6) / 0.2;
+    } else if (score <= 0.25) {
+      weak = (0.25 - score) / 0.15;
+      moderate = (score - 0.1) / 0.15;
+    } else if (score <= 0.45) {
+      moderate = (0.45 - score) / 0.2;
+      strong = (score - 0.25) / 0.2;
+    } else if (score <= 0.65) {
+      moderate = (0.65 - score) / 0.2;
+      strong = (score - 0.45) / 0.2;
     } else {
       strong = 1;
     }
@@ -108,19 +109,19 @@ export class PatternMembershipFunctions {
    * Evaluate contextual fit using triangular membership functions
    */
   private evaluateContextualFit(score: number): { poor: number; good: number; excellent: number } {
-    // Triangular fuzzy sets with clearer boundaries
+    // Triangular fuzzy sets calibrated for realistic fit range (0.1-0.8)
     let poor = 0, good = 0, excellent = 0;
 
-    if (score <= 0.2) {
+    if (score <= 0.15) {
       poor = 1;
-    } else if (score <= 0.5) {
-      poor = (0.5 - score) / 0.3;
-      good = (score - 0.2) / 0.3;
-    } else if (score <= 0.8) {
+    } else if (score <= 0.40) {
+      poor = (0.40 - score) / 0.25;
+      good = (score - 0.15) / 0.25;
+    } else if (score <= 0.65) {
       good = 1;
     } else if (score <= 1.0) {
-      good = (1.0 - score) / 0.2;
-      excellent = (score - 0.8) / 0.2;
+      good = (1.0 - score) / 0.35;
+      excellent = (score - 0.65) / 0.35;
     } else {
       excellent = 1;
     }

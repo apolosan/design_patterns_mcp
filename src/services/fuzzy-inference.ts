@@ -53,7 +53,7 @@ export class FuzzyInferenceEngine {
       membershipValues.semanticSimilarity.high,
       membershipValues.keywordMatchStrength.strong
     );
-    if (rule1Strength > 0.7) { // Higher threshold for very high matches
+    if (rule1Strength > 0.35) { // Lowered: allow dispatch for good matches
       veryHighOutput = Math.max(veryHighOutput, rule1Strength);
       ruleFirings.push({
         rule: "High semantic similarity AND strong keyword match → Very High Relevance",
@@ -68,7 +68,7 @@ export class FuzzyInferenceEngine {
       membershipValues.semanticSimilarity.high,
       membershipValues.contextualFit.excellent
     );
-    if (rule2Strength > 0.8) { // Much higher threshold for excellent matches
+    if (rule2Strength > 0.40) { // Lowered: allow excellent contextual matches
       veryHighOutput = Math.max(veryHighOutput, rule2Strength);
       ruleFirings.push({
         rule: "High semantic similarity AND excellent contextual fit → Very High Relevance",
@@ -84,7 +84,7 @@ export class FuzzyInferenceEngine {
       membershipValues.keywordMatchStrength.moderate,
       membershipValues.contextualFit.good
     );
-    if (rule3Strength > 0.4) { // Reasonable threshold
+    if (rule3Strength > 0.2) { // Lowered: allow balanced moderate matches
       highOutput = Math.max(highOutput, rule3Strength);
       ruleFirings.push({
         rule: "Medium semantic similarity AND moderate keyword match AND good contextual fit → High Relevance",
@@ -99,7 +99,7 @@ export class FuzzyInferenceEngine {
       membershipValues.semanticSimilarity.medium,
       membershipValues.keywordMatchStrength.strong
     );
-    if (rule4Strength > 0.4) { // Reasonable threshold
+    if (rule4Strength > 0.2) { // Lowered: allow strong keyword with medium semantic
       highOutput = Math.max(highOutput, rule4Strength);
       ruleFirings.push({
         rule: "Medium semantic similarity AND strong keyword match → High Relevance",
@@ -128,7 +128,7 @@ export class FuzzyInferenceEngine {
       membershipValues.patternComplexity.complex,
       membershipValues.semanticSimilarity.high
     );
-    if (rule7Strength > 0.5) { // Higher threshold
+    if (rule7Strength > 0.3) { // Lowered: allow complex patterns with good semantic match
       highOutput = Math.max(highOutput, rule7Strength);
       ruleFirings.push({
         rule: "Complex pattern with high semantic similarity → High Relevance",
@@ -143,7 +143,7 @@ export class FuzzyInferenceEngine {
       membershipValues.patternComplexity.simple,
       membershipValues.semanticSimilarity.high // Require HIGH semantic similarity even for simple patterns
     );
-    if (rule8Strength > 0.7) { // Very high threshold
+    if (rule8Strength > 0.4) { // Lowered: allow simple patterns with good semantic match
       mediumOutput = Math.max(mediumOutput, rule8Strength);
       ruleFirings.push({
         rule: "Simple pattern with high semantic similarity → Medium Relevance",

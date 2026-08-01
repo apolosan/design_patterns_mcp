@@ -250,6 +250,24 @@ export class SearchMediator {
         recommendations = this.applyFuzzyRefinement(recommendations, request, effectiveConfig);
       }
 
+      // For keyword-only and semantic-only mode, the fuzzy logic degenerates:
+      // it receives a zero-valued component for the inactive dimension, which
+      // collapses all scores to 3 representative values (0.15/0.45/0.80).
+      // Preserve the original (alpha-weighted) confidence so BM25/semantic
+      // discrimination survives. Hybrid mode retains the fuzzy output since
+      // it has meaningful multi-signal inputs.
+      const isSingleStrategy =
+        (effectiveConfig.useKeywordSearch && !effectiveConfig.useSemanticSearch && !effectiveConfig.useHybridSearch) ||
+        (!effectiveConfig.useKeywordSearch && effectiveConfig.useSemanticSearch && !effectiveConfig.useHybridSearch);
+      if (isSingleStrategy) {
+        for (const rec of recommendations) {
+          const original = rec.justification.originalConfidence;
+          if (typeof original === 'number') {
+            rec.confidence = original;
+          }
+        }
+      }
+
       // Sort and limit results
       recommendations.sort((a, b) => b.confidence - a.confidence);
       const finalResults = recommendations.slice(
@@ -308,17 +326,19 @@ export class SearchMediator {
     const searchPromises: Promise<MatchResult[]>[] = [];
 
     if (effectiveConfig.useSemanticSearch) {
+      const semanticWeight = effectiveConfig.useHybridSearch ? alphaResult.semanticAlpha : 1.0;
       searchPromises.push(
         this.semanticHandler.search(request).then((matches) =>
-          this.hybridCombiner.applySemanticWeight(matches, alphaResult.semanticAlpha)
+          this.hybridCombiner.applySemanticWeight(matches, semanticWeight)
         )
       );
     }
 
     if (effectiveConfig.useKeywordSearch) {
+      const keywordWeight = effectiveConfig.useHybridSearch ? alphaResult.keywordAlpha : 1.0;
       searchPromises.push(
         this.keywordHandler.search(request).then((matches) =>
-          this.hybridCombiner.applyKeywordWeight(matches, alphaResult.keywordAlpha)
+          this.hybridCombiner.applyKeywordWeight(matches, keywordWeight)
         )
       );
     }
@@ -514,6 +534,7 @@ export class SearchMediator {
     const semanticScore = recommendation.semanticScore;
     const keywordScore = recommendation.keywordScore;
 
+    // Hybrid path: both signals present.
     if (
       typeof semanticScore === 'number' &&
       typeof keywordScore === 'number' &&
@@ -525,6 +546,24 @@ export class SearchMediator {
       };
     }
 
+    // Keyword-only path: keywordScore is the normalized BM25 score [0,1].
+    if (typeof keywordScore === 'number' && keywordScore > 0) {
+      return {
+        semanticComponent: 0,
+        keywordComponent: Math.min(1, Math.max(0, keywordScore)),
+      };
+    }
+
+    // Semantic-only path: semanticScore is the normalized vector similarity [0,1].
+    if (typeof semanticScore === 'number' && semanticScore > 0) {
+      return {
+        semanticComponent: Math.min(1, Math.max(0, semanticScore)),
+        keywordComponent: 0,
+      };
+    }
+
+    // Fallback: neither score is meaningful. Use the blended confidence as
+    // semantic and 0 for keyword so the fuzzy logic still gets a defensible input.
     const alpha = effectiveConfig.useHybridSearch ? 0.7 : 1.0;
     const semanticComponent = Math.min(1, Math.max(0, blended * alpha));
     const keywordComponent = Math.min(1, Math.max(0, blended * (1 - alpha)));

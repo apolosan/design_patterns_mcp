@@ -2,11 +2,11 @@
 
 [![Version](https://img.shields.io/badge/version-0.6.0-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Test Status](https://img.shields.io/badge/tests-525%20%7C%20100%25-brightgreen.svg)](#testing)
-[![Patterns](https://img.shields.io/badge/patterns-705%2B-orange.svg)](#available-pattern-categories)
+[![Test Status](https://img.shields.io/badge/tests-543%20%7C%2088%25-brightgreen.svg)](#testing)
+[![Patterns](https://img.shields.io/badge/patterns-686-orange.svg)](#available-pattern-categories)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using hybrid search (semantic + keyword + graph augmentation). Access **705+ design patterns** across 90+ categories through a natural language interface with advanced blended RAG architecture.
+An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using hybrid search (semantic + keyword + graph augmentation). Access **686 design patterns** across 90+ categories through a natural language interface with advanced blended RAG architecture.
 
 ## Quick Start
 
@@ -39,14 +39,14 @@ Configure in your MCP client (Claude Desktop, Cursor, etc.) and start discoverin
 
 | Feature | Description |
 |---------|-------------|
-| **Hybrid Search Engine** | Blended RAG combining semantic, keyword (TF-IDF), and graph-augmented retrieval |
-| **705+ Patterns** | Comprehensive catalog across 12 major categories (includes **Feature Flag** / Feature Toggle for progressive delivery and experimentation) |
+| **Hybrid Search Engine** | Blended RAG combining semantic, keyword (BM25), and graph-augmented retrieval |
+| **686 Patterns** | Comprehensive catalog across 90+ categories including **Feature Flag** / Feature Toggle for progressive delivery and experimentation |
 | **MCP Integration** | Seamless integration with Claude, Cursor, and other MCP clients |
 | **Multi-Level Caching** | L1 in-memory + L3 SQLite cache with 95%+ hit rate |
 | **Event Bus System** | Decoupled service communication via pub/sub |
 | **Telemetry & Health** | Real-time performance metrics and system monitoring |
 | **SOLID Architecture** | Clean, maintainable codebase following best practices |
-| **Production Ready** | 525 test cases with 100% pass rate |
+| **Production Ready** | 543 test cases across 67 test files with 88% pass rate (21 pre-existing integration test failures unrelated to core search functionality) |
 
 ## Available Pattern Categories
 
@@ -82,8 +82,8 @@ src/
 └── mcp-server.ts          # MCP server entry point
 
 data/
-├── patterns/              # 705+ JSON pattern definitions (see `feature-flag.json`)
-└── design-patterns.db     # SQLite database with embeddings
+├── patterns/              # 686 JSON pattern definitions (see `feature-flag.json`)
+└── design-patterns.db     # SQLite database with 686 patterns and embeddings
 ```
 
 ## Usage
@@ -256,10 +256,10 @@ bun run typecheck    # TypeScript type checking
 
 ## Testing
 
-The project includes **525 test cases across 44 test files** with 100% pass rate:
+The project includes **543 test cases across 67 test files** with 88% pass rate:
 
 - **Contract Tests**: MCP protocol compliance validation
-- **Integration Tests**: Component interaction tests
+- **Integration Tests**: Component interaction tests (21 pre-existing failures due to DB setup requirements)
 - **Performance Tests**: Search and vectorization benchmarks
 - **Unit Tests**: Individual component tests
 
@@ -319,6 +319,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 ---
 
 **Version**: 0.6.0  
-**Last Updated**: June 2026  
-**Patterns**: 705+ JSON definitions (highlight: **Feature Flag** / Feature Toggle)  
-**Tests**: 578 test cases | 100% pass rate
+**Last Updated**: August 2026
+**Patterns**: 686 JSON definitions (highlight: **Feature Flag** / Feature Toggle)
+**Tests**: 543 test cases | 88% pass rate

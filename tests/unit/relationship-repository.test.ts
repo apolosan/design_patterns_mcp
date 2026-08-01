@@ -6,6 +6,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { SqliteRelationshipRepository } from '../../src/repositories/relationship-repository.js';
 import { DatabaseManager } from '../../src/services/database-manager.js';
+import { createTempDatabasePath, cleanupTempDatabase } from '../helpers/test-db.js';
 import type {
   CreateRelationshipInput,
   UpdateRelationshipInput,
@@ -14,29 +15,15 @@ import type {
 describe('SqliteRelationshipRepository', () => {
   let dbManager: DatabaseManager;
   let repository: SqliteRelationshipRepository;
+  let tempDbPath: string;
 
   beforeEach(async () => {
-    // Create in-memory database for testing with retry pattern for corruption recovery
-    let retryCount = 0;
-    const maxRetries = 3;
-
-    while (retryCount < maxRetries) {
-      try {
-        dbManager = new DatabaseManager({
-          filename: ':memory:',
-          options: { readonly: false },
-        });
-        await dbManager.initialize();
-        break; // Success, exit retry loop
-      } catch (error) {
-        retryCount++;
-        if (retryCount >= maxRetries) {
-          throw error; // Max retries reached, rethrow
-        }
-        // Wait before retry (exponential backoff)
-        await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 100));
-      }
-    }
+    tempDbPath = createTempDatabasePath('relationship-repo');
+    dbManager = new DatabaseManager({
+      filename: tempDbPath,
+      options: { readonly: false },
+    });
+    await dbManager.initialize();
 
     // Initialize schema
     dbManager.execute('DROP TABLE IF EXISTS pattern_relationships');
@@ -88,6 +75,7 @@ describe('SqliteRelationshipRepository', () => {
   afterEach(async () => {
     // Clean up
     await dbManager.close();
+    cleanupTempDatabase(tempDbPath);
   });
 
   describe('save', () => {
