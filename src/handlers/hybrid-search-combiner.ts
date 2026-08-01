@@ -245,7 +245,9 @@ export class HybridSearchCombiner {
 
       const semanticScore = semanticMatch?.metadata.semanticScore ?? 0;
       const keywordScoreRaw = keywordMatch?.metadata.keywordScore ?? 0;
-      const keywordScore = Math.min(keywordScoreRaw / 10, 0.99);
+      // keywordScore is already normalized [0,1] from KeywordSearchHandler
+      // (post-fix: result.normalized instead of raw BM25).
+      const keywordScore = Math.min(Math.max(keywordScoreRaw, 0), 0.99);
 
       let finalScore = 0;
       if (semanticScore > 0 && keywordScore > 0) {

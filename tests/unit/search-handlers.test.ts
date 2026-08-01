@@ -240,7 +240,7 @@ describe('HybridSearchCombiner', () => {
           confidence: 0.6,
           matchType: 'keyword',
           reasons: ['Keyword only'],
-          metadata: { keywordScore: 6, finalScore: 0.6 },
+          metadata: { keywordScore: 0.6, finalScore: 0.6 },
         },
       ];
 

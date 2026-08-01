@@ -250,21 +250,22 @@ export class SearchMediator {
         recommendations = this.applyFuzzyRefinement(recommendations, request, effectiveConfig);
       }
 
-      // For keyword-only and semantic-only mode, the fuzzy logic degenerates:
-      // it receives a zero-valued component for the inactive dimension, which
-      // collapses all scores to 3 representative values (0.15/0.45/0.80).
-      // Preserve the original (alpha-weighted) confidence so BM25/semantic
-      // discrimination survives. Hybrid mode retains the fuzzy output since
-      // it has meaningful multi-signal inputs.
-      const isSingleStrategy =
-        (effectiveConfig.useKeywordSearch && !effectiveConfig.useSemanticSearch && !effectiveConfig.useHybridSearch) ||
-        (!effectiveConfig.useKeywordSearch && effectiveConfig.useSemanticSearch && !effectiveConfig.useHybridSearch);
-      if (isSingleStrategy) {
-        for (const rec of recommendations) {
-          const original = rec.justification.originalConfidence;
-          if (typeof original === 'number') {
-            rec.confidence = original;
-          }
+      // The fuzzy logic quantizes scores to 3 representative values
+      // (0.15/0.45/0.80) via centroid defuzzification over
+      // {low, medium, high, very_high} representativeValues. Even with
+      // diverse multi-signal inputs, the output collapses to these buckets
+      // because membership degrees fire the same output category across
+      // patterns in the same query.
+      //
+      // Preserve the pre-fuzzy confidence (alpha-weighted blend from
+      // combineMatches or single-strategy normalized score) so the underlying
+      // BM25 / vector / hybrid discrimination survives. The fuzzy logic
+      // remains useful for telemetry: originalConfidence, fuzzyReasoning,
+      // fuzzyConfidence, fuzzyInputFingerprint are still populated.
+      for (const rec of recommendations) {
+        const original = rec.justification.originalConfidence;
+        if (typeof original === 'number') {
+          rec.confidence = original;
         }
       }
 
