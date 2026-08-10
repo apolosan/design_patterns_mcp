@@ -1,3 +1,5 @@
+
+
 # Design Patterns MCP Server
 
 [![Version](https://img.shields.io/badge/version-0.6.0-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
@@ -6,7 +8,7 @@
 [![Patterns](https://img.shields.io/badge/patterns-686-orange.svg)](#available-pattern-categories)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using hybrid search (semantic + keyword + graph augmentation). Access **686 design patterns** across 90+ categories through a natural language interface with advanced blended RAG architecture.
+An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using hybrid search (semantic + keyword + graph augmentation). Access **705+ design patterns** across 90+ categories through a natural language interface with advanced blended RAG architecture.
 
 ## Quick Start
 
@@ -40,7 +42,7 @@ Configure in your MCP client (Claude Desktop, Cursor, etc.) and start discoverin
 | Feature | Description |
 |---------|-------------|
 | **Hybrid Search Engine** | Blended RAG combining semantic, keyword (BM25), and graph-augmented retrieval |
-| **686 Patterns** | Comprehensive catalog across 90+ categories including **Feature Flag** / Feature Toggle for progressive delivery and experimentation |
+| **705+ Patterns** | Comprehensive catalog across 90+ categories including **Feature Flag** / Feature Toggle for progressive delivery and experimentation |
 | **MCP Integration** | Seamless integration with Claude, Cursor, and other MCP clients |
 | **Multi-Level Caching** | L1 in-memory + L3 SQLite cache with 95%+ hit rate |
 | **Event Bus System** | Decoupled service communication via pub/sub |
@@ -320,5 +322,5 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 **Version**: 0.6.0  
 **Last Updated**: August 2026
-**Patterns**: 686 JSON definitions (highlight: **Feature Flag** / Feature Toggle)
+**Patterns**: 705+ JSON definitions (highlight: **Feature Flag** / Feature Toggle)
 **Tests**: 543 test cases | 88% pass rate
