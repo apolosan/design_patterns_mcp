@@ -15,7 +15,7 @@ export type CanonicalToolName = (typeof CANONICAL_TOOL_NAMES)[number];
 export const CANONICAL_TOOL_DEFINITIONS = [
   {
     name: 'find_patterns' as const,
-    description: 'Find design patterns matching a problem description using semantic search',
+    description: 'Find design patterns matching a problem description using blended keyword, semantic, and fuzzy inference ranked by category',
     inputSchema: {
       type: 'object',
       properties: {

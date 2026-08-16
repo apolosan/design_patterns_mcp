@@ -1,0 +1,39 @@
+{
+  "id": "metadata-decorator",
+  "name": "Metadata Decorator",
+  "category": "Data Engineering",
+  "description": "Enriches records with derived metadata attributes at pipeline boundaries without altering the original payload semantics. Adds columns such as ingestion timestamp, source version, partition hints, or lineage tags as sidecar fields.",
+  "when_to_use": [
+    "Downstream consumers need lineage or origin metadata",
+    "Schema evolution requires tagging versions",
+    "Partition pruning benefits from injected hints"
+  ],
+  "benefits": [
+    "Decouples metadata from payload schema",
+    "Backward-compatible enrichment",
+    "Centralizes metadata computation"
+  ],
+  "drawbacks": [
+    "Extra storage per record",
+    "Metadata drift if version not bumped",
+    "Consumers must opt in"
+  ],
+  "use_cases": [
+    "Kafka header injection for source version",
+    "Parquet partition key tagging",
+    "ETL provenance columns"
+  ],
+  "complexity": "Low",
+  "tags": ["data-engineering", "metadata", "enrichment", "decoration"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "function decorate<T extends object>(rec: T, meta: Record<string,unknown>): T & Record<string,unknown> {\n  return { ...rec, _meta: { ...meta, _ingestedAt: Date.now() } };\n}",
+      "description": "Sidecar metadata injection."
+    }
+  },
+  "relationships": [
+    {"target_pattern_id": "metadata-enhancer", "type": "similar-to", "strength": 0.7},
+    {"target_pattern_id": "decorator", "type": "uses", "strength": 0.5}
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "fine-grained-accessor-for-tables",
+  "name": "Fine-Grained Accessor for Tables",
+  "category": "Data Engineering",
+  "description": "Provides row- and column-level access control for tabular datasets through a query rewrite layer that injects tenant predicates and column masks based on the caller's identity and policies.",
+  "when_to_use": [
+    "Database or warehouse lacks native row-level security",
+    "Multiple personas share a table with different visibility",
+    "GDPR/PII masking required at query time"
+  ],
+  "benefits": [
+    "Works across databases without native RLS",
+    "Unified policy across warehouses",
+    "Transparent to query authors"
+  ],
+  "drawbacks": [
+    "Query rewrite overhead",
+    "Risk of policy bypass if optimizer rewrites",
+    "Debugging rewritten queries is harder"
+  ],
+  "use_cases": [
+    "Multi-tenant analytics warehouses",
+    "PII column masking in BI tools",
+    "Partner-scoped product catalogs"
+  ],
+  "complexity": "High",
+  "tags": ["data-engineering", "access-control", "security", "tables", "row-level"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "function rewrite(sql: string, subject: Subject, policies: Policy[]): string {\n  let out = sql;\n  for (const p of policies) {\n    if (p.table && p.tenantColumn)\n      out = injectWhere(out, p.table, `${p.tenantColumn} = '${subject.tenant}'`);\n    if (p.maskedColumns?.length)\n      out = maskColumns(out, p.table, p.maskedColumns);\n  }\n  return out;\n}",
+      "description": "Policy-driven SQL rewriter."
+    }
+  },
+  "relationships": [
+    {"target_pattern_id": "fine-grained-accessor-for-resources", "type": "similar-to", "strength": 0.9}
+  ]
+}

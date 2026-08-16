@@ -1,0 +1,44 @@
+{
+  "id": "exception-handling-and-recovery",
+  "name": "Exception Handling and Recovery",
+  "category": "Agentic AI",
+  "description": "Agent detects execution failures, classifies them by recoverability, and applies a tiered recovery strategy: retry with backoff, fall back to alternative tool, escalate to human, or abort with structured error. Keeps the agent robust under unreliable tools and APIs.",
+  "when_to_use": [
+    "Tool calls or API integrations may fail transiently",
+    "Long-running autonomous workflows must self-heal",
+    "Operations span untrusted external systems",
+    "Partial completion is preferable to full failure"
+  ],
+  "benefits": [
+    "Resilience against flaky external dependencies",
+    "Graceful degradation instead of hard failure",
+    "Clear escalation paths for non-recoverable errors",
+    "Improved user trust through transparent failure modes"
+  ],
+  "drawbacks": [
+    "Retry storms can amplify load on downstream",
+    "Recovery logic adds code surface and test burden",
+    "Risk of masking real bugs behind retries",
+    "Classification of transient vs permanent errors is heuristic"
+  ],
+  "use_cases": [
+    "LLM tool-use loops with rate-limit backoff",
+    "Database operations with idempotent retry",
+    "Browser automation handling UI changes",
+    "Distributed agent systems with circuit breakers"
+  ],
+  "complexity": "Medium",
+  "tags": ["agentic", "resilience", "retry", "recovery", "ai-ml"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "type Recovery = 'retry' | 'fallback' | 'escalate' | 'abort';\n\nasync function withRecovery<T>(\n  op: () => Promise<T>,\n  classify: (e: unknown) => Recovery,\n  fallback?: () => Promise<T>\n): Promise<T> {\n  for (let attempt = 0; attempt < 3; attempt++) {\n    try { return await op(); }\n    catch (e) {\n      const r = classify(e);\n      if (r === 'retry') await sleep(2 ** attempt * 100);\n      else if (r === 'fallback' && fallback) return fallback();\n      else if (r === 'escalate') throw new HumanEscalation(e);\n      else throw e;\n    }\n  }\n  throw new Error('exhausted retries');\n}",
+      "description": "Tiered recovery wrapper around an operation."
+    }
+  },
+  "relationships": [
+    {"target_pattern_id": "circuit-breaker", "type": "uses", "strength": 0.7, "description": "Circuit breaker prevents retry storms"},
+    {"target_pattern_id": "dead-letter", "type": "relates-to", "strength": 0.6, "description": "Permanent failures route to dead-letter"},
+    {"target_pattern_id": "goal-setting-and-monitoring", "type": "complements", "strength": 0.5, "description": "Recovery triggered by goal deviation"}
+  ]
+}

@@ -5,6 +5,85 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-08-16
+
+### Added — Catalog Expansion (24 new design patterns)
+
+**3 Agentic AI patterns** (from `docs/01_Agentic_Design_Patterns.md`):
+
+- `multi-agent-collaboration` — Multi-Agent Collaboration (hierarchical / peer-to-peer / hybrid agent coordination)
+- `goal-setting-and-monitoring` — Goal Setting and Monitoring (measurable goals + progress tracking + replan)
+- `exception-handling-and-recovery` — Exception Handling and Recovery (tiered retry / fallback / escalate)
+
+**21 Data Engineering patterns** (from `docs/02_Data_Engineering_Design_Patterns.md`):
+
+- `aligned-fan-in` — Aligned Fan-In (time-aligned stream join)
+- `unaligned-fan-in` — Unaligned Fan-In (skew-tolerant stream join)
+- `bin-pack-orderer` — Bin Pack Orderer (first-fit decreasing batch packing)
+- `exclusive-choice` — Exclusive Choice (single-path deterministic router)
+- `fifo-orderer` — FIFO Orderer (sequence-based reorderer)
+- `fine-grained-accessor-for-resources` — Fine-Grained Accessor for Resources (row/column access control)
+- `fine-grained-accessor-for-tables` — Fine-Grained Accessor for Tables (policy-driven SQL rewriter)
+- `fine-grained-tracker` — Fine-Grained Tracker (per-record lineage and audit)
+- `in-place-overwriter` — In-Place Overwriter (merge-or-write by natural key)
+- `isolated-sequencer` — Isolated Sequencer (per-partition monotonic counter)
+- `metadata-decorator` — Metadata Decorator (sidecar metadata injection)
+- `metadata-enhancer` — Metadata Enhancer (payload-derived inference metadata)
+- `offline-observer` — Offline Observer (windowed batch drift / SLA scanner)
+- `schema-compatibility-enforcer` — Schema Compatibility Enforcer (backward/forward/full checks)
+- `schema-migrator` — Schema Migrator (versioned up/down migrations)
+- `secretless-connector` — Secretless Connector (workload-identity based access)
+- `secrets-pointer` — Secrets Pointer (URI/ARN reference to vault-stored secrets)
+- `single-runner` — Single Runner (distributed lock wrapper)
+- `skew-detector` — Skew Detector (max-over-average skew metric + alert)
+- `sla-misses-detector` — SLA Misses Detector (threshold-based SLA alerts)
+- `vertical-partitioner` — Vertical Partitioner (hot/cold column split)
+
+### Changed
+
+- Catalog count: **686 → 710 patterns** (Agentic AI 3→6, Data Engineering 4→25).
+- Version bumped `0.6.0 → 0.7.0` in `package.json` and `src/mcp-server.ts`.
+- README.md updated: badges, prose, and v0.7.0 release note section.
+- QUICKSTART.md updated: 705-vs-686 drift item marked resolved.
+
+### Verification
+
+- `bun run db:setup` — succeeded, embeddings regenerated for all 710 patterns.
+- `bun run integrity-check` — PASS (710 patterns, 151 valid relationships).
+- `bun run test` — 651/654 PASS (3 pre-existing flakes unchanged: DB init race + default searchType).
+
+## [Unreleased]
+
+### Fixed (post-0.6.0, applies to 0.6.0 baseline)
+
+- **`search_patterns` score compression** (CV collapse to 2-3 buckets `0.15/0.45/0.80`):
+  Bug was three-fold: (1) `search-mediator.ts` passed `keywordComponent=0` to fuzzy logic in
+  single-strategy mode via `decomposeHybridScore` fallback `alpha=1.0`; (2) `keyword-search-handler.ts`
+  emitted raw BM25 [0,30] in `metadata.keywordScore` while downstream expected normalized [0,1];
+  (3) `hybrid-search-combiner.ts#combineMatches` divided `keywordScore` by 10 to compensate.
+  Fix: branches explícitas `keyword-only` e `semantic-only` em `decomposeHybridScore`,
+  `keywordScore = result.normalized`, removed `/10`. Plus `rec.confidence = originalConfidence`
+  post-fuzzy override to preserve underlying signal discrimination while keeping fuzzy telemetry
+  fields. Live MCP: `circuit breaker resilience` hybrid → 86.5%/83.9%/58.0% (was 80/80/80).
+- **Stdio server hung on EOF**: `mcp-server.ts` did not exit when stdin closed (e.g. `echo | bun dist/mcp-server.js`).
+  Fix: `stdin.on('end'/'close')` handler. Now exits in ~2.2s instead of hanging.
+
+### Documentation
+
+- Latest adversarial QA published (16 findings: 1 critical, 9 high-priority, 6 minor).
+- README: test badge updated 543/88% to 626/99.8% (actual suite output from state #26).
+- QUICKSTART: linked adversarial report; added Known Issues section.
+
+### Known regressions (adversarial findings) — pending fixes in 0.6.1 / 0.7.0
+
+- **[FATAL, §3.A.1]** `sql.js` (in-memory WASM SQLite, single-process) + `TRANSPORT_MODE=http` exposes
+  the database to multi-tenant concurrent write contention and cross-client cache leakage. Std
+  mode single-tenant is safe; HTTP mode multi-tenant requires migration to `libSQL`/`turso` or
+  explicit per-request mutex.
+- **[MAJOR, §3.B.2]** Rate-limiter token refill is ~60× slower than declared. See `src/utils/rate-limiter.ts:158-163`.
+  Sympom: legitimate clients receive 429 long before configured `maxRequestsPerMinute` would permit.
+- **[MAJOR, §3.B.3]** `package.json#description` claims "705+ patterns"; live `count_patterns` returns 686.
+
 ## [0.6.0] - 2026-06-05
 
 ### Added
@@ -35,11 +114,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `127.0.0.1` for local-only exposure (set `0.0.0.0` in Docker); optional
   `HTTP_AUTH_TOKEN` accepted via `Authorization: Bearer` or `X-API-Key`;
   empty/whitespace tokens are rejected at config-build time.
-- **`docs/CONTRIBUTING.md`** and **`docs/MCP_TOOLS.md`**: New technical
+- **Contributing guide** and **MCP tools reference**: New technical
   documentation covering build hygiene, lockfile policy, deployment
   variables, and the canonical 5-tool MCP surface.
-- **`docs/README.md`**: Documentation index linking to the technical guides
-  and archiving 13 historical `.md` files that previously cluttered the
+- **Documentation index**: New index linking to the technical guides
+  and archiving 13 historical files that previously cluttered the
   repository root.
 - **LLM health check honesty**: `LLMBridgeService.getHealthStatus()` now
   detects placeholder responses and reports `unhealthy` with a clear error
@@ -83,10 +162,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Telemetry diversity score**: Replaced the hard-coded placeholder
   `0.5` with a real calculation based on unique pattern IDs in the top-k
   results.
-- **Repository housekeeping**: 13 historical `.md` files moved from the
-  repository root to `docs/archive/`; `PROBLEMAS.md` restored with a
+- **Repository housekeeping**: 13 historical files moved from the
+  repository root to the documentation archive; legacy troubleshooting record restored with a
   historical note on the `benefits.join` regression. `.gitignore` now
-  whitelists `docs/**/*.md`, `CHANGELOG.md`, `AGENTS.md`, `CLAUDE.md`
+  whitelists Markdown files under the documentation directory, plus the top-level CHANGELOG, AGENTS, and CLAUDE guides.
   alongside the previous exceptions.
 - **npm metadata**: `publishConfig.registry` corrected to
   `https://registry.npmjs.org/`; `funding.url` updated to
@@ -105,7 +184,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`dist/src/*` paths pointed to non-existent files**: `bun run start`,
   `npm install` bin links, and the Docker entrypoint were all broken
   because the build emits `dist/*` (not `dist/src/*`). Fixed across
-  `package.json`, `Dockerfile`, `README.md`, `QUICKSTART.md`,
+  `package.json`, `Dockerfile`, README, QUICKSTART,
   `test-mcp-stdio.js`, and the CI workflow.
 - **Race condition in `SearchMediator.searchByType`**: The mediator
   mutated `this.config` during a call, so concurrent calls in HTTP
@@ -217,8 +296,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Reduces build time and image size
 
 - **Documentation**: 
-  - `QUICKSTART.md`: Step-by-step Docker setup guide
-  - Updated `README.md` with Docker deployment section
+  - QUICKSTART: Step-by-step Docker setup guide
+  - Updated README with Docker deployment section
   - Test scripts: `test-mcp-http.js` and `test-mcp-stdio.js`
 
 ### Technical Details
@@ -284,8 +363,8 @@ Comprehensive research and integration of new design patterns across 12 major ca
 
 ### Documentation
 
-- **AGENTS.md**: Added comprehensive project documentation including architecture patterns, coding standards, SOLID principles, DI Container, Hybrid Search Engine, and troubleshooting guide
-- **README.md**: Professional GitHub-style layout with badges, tables, and updated metrics
+- **AGENTS guide**: Added comprehensive project documentation including architecture patterns, coding standards, SOLID principles, DI Container, Hybrid Search Engine, and troubleshooting guide
+- **README**: Professional GitHub-style layout with badges, tables, and updated metrics
 
 ### Technical Details
 
@@ -503,7 +582,7 @@ Comprehensive research and integration of new design patterns across 12 major ca
 
 #### Documentation Updates
 
-- **README.md**: Updated with current metrics (647 patterns, 219/219 tests)
+- **README**: Updated with current metrics (647 patterns, 219/219 tests)
 - **Project Status**: Reflected latest fixes and production readiness
 
 ### Technical Details
@@ -844,7 +923,7 @@ This release represents a complete architectural overhaul following SOLID princi
   - React 18/19, Server Components, Modern patterns
 
 - **Documentation**
-  - `REFACTORING_GUIDE.md` - Complete refactoring documentation
+  - Refactoring guide - Complete refactoring documentation (now archived; URL removed in favor of inline summary)
   - Architecture diagrams
   - Migration guide
   - Performance benchmarks
@@ -1090,4 +1169,4 @@ Update your `.mcp.json`:
 
 ---
 
-**For detailed architecture documentation, see [REFACTORING_GUIDE.md](./REFACTORING_GUIDE.md)**
+**For detailed architecture documentation, see the refactoring guide (now archived; see prior versions for full text)**

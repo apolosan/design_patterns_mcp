@@ -1,0 +1,39 @@
+{
+  "id": "exclusive-choice",
+  "name": "Exclusive Choice",
+  "category": "Data Engineering",
+  "description": "Routes each record to exactly one of several mutually exclusive downstream paths based on a discriminating predicate. Guarantees that a single input maps to a single output channel — never duplicated.",
+  "when_to_use": [
+    "Records must be processed by exactly one downstream handler",
+    "Mutually exclusive business categories partition the dataset",
+    "Routing logic must be deterministic and complete"
+  ],
+  "benefits": [
+    "Deterministic single-path routing",
+    "Clean separation of concerns",
+    "Easy to test each path in isolation"
+  ],
+  "drawbacks": [
+    "Requires exhaustive partition coverage",
+    "Adding a new path needs router update",
+    "Default/else branch hides misclassified records"
+  ],
+  "use_cases": [
+    "Order type dispatcher (digital vs physical vs subscription)",
+    "Event classifier routing to topic-specific pipelines",
+    "Customer segment routing in CRM"
+  ],
+  "complexity": "Low",
+  "tags": ["data-engineering", "routing", "classification", "dispatch"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "type Route<T> = { match: (t:T)=>boolean; handle: (t:T)=>void };\nfunction exclusive<T>(t: T, routes: Route<T>[], fallback: (t:T)=>void) {\n  for (const r of routes) if (r.match(t)) { r.handle(t); return; }\n  fallback(t);\n}",
+      "description": "First-match exclusive router with fallback."
+    }
+  },
+  "relationships": [
+    {"target_pattern_id": "routing-pattern", "type": "relates-to", "strength": 0.7},
+    {"target_pattern_id": "filter-interceptor", "type": "relates-to", "strength": 0.5}
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "fine-grained-accessor-for-resources",
+  "name": "Fine-Grained Accessor for Resources",
+  "category": "Data Engineering",
+  "description": "Provides row- and column-level access control over external resources (S3 objects, blob storage, file paths). Mediates read/write requests through policy evaluation that checks subject identity, resource attributes, and intended action.",
+  "when_to_use": [
+    "Multi-tenant data lakes need tenant-isolated object access",
+    "Compliance mandates row-level access policies",
+    "Storage layer lacks native fine-grained ACLs"
+  ],
+  "benefits": [
+    "Centralizes access policy enforcement",
+    "Decouples policy from storage layer",
+    "Auditable access decisions"
+  ],
+  "drawbacks": [
+    "Adds latency per access",
+    "Policy engine is a critical dependency",
+    "Risk of policy drift between engine and storage"
+  ],
+  "use_cases": [
+    "S3 pre-signed URLs gated by IAM policies",
+    "Tenant-scoped reads in data lakehouse",
+    "Healthcare records with row-level consent"
+  ],
+  "complexity": "High",
+  "tags": ["data-engineering", "access-control", "security", "fine-grained"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "interface Policy { can(subject:string, action:string, resource:string): Promise<boolean>; }\nclass FineGrainedAccessor {\n  constructor(private policy: Policy, private storage: Storage) {}\n  async read(subject: string, resource: string) {\n    if (!await this.policy.can(subject, 'read', resource))\n      throw new Error('access denied');\n    return this.storage.read(resource);\n  }\n}",
+      "description": "Policy-gated resource accessor."
+    }
+  },
+  "relationships": [
+    {"target_pattern_id": "fine-grained-accessor-for-tables", "type": "similar-to", "strength": 0.9},
+    {"target_pattern_id": "fine-grained-tracker", "type": "complements", "strength": 0.6}
+  ]
+}

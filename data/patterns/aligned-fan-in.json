@@ -1,0 +1,39 @@
+{
+  "id": "aligned-fan-in",
+  "name": "Aligned Fan-In",
+  "category": "Data Engineering",
+  "description": "Joins multiple input streams whose records share a common event-time alignment (e.g., watermark boundaries or time windows). The join emits a combined record only when aligned tuples from all upstream sources arrive within the same logical window.",
+  "when_to_use": [
+    "Multiple ordered event streams must be combined by time",
+    "Watermarks or windowing semantics guarantee alignment",
+    "Late or out-of-order events must be deferred until window closes"
+  ],
+  "benefits": [
+    "Deterministic join semantics for time-aligned streams",
+    "Enables complex event processing with predictable output",
+    "Compatible with event-time windowing frameworks"
+  ],
+  "drawbacks": [
+    "Sensitive to skew — slowest stream gates latency",
+    "Watermark tuning is non-trivial",
+    "State cost grows with window length"
+  ],
+  "use_cases": [
+    "Click-stream + impression-stream join by session window",
+    "Order + payment reconciliation per timestamp",
+    "Sensor + actuator fusion at sampled boundaries"
+  ],
+  "complexity": "Medium",
+  "tags": ["data-engineering", "streaming", "join", "fan-in", "time-aligned"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "// window-join two keyed streams whose watermarks align\nfunction* alignedFanIn<K,A,B>(s1: Iterable<[K,A]>, s2: Iterable<[K,B]>, windowMs: number) {\n  const buf = new Map<K,{a:A|null,b:B|null,ts:number}>();\n  for (const [k,v] of [...s1, ...s2]) {\n    const e = buf.get(k) ?? {a:null,b:null,ts:Date.now()};\n    if (s1 && v !== undefined) e.a = v as A;\n    else e.b = v as B;\n    if (e.a && e.b && Date.now()-e.ts >= windowMs) {\n      yield [k, e.a, e.b] as [K,A,B];\n      buf.delete(k);\n    }\n  }\n}",
+      "description": "Time-aligned fan-in join buffer."
+    }
+  },
+  "relationships": [
+    {"target_pattern_id": "unaligned-fan-in", "type": "alternative-to", "strength": 0.9, "description": "Use when streams are not time-aligned"},
+    {"target_pattern_id": "dynamic-joiner", "type": "complements", "strength": 0.6}
+  ]
+}

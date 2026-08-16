@@ -27,6 +27,30 @@ interface RateLimitConfig {
   burstLimit: number;
 }
 
+/**
+ * Default rate-limit thresholds chosen so a single MCP client performing
+ * regular polling is NOT throttled.
+ *
+ * - maxRequestsPerMinute = 60 (1 request per second sustained) tolerates
+ *   typical host polling cadences (1-5 s between calls).
+ * - maxConcurrentRequests = 50 tolerates HTTP multi-tenant access, an
+ *   IDE re-indexing multiple workspaces, or a developer running several
+ *   MCP clients in parallel against a local stdio server.
+ * - burstLimit = 20 lets a client fire a small spike of natural
+ *   back-to-back queries (search 4 patterns in one tool call, for
+ *   example) without artificial 429s.
+ *
+ * Operators can override these per deployment via container.ts or env vars.
+ * Lower overrides should only be applied when DoS hardening is the
+ * primary concern over user experience.
+ */
+export const DEFAULT_RATE_LIMIT_CONFIG: RateLimitConfig = {
+  maxRequestsPerMinute: 60,
+  maxRequestsPerHour: 1000,
+  maxConcurrentRequests: 50,
+  burstLimit: 20,
+};
+
 interface RateLimitState {
   tokens: number;
   lastRefill: number;
@@ -47,14 +71,7 @@ export class RateLimiter {
    */
   static getInstance(config?: RateLimitConfig): RateLimiter {
     if (!RateLimiter.instance) {
-      RateLimiter.instance = new RateLimiter(
-        config ?? {
-          maxRequestsPerMinute: 60,
-          maxRequestsPerHour: 1000,
-          maxConcurrentRequests: 10,
-          burstLimit: 20,
-        }
-      );
+      RateLimiter.instance = new RateLimiter(config ?? DEFAULT_RATE_LIMIT_CONFIG);
     }
     return RateLimiter.instance;
   }
@@ -157,12 +174,17 @@ export class RateLimiter {
 
   private refillTokens(state: RateLimitState, now: number): void {
     const timePassed = now - state.lastRefill;
-    const tokensToAdd = Math.floor((timePassed / 60000) * (this.config.maxRequestsPerMinute / 60)); // per minute rate
-
-    if (tokensToAdd > 0) {
-      state.tokens = Math.min(this.config.burstLimit, state.tokens + tokensToAdd);
-      state.lastRefill = now;
+    if (timePassed <= 0) {
+      return;
     }
+    // Fractional accumulation: with rpm=60 this yields 1 token per second
+    // elapsed (timePassed/1000 * rpm/60). The previous Math.floor-based
+    // implementation returned 0 for timePassed<60s and starved the bucket
+    // after the initial burst was consumed. See IMPROVEMENTS_03 BUG-002.
+    const tokensPerSecond = this.config.maxRequestsPerMinute / 60;
+    const tokensToAdd = (timePassed / 1000) * tokensPerSecond;
+    state.tokens = Math.min(this.config.burstLimit, state.tokens + tokensToAdd);
+    state.lastRefill = now;
   }
 
   private getResetTime(state: RateLimitState, _now: number): number {

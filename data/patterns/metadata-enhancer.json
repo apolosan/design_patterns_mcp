@@ -1,0 +1,39 @@
+{
+  "id": "metadata-enhancer",
+  "name": "Metadata Enhancer",
+  "category": "Data Engineering",
+  "description": "Augments records with computed metadata derived from the payload itself (e.g., inferred types, normalized fields, statistical summaries). Unlike the Metadata Decorator, the enhancer inspects record content.",
+  "when_to_use": [
+    "Schema is loose or unknown (semi-structured data)",
+    "Downstream indexing benefits from precomputed stats",
+    "Search or filter performance needs enriched fields"
+  ],
+  "benefits": [
+    "Accelerates downstream queries",
+    "Normalizes heterogeneous inputs",
+    "Enables schema discovery"
+  ],
+  "drawbacks": [
+    "CPU cost per record",
+    "Latency added at ingest",
+    "Enhancer logic must be deterministic"
+  ],
+  "use_cases": [
+    "JSON Schema inference at ingest",
+    "PII detection tagging",
+    "Geo-coordinate enrichment"
+  ],
+  "complexity": "Medium",
+  "tags": ["data-engineering", "metadata", "enrichment", "inference"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "function enhance(rec: Record<string,unknown>) {\n  return { ...rec, _types: Object.fromEntries(Object.entries(rec).map(([k,v]) => [k, typeof v])) };\n}",
+      "description": "Type-inference metadata enhancer."
+    }
+  },
+  "relationships": [
+    {"target_pattern_id": "metadata-decorator", "type": "similar-to", "strength": 0.7},
+    {"target_pattern_id": "normalizer", "type": "complements", "strength": 0.6}
+  ]
+}

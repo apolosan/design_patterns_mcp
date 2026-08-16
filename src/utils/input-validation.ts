@@ -21,6 +21,19 @@ interface ValidationOptions {
   sanitize?: boolean;
 }
 
+/**
+ * Narrow an unknown value to string[]. Returns an empty array when the
+ * value is missing or contains non-string items. Used at the
+ * find_patterns boundary to avoid an `as string[]` cast that bypasses
+ * TypeScript's structural check. See IMPROVEMENTS_03.md BUG-011.
+ */
+function narrowStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.filter((item): item is string => typeof item === 'string');
+}
+
 export class InputValidator {
   /**
    * Validates a string input with comprehensive checks
@@ -455,7 +468,7 @@ export class InputValidator {
 
     return {
       query: queryResult.sanitized as string,
-      categories: (categoriesResult.sanitized as string[]) ?? [],
+      categories: narrowStringArray(categoriesResult.sanitized),
       maxResults: (maxResultsResult.sanitized as number) ?? 5,
       programmingLanguage: langResult.sanitized as string | undefined,
     };
@@ -476,7 +489,11 @@ export class InputValidator {
     const queryResult = this.validateSearchQuery(obj.query);
     this.throwIfInvalid(queryResult);
 
-    const rawSearchType = obj.searchType ?? obj.search_type;
+    // Canonical MCP contract is camelCase `searchType` (per canonical-tools.ts).
+    // The legacy snake_case `search_type` is rejected: callers must use the
+    // documented schema. lib/mcp-tools.ts keeps the snake_case variant for
+    // its own internal off-the-canonical-request-path use.
+    const rawSearchType = obj.searchType;
     const searchTypeResult = this.validateSearchType(rawSearchType);
     this.throwIfInvalid(searchTypeResult);
 
@@ -560,7 +577,7 @@ export class InputValidator {
           }),
       });
       this.throwIfInvalid(tagsResult);
-      tags = tagsResult.sanitized as string[];
+      tags = narrowStringArray(tagsResult.sanitized);
     }
 
     return {

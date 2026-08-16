@@ -7,6 +7,7 @@ import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/
 import { runWithClientKey } from '../utils/rate-limiter.js';
 import { HealthCheckService } from '../health/health-check-service.js';
 import { HealthStatus } from '../health/types.js';
+import { mapHealthOverallToHttp } from './health-status-mapper.js';
 import type { Logger } from '../services/logger.js';
 import type { MCPServerConfig } from '../core/config-builder.js';
 import { createHealthCache, type HealthCache, type HealthCacheOptions } from './health-cache.js';
@@ -63,7 +64,7 @@ export function startHttpServer(options: HttpTransportOptions): Promise<void> {
             report = await healthService.checkAll();
             healthCache.set(report);
           }
-          const statusCode = report.overall === HealthStatus.HEALTHY ? 200 : 503;
+          const statusCode = mapHealthOverallToHttp(report.overall);
           return new Response(JSON.stringify(report), {
             status: statusCode,
             headers: { 'Content-Type': 'application/json' },

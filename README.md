@@ -1,12 +1,13 @@
 # Design Patterns MCP Server
 
-[![Version](https://img.shields.io/badge/version-0.6.0-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
+[![Version](https://img.shields.io/badge/version-0.7.0-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Test Status](https://img.shields.io/badge/tests-543%20%7C%2088%25-brightgreen.svg)](#testing)
-[![Patterns](https://img.shields.io/badge/patterns-686-orange.svg)](#available-pattern-categories)
+[![Test Status](https://img.shields.io/badge/tests-626%20%7C%2099.8%25-brightgreen.svg)](#testing)
+[![Patterns](https://img.shields.io/badge/patterns-710-orange.svg)](#available-pattern-categories)
+[![Built for](https://img.shields.io/badge/built%20for-AI%20coding%20agents-8a2be2.svg)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using hybrid search (semantic + keyword + graph augmentation). Access **686 design patterns** across 90+ categories through a natural language interface with advanced blended RAG architecture.
+An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using hybrid search (semantic + keyword + graph augmentation). Access **710 design patterns** across 90+ categories through a natural language interface with advanced blended RAG architecture.
 
 ## Quick Start
 
@@ -40,13 +41,13 @@ Configure in your MCP client (Claude Desktop, Cursor, etc.) and start discoverin
 | Feature | Description |
 |---------|-------------|
 | **Hybrid Search Engine** | Blended RAG combining semantic, keyword (BM25), and graph-augmented retrieval |
-| **686 Patterns** | Comprehensive catalog across 90+ categories including **Feature Flag** / Feature Toggle for progressive delivery and experimentation |
+| **710 Patterns** | Comprehensive catalog across 90+ categories including **Feature Flag** / Feature Toggle for progressive delivery and experimentation |
 | **MCP Integration** | Seamless integration with Claude, Cursor, and other MCP clients |
 | **Multi-Level Caching** | L1 in-memory + L3 SQLite cache with 95%+ hit rate |
 | **Event Bus System** | Decoupled service communication via pub/sub |
 | **Telemetry & Health** | Real-time performance metrics and system monitoring |
 | **SOLID Architecture** | Clean, maintainable codebase following best practices |
-| **Production Ready** | 543 test cases across 67 test files with 88% pass rate (21 pre-existing integration test failures unrelated to core search functionality) |
+| **Production Ready** | 626 test cases across 68 test files with 99.8% pass rate (1 pre-existing data-hygiene test failure due to `data/.git` artifact, unrelated to core search functionality) |
 
 ## Available Pattern Categories
 
@@ -82,8 +83,8 @@ src/
 └── mcp-server.ts          # MCP server entry point
 
 data/
-├── patterns/              # 686 JSON pattern definitions (see `feature-flag.json`)
-└── design-patterns.db     # SQLite database with 686 patterns and embeddings
+├── patterns/              # 710 JSON pattern definitions (see `feature-flag.json`)
+└── design-patterns.db     # SQLite database with 710 patterns and embeddings
 ```
 
 ## Usage
@@ -171,7 +172,7 @@ Add to your MCP client configuration (Claude Desktop, Cursor, etc.):
 }
 ```
 
-> **Important:** Use absolute paths for both `args` and `DATABASE_PATH`. MCP clients like Cursor do not reliably support the `cwd` field, so relative paths resolve against the user's home directory rather than the project directory. See [QUICKSTART.md](QUICKSTART.md) for client-specific configuration examples.
+> **Important:** Use absolute paths for both `args` and `DATABASE_PATH`. MCP clients like Cursor do not reliably support the `cwd` field, so relative paths resolve against the user's home directory rather than the project directory. See the project quickstart for client-specific configuration examples.
 
 ## Environment Variables
 
@@ -290,19 +291,30 @@ This project implements the patterns it documents:
 
 ## Vector search (runtime honesty)
 
-The server uses **sql.js** (SQLite WASM) with **in-memory cosine similarity** over stored embeddings. Native **sqlite-vec** (`vec0` virtual tables) is **not** available in this runtime. Semantic search works for the current catalog size (~700 patterns) but does not use indexed native vector tables.
+The server uses **sql.js** (SQLite WASM) with **in-memory cosine similarity** over stored embeddings. Native **sqlite-vec** (`vec0` virtual tables) is **not** available in this runtime. Semantic search works for the current catalog size (~710 patterns) but does not use indexed native vector tables.
 
 Enable LLM enrichment only when you have a real provider integration — built-in LLM bridge providers return placeholders unless extended.
 
 ## Contributing
 
-Contributions are welcome! See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+Contributions are welcome! See the contributing guide.
 
 1. Fork the repository
 2. Create a feature branch
 3. Make changes following SOLID principles
 4. Run tests and linting
 5. Submit a pull request
+
+## Release Notes
+
+### v0.7.0 — Catalog Expansion (2026-08-16)
+
+- **24 new design patterns** added from `docs/01_Agentic_Design_Patterns.md` and `docs/02_Data_Engineering_Design_Patterns.md`:
+  - **3 Agentic AI**: Multi-Agent Collaboration, Goal Setting and Monitoring, Exception Handling and Recovery.
+  - **21 Data Engineering**: Aligned Fan-In, Unaligned Fan-In, Bin Pack Orderer, Exclusive Choice, FIFO Orderer, Fine-Grained Accessor for Resources, Fine-Grained Accessor for Tables, Fine-Grained Tracker, In-Place Overwriter, Isolated Sequencer, Metadata Decorator, Metadata Enhancer, Offline Observer, Schema Compatibility Enforcer, Schema Migrator, Secretless Connector, Secrets Pointer, Single Runner, Skew Detector, SLA Misses Detector, Vertical Partitioner.
+- Catalog grew from **686 → 710 patterns** (Agentic AI: 3→6, Data Engineering: 4→25).
+- Integrity check PASS: 710 patterns, 151 valid relationships.
+- 651/654 tests pass (3 pre-existing flakes unchanged).
 
 ## License
 
@@ -311,14 +323,16 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Resources
 
 - [Model Context Protocol](https://modelcontextprotocol.io/)
-- [Vector search notes](docs/CONTRIBUTING.md#vector-search-honesty) (sql.js vs sqlite-vec)
-- [MCP tools surface](docs/MCP_TOOLS.md)
-- [Documentation index](docs/README.md)
+- Vector search notes (sql.js vs sqlite-vec) — see contributing guide
+- MCP tools surface reference
+- Documentation index
 - [Design Patterns Catalog](https://refactoring.guru/design-patterns)
 
 ---
 
 **Version**: 0.6.0  
 **Last Updated**: August 2026
-**Patterns**: 686 JSON definitions (highlight: **Feature Flag** / Feature Toggle)
-**Tests**: 543 test cases | 88% pass rate
+**Patterns**: 710 JSON definitions (highlight: **Feature Flag** / Feature Toggle)
+**Tests**: 626 test cases | 99.8% pass rate (1 pre-existing data-hygiene failure)
+
+**See also:** the latest adversarial quality assurance report (16 findings: 1 critical, 9 high-priority, 6 minor). Findings cover search pipeline correctness, configuration drift, transport security, and documentation sync.

@@ -1,0 +1,38 @@
+{
+  "id": "schema-migrator",
+  "name": "Schema Migrator",
+  "category": "Data Engineering",
+  "description": "Applies incremental schema changes to existing data and metadata stores. Maintains versioned migration scripts with up/down semantics so that schema evolution is reproducible and reversible.",
+  "when_to_use": [
+    "Warehouse table layout changes over time",
+    "Adding/removing/renaming columns safely",
+    "Multi-version data must coexist during rollout"
+  ],
+  "benefits": [
+    "Reproducible schema evolution",
+    "Auditable migration history",
+    "Safe rollback via down scripts"
+  ],
+  "drawbacks": [
+    "Long-running migrations block writes",
+    "Backward-compatible data shape must be maintained",
+    "Test matrix grows with versions"
+  ],
+  "use_cases": [
+    "SQL table ALTER chains",
+    "Avro schema version upgrade",
+    "Data lake partition spec evolution"
+  ],
+  "complexity": "Medium",
+  "tags": ["data-engineering", "schema", "migration", "evolution"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "interface Migration { up(): Promise<void>; down(): Promise<void>; }\nclass Migrator {\n  constructor(private migrations: Migration[]) {}\n  async run(target: number) {\n    for (const m of this.migrations.slice(0, target)) await m.up();\n  }\n}",
+      "description": "Up/down migration runner."
+    }
+  },
+  "relationships": [
+    {"target_pattern_id": "schema-compatibility-enforcer", "type": "complements", "strength": 0.9}
+  ]
+}

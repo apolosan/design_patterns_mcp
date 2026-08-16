@@ -204,9 +204,6 @@ logs/
 !README.md
 !CHANGELOG.md
 !QUICKSTART.md
-!AGENTS.md
-!CLAUDE.md
-!docs/**/*.md
 
 # OpenCode configuration  
 opencode.json

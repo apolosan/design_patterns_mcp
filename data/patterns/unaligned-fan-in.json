@@ -1,0 +1,39 @@
+{
+  "id": "unaligned-fan-in",
+  "name": "Unaligned Fan-In",
+  "category": "Data Engineering",
+  "description": "Joins streams whose records arrive without shared event-time alignment. Combines records based on key equality and arrival proximity, using a sliding buffer rather than strict window boundaries. Tolerates skew and out-of-order arrival.",
+  "when_to_use": [
+    "Upstream sources lack synchronized clocks or watermarks",
+    "High skew between streams makes time-alignment impractical",
+    "Approximate joins are acceptable"
+  ],
+  "benefits": [
+    "Robust to clock skew and out-of-order events",
+    "Lower coordination overhead than aligned joins",
+    "Works across heterogeneous sources"
+  ],
+  "drawbacks": [
+    "Approximate — may miss or duplicate matches",
+    "Buffer size must be tuned per workload",
+    "Harder to reason about correctness"
+  ],
+  "use_cases": [
+    "Cross-system entity resolution without shared IDs",
+    "Probabilistic record linkage in ETL",
+    "Multi-vendor customer data fusion"
+  ],
+  "complexity": "Medium",
+  "tags": ["data-engineering", "streaming", "join", "fan-in", "approximate"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "function* unalignedFanIn<K,V>(sources: Array<Iterable<[K,V]>>, bufferMs: number) {\n  const buf: Array<{k:K,v:V,src:number,ts:number}> = [];\n  for (let i = 0; i < sources.length; i++) {\n    for (const [k,v] of sources[i]) buf.push({k,v,src:i,ts:Date.now()});\n    const cutoff = Date.now() - bufferMs;\n    while (buf.length && buf[0].ts < cutoff) {\n      const head = buf.shift()!;\n      const partner = buf.find(x => x.k === head.k && x.src !== head.src);\n      if (partner) yield [head.k, head.v, partner.v];\n    }\n  }\n}",
+      "description": "Buffered fan-in tolerant to skew."
+    }
+  },
+  "relationships": [
+    {"target_pattern_id": "aligned-fan-in", "type": "alternative-to", "strength": 0.9, "description": "Use when streams are time-aligned"},
+    {"target_pattern_id": "dynamic-joiner", "type": "relates-to", "strength": 0.5}
+  ]
+}

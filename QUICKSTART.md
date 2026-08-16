@@ -343,5 +343,12 @@ tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
 ## Useful Links
 
 - Repository: https://github.com/apolosan/design_patterns_mcp
-- Documentation: README.md
-- Tests: 464 cases | 100% pass rate
+- Documentation: see README
+- Tests: 626 cases | 99.8% pass rate (1 pre-existing data-hygiene failure documented in the latest adversarial QA audit)
+- Adversarial QA report available in the project audit documentation
+
+## Known issues & limitations
+
+- **Critical:** `sql.js` (in-memory WASM SQLite) + HTTP transport is not safe for multi-tenant concurrent load. The HTTP server uses one Node process to serve all clients; concurrent write contention may corrupt the embedded database and the in-process cache may leak state between clients. Use stdio mode for single-tenant / dev; in HTTP mode, bind to `127.0.0.1` only and never expose the port to a shared network.
+- **High-priority:** the rate-limiter token refill recovers roughly sixty times slower than the configuration suggests (effective rate near one token per minute versus the declared sixty per minute at default config). Bug filed in version 0.6.0; fix pending in the next minor release. Symptom: legitimate clients receive rate-limit errors long before reaching the configured request budget.
+- **Resolved in v0.7.0:** the project manifest previously advertised "705+" patterns while the live catalogue reported 686. As of v0.7.0 the catalogue reports 710 patterns (24 added from `docs/01_Agentic_Design_Patterns.md` and `docs/02_Data_Engineering_Design_Patterns.md`); the manifest, README and version are now consistent.

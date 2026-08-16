@@ -1,0 +1,38 @@
+{
+  "id": "bin-pack-orderer",
+  "name": "Bin Pack Orderer",
+  "category": "Data Engineering",
+  "description": "Orders items into fixed-capacity bins minimizing wasted space using bin-packing heuristics (first-fit, best-fit, worst-fit). Used when downstream consumers require batched, size-bounded chunks.",
+  "when_to_use": [
+    "API or storage layer accepts fixed-size batches",
+    "Throughput optimization requires minimizing request count",
+    "Items have known sizes and bins have hard capacity limits"
+  ],
+  "benefits": [
+    "Maximizes batch utilization",
+    "Reduces downstream request count",
+    "Predictable memory and cost footprint"
+  ],
+  "drawbacks": [
+    "Heuristic — not provably optimal",
+    "Reordering cost if late items arrive",
+    "Sensitive to size estimation accuracy"
+  ],
+  "use_cases": [
+    "Bulk write to a database with batch size limits",
+    "S3 multipart upload packing",
+    "Kafka producer batching"
+  ],
+  "complexity": "Medium",
+  "tags": ["data-engineering", "batching", "bin-packing", "optimization"],
+  "examples": {
+    "typescript": {
+      "language": "typescript",
+      "code": "function packBins<T>(items: T[], sizeOf: (t:T)=>number, capacity: number): T[][] {\n  const bins: T[][] = [[]];\n  let used = 0;\n  for (const it of items) {\n    const s = sizeOf(it);\n    if (used + s > capacity) { bins.push([it]); used = s; }\n    else { bins[bins.length-1].push(it); used += s; }\n  }\n  return bins;\n}",
+      "description": "First-fit decreasing bin packing."
+    }
+  },
+  "relationships": [
+    {"target_pattern_id": "fifo-orderer", "type": "relates-to", "strength": 0.5}
+  ]
+}

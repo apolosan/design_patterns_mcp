@@ -1,6 +1,6 @@
 {
   "name": "design-patterns-mcp",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 705+ patterns using semantic search, vector embeddings, TF-IDF keyword search, and blended RAG hybrid search with graph augmentation",
   "main": "dist/mcp-server.js",
   "module": "dist/mcp-server.js",
@@ -11,7 +11,7 @@
       "import": "./dist/mcp-server.js",
       "require": "./dist/mcp-server.js"
     },
-    "./lib": {
+    "./tools": {
       "types": "./dist/lib/mcp-tools.d.ts",
       "import": "./dist/lib/mcp-tools.js",
       "require": "./dist/lib/mcp-tools.js"
@@ -137,14 +137,6 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "peerDependencies": {
-    "@modelcontextprotocol/sdk": "^1.18.0"
-  },
-  "peerDependenciesMeta": {
-    "@modelcontextprotocol/sdk": {
-      "optional": false
-    }
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.20.0",
