@@ -5,6 +5,22 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] - 2026-08-16
+
+### Fixed — Test stabilisation + lint baseline restoration
+
+- Test suite fully validated: **654/654 GREEN, 0 skips, 0 todos** (was 651/654 with 3 pre-existing flakes).
+- Removed leaked `data/.git` directory introduced by the `db:setup` pipeline (data-hygiene test).
+- Aligned two outdated tests with the **BUG-007 contract** (snake_case `search_type` is silently ignored by `validateSearchPatternsArgs` and the canonical default `hybrid` strategy is applied):
+  - `tests/unit/input-validation.test.ts`
+  - `tests/unit/mcp-server-search.test.ts`
+- README.md version drift corrected: trailing block, badge, Production Ready row and Testing section now reflect the canonical 0.7.0 baseline with the current 654-test suite.
+- Lint baseline restored: **0 problems, exit 0** (was 2 errors + 6 warnings).
+  - Removed unused `HealthStatus` import in `src/mcp/http-transport.ts`.
+  - Added targeted `eslint-disable` for `require-await` on the synchronous `check()` in `src/health/embedding-coverage-health-check.ts` (interface conformance preserved).
+  - Refactored `ensureBM25()` in `src/handlers/keyword-search-handler.ts` to return `BM25Scorer`, eliminating 4 non-null assertions at the call sites.
+  - Replaced 2 non-null assertions on `results.find()` in `tests/unit/bm25-scorer.test.ts` with explicit `toBeDefined` guards.
+
 ## [0.7.0] - 2026-08-16
 
 ### Added — Catalog Expansion (24 new design patterns)

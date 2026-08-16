@@ -285,16 +285,18 @@ describe('InputValidator', () => {
         });
       });
 
-      it('should accept legacy search_type alias', () => {
+      it('ignores snake_case search_type (legacy field); defaults to hybrid (BUG-007)', () => {
         const args = {
           query: 'builder',
           search_type: 'keyword',
           limit: 5,
         };
         const result = InputValidator.validateSearchPatternsArgs(args);
+        // Legacy snake_case is not part of the canonical contract; it is
+        // silently ignored and the default 'hybrid' strategy applies.
         expect(result).toEqual({
           query: 'builder',
-          searchType: 'keyword',
+          searchType: 'hybrid',
           limit: 5,
         });
       });

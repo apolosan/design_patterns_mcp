@@ -41,8 +41,8 @@ export class KeywordSearchHandler implements SearchHandler {
    * Lazily initialize BM25 scorer from database patterns.
    * Called on first search to ensure DB is ready.
    */
-  private ensureBM25(): void {
-    if (this.bm25Scorer) return;
+  private ensureBM25(): BM25Scorer {
+    if (this.bm25Scorer) return this.bm25Scorer;
 
     const patterns = this.db.query<{
       id: string;
@@ -85,6 +85,8 @@ export class KeywordSearchHandler implements SearchHandler {
       corpusSize: documents.length,
       stats: this.bm25Scorer.getStats(),
     });
+
+    return this.bm25Scorer;
   }
 
   /**
@@ -107,11 +109,11 @@ export class KeywordSearchHandler implements SearchHandler {
       await Promise.resolve(); // Ensure async execution for consistent behavior
       const startTime = Date.now();
 
-      this.ensureBM25();
+      const scorer = this.ensureBM25();
 
       // BM25 scoring
-      const bm25Results = this.bm25Scorer!.scoreQuery(request.query);
-      const normalized = this.bm25Scorer!.normalizeScores(bm25Results);
+      const bm25Results = scorer.scoreQuery(request.query);
+      const normalized = scorer.normalizeScores(bm25Results);
 
       // Build matches with normalized scores
       const matches: MatchResult[] = [];
@@ -178,11 +180,11 @@ export class KeywordSearchHandler implements SearchHandler {
       await Promise.resolve(); // Ensure async execution for consistent behavior
       const startTime = Date.now();
 
-      this.ensureBM25();
+      const scorer = this.ensureBM25();
 
       // BM25 scoring (no category filter for broad search)
-      const bm25Results = this.bm25Scorer!.scoreQuery(request.query);
-      const normalized = this.bm25Scorer!.normalizeScores(bm25Results);
+      const bm25Results = scorer.scoreQuery(request.query);
+      const normalized = scorer.normalizeScores(bm25Results);
 
       const matches: MatchResult[] = [];
 

@@ -490,8 +490,10 @@ export class InputValidator {
     this.throwIfInvalid(queryResult);
 
     // Canonical MCP contract is camelCase `searchType` (per canonical-tools.ts).
-    // The legacy snake_case `search_type` is rejected: callers must use the
-    // documented schema. lib/mcp-tools.ts keeps the snake_case variant for
+    // Legacy snake_case `search_type` is NOT part of the public contract
+    // (BUG-007): callers must use `searchType`. If a caller passes
+    // `search_type` it is silently ignored and the canonical default
+    // 'hybrid' is applied. lib/mcp-tools.ts keeps the snake_case variant for
     // its own internal off-the-canonical-request-path use.
     const rawSearchType = obj.searchType;
     const searchTypeResult = this.validateSearchType(rawSearchType);

@@ -66,7 +66,10 @@ describe('BM25Scorer', () => {
       const results = scorer.scoreQuery('strategy algorithm');
       const strategyResult = results.find(r => r.id === 'strategy');
       const observerResult = results.find(r => r.id === 'observer');
-      expect(strategyResult!.score).toBeGreaterThan(observerResult!.score);
+      expect(strategyResult).toBeDefined();
+      expect(observerResult).toBeDefined();
+      if (!strategyResult || !observerResult) return;
+      expect(strategyResult.score).toBeGreaterThan(observerResult.score);
     });
 
     it('should return zero or low scores for non-matching queries', () => {

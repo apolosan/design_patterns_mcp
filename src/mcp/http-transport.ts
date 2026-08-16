@@ -6,7 +6,6 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
 import { runWithClientKey } from '../utils/rate-limiter.js';
 import { HealthCheckService } from '../health/health-check-service.js';
-import { HealthStatus } from '../health/types.js';
 import { mapHealthOverallToHttp } from './health-status-mapper.js';
 import type { Logger } from '../services/logger.js';
 import type { MCPServerConfig } from '../core/config-builder.js';

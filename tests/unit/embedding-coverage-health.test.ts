@@ -23,24 +23,24 @@ class FakeStats {
 
 describe('EmbeddingCoverageHealthCheck (L1+L7 fix)', () => {
   test('REGRESSION: reports UNHEALTHY when totalVectors=0 with patterns present', async () => {
-    const check = new EmbeddingCoverageHealthCheck(new FakeStats(0, 686));
+    const check = new EmbeddingCoverageHealthCheck(new FakeStats(0, 710));
     const result = await check.check();
     expect(result.status).toBe(HealthStatus.UNHEALTHY);
     expect(result.message).toMatch(/EMPTY/i);
     expect(result.details?.['totalVectors']).toBe(0);
-    expect(result.details?.['patternCount']).toBe(686);
+    expect(result.details?.['patternCount']).toBe(710);
     expect(result.details?.['coverageRatio']).toBe(0);
   });
 
   test('reports HEALTHY when coverage >= 95%', async () => {
-    const check = new EmbeddingCoverageHealthCheck(new FakeStats(700, 686));
+    const check = new EmbeddingCoverageHealthCheck(new FakeStats(700, 710));
     const result = await check.check();
     expect(result.status).toBe(HealthStatus.HEALTHY);
     expect(result.details?.['coverageRatio']).toBeGreaterThanOrEqual(DEFAULT_COVERAGE_THRESHOLD);
   });
 
   test('reports DEGRADED when coverage is between 50% and 95%', async () => {
-    const check = new EmbeddingCoverageHealthCheck(new FakeStats(400, 686));
+    const check = new EmbeddingCoverageHealthCheck(new FakeStats(400, 710));
     const result = await check.check();
     expect(result.status).toBe(HealthStatus.DEGRADED);
     expect(result.details?.['coverageRatio']).toBeGreaterThanOrEqual(DEGRADED_COVERAGE_THRESHOLD);
@@ -53,9 +53,9 @@ describe('EmbeddingCoverageHealthCheck (L1+L7 fix)', () => {
     expect(result.status).toBe(HealthStatus.HEALTHY);
   });
 
-  test('edge case: custom thresholds honored (600/686 = 87.5% with threshold 80% -> HEALTHY)', async () => {
+  test('edge case: custom thresholds honored (600/710 = 84.5% with threshold 80% -> HEALTHY)', async () => {
     const check = new EmbeddingCoverageHealthCheck(
-      new FakeStats(600, 686),
+      new FakeStats(600, 710),
       { coverageThreshold: 0.80, degradedThreshold: 0.30 }
     );
     const result = await check.check();

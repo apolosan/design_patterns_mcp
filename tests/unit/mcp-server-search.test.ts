@@ -25,7 +25,7 @@ describe('mcp-server search_patterns', () => {
     return server;
   }
 
-  it('uses keyword strategy for legacy search_type requests', async () => {
+  it('ignores snake_case search_type and falls back to hybrid strategy (BUG-007)', async () => {
     const server = createTestServer();
     server.searchMediator.searchByType.mockResolvedValue({
       recommendations: [
@@ -42,7 +42,7 @@ describe('mcp-server search_patterns', () => {
           justification: { primaryReason: 'keyword match' },
         },
       ],
-      searchTypeUsed: 'keyword',
+      searchTypeUsed: 'hybrid',
       degraded: false,
     });
 
@@ -52,11 +52,14 @@ describe('mcp-server search_patterns', () => {
       limit: 5,
     });
 
+    // Legacy snake_case is not part of the canonical MCP contract; the
+    // validator ignores it and the mediator is invoked with the default
+    // 'hybrid' strategy.
     expect(server.searchMediator.searchByType).toHaveBeenCalledWith(
       expect.objectContaining({ query: 'builder', maxResults: 5 }),
-      'keyword'
+      'hybrid'
     );
-    expect(response.content[0]?.text).toContain('strategy: keyword');
+    expect(response.content[0]?.text).toContain('strategy: hybrid');
     expect(response.content[0]?.text).toContain('Builder');
   });
 

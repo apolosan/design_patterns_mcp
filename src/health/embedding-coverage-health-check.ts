@@ -47,6 +47,7 @@ export class EmbeddingCoverageHealthCheck implements HealthCheck {
     this.degradedThreshold = options.degradedThreshold ?? DEGRADED_COVERAGE_THRESHOLD;
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- check() is sync today; kept async to satisfy the HealthCheck interface (`check(): Promise<HealthCheckResult>`) so future I/O can be added without changing the signature.
   async check(): Promise<HealthCheckResult> {
     const startTime = Date.now();
     try {

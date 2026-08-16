@@ -211,7 +211,7 @@ class DesignPatternsMCPServer {
     this.server = new Server(
       {
         name: 'design-patterns-mcp',
-        version: '0.7.0',
+        version: '0.7.1',
       },
       {
         capabilities: {
@@ -572,7 +572,7 @@ class DesignPatternsMCPServer {
   } {
     const info = {
       name: 'Design Patterns MCP Server',
-      version: '0.7.0',
+      version: '0.7.1',
       status: 'running',
       database: {
         path: this.config.databasePath,
