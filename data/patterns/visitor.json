@@ -1,22 +1,24 @@
-{
-  "id": "visitor",
-  "name": "Visitor",
-  "category": "Behavioral",
-  "description": "Separates algorithms from objects on which they operate",
-  "when_to_use": "Operations on object structures\nAdd operations without changing classes\nDouble dispatch",
-  "benefits": "Single Responsibility\nOpen/Closed\nAccumulating state",
-  "drawbacks": "Breaking encapsulation\nDifficult element addition",
-  "use_cases": "Compiler AST\nDocument processing\nObject serialization",
-  "complexity": "High",
-  "tags": [
-    "behavioral",
-    "double-dispatch",
-    "separation"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Visitor {\n  visitCircle(circle: Circle): void;\n}\n\ninterface Shape {\n  accept(visitor: Visitor): void;\n}\n\nclass Circle implements Shape {\n  constructor(public radius: number) {}\n  accept(v: Visitor) { v.visitCircle(this); }\n}\n\nclass AreaCalculator implements Visitor {\n  visitCircle(circle: Circle) {\n    console.log(`Area: ${Math.PI * circle.radius ** 2}`);\n  }\n}\n\n// Usage: add operations without modifying classes\nconst circle = new Circle(5);\ncircle.accept(new AreaCalculator());"
+[
+  {
+    "id": "visitor",
+    "name": "Visitor",
+    "category": "Behavioral",
+    "description": "Separates algorithms from objects on which they operate",
+    "when_to_use": "Operations on object structures\nAdd operations without changing classes\nDouble dispatch",
+    "benefits": "Single Responsibility\nOpen/Closed\nAccumulating state",
+    "drawbacks": "Breaking encapsulation\nDifficult element addition",
+    "use_cases": "Compiler AST\nDocument processing\nObject serialization",
+    "complexity": "High",
+    "tags": [
+      "behavioral",
+      "double-dispatch",
+      "separation"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Visitor {\n  visitCircle(circle: Circle): void;\n}\n\ninterface Shape {\n  accept(visitor: Visitor): void;\n}\n\nclass Circle implements Shape {\n  constructor(public radius: number) {}\n  accept(v: Visitor) { v.visitCircle(this); }\n}\n\nclass AreaCalculator implements Visitor {\n  visitCircle(circle: Circle) {\n    console.log(`Area: ${Math.PI * circle.radius ** 2}`);\n  }\n}\n\n// Usage: add operations without modifying classes\nconst circle = new Circle(5);\ncircle.accept(new AreaCalculator());"
+      }
     }
   }
-}
+]

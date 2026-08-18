@@ -1,16 +1,18 @@
-{
-  "id": "security-by-design",
-  "name": "Security by Design",
-  "category": "Security",
-  "description": "Integrates security considerations from the beginning of system design",
-  "when_to_use": "New system development\nSecurity-critical applications\nRisk prevention",
-  "benefits": "Proactive security\nCost effectiveness\nComprehensive protection",
-  "drawbacks": "Design complexity\nDevelopment overhead\nSkill requirements",
-  "use_cases": "System architecture\nApplication development\nSecurity frameworks",
-  "complexity": "High",
-  "tags": [
-    "security",
-    "design",
-    "proactive"
-  ]
-}
+[
+  {
+    "id": "security-by-design",
+    "name": "Security by Design",
+    "category": "Security",
+    "description": "Integrates security considerations from the beginning of system design",
+    "when_to_use": "New system development\nSecurity-critical applications\nRisk prevention",
+    "benefits": "Proactive security\nCost effectiveness\nComprehensive protection",
+    "drawbacks": "Design complexity\nDevelopment overhead\nSkill requirements",
+    "use_cases": "System architecture\nApplication development\nSecurity frameworks",
+    "complexity": "High",
+    "tags": [
+      "security",
+      "design",
+      "proactive"
+    ]
+  }
+]

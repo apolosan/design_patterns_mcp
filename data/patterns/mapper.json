@@ -1,16 +1,18 @@
-{
-  "id": "mapper",
-  "name": "Mapper Pattern",
-  "category": "Enterprise",
-  "description": "Object that sets up communication between two independent objects",
-  "when_to_use": "Object transformation\nData conversion\nInterface adaptation",
-  "benefits": "Separation of concerns\nReusability\nFlexibility\nTesting",
-  "drawbacks": "Additional complexity\nPerformance overhead\nMaintenance",
-  "use_cases": "DTO mapping\nAPI transformation\nData conversion",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "mapping",
-    "transformation"
-  ]
-}
+[
+  {
+    "id": "mapper",
+    "name": "Mapper Pattern",
+    "category": "Enterprise",
+    "description": "Object that sets up communication between two independent objects",
+    "when_to_use": "Object transformation\nData conversion\nInterface adaptation",
+    "benefits": "Separation of concerns\nReusability\nFlexibility\nTesting",
+    "drawbacks": "Additional complexity\nPerformance overhead\nMaintenance",
+    "use_cases": "DTO mapping\nAPI transformation\nData conversion",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "mapping",
+      "transformation"
+    ]
+  }
+]

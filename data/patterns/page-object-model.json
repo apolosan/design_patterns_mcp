@@ -1,16 +1,18 @@
-{
-  "id": "page-object-model",
-  "name": "Page Object Model",
-  "category": "Testing",
-  "description": "Encapsulates web page elements and operations for UI testing",
-  "when_to_use": "UI testing\nWeb automation\nTest maintenance",
-  "benefits": "Code reusability\nMaintainability\nAbstraction\nReadability",
-  "drawbacks": "Additional complexity\nSetup overhead\nLearning curve",
-  "use_cases": "Selenium testing\nUI automation\nEnd-to-end testing",
-  "complexity": "Medium",
-  "tags": [
-    "testing",
-    "ui",
-    "automation"
-  ]
-}
+[
+  {
+    "id": "page-object-model",
+    "name": "Page Object Model",
+    "category": "Testing",
+    "description": "Encapsulates web page elements and operations for UI testing",
+    "when_to_use": "UI testing\nWeb automation\nTest maintenance",
+    "benefits": "Code reusability\nMaintainability\nAbstraction\nReadability",
+    "drawbacks": "Additional complexity\nSetup overhead\nLearning curve",
+    "use_cases": "Selenium testing\nUI automation\nEnd-to-end testing",
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "ui",
+      "automation"
+    ]
+  }
+]

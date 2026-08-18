@@ -1,16 +1,18 @@
-{
-  "id": "golden-master-testing",
-  "name": "Golden Master Testing",
-  "category": "Testing",
-  "description": "Compares current output against approved golden master for regression testing",
-  "when_to_use": "Legacy code testing\nRegression testing\nComplex output validation",
-  "benefits": "Regression detection\nLegacy code support\nComprehensive validation",
-  "drawbacks": "Brittle tests\nOutput management\nChange detection",
-  "use_cases": "Legacy systems\nReport generation\nComplex algorithms",
-  "complexity": "Medium",
-  "tags": [
-    "testing",
-    "regression",
-    "legacy"
-  ]
-}
+[
+  {
+    "id": "golden-master-testing",
+    "name": "Golden Master Testing",
+    "category": "Testing",
+    "description": "Compares current output against approved golden master for regression testing",
+    "when_to_use": "Legacy code testing\nRegression testing\nComplex output validation",
+    "benefits": "Regression detection\nLegacy code support\nComprehensive validation",
+    "drawbacks": "Brittle tests\nOutput management\nChange detection",
+    "use_cases": "Legacy systems\nReport generation\nComplex algorithms",
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "regression",
+      "legacy"
+    ]
+  }
+]

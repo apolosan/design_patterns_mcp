@@ -1,16 +1,18 @@
-{
-  "id": "service-registry",
-  "name": "Service Registry",
-  "category": "Microservices",
-  "description": "Database of available service instances and their locations",
-  "when_to_use": "Dynamic service discovery\nService scaling\nCloud deployment",
-  "benefits": "Dynamic discovery\nLoad balancing\nHealth monitoring\nService metadata",
-  "drawbacks": "Additional complexity\nSingle point of failure\nConsistency challenges",
-  "use_cases": "Container orchestration\nCloud deployments\nDynamic scaling",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "discovery",
-    "registry"
-  ]
-}
+[
+  {
+    "id": "service-registry",
+    "name": "Service Registry",
+    "category": "Microservices",
+    "description": "Database of available service instances and their locations",
+    "when_to_use": "Dynamic service discovery\nService scaling\nCloud deployment",
+    "benefits": "Dynamic discovery\nLoad balancing\nHealth monitoring\nService metadata",
+    "drawbacks": "Additional complexity\nSingle point of failure\nConsistency challenges",
+    "use_cases": "Container orchestration\nCloud deployments\nDynamic scaling",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "discovery",
+      "registry"
+    ]
+  }
+]

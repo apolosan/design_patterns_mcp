@@ -1,24 +1,26 @@
-{
-  "id": "carbon-credit-tokenization",
-  "name": "Carbon Credit Tokenization",
-  "category": "Sustainable Blockchain",
-  "description": "Transparent carbon offset trading via tokenized credits. Blockchain-verified carbon retirement.",
-  "when_to_use": "Corporate sustainability, carbon markets, offset verification",
-  "benefits": "Transparent tracking, global access, automated retirement, fraud prevention",
-  "drawbacks": "Carbon credit quality verification challenges, additionality concerns",
-  "use_cases": "KlimaDAO, Toucan Protocol, Moss.Earth, carbon markets",
-  "complexity": "High",
-  "tags": [
-    "sustainable",
-    "carbon",
-    "tokenization",
-    "climate",
-    "offsets"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Carbon credit tokenization (Toucan Protocol model)\ncontract CarbonToken is ERC20 {\n    struct CarbonCredit {\n        string projectId;        // Verra/Gold Standard ID\n        uint256 vintage;         // Year generated\n        string methodology;      // e.g., \"VM0042\"\n        bytes32 serialNumber;\n        bool retired;\n    }\n    \n    mapping(uint256 => CarbonCredit) public credits;\n    \n    function bridgeCredit(CarbonCredit memory credit) external onlyVerifier {\n        // Bridge off-chain carbon credit on-chain\n        _mint(msg.sender, 1 ether); // 1 token = 1 tCO2e\n        credits[nextTokenId] = credit;\n    }\n    \n    function retire(uint256 amount, address beneficiary) external {\n        _burn(msg.sender, amount);\n        emit CarbonRetired(msg.sender, beneficiary, amount);\n        // Permanently removed from circulation = carbon offset\n    }\n}"
+[
+  {
+    "id": "carbon-credit-tokenization",
+    "name": "Carbon Credit Tokenization",
+    "category": "Sustainable Blockchain",
+    "description": "Transparent carbon offset trading via tokenized credits. Blockchain-verified carbon retirement.",
+    "when_to_use": "Corporate sustainability, carbon markets, offset verification",
+    "benefits": "Transparent tracking, global access, automated retirement, fraud prevention",
+    "drawbacks": "Carbon credit quality verification challenges, additionality concerns",
+    "use_cases": "KlimaDAO, Toucan Protocol, Moss.Earth, carbon markets",
+    "complexity": "High",
+    "tags": [
+      "sustainable",
+      "carbon",
+      "tokenization",
+      "climate",
+      "offsets"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Carbon credit tokenization (Toucan Protocol model)\ncontract CarbonToken is ERC20 {\n    struct CarbonCredit {\n        string projectId;        // Verra/Gold Standard ID\n        uint256 vintage;         // Year generated\n        string methodology;      // e.g., \"VM0042\"\n        bytes32 serialNumber;\n        bool retired;\n    }\n    \n    mapping(uint256 => CarbonCredit) public credits;\n    \n    function bridgeCredit(CarbonCredit memory credit) external onlyVerifier {\n        // Bridge off-chain carbon credit on-chain\n        _mint(msg.sender, 1 ether); // 1 token = 1 tCO2e\n        credits[nextTokenId] = credit;\n    }\n    \n    function retire(uint256 amount, address beneficiary) external {\n        _burn(msg.sender, amount);\n        emit CarbonRetired(msg.sender, beneficiary, amount);\n        // Permanently removed from circulation = carbon offset\n    }\n}"
+      }
     }
   }
-}
+]

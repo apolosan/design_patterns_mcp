@@ -1,16 +1,18 @@
-{
-  "id": "free-monad",
-  "name": "Free Monad Pattern",
-  "category": "Functional",
-  "description": "Separates program structure from interpretation for flexibility",
-  "when_to_use": "DSL creation\nTestability\nInterpreter patterns",
-  "benefits": "Separation of concerns\nTestability\nFlexibility\nComposability",
-  "drawbacks": "High complexity\nPerformance overhead\nAbstract concepts",
-  "use_cases": "DSL interpreters\nTesting frameworks\nCommand patterns",
-  "complexity": "High",
-  "tags": [
-    "functional",
-    "monad",
-    "dsl"
-  ]
-}
+[
+  {
+    "id": "free-monad",
+    "name": "Free Monad Pattern",
+    "category": "Functional",
+    "description": "Separates program structure from interpretation for flexibility",
+    "when_to_use": "DSL creation\nTestability\nInterpreter patterns",
+    "benefits": "Separation of concerns\nTestability\nFlexibility\nComposability",
+    "drawbacks": "High complexity\nPerformance overhead\nAbstract concepts",
+    "use_cases": "DSL interpreters\nTesting frameworks\nCommand patterns",
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "monad",
+      "dsl"
+    ]
+  }
+]

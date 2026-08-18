@@ -1,23 +1,25 @@
-{
-  "id": "stealth-address-pattern",
-  "name": "Stealth Address Pattern",
-  "category": "Privacy",
-  "description": "Generate one-time addresses from master public key. Recipient privacy, unlinkable transactions.",
-  "when_to_use": "Private payments, anonymous airdrops, unlinkable transactions",
-  "benefits": "Unlinkable transactions, recipient privacy, no address reuse",
-  "drawbacks": "Requires scanning, complex key management, UX challenges",
-  "use_cases": "Umbra protocol, private transfers, anonymous recipients",
-  "complexity": "Very High",
-  "tags": [
-    "privacy",
-    "stealth-address",
-    "anonymity",
-    "payments"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Stealth address: sender derives one-time address\ncontract StealthTransfer {\n    event StealthPayment(\n        address indexed stealthAddress,\n        bytes32 ephemeralPubKey, // For recipient to detect\n        bytes encryptedData\n    );\n    \n    function sendToStealth(\n        bytes32 recipientPubKey,\n        uint256 amount\n    ) external {\n        // 1. Generate ephemeral key pair\n        bytes32 ephemeralPrivKey = random();\n        bytes32 ephemeralPubKey = derive(ephemeralPrivKey);\n        \n        // 2. Compute shared secret: ECDH\n        bytes32 sharedSecret = ecdh(ephemeralPrivKey, recipientPubKey);\n        \n        // 3. Derive stealth address\n        address stealthAddr = deriveStealthAddress(recipientPubKey, sharedSecret);\n        \n        // 4. Send to stealth address\n        payable(stealthAddr).transfer(amount);\n        \n        emit StealthPayment(stealthAddr, ephemeralPubKey, encryptedAmount);\n    }\n}"
+[
+  {
+    "id": "stealth-address-pattern",
+    "name": "Stealth Address Pattern",
+    "category": "Privacy",
+    "description": "Generate one-time addresses from master public key. Recipient privacy, unlinkable transactions.",
+    "when_to_use": "Private payments, anonymous airdrops, unlinkable transactions",
+    "benefits": "Unlinkable transactions, recipient privacy, no address reuse",
+    "drawbacks": "Requires scanning, complex key management, UX challenges",
+    "use_cases": "Umbra protocol, private transfers, anonymous recipients",
+    "complexity": "Very High",
+    "tags": [
+      "privacy",
+      "stealth-address",
+      "anonymity",
+      "payments"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Stealth address: sender derives one-time address\ncontract StealthTransfer {\n    event StealthPayment(\n        address indexed stealthAddress,\n        bytes32 ephemeralPubKey, // For recipient to detect\n        bytes encryptedData\n    );\n    \n    function sendToStealth(\n        bytes32 recipientPubKey,\n        uint256 amount\n    ) external {\n        // 1. Generate ephemeral key pair\n        bytes32 ephemeralPrivKey = random();\n        bytes32 ephemeralPubKey = derive(ephemeralPrivKey);\n        \n        // 2. Compute shared secret: ECDH\n        bytes32 sharedSecret = ecdh(ephemeralPrivKey, recipientPubKey);\n        \n        // 3. Derive stealth address\n        address stealthAddr = deriveStealthAddress(recipientPubKey, sharedSecret);\n        \n        // 4. Send to stealth address\n        payable(stealthAddr).transfer(amount);\n        \n        emit StealthPayment(stealthAddr, ephemeralPubKey, encryptedAmount);\n    }\n}"
+      }
     }
   }
-}
+]

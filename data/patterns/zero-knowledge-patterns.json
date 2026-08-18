@@ -1,121 +1,117 @@
-{
-  "category": "Zero-Knowledge",
-  "description": "Zero-Knowledge design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "plonk-pattern",
-      "name": "PLONK Pattern",
-      "category": "Zero-Knowledge",
-      "description": "Universal trusted setup for ZK proofs. Reusable setup, supports lookup tables, updatable.",
-      "when_to_use": [
-        "Modern ZK systems",
-        "universal setup",
-        "lookup tables"
-      ],
-      "benefits": [
-        "Reusable setup (one ceremony for all circuits)",
-        "updatable",
-        "custom gates"
-      ],
-      "drawbacks": [
-        "Larger proofs than Groth16 (~800 bytes)",
-        "more complex"
-      ],
-      "use_cases": [
-        "zkSync Era",
-        "Aztec",
-        "Polygon Hermez"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "zero-knowledge",
-        "plonk",
-        "kzg",
-        "universal-setup"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// PLONK verifier with KZG commitments\ncontract PlonkVerifier {\n    // Universal trusted setup (Powers of Tau)\n    // Reusable for any circuit\n    \n    function verify(\n        bytes memory proof,\n        uint256[] memory publicInputs\n    ) public view returns (bool) {\n        // 1. Verify KZG polynomial commitments\n        // 2. Check PLONK constraints with lookup tables\n        // 3. Pairing check\n        \n        return checkPairing(proof, publicInputs);\n    }\n}\n\n// Supports custom gates and lookup tables\n// ~800 byte proofs, ~500k gas verification"
-        }
-      }
-    },
-    {
-      "id": "zksnark-groth16",
-      "name": "zkSNARK (Groth16)",
-      "category": "Zero-Knowledge",
-      "description": "Succinct zero-knowledge proofs with trusted setup. Constant ~200 byte proofs, fast verification.",
-      "when_to_use": [
-        "Privacy-preserving verification",
-        "private transactions",
-        "scaling"
-      ],
-      "benefits": [
-        "Tiny proofs (288 bytes)",
-        "fast on-chain verification (~280k gas)"
-      ],
-      "drawbacks": [
-        "Requires trusted setup per circuit",
-        "not quantum-resistant"
-      ],
-      "use_cases": [
-        "Tornado Cash",
-        "zkRollups",
-        "private voting"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "zero-knowledge",
-        "zksnark",
-        "groth16",
-        "privacy",
-        "circom"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Groth16 verifier (auto-generated from Circom)\ncontract Groth16Verifier {\n    struct Proof {\n        uint256[2] a;\n        uint256[2][2] b;\n        uint256[2] c;\n    }\n    \n    function verifyProof(\n        uint256[2] memory a,\n        uint256[2][2] memory b,\n        uint256[2] memory c,\n        uint256[] memory input\n    ) public view returns (bool) {\n        // Pairing check: e(A, B) = e(α, β) · e(C, δ) · e(vk, γ)\n        // Constant ~280k gas regardless of circuit complexity\n    }\n}\n\n// Usage: Prove you know secret without revealing it\n// Prove balance > X without revealing balance"
-        }
-      }
-    },
-    {
-      "id": "zkstark-pattern",
-      "name": "zkSTARK Pattern",
-      "category": "Zero-Knowledge",
-      "description": "Transparent ZK without trusted setup. Post-quantum secure, larger proofs but no setup ceremony.",
-      "when_to_use": [
-        "Transparent setup",
-        "post-quantum security",
-        "StarkNet"
-      ],
-      "benefits": [
-        "No trusted setup",
-        "quantum-resistant",
-        "scalable"
-      ],
-      "drawbacks": [
-        "Larger proofs (40-100KB)",
-        "higher verification cost"
-      ],
-      "use_cases": [
-        "StarkNet",
-        "StarkEx",
-        "post-quantum privacy"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "zero-knowledge",
-        "zkstark",
-        "starknet",
-        "cairo",
-        "post-quantum"
-      ],
-      "examples": {
-        "cairo": {
-          "language": "cairo",
-          "code": "// Cairo (StarkNet language) - STARK-friendly\n@external\nfunc verify_computation{\n    syscall_ptr: felt*,\n    pedersen_ptr: HashBuiltin*,\n    range_check_ptr\n}(claim: felt, proof: felt*) -> (is_valid: felt) {\n    // FRI (Fast Reed-Solomon IOP) verification\n    let (result) = stark_verify(claim, proof);\n    return (is_valid=result);\n}\n\n// No trusted setup needed\n// Quantum-resistant via hash-based commitments"
-        }
+[
+  {
+    "id": "plonk-pattern",
+    "name": "PLONK Pattern",
+    "category": "Zero-Knowledge",
+    "description": "Universal trusted setup for ZK proofs. Reusable setup, supports lookup tables, updatable.",
+    "when_to_use": [
+      "Modern ZK systems",
+      "universal setup",
+      "lookup tables"
+    ],
+    "benefits": [
+      "Reusable setup (one ceremony for all circuits)",
+      "updatable",
+      "custom gates"
+    ],
+    "drawbacks": [
+      "Larger proofs than Groth16 (~800 bytes)",
+      "more complex"
+    ],
+    "use_cases": [
+      "zkSync Era",
+      "Aztec",
+      "Polygon Hermez"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "zero-knowledge",
+      "plonk",
+      "kzg",
+      "universal-setup"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// PLONK verifier with KZG commitments\ncontract PlonkVerifier {\n    // Universal trusted setup (Powers of Tau)\n    // Reusable for any circuit\n    \n    function verify(\n        bytes memory proof,\n        uint256[] memory publicInputs\n    ) public view returns (bool) {\n        // 1. Verify KZG polynomial commitments\n        // 2. Check PLONK constraints with lookup tables\n        // 3. Pairing check\n        \n        return checkPairing(proof, publicInputs);\n    }\n}\n\n// Supports custom gates and lookup tables\n// ~800 byte proofs, ~500k gas verification"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "zksnark-groth16",
+    "name": "zkSNARK (Groth16)",
+    "category": "Zero-Knowledge",
+    "description": "Succinct zero-knowledge proofs with trusted setup. Constant ~200 byte proofs, fast verification.",
+    "when_to_use": [
+      "Privacy-preserving verification",
+      "private transactions",
+      "scaling"
+    ],
+    "benefits": [
+      "Tiny proofs (288 bytes)",
+      "fast on-chain verification (~280k gas)"
+    ],
+    "drawbacks": [
+      "Requires trusted setup per circuit",
+      "not quantum-resistant"
+    ],
+    "use_cases": [
+      "Tornado Cash",
+      "zkRollups",
+      "private voting"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "zero-knowledge",
+      "zksnark",
+      "groth16",
+      "privacy",
+      "circom"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Groth16 verifier (auto-generated from Circom)\ncontract Groth16Verifier {\n    struct Proof {\n        uint256[2] a;\n        uint256[2][2] b;\n        uint256[2] c;\n    }\n    \n    function verifyProof(\n        uint256[2] memory a,\n        uint256[2][2] memory b,\n        uint256[2] memory c,\n        uint256[] memory input\n    ) public view returns (bool) {\n        // Pairing check: e(A, B) = e(α, β) · e(C, δ) · e(vk, γ)\n        // Constant ~280k gas regardless of circuit complexity\n    }\n}\n\n// Usage: Prove you know secret without revealing it\n// Prove balance > X without revealing balance"
+      }
+    }
+  },
+  {
+    "id": "zkstark-pattern",
+    "name": "zkSTARK Pattern",
+    "category": "Zero-Knowledge",
+    "description": "Transparent ZK without trusted setup. Post-quantum secure, larger proofs but no setup ceremony.",
+    "when_to_use": [
+      "Transparent setup",
+      "post-quantum security",
+      "StarkNet"
+    ],
+    "benefits": [
+      "No trusted setup",
+      "quantum-resistant",
+      "scalable"
+    ],
+    "drawbacks": [
+      "Larger proofs (40-100KB)",
+      "higher verification cost"
+    ],
+    "use_cases": [
+      "StarkNet",
+      "StarkEx",
+      "post-quantum privacy"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "zero-knowledge",
+      "zkstark",
+      "starknet",
+      "cairo",
+      "post-quantum"
+    ],
+    "examples": {
+      "cairo": {
+        "language": "cairo",
+        "code": "// Cairo (StarkNet language) - STARK-friendly\n@external\nfunc verify_computation{\n    syscall_ptr: felt*,\n    pedersen_ptr: HashBuiltin*,\n    range_check_ptr\n}(claim: felt, proof: felt*) -> (is_valid: felt) {\n    // FRI (Fast Reed-Solomon IOP) verification\n    let (result) = stark_verify(claim, proof);\n    return (is_valid=result);\n}\n\n// No trusted setup needed\n// Quantum-resistant via hash-based commitments"
+      }
+    }
+  }
+]

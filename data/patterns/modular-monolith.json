@@ -1,22 +1,24 @@
-{
-  "id": "modular-monolith",
-  "name": "Modular Monolith",
-  "category": "Architectural",
-  "description": "Single deployable unit with well-defined internal module boundaries",
-  "when_to_use": "Medium-sized applications\nTeam coordination\nGradual evolution",
-  "benefits": "Simplicity\nPerformance\nEasy debugging\nConsistent transactions",
-  "drawbacks": "Scaling limitations\nTechnology constraints\nDeployment coupling",
-  "use_cases": "Growing applications\nTeam-sized projects\nMicroservices preparation",
-  "complexity": "Medium",
-  "tags": [
-    "monolith",
-    "modular",
-    "boundaries"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Modular Monolith: single deployment, modular structure\n\n// Module 1: User Module (encapsulated)\nnamespace UserModule {\n  class UserService {\n    async createUser(email: string) {\n      // Internal implementation\n      return { id: '1', email };\n    }\n  }\n  \n  // Public API of module\n  export const userService = new UserService();\n}\n\n// Module 2: Order Module (encapsulated)\nnamespace OrderModule {\n  class OrderService {\n    async createOrder(userId: string, total: number) {\n      // Use public API of User Module\n      const user = await UserModule.userService.createUser('user@example.com');\n      \n      return {\n        id: '1',\n        userId: user.id,\n        total\n      };\n    }\n  }\n  \n  export const orderService = new OrderService();\n}\n\n// Module 3: Billing Module\nnamespace BillingModule {\n  class BillingService {\n    async processPayment(orderId: string, amount: number) {\n      // Process payment\n      return { success: true };\n    }\n  }\n  \n  export const billingService = new BillingService();\n}\n\n// Shared Kernel (common utilities)\nnamespace Shared {\n  export function generateId(): string {\n    return crypto.randomUUID();\n  }\n}\n\n// Single application, but organized in modules\n// Each module has clear boundaries\n// Modules communicate through public APIs\n// Can extract to microservices later if needed"
+[
+  {
+    "id": "modular-monolith",
+    "name": "Modular Monolith",
+    "category": "Architectural",
+    "description": "Single deployable unit with well-defined internal module boundaries",
+    "when_to_use": "Medium-sized applications\nTeam coordination\nGradual evolution",
+    "benefits": "Simplicity\nPerformance\nEasy debugging\nConsistent transactions",
+    "drawbacks": "Scaling limitations\nTechnology constraints\nDeployment coupling",
+    "use_cases": "Growing applications\nTeam-sized projects\nMicroservices preparation",
+    "complexity": "Medium",
+    "tags": [
+      "monolith",
+      "modular",
+      "boundaries"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Modular Monolith: single deployment, modular structure\n\n// Module 1: User Module (encapsulated)\nnamespace UserModule {\n  class UserService {\n    async createUser(email: string) {\n      // Internal implementation\n      return { id: '1', email };\n    }\n  }\n  \n  // Public API of module\n  export const userService = new UserService();\n}\n\n// Module 2: Order Module (encapsulated)\nnamespace OrderModule {\n  class OrderService {\n    async createOrder(userId: string, total: number) {\n      // Use public API of User Module\n      const user = await UserModule.userService.createUser('user@example.com');\n      \n      return {\n        id: '1',\n        userId: user.id,\n        total\n      };\n    }\n  }\n  \n  export const orderService = new OrderService();\n}\n\n// Module 3: Billing Module\nnamespace BillingModule {\n  class BillingService {\n    async processPayment(orderId: string, amount: number) {\n      // Process payment\n      return { success: true };\n    }\n  }\n  \n  export const billingService = new BillingService();\n}\n\n// Shared Kernel (common utilities)\nnamespace Shared {\n  export function generateId(): string {\n    return crypto.randomUUID();\n  }\n}\n\n// Single application, but organized in modules\n// Each module has clear boundaries\n// Modules communicate through public APIs\n// Can extract to microservices later if needed"
+      }
     }
   }
-}
+]

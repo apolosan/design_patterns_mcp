@@ -1,24 +1,26 @@
-{
-  "id": "invariant-testing",
-  "name": "Invariant Testing Pattern",
-  "category": "Development & Testing",
-  "description": "Verify system properties always hold regardless of action sequence. High-confidence correctness.",
-  "when_to_use": "DeFi protocols, critical contracts, mathematical invariants",
-  "benefits": "High-confidence correctness, catches complex bugs, mathematical proofs",
-  "drawbacks": "Requires clear invariants, complex setup, slow execution",
-  "use_cases": "AMM invariants, lending protocol solvency, supply conservation",
-  "complexity": "Very High",
-  "tags": [
-    "testing",
-    "invariant",
-    "foundry",
-    "formal-verification",
-    "defi"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Foundry invariant test\ncontract AMM_InvariantTest is Test {\n    AMM amm;\n    \n    function setUp() public {\n        amm = new AMM();\n        // Setup actors and initial state\n    }\n    \n    // Invariant: k = x * y always holds\n    function invariant_constantProduct() public {\n        uint256 reserve0 = amm.reserve0();\n        uint256 reserve1 = amm.reserve1();\n        uint256 k = amm.k();\n        \n        assertEq(reserve0 * reserve1, k, \"K invariant violated\");\n    }\n    \n    // Invariant: LP shares represent fair ownership\n    function invariant_lpShareValue() public {\n        uint256 totalShares = amm.totalSupply();\n        uint256 totalValue = amm.reserve0() + amm.reserve1();\n        \n        assertGe(totalValue * 1e18 / totalShares, MIN_SHARE_VALUE);\n    }\n}"
+[
+  {
+    "id": "invariant-testing",
+    "name": "Invariant Testing Pattern",
+    "category": "Development & Testing",
+    "description": "Verify system properties always hold regardless of action sequence. High-confidence correctness.",
+    "when_to_use": "DeFi protocols, critical contracts, mathematical invariants",
+    "benefits": "High-confidence correctness, catches complex bugs, mathematical proofs",
+    "drawbacks": "Requires clear invariants, complex setup, slow execution",
+    "use_cases": "AMM invariants, lending protocol solvency, supply conservation",
+    "complexity": "Very High",
+    "tags": [
+      "testing",
+      "invariant",
+      "foundry",
+      "formal-verification",
+      "defi"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Foundry invariant test\ncontract AMM_InvariantTest is Test {\n    AMM amm;\n    \n    function setUp() public {\n        amm = new AMM();\n        // Setup actors and initial state\n    }\n    \n    // Invariant: k = x * y always holds\n    function invariant_constantProduct() public {\n        uint256 reserve0 = amm.reserve0();\n        uint256 reserve1 = amm.reserve1();\n        uint256 k = amm.k();\n        \n        assertEq(reserve0 * reserve1, k, \"K invariant violated\");\n    }\n    \n    // Invariant: LP shares represent fair ownership\n    function invariant_lpShareValue() public {\n        uint256 totalShares = amm.totalSupply();\n        uint256 totalValue = amm.reserve0() + amm.reserve1();\n        \n        assertGe(totalValue * 1e18 / totalShares, MIN_SHARE_VALUE);\n    }\n}"
+      }
     }
   }
-}
+]

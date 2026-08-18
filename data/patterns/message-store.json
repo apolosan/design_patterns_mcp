@@ -1,16 +1,18 @@
-{
-  "id": "message-store",
-  "name": "Message Store",
-  "category": "Integration",
-  "description": "Persistent storage for messages to ensure delivery and recovery",
-  "when_to_use": "Message persistence\nReliability\nRecovery scenarios",
-  "benefits": "Message persistence\nReliability\nRecovery capability",
-  "drawbacks": "Storage overhead\nPerformance impact\nMaintenance complexity",
-  "use_cases": "Critical messaging\nAudit trails\nMessage recovery",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "persistence",
-    "reliability"
-  ]
-}
+[
+  {
+    "id": "message-store",
+    "name": "Message Store",
+    "category": "Integration",
+    "description": "Persistent storage for messages to ensure delivery and recovery",
+    "when_to_use": "Message persistence\nReliability\nRecovery scenarios",
+    "benefits": "Message persistence\nReliability\nRecovery capability",
+    "drawbacks": "Storage overhead\nPerformance impact\nMaintenance complexity",
+    "use_cases": "Critical messaging\nAudit trails\nMessage recovery",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "persistence",
+      "reliability"
+    ]
+  }
+]

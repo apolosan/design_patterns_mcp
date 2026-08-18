@@ -1,22 +1,24 @@
-{
-  "id": "buffer",
-  "name": "Buffer Pattern",
-  "category": "Reactive",
-  "description": "Collects emissions in bundles and emits them as arrays",
-  "when_to_use": "Batch processing\nPerformance optimization\nGrouping events",
-  "benefits": "Batch processing\nPerformance optimization\nEvent grouping",
-  "drawbacks": "Memory usage\nTiming complexity\nDelayed processing",
-  "use_cases": "Data analytics\nBatch operations\nEvent aggregation",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "buffer",
-    "batching"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Buffer: collect values into arrays\nclass Observable<T> {\n  buffer(closeNotifier: Observable<any>): Observable<T[]> {\n    return new Observable(observer => {\n      let buffer: T[] = [];\n      \n      const sourceSub = this.subscribe({\n        next: value => buffer.push(value),\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n      \n      const notifierSub = closeNotifier.subscribe({\n        next: () => {\n          observer.next([...buffer]);\n          buffer = [];\n        },\n        error: () => {},\n        complete: () => {}\n      });\n      \n      return () => {\n        sourceSub.unsubscribe();\n        notifierSub.unsubscribe();\n      };\n    });\n  }\n}\n\n// Usage: Batch API calls\nconst clicks = fromEvent(button, 'click');\nconst timer = interval(1000);\n\nclicks\n  .buffer(timer)  // Collect clicks every second\n  .subscribe({\n    next: clickArray => {\n      console.log('Clicks this second:', clickArray.length);\n    },\n    error: () => {},\n    complete: () => {}\n  });"
+[
+  {
+    "id": "buffer",
+    "name": "Buffer Pattern",
+    "category": "Reactive",
+    "description": "Collects emissions in bundles and emits them as arrays",
+    "when_to_use": "Batch processing\nPerformance optimization\nGrouping events",
+    "benefits": "Batch processing\nPerformance optimization\nEvent grouping",
+    "drawbacks": "Memory usage\nTiming complexity\nDelayed processing",
+    "use_cases": "Data analytics\nBatch operations\nEvent aggregation",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "buffer",
+      "batching"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Buffer: collect values into arrays\nclass Observable<T> {\n  buffer(closeNotifier: Observable<any>): Observable<T[]> {\n    return new Observable(observer => {\n      let buffer: T[] = [];\n      \n      const sourceSub = this.subscribe({\n        next: value => buffer.push(value),\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n      \n      const notifierSub = closeNotifier.subscribe({\n        next: () => {\n          observer.next([...buffer]);\n          buffer = [];\n        },\n        error: () => {},\n        complete: () => {}\n      });\n      \n      return () => {\n        sourceSub.unsubscribe();\n        notifierSub.unsubscribe();\n      };\n    });\n  }\n}\n\n// Usage: Batch API calls\nconst clicks = fromEvent(button, 'click');\nconst timer = interval(1000);\n\nclicks\n  .buffer(timer)  // Collect clicks every second\n  .subscribe({\n    next: clickArray => {\n      console.log('Clicks this second:', clickArray.length);\n    },\n    error: () => {},\n    complete: () => {}\n  });"
+      }
     }
   }
-}
+]

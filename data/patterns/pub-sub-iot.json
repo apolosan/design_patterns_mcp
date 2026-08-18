@@ -1,16 +1,18 @@
-{
-  "id": "pub-sub-iot",
-  "name": "Publish-Subscribe (IoT)",
-  "category": "IoT",
-  "description": "Message pattern for decoupled communication between IoT devices and services",
-  "when_to_use": "Event-driven systems\nDevice communication\nScalable messaging",
-  "benefits": "Decoupled communication\nScalability\nEvent-driven architecture",
-  "drawbacks": "Message delivery\nBroker dependency\nNetwork overhead",
-  "use_cases": "Sensor networks\nSmart cities\nIndustrial IoT",
-  "complexity": "Medium",
-  "tags": [
-    "iot",
-    "pubsub",
-    "messaging"
-  ]
-}
+[
+  {
+    "id": "pub-sub-iot",
+    "name": "Publish-Subscribe (IoT)",
+    "category": "IoT",
+    "description": "Message pattern for decoupled communication between IoT devices and services",
+    "when_to_use": "Event-driven systems\nDevice communication\nScalable messaging",
+    "benefits": "Decoupled communication\nScalability\nEvent-driven architecture",
+    "drawbacks": "Message delivery\nBroker dependency\nNetwork overhead",
+    "use_cases": "Sensor networks\nSmart cities\nIndustrial IoT",
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "pubsub",
+      "messaging"
+    ]
+  }
+]

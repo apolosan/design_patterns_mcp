@@ -1,15 +1,17 @@
-{
-  "id": "premature-optimization",
-  "name": "Premature Optimization Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Optimizing code before understanding actual performance bottlenecks",
-  "when_to_use": "Optimizing without profiling\nComplex solutions for unproven problems\nSacrificing readability for theoretical gains",
-  "drawbacks": "Increased complexity\nReduced readability\nHarder maintenance\nMay not address real bottlenecks",
-  "use_cases": "Complex caching without evidence of need\nMicro-optimizations in non-critical paths\nArchitecture decisions based on assumptions",
-  "complexity": "Medium",
-  "tags": [
-    "anti-pattern",
-    "optimization",
-    "performance"
-  ]
-}
+[
+  {
+    "id": "premature-optimization",
+    "name": "Premature Optimization Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Optimizing code before understanding actual performance bottlenecks",
+    "when_to_use": "Optimizing without profiling\nComplex solutions for unproven problems\nSacrificing readability for theoretical gains",
+    "drawbacks": "Increased complexity\nReduced readability\nHarder maintenance\nMay not address real bottlenecks",
+    "use_cases": "Complex caching without evidence of need\nMicro-optimizations in non-critical paths\nArchitecture decisions based on assumptions",
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "optimization",
+      "performance"
+    ]
+  }
+]

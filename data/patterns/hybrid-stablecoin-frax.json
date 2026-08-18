@@ -1,24 +1,26 @@
-{
-  "id": "hybrid-stablecoin-frax",
-  "name": "Hybrid Stablecoin (Frax)",
-  "category": "DeFi Stablecoin",
-  "description": "Partially collateralized stablecoin. Balance between full collateral and algorithmic.",
-  "when_to_use": "Stablecoins seeking balance between capital efficiency and stability",
-  "benefits": "More capital efficient than fully collateralized, more stable than algorithmic",
-  "drawbacks": "Complex mechanism, still has stability risks, governance dependency",
-  "use_cases": "FRAX (fractional reserves), hybrid collateral models",
-  "complexity": "Very High",
-  "tags": [
-    "defi",
-    "stablecoin",
-    "frax",
-    "hybrid",
-    "fractional-reserve"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Fractional reserve model (e.g., 85% USDC, 15% FXS)\nfunction mint(uint256 fraxAmount) external {\n    uint256 collateralRatio = getCollateralRatio(); // e.g., 85%\n    uint256 collateralNeeded = (fraxAmount * collateralRatio) / 1e6;\n    uint256 fxsToBurn = (fraxAmount * (1e6 - collateralRatio)) / 1e6;\n    \n    usdc.transferFrom(msg.sender, address(this), collateralNeeded);\n    fxs.burn(msg.sender, fxsToBurn);\n    frax.mint(msg.sender, fraxAmount);\n}"
+[
+  {
+    "id": "hybrid-stablecoin-frax",
+    "name": "Hybrid Stablecoin (Frax)",
+    "category": "DeFi Stablecoin",
+    "description": "Partially collateralized stablecoin. Balance between full collateral and algorithmic.",
+    "when_to_use": "Stablecoins seeking balance between capital efficiency and stability",
+    "benefits": "More capital efficient than fully collateralized, more stable than algorithmic",
+    "drawbacks": "Complex mechanism, still has stability risks, governance dependency",
+    "use_cases": "FRAX (fractional reserves), hybrid collateral models",
+    "complexity": "Very High",
+    "tags": [
+      "defi",
+      "stablecoin",
+      "frax",
+      "hybrid",
+      "fractional-reserve"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Fractional reserve model (e.g., 85% USDC, 15% FXS)\nfunction mint(uint256 fraxAmount) external {\n    uint256 collateralRatio = getCollateralRatio(); // e.g., 85%\n    uint256 collateralNeeded = (fraxAmount * collateralRatio) / 1e6;\n    uint256 fxsToBurn = (fraxAmount * (1e6 - collateralRatio)) / 1e6;\n    \n    usdc.transferFrom(msg.sender, address(this), collateralNeeded);\n    fxs.burn(msg.sender, fxsToBurn);\n    frax.mint(msg.sender, fraxAmount);\n}"
+      }
     }
   }
-}
+]

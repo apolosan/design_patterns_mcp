@@ -1,22 +1,24 @@
-{
-  "id": "hexagonal-architecture",
-  "name": "Hexagonal Architecture",
-  "category": "Architectural",
-  "description": "Isolates core application logic from external concerns using ports and adapters",
-  "when_to_use": "Multiple external systems\nTesting isolation\nFramework flexibility",
-  "benefits": "Testability\nFlexibility\nExternal system isolation\nClear boundaries",
-  "drawbacks": "Complex setup\nInterface proliferation\nOver-abstraction risk",
-  "use_cases": "Integration-heavy systems\nLegacy system modernization\nAPI-first applications",
-  "complexity": "High",
-  "tags": [
-    "ports-and-adapters",
-    "isolation",
-    "boundaries"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Hexagonal (Ports & Adapters): isolate business logic\n\n// Core Domain (no external dependencies)\nclass Order {\n  constructor(public id: string, public total: number) {}\n}\n\n// Port (interface - defines what adapters must implement)\ninterface OrderRepository {\n  save(order: Order): Promise<void>;\n  findById(id: string): Promise<Order | null>;\n}\n\ninterface PaymentGateway {\n  charge(amount: number): Promise<boolean>;\n}\n\n// Application Service (uses ports)\nclass OrderService {\n  constructor(\n    private orderRepo: OrderRepository,\n    private payment: PaymentGateway\n  ) {}\n  \n  async placeOrder(total: number): Promise<Order> {\n    const order = new Order(crypto.randomUUID(), total);\n    await this.payment.charge(total);\n    await this.orderRepo.save(order);\n    return order;\n  }\n}\n\n// Adapters (implement ports)\nclass MongoOrderRepository implements OrderRepository {\n  async save(order: Order) { /* MongoDB */ }\n  async findById(id: string) { return null; }\n}\n\nclass StripePayment implements PaymentGateway {\n  async charge(amount: number) { /* Stripe API */ return true; }\n}\n\n// Wire up from outside\nconst service = new OrderService(\n  new MongoOrderRepository(),\n  new StripePayment()\n);"
+[
+  {
+    "id": "hexagonal-architecture",
+    "name": "Hexagonal Architecture",
+    "category": "Architectural",
+    "description": "Isolates core application logic from external concerns using ports and adapters",
+    "when_to_use": "Multiple external systems\nTesting isolation\nFramework flexibility",
+    "benefits": "Testability\nFlexibility\nExternal system isolation\nClear boundaries",
+    "drawbacks": "Complex setup\nInterface proliferation\nOver-abstraction risk",
+    "use_cases": "Integration-heavy systems\nLegacy system modernization\nAPI-first applications",
+    "complexity": "High",
+    "tags": [
+      "ports-and-adapters",
+      "isolation",
+      "boundaries"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Hexagonal (Ports & Adapters): isolate business logic\n\n// Core Domain (no external dependencies)\nclass Order {\n  constructor(public id: string, public total: number) {}\n}\n\n// Port (interface - defines what adapters must implement)\ninterface OrderRepository {\n  save(order: Order): Promise<void>;\n  findById(id: string): Promise<Order | null>;\n}\n\ninterface PaymentGateway {\n  charge(amount: number): Promise<boolean>;\n}\n\n// Application Service (uses ports)\nclass OrderService {\n  constructor(\n    private orderRepo: OrderRepository,\n    private payment: PaymentGateway\n  ) {}\n  \n  async placeOrder(total: number): Promise<Order> {\n    const order = new Order(crypto.randomUUID(), total);\n    await this.payment.charge(total);\n    await this.orderRepo.save(order);\n    return order;\n  }\n}\n\n// Adapters (implement ports)\nclass MongoOrderRepository implements OrderRepository {\n  async save(order: Order) { /* MongoDB */ }\n  async findById(id: string) { return null; }\n}\n\nclass StripePayment implements PaymentGateway {\n  async charge(amount: number) { /* Stripe API */ return true; }\n}\n\n// Wire up from outside\nconst service = new OrderService(\n  new MongoOrderRepository(),\n  new StripePayment()\n);"
+      }
     }
   }
-}
+]

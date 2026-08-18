@@ -1,22 +1,24 @@
-{
-  "id": "cold-observable",
-  "name": "Cold Observable Pattern",
-  "category": "Reactive",
-  "description": "Observable that starts emitting values only when subscribed to",
-  "when_to_use": "On-demand data\nIndependent streams\nHTTP requests",
-  "benefits": "On-demand execution\nIndependent streams\nResource control",
-  "drawbacks": "Multiple executions\nResource duplication\nTiming differences",
-  "use_cases": "HTTP requests\nFile reads\nDatabase queries",
-  "complexity": "Low",
-  "tags": [
-    "reactive",
-    "cold",
-    "on-demand"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Cold Observable: separate execution per subscriber\nclass ColdObservable<T> {\n  constructor(\n    private producer: (observer: Observer<T>) => () => void\n  ) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    const teardown = this.producer(observer);\n    return { unsubscribe: teardown };\n  }\n}\n\n// Usage: HTTP request (new request per subscriber)\nconst httpRequest = new ColdObservable<Response>(observer => {\n  const controller = new AbortController();\n  \n  fetch('https://api.example.com/data', { \n    signal: controller.signal \n  })\n    .then(response => {\n      observer.next(response);\n      observer.complete();\n    })\n    .catch(error => observer.error(error));\n  \n  return () => controller.abort();\n});\n\n// Each subscriber triggers a new HTTP request\nhttpRequest.subscribe({ next: r => console.log('Sub 1:', r), error: () => {}, complete: () => {} });\nhttpRequest.subscribe({ next: r => console.log('Sub 2:', r), error: () => {}, complete: () => {} });"
+[
+  {
+    "id": "cold-observable",
+    "name": "Cold Observable Pattern",
+    "category": "Reactive",
+    "description": "Observable that starts emitting values only when subscribed to",
+    "when_to_use": "On-demand data\nIndependent streams\nHTTP requests",
+    "benefits": "On-demand execution\nIndependent streams\nResource control",
+    "drawbacks": "Multiple executions\nResource duplication\nTiming differences",
+    "use_cases": "HTTP requests\nFile reads\nDatabase queries",
+    "complexity": "Low",
+    "tags": [
+      "reactive",
+      "cold",
+      "on-demand"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Cold Observable: separate execution per subscriber\nclass ColdObservable<T> {\n  constructor(\n    private producer: (observer: Observer<T>) => () => void\n  ) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    const teardown = this.producer(observer);\n    return { unsubscribe: teardown };\n  }\n}\n\n// Usage: HTTP request (new request per subscriber)\nconst httpRequest = new ColdObservable<Response>(observer => {\n  const controller = new AbortController();\n  \n  fetch('https://api.example.com/data', { \n    signal: controller.signal \n  })\n    .then(response => {\n      observer.next(response);\n      observer.complete();\n    })\n    .catch(error => observer.error(error));\n  \n  return () => controller.abort();\n});\n\n// Each subscriber triggers a new HTTP request\nhttpRequest.subscribe({ next: r => console.log('Sub 1:', r), error: () => {}, complete: () => {} });\nhttpRequest.subscribe({ next: r => console.log('Sub 2:', r), error: () => {}, complete: () => {} });"
+      }
     }
   }
-}
+]

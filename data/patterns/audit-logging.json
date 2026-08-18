@@ -1,16 +1,18 @@
-{
-  "id": "audit-logging",
-  "name": "Audit Logging Pattern",
-  "category": "Security",
-  "description": "Records security-relevant events for monitoring, compliance, and forensics",
-  "when_to_use": "Security monitoring\nCompliance requirements\nForensic analysis",
-  "benefits": "Security monitoring\nCompliance\nForensic capability",
-  "drawbacks": "Storage overhead\nPerformance impact\nLog management",
-  "use_cases": "Security events\nAccess logs\nCompliance tracking",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "logging",
-    "audit"
-  ]
-}
+[
+  {
+    "id": "audit-logging",
+    "name": "Audit Logging Pattern",
+    "category": "Security",
+    "description": "Records security-relevant events for monitoring, compliance, and forensics",
+    "when_to_use": "Security monitoring\nCompliance requirements\nForensic analysis",
+    "benefits": "Security monitoring\nCompliance\nForensic capability",
+    "drawbacks": "Storage overhead\nPerformance impact\nLog management",
+    "use_cases": "Security events\nAccess logs\nCompliance tracking",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "logging",
+      "audit"
+    ]
+  }
+]

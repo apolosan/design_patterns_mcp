@@ -1,504 +1,500 @@
-{
-  "category": "Smart Contract Security",
-  "description": "Smart Contract Security design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "create2-deterministic",
-      "name": "CREATE2 Deterministic Deployment",
-      "category": "Smart Contract Security",
-      "description": "Deploy contracts to predictable addresses. Same address across chains, counterfactual instantiation.",
-      "when_to_use": [
-        "Cross-chain same address",
-        "counterfactual contracts",
-        "predictable deployment"
-      ],
-      "benefits": [
-        "Address known before deployment",
-        "cross-chain consistency",
-        "counterfactual"
-      ],
-      "drawbacks": [
-        "Salt management",
-        "deployment complexity",
-        "address collision risk"
-      ],
-      "use_cases": [
-        "Multi-chain protocols",
-        "factory patterns",
-        "deterministic addresses"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "factory",
-        "create2",
-        "deterministic",
-        "cross-chain",
-        "deployment"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract Factory {\n    function deploy(bytes32 salt, bytes memory bytecode) \n        external returns (address) \n    {\n        address addr;\n        assembly {\n            addr := create2(0, add(bytecode, 0x20), mload(bytecode), salt)\n        }\n        require(addr != address(0), \"Deploy failed\");\n        return addr;\n    }\n    \n    function computeAddress(bytes32 salt, bytes memory bytecode) \n        public view returns (address) \n    {\n        bytes32 hash = keccak256(abi.encodePacked(\n            bytes1(0xff), address(this), salt, keccak256(bytecode)\n        ));\n        return address(uint160(uint256(hash)));\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "checks-effects-interactions",
-      "name": "Checks-Effects-Interactions",
-      "category": "Smart Contract Security",
-      "description": "Prevents reentrancy attacks by ordering function execution Problem: Reentrancy attacks where external calls allow malicious state manipulation",
-      "when_to_use": [
-        "Order operations: checks → effects → interactions"
-      ],
-      "benefits": [
-        "Prevents reentrancy",
-        "secure by design",
-        "industry standard"
-      ],
-      "drawbacks": [
-        "Requires discipline",
-        "code refactoring needed"
-      ],
-      "use_cases": [
-        "Withdrawal functions",
-        "ETH transfers",
-        "external calls in DeFi"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "security",
-        "reentrancy",
-        "solidity",
-        "defi",
-        "best-practice"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "function withdraw(uint256 amount) public {\n    require(balances[msg.sender] >= amount); // Checks\n    balances[msg.sender] -= amount; // Effects\n    (bool success,) = msg.sender.call{value: amount}(\"\"); // Interactions\n    require(success);\n}"
-        }
-      }
-    },
-    {
-      "id": "clone-factory-eip1167",
-      "name": "Clone Factory (EIP-1167)",
-      "category": "Smart Contract Security",
-      "description": "Deploy many identical contracts cheaply using minimal proxy pattern. 10x cheaper than normal deployment.",
-      "when_to_use": [
-        "Token factories",
-        "vault deployment",
-        "many identical contracts"
-      ],
-      "benefits": [
-        "~10x cheaper deployment",
-        "predictable addresses",
-        "gas-efficient"
-      ],
-      "drawbacks": [
-        "Slight call overhead (~2,600 gas)",
-        "requires implementation contract"
-      ],
-      "use_cases": [
-        "ERC-20 token factories",
-        "vault systems",
-        "contract cloning"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "factory",
-        "clone",
-        "eip-1167",
-        "minimal-proxy",
-        "gas-optimization"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/proxy/Clones.sol\";\n\ncontract TokenFactory {\n    address public implementation;\n    \n    function createToken(string memory name) external returns (address) {\n        address clone = Clones.clone(implementation);\n        IToken(clone).initialize(name, msg.sender);\n        return clone;\n    }\n}\n\n// Minimal proxy: only 55 bytes, delegates all calls to implementation"
-        }
-      }
-    },
-    {
-      "id": "emergency-stop",
-      "name": "Emergency Stop / Circuit Breaker",
-      "category": "Smart Contract Security",
-      "description": "Pause contract in case of discovered vulnerability Problem: Need to halt operations during security incidents",
-      "when_to_use": [
-        "Pausable pattern with whenNotPaused modifier"
-      ],
-      "benefits": [
-        "Safety mechanism",
-        "limits exploit damage",
-        "recovery time"
-      ],
-      "drawbacks": [
-        "Centralization risk",
-        "can lock funds",
-        "admin trust"
-      ],
-      "use_cases": [
-        "All production contracts",
-        "high-value DeFi protocols"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "security",
-        "pausable",
-        "emergency",
-        "admin",
-        "openzeppelin"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/security/Pausable.sol\";\n\ncontract MyContract is Pausable {\n    function deposit() public whenNotPaused {\n        // Protected logic\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "eternal-storage-pattern",
-      "name": "Eternal Storage Pattern",
-      "category": "Smart Contract Security",
-      "description": "Separate storage from logic for upgradeability. Storage contract persists, logic contracts can be replaced.",
-      "when_to_use": [
-        "Legacy systems",
-        "maximum upgrade flexibility",
-        "simple separation of concerns"
-      ],
-      "benefits": [
-        "Clean separation",
-        "simple upgrades",
-        "storage persistence"
-      ],
-      "drawbacks": [
-        "Verbose",
-        "gas-intensive",
-        "less common now (proxies preferred)"
-      ],
-      "use_cases": [
-        "Early upgradeable contracts",
-        "maximum flexibility requirements"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "upgradeability",
-        "storage",
-        "legacy",
-        "separation",
-        "pattern"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract EternalStorage {\n    mapping(bytes32 => uint256) uintStorage;\n    \n    function setUint(bytes32 key, uint256 value) external onlyLogic {\n        uintStorage[key] = value;\n    }\n    \n    function getUint(bytes32 key) external view returns (uint256) {\n        return uintStorage[key];\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "multisig",
-      "name": "Multi-Signature",
-      "category": "Smart Contract Security",
-      "description": "M-of-N approvals required for execution Problem: Distribute authority and reduce single point of failure",
-      "when_to_use": [
-        "Require multiple signatures for critical operations"
-      ],
-      "benefits": [
-        "Distributed trust",
-        "reduced failure risk",
-        "consensus-based"
-      ],
-      "drawbacks": [
-        "Coordination overhead",
-        "slower execution",
-        "signer management"
-      ],
-      "use_cases": [
-        "Treasury",
-        "protocol upgrades",
-        "admin functions",
-        "DAO operations"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "access-control",
-        "multisig",
-        "gnosis-safe",
-        "security",
-        "governance"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "mapping(uint256 => mapping(address => bool)) approvals;\nuint256 public required = 3;\n\nfunction approve(uint256 txId) public onlySigner {\n    approvals[txId][msg.sender] = true;\n}\n\nfunction execute(uint256 txId) public {\n    require(getApprovalCount(txId) >= required);\n    // Execute\n}"
-        }
-      }
-    },
-    {
-      "id": "ownable",
-      "name": "Ownable",
-      "category": "Smart Contract Security",
-      "description": "Single owner with admin privileges Problem: Need restricted access to admin functions",
-      "when_to_use": [
-        "Owner address with onlyOwner modifier"
-      ],
-      "benefits": [
-        "Simple",
-        "gas-efficient",
-        "standard",
-        "wide support"
-      ],
-      "drawbacks": [
-        "Single point of failure",
-        "centralization",
-        "key loss risk"
-      ],
-      "use_cases": [
-        "Contract administration",
-        "upgrades",
-        "emergency functions"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "access-control",
-        "admin",
-        "ownership",
-        "openzeppelin"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/access/Ownable.sol\";\n\ncontract MyContract is Ownable {\n    function setFee(uint256 newFee) external onlyOwner {\n        fee = newFee;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "pull-over-push",
-      "name": "Pull Over Push Payment",
-      "category": "Smart Contract Security",
-      "description": "Users withdraw funds instead of contract pushing payments Problem: Push payments can fail and create DoS vulnerabilities",
-      "when_to_use": [
-        "Store pending payments",
-        "users withdraw when ready"
-      ],
-      "benefits": [
-        "Prevents DoS",
-        "gas-efficient",
-        "user-controlled timing"
-      ],
-      "drawbacks": [
-        "Users must actively withdraw",
-        "unclaimed funds"
-      ],
-      "use_cases": [
-        "Auctions",
-        "crowdfunding",
-        "rewards",
-        "dividend distribution"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "security",
-        "payment",
-        "withdrawal",
-        "dos-prevention"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "mapping(address => uint256) public pendingWithdrawals;\n\nfunction withdraw() public {\n    uint256 amount = pendingWithdrawals[msg.sender];\n    pendingWithdrawals[msg.sender] = 0;\n    payable(msg.sender).transfer(amount);\n}"
-        }
-      }
-    },
-    {
-      "id": "rate-limiting",
-      "name": "Rate Limiting",
-      "category": "Smart Contract Security",
-      "description": "Limit transaction frequency to prevent abuse Problem: Prevent spam and excessive usage",
-      "when_to_use": [
-        "Track timestamps and enforce cooling periods"
-      ],
-      "benefits": [
-        "Abuse prevention",
-        "controlled resource usage"
-      ],
-      "drawbacks": [
-        "UX friction",
-        "storage costs",
-        "timestamp manipulation"
-      ],
-      "use_cases": [
-        "Faucets",
-        "minting limits",
-        "withdrawal caps",
-        "anti-spam"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "security",
-        "rate-limit",
-        "spam-prevention",
-        "throttling"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "mapping(address => uint256) public lastAction;\nuint256 constant COOLDOWN = 1 hours;\n\nfunction action() public {\n    require(block.timestamp >= lastAction[msg.sender] + COOLDOWN);\n    lastAction[msg.sender] = block.timestamp;\n}"
-        }
-      }
-    },
-    {
-      "id": "reentrancy-guard",
-      "name": "ReentrancyGuard",
-      "category": "Smart Contract Security",
-      "description": "Modifier-based mutex lock to prevent reentrant calls Problem: Need systematic reentrancy protection across multiple functions",
-      "when_to_use": [
-        "Use mutex state variable with nonReentrant modifier"
-      ],
-      "benefits": [
-        "Easy implementation",
-        "comprehensive",
-        "battle-tested (OpenZeppelin)"
-      ],
-      "drawbacks": [
-        "Gas cost (~2,900)",
-        "storage slot overhead"
-      ],
-      "use_cases": [
-        "DeFi protocols",
-        "token contracts",
-        "multi-function protection"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "security",
-        "reentrancy",
-        "modifier",
-        "openzeppelin",
-        "mutex"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "uint256 private _status;\nmodifier nonReentrant() {\n    require(_status != 2);\n    _status = 2;\n    _;\n    _status = 1;\n}\n\nfunction withdraw(uint256 amount) public nonReentrant {\n    // Protected function\n}"
-        }
-      }
-    },
-    {
-      "id": "rbac",
-      "name": "Role-Based Access Control (RBAC)",
-      "category": "Smart Contract Security",
-      "description": "Granular permissions with multiple roles Problem: Need fine-grained access control with multiple admin types",
-      "when_to_use": [
-        "Role-based system with flexible permission assignment"
-      ],
-      "benefits": [
-        "Granular permissions",
-        "flexible",
-        "scalable",
-        "audit trail"
-      ],
-      "drawbacks": [
-        "Complex",
-        "higher gas",
-        "role management overhead"
-      ],
-      "use_cases": [
-        "Complex protocols",
-        "DAOs",
-        "enterprise apps",
-        "multi-admin"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "access-control",
-        "rbac",
-        "roles",
-        "permissions",
-        "openzeppelin"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/access/AccessControl.sol\";\n\ncontract MyContract is AccessControl {\n    bytes32 public constant MINTER = keccak256(\"MINTER\");\n    \n    function mint(address to) public onlyRole(MINTER) {\n        _mint(to, 1);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "transparent-proxy",
-      "name": "Transparent Proxy",
-      "category": "Smart Contract Security",
-      "description": "Proxy with admin/user separation for upgrades Problem: Need upgradeable contracts preserving state and address",
-      "when_to_use": [
-        "Separate proxy and admin",
-        "delegatecall to implementation"
-      ],
-      "benefits": [
-        "Preserves address",
-        "maintains state",
-        "clear separation",
-        "standard"
-      ],
-      "drawbacks": [
-        "Higher gas",
-        "storage collision risk",
-        "complexity",
-        "audit needs"
-      ],
-      "use_cases": [
-        "Long-lived contracts",
-        "iterative protocols",
-        "DeFi"
-      ],
-      "complexity": "High",
-      "tags": [
-        "upgradeability",
-        "proxy",
-        "delegatecall",
-        "openzeppelin"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract TransparentProxy {\n    address immutable admin;\n    address public implementation;\n    \n    function upgrade(address newImpl) external {\n        require(msg.sender == admin);\n        implementation = newImpl;\n    }\n    \n    fallback() external payable {\n        _delegate(implementation);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "uups",
-      "name": "UUPS Proxy",
-      "category": "Smart Contract Security",
-      "description": "Gas-efficient proxy with upgrade logic in implementation Problem: More gas-efficient upgradeability needed",
-      "when_to_use": [
-        "Put upgrade function in implementation",
-        "not proxy"
-      ],
-      "benefits": [
-        "Lower deployment cost",
-        "simpler proxy",
-        "upgrade in logic"
-      ],
-      "drawbacks": [
-        "Risk of bricking",
-        "careful implementation required"
-      ],
-      "use_cases": [
-        "Gas-optimized upgradeable contracts",
-        "modern protocols"
-      ],
-      "complexity": "High",
-      "tags": [
-        "upgradeability",
-        "proxy",
-        "uups",
-        "eip-1822",
-        "gas-optimization"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol\";\n\ncontract MyContract is UUPSUpgradeable {\n    function _authorizeUpgrade(address) internal override onlyOwner {}\n}"
-        }
+[
+  {
+    "id": "create2-deterministic",
+    "name": "CREATE2 Deterministic Deployment",
+    "category": "Smart Contract Security",
+    "description": "Deploy contracts to predictable addresses. Same address across chains, counterfactual instantiation.",
+    "when_to_use": [
+      "Cross-chain same address",
+      "counterfactual contracts",
+      "predictable deployment"
+    ],
+    "benefits": [
+      "Address known before deployment",
+      "cross-chain consistency",
+      "counterfactual"
+    ],
+    "drawbacks": [
+      "Salt management",
+      "deployment complexity",
+      "address collision risk"
+    ],
+    "use_cases": [
+      "Multi-chain protocols",
+      "factory patterns",
+      "deterministic addresses"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "factory",
+      "create2",
+      "deterministic",
+      "cross-chain",
+      "deployment"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract Factory {\n    function deploy(bytes32 salt, bytes memory bytecode) \n        external returns (address) \n    {\n        address addr;\n        assembly {\n            addr := create2(0, add(bytecode, 0x20), mload(bytecode), salt)\n        }\n        require(addr != address(0), \"Deploy failed\");\n        return addr;\n    }\n    \n    function computeAddress(bytes32 salt, bytes memory bytecode) \n        public view returns (address) \n    {\n        bytes32 hash = keccak256(abi.encodePacked(\n            bytes1(0xff), address(this), salt, keccak256(bytecode)\n        ));\n        return address(uint160(uint256(hash)));\n    }\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "checks-effects-interactions",
+    "name": "Checks-Effects-Interactions",
+    "category": "Smart Contract Security",
+    "description": "Prevents reentrancy attacks by ordering function execution Problem: Reentrancy attacks where external calls allow malicious state manipulation",
+    "when_to_use": [
+      "Order operations: checks → effects → interactions"
+    ],
+    "benefits": [
+      "Prevents reentrancy",
+      "secure by design",
+      "industry standard"
+    ],
+    "drawbacks": [
+      "Requires discipline",
+      "code refactoring needed"
+    ],
+    "use_cases": [
+      "Withdrawal functions",
+      "ETH transfers",
+      "external calls in DeFi"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "security",
+      "reentrancy",
+      "solidity",
+      "defi",
+      "best-practice"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "function withdraw(uint256 amount) public {\n    require(balances[msg.sender] >= amount); // Checks\n    balances[msg.sender] -= amount; // Effects\n    (bool success,) = msg.sender.call{value: amount}(\"\"); // Interactions\n    require(success);\n}"
+      }
+    }
+  },
+  {
+    "id": "clone-factory-eip1167",
+    "name": "Clone Factory (EIP-1167)",
+    "category": "Smart Contract Security",
+    "description": "Deploy many identical contracts cheaply using minimal proxy pattern. 10x cheaper than normal deployment.",
+    "when_to_use": [
+      "Token factories",
+      "vault deployment",
+      "many identical contracts"
+    ],
+    "benefits": [
+      "~10x cheaper deployment",
+      "predictable addresses",
+      "gas-efficient"
+    ],
+    "drawbacks": [
+      "Slight call overhead (~2,600 gas)",
+      "requires implementation contract"
+    ],
+    "use_cases": [
+      "ERC-20 token factories",
+      "vault systems",
+      "contract cloning"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "factory",
+      "clone",
+      "eip-1167",
+      "minimal-proxy",
+      "gas-optimization"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/proxy/Clones.sol\";\n\ncontract TokenFactory {\n    address public implementation;\n    \n    function createToken(string memory name) external returns (address) {\n        address clone = Clones.clone(implementation);\n        IToken(clone).initialize(name, msg.sender);\n        return clone;\n    }\n}\n\n// Minimal proxy: only 55 bytes, delegates all calls to implementation"
+      }
+    }
+  },
+  {
+    "id": "emergency-stop",
+    "name": "Emergency Stop / Circuit Breaker",
+    "category": "Smart Contract Security",
+    "description": "Pause contract in case of discovered vulnerability Problem: Need to halt operations during security incidents",
+    "when_to_use": [
+      "Pausable pattern with whenNotPaused modifier"
+    ],
+    "benefits": [
+      "Safety mechanism",
+      "limits exploit damage",
+      "recovery time"
+    ],
+    "drawbacks": [
+      "Centralization risk",
+      "can lock funds",
+      "admin trust"
+    ],
+    "use_cases": [
+      "All production contracts",
+      "high-value DeFi protocols"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "security",
+      "pausable",
+      "emergency",
+      "admin",
+      "openzeppelin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/security/Pausable.sol\";\n\ncontract MyContract is Pausable {\n    function deposit() public whenNotPaused {\n        // Protected logic\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "eternal-storage-pattern",
+    "name": "Eternal Storage Pattern",
+    "category": "Smart Contract Security",
+    "description": "Separate storage from logic for upgradeability. Storage contract persists, logic contracts can be replaced.",
+    "when_to_use": [
+      "Legacy systems",
+      "maximum upgrade flexibility",
+      "simple separation of concerns"
+    ],
+    "benefits": [
+      "Clean separation",
+      "simple upgrades",
+      "storage persistence"
+    ],
+    "drawbacks": [
+      "Verbose",
+      "gas-intensive",
+      "less common now (proxies preferred)"
+    ],
+    "use_cases": [
+      "Early upgradeable contracts",
+      "maximum flexibility requirements"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "upgradeability",
+      "storage",
+      "legacy",
+      "separation",
+      "pattern"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract EternalStorage {\n    mapping(bytes32 => uint256) uintStorage;\n    \n    function setUint(bytes32 key, uint256 value) external onlyLogic {\n        uintStorage[key] = value;\n    }\n    \n    function getUint(bytes32 key) external view returns (uint256) {\n        return uintStorage[key];\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "multisig",
+    "name": "Multi-Signature",
+    "category": "Smart Contract Security",
+    "description": "M-of-N approvals required for execution Problem: Distribute authority and reduce single point of failure",
+    "when_to_use": [
+      "Require multiple signatures for critical operations"
+    ],
+    "benefits": [
+      "Distributed trust",
+      "reduced failure risk",
+      "consensus-based"
+    ],
+    "drawbacks": [
+      "Coordination overhead",
+      "slower execution",
+      "signer management"
+    ],
+    "use_cases": [
+      "Treasury",
+      "protocol upgrades",
+      "admin functions",
+      "DAO operations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "access-control",
+      "multisig",
+      "gnosis-safe",
+      "security",
+      "governance"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "mapping(uint256 => mapping(address => bool)) approvals;\nuint256 public required = 3;\n\nfunction approve(uint256 txId) public onlySigner {\n    approvals[txId][msg.sender] = true;\n}\n\nfunction execute(uint256 txId) public {\n    require(getApprovalCount(txId) >= required);\n    // Execute\n}"
+      }
+    }
+  },
+  {
+    "id": "ownable",
+    "name": "Ownable",
+    "category": "Smart Contract Security",
+    "description": "Single owner with admin privileges Problem: Need restricted access to admin functions",
+    "when_to_use": [
+      "Owner address with onlyOwner modifier"
+    ],
+    "benefits": [
+      "Simple",
+      "gas-efficient",
+      "standard",
+      "wide support"
+    ],
+    "drawbacks": [
+      "Single point of failure",
+      "centralization",
+      "key loss risk"
+    ],
+    "use_cases": [
+      "Contract administration",
+      "upgrades",
+      "emergency functions"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "access-control",
+      "admin",
+      "ownership",
+      "openzeppelin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/access/Ownable.sol\";\n\ncontract MyContract is Ownable {\n    function setFee(uint256 newFee) external onlyOwner {\n        fee = newFee;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "pull-over-push",
+    "name": "Pull Over Push Payment",
+    "category": "Smart Contract Security",
+    "description": "Users withdraw funds instead of contract pushing payments Problem: Push payments can fail and create DoS vulnerabilities",
+    "when_to_use": [
+      "Store pending payments",
+      "users withdraw when ready"
+    ],
+    "benefits": [
+      "Prevents DoS",
+      "gas-efficient",
+      "user-controlled timing"
+    ],
+    "drawbacks": [
+      "Users must actively withdraw",
+      "unclaimed funds"
+    ],
+    "use_cases": [
+      "Auctions",
+      "crowdfunding",
+      "rewards",
+      "dividend distribution"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "security",
+      "payment",
+      "withdrawal",
+      "dos-prevention"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "mapping(address => uint256) public pendingWithdrawals;\n\nfunction withdraw() public {\n    uint256 amount = pendingWithdrawals[msg.sender];\n    pendingWithdrawals[msg.sender] = 0;\n    payable(msg.sender).transfer(amount);\n}"
+      }
+    }
+  },
+  {
+    "id": "rate-limiting",
+    "name": "Rate Limiting",
+    "category": "Smart Contract Security",
+    "description": "Limit transaction frequency to prevent abuse Problem: Prevent spam and excessive usage",
+    "when_to_use": [
+      "Track timestamps and enforce cooling periods"
+    ],
+    "benefits": [
+      "Abuse prevention",
+      "controlled resource usage"
+    ],
+    "drawbacks": [
+      "UX friction",
+      "storage costs",
+      "timestamp manipulation"
+    ],
+    "use_cases": [
+      "Faucets",
+      "minting limits",
+      "withdrawal caps",
+      "anti-spam"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "security",
+      "rate-limit",
+      "spam-prevention",
+      "throttling"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "mapping(address => uint256) public lastAction;\nuint256 constant COOLDOWN = 1 hours;\n\nfunction action() public {\n    require(block.timestamp >= lastAction[msg.sender] + COOLDOWN);\n    lastAction[msg.sender] = block.timestamp;\n}"
+      }
+    }
+  },
+  {
+    "id": "reentrancy-guard",
+    "name": "ReentrancyGuard",
+    "category": "Smart Contract Security",
+    "description": "Modifier-based mutex lock to prevent reentrant calls Problem: Need systematic reentrancy protection across multiple functions",
+    "when_to_use": [
+      "Use mutex state variable with nonReentrant modifier"
+    ],
+    "benefits": [
+      "Easy implementation",
+      "comprehensive",
+      "battle-tested (OpenZeppelin)"
+    ],
+    "drawbacks": [
+      "Gas cost (~2,900)",
+      "storage slot overhead"
+    ],
+    "use_cases": [
+      "DeFi protocols",
+      "token contracts",
+      "multi-function protection"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "security",
+      "reentrancy",
+      "modifier",
+      "openzeppelin",
+      "mutex"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "uint256 private _status;\nmodifier nonReentrant() {\n    require(_status != 2);\n    _status = 2;\n    _;\n    _status = 1;\n}\n\nfunction withdraw(uint256 amount) public nonReentrant {\n    // Protected function\n}"
+      }
+    }
+  },
+  {
+    "id": "rbac",
+    "name": "Role-Based Access Control (RBAC)",
+    "category": "Smart Contract Security",
+    "description": "Granular permissions with multiple roles Problem: Need fine-grained access control with multiple admin types",
+    "when_to_use": [
+      "Role-based system with flexible permission assignment"
+    ],
+    "benefits": [
+      "Granular permissions",
+      "flexible",
+      "scalable",
+      "audit trail"
+    ],
+    "drawbacks": [
+      "Complex",
+      "higher gas",
+      "role management overhead"
+    ],
+    "use_cases": [
+      "Complex protocols",
+      "DAOs",
+      "enterprise apps",
+      "multi-admin"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "access-control",
+      "rbac",
+      "roles",
+      "permissions",
+      "openzeppelin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/access/AccessControl.sol\";\n\ncontract MyContract is AccessControl {\n    bytes32 public constant MINTER = keccak256(\"MINTER\");\n    \n    function mint(address to) public onlyRole(MINTER) {\n        _mint(to, 1);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "transparent-proxy",
+    "name": "Transparent Proxy",
+    "category": "Smart Contract Security",
+    "description": "Proxy with admin/user separation for upgrades Problem: Need upgradeable contracts preserving state and address",
+    "when_to_use": [
+      "Separate proxy and admin",
+      "delegatecall to implementation"
+    ],
+    "benefits": [
+      "Preserves address",
+      "maintains state",
+      "clear separation",
+      "standard"
+    ],
+    "drawbacks": [
+      "Higher gas",
+      "storage collision risk",
+      "complexity",
+      "audit needs"
+    ],
+    "use_cases": [
+      "Long-lived contracts",
+      "iterative protocols",
+      "DeFi"
+    ],
+    "complexity": "High",
+    "tags": [
+      "upgradeability",
+      "proxy",
+      "delegatecall",
+      "openzeppelin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract TransparentProxy {\n    address immutable admin;\n    address public implementation;\n    \n    function upgrade(address newImpl) external {\n        require(msg.sender == admin);\n        implementation = newImpl;\n    }\n    \n    fallback() external payable {\n        _delegate(implementation);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "uups",
+    "name": "UUPS Proxy",
+    "category": "Smart Contract Security",
+    "description": "Gas-efficient proxy with upgrade logic in implementation Problem: More gas-efficient upgradeability needed",
+    "when_to_use": [
+      "Put upgrade function in implementation",
+      "not proxy"
+    ],
+    "benefits": [
+      "Lower deployment cost",
+      "simpler proxy",
+      "upgrade in logic"
+    ],
+    "drawbacks": [
+      "Risk of bricking",
+      "careful implementation required"
+    ],
+    "use_cases": [
+      "Gas-optimized upgradeable contracts",
+      "modern protocols"
+    ],
+    "complexity": "High",
+    "tags": [
+      "upgradeability",
+      "proxy",
+      "uups",
+      "eip-1822",
+      "gas-optimization"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol\";\n\ncontract MyContract is UUPSUpgradeable {\n    function _authorizeUpgrade(address) internal override onlyOwner {}\n}"
+      }
+    }
+  }
+]

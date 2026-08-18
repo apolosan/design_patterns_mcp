@@ -1,15 +1,17 @@
-{
-  "id": "big-ball-of-mud",
-  "name": "Big Ball of Mud Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "A system lacking a perceivable architecture with expedient hacking predominating",
-  "when_to_use": "No clear architectural patterns\nHaphazard code organization\nExpedient solutions dominate",
-  "drawbacks": "No clear structure\nUnpredictable behavior\nExtremely hard to maintain\nHigh technical debt",
-  "use_cases": "Legacy systems grown organically\nRapid prototypes turned production\nSystems built under extreme time pressure",
-  "complexity": "High",
-  "tags": [
-    "anti-pattern",
-    "architecture",
-    "technical-debt"
-  ]
-}
+[
+  {
+    "id": "big-ball-of-mud",
+    "name": "Big Ball of Mud Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "A system lacking a perceivable architecture with expedient hacking predominating",
+    "when_to_use": "No clear architectural patterns\nHaphazard code organization\nExpedient solutions dominate",
+    "drawbacks": "No clear structure\nUnpredictable behavior\nExtremely hard to maintain\nHigh technical debt",
+    "use_cases": "Legacy systems grown organically\nRapid prototypes turned production\nSystems built under extreme time pressure",
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "architecture",
+      "technical-debt"
+    ]
+  }
+]

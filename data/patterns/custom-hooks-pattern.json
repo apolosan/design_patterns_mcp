@@ -1,25 +1,27 @@
-{
-  "id": "custom-hooks-pattern",
-  "name": "Custom Hooks Pattern",
-  "category": "React Hooks",
-  "description": "Extract reusable stateful logic into custom hooks. Share behavior across components.",
-  "when_to_use": "Reusable logic, shared state patterns, abstracting complex behavior",
-  "benefits": "Code reuse, separation of concerns, testable, composable",
-  "drawbacks": "Can be overused, must follow rules of hooks",
-  "use_cases": "Data fetching, form handling, local storage, window size, debounce, auth state",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "hooks",
-    "custom-hooks",
-    "reusable-logic",
-    "composition",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { useState, useEffect, useCallback } from 'react';\n\n// Custom hook: useFetch\nfunction useFetch<T>(url: string) {\n  const [data, setData] = useState<T | null>(null);\n  const [loading, setLoading] = useState(true);\n  const [error, setError] = useState<Error | null>(null);\n  \n  useEffect(() => {\n    let cancelled = false;\n    \n    async function fetchData() {\n      try {\n        setLoading(true);\n        const response = await fetch(url);\n        const json = await response.json();\n        if (!cancelled) {\n          setData(json);\n          setError(null);\n        }\n      } catch (err) {\n        if (!cancelled) setError(err as Error);\n      } finally {\n        if (!cancelled) setLoading(false);\n      }\n    }\n    \n    fetchData();\n    return () => { cancelled = true; };\n  }, [url]);\n  \n  return { data, loading, error };\n}\n\n// Usage\nfunction UserList() {\n  const { data: users, loading, error } = useFetch<User[]>('/api/users');\n  \n  if (loading) return <div>Loading...</div>;\n  if (error) return <div>Error: {error.message}</div>;\n  return <ul>{users?.map(u => <li key={u.id}>{u.name}</li>)}</ul>;\n}\n\n// Custom hook: useLocalStorage\nfunction useLocalStorage<T>(key: string, initialValue: T) {\n  const [value, setValue] = useState<T>(() => {\n    const stored = localStorage.getItem(key);\n    return stored ? JSON.parse(stored) : initialValue;\n  });\n  \n  useEffect(() => {\n    localStorage.setItem(key, JSON.stringify(value));\n  }, [key, value]);\n  \n  return [value, setValue] as const;\n}\n\n// Usage\nfunction Settings() {\n  const [theme, setTheme] = useLocalStorage('theme', 'light');\n  return <button onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}>{theme}</button>;\n}\n\n// Custom hook: useDebounce\nfunction useDebounce<T>(value: T, delay: number): T {\n  const [debouncedValue, setDebouncedValue] = useState(value);\n  \n  useEffect(() => {\n    const timer = setTimeout(() => setDebouncedValue(value), delay);\n    return () => clearTimeout(timer);\n  }, [value, delay]);\n  \n  return debouncedValue;\n}\n\n// Usage\nfunction Search() {\n  const [search, setSearch] = useState('');\n  const debouncedSearch = useDebounce(search, 500);\n  \n  useEffect(() => {\n    if (debouncedSearch) {\n      console.log('Search:', debouncedSearch);\n    }\n  }, [debouncedSearch]);\n  \n  return <input value={search} onChange={(e) => setSearch(e.target.value)} />;\n}"
+[
+  {
+    "id": "custom-hooks-pattern",
+    "name": "Custom Hooks Pattern",
+    "category": "React Hooks",
+    "description": "Extract reusable stateful logic into custom hooks. Share behavior across components.",
+    "when_to_use": "Reusable logic, shared state patterns, abstracting complex behavior",
+    "benefits": "Code reuse, separation of concerns, testable, composable",
+    "drawbacks": "Can be overused, must follow rules of hooks",
+    "use_cases": "Data fetching, form handling, local storage, window size, debounce, auth state",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "hooks",
+      "custom-hooks",
+      "reusable-logic",
+      "composition",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { useState, useEffect, useCallback } from 'react';\n\n// Custom hook: useFetch\nfunction useFetch<T>(url: string) {\n  const [data, setData] = useState<T | null>(null);\n  const [loading, setLoading] = useState(true);\n  const [error, setError] = useState<Error | null>(null);\n  \n  useEffect(() => {\n    let cancelled = false;\n    \n    async function fetchData() {\n      try {\n        setLoading(true);\n        const response = await fetch(url);\n        const json = await response.json();\n        if (!cancelled) {\n          setData(json);\n          setError(null);\n        }\n      } catch (err) {\n        if (!cancelled) setError(err as Error);\n      } finally {\n        if (!cancelled) setLoading(false);\n      }\n    }\n    \n    fetchData();\n    return () => { cancelled = true; };\n  }, [url]);\n  \n  return { data, loading, error };\n}\n\n// Usage\nfunction UserList() {\n  const { data: users, loading, error } = useFetch<User[]>('/api/users');\n  \n  if (loading) return <div>Loading...</div>;\n  if (error) return <div>Error: {error.message}</div>;\n  return <ul>{users?.map(u => <li key={u.id}>{u.name}</li>)}</ul>;\n}\n\n// Custom hook: useLocalStorage\nfunction useLocalStorage<T>(key: string, initialValue: T) {\n  const [value, setValue] = useState<T>(() => {\n    const stored = localStorage.getItem(key);\n    return stored ? JSON.parse(stored) : initialValue;\n  });\n  \n  useEffect(() => {\n    localStorage.setItem(key, JSON.stringify(value));\n  }, [key, value]);\n  \n  return [value, setValue] as const;\n}\n\n// Usage\nfunction Settings() {\n  const [theme, setTheme] = useLocalStorage('theme', 'light');\n  return <button onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}>{theme}</button>;\n}\n\n// Custom hook: useDebounce\nfunction useDebounce<T>(value: T, delay: number): T {\n  const [debouncedValue, setDebouncedValue] = useState(value);\n  \n  useEffect(() => {\n    const timer = setTimeout(() => setDebouncedValue(value), delay);\n    return () => clearTimeout(timer);\n  }, [value, delay]);\n  \n  return debouncedValue;\n}\n\n// Usage\nfunction Search() {\n  const [search, setSearch] = useState('');\n  const debouncedSearch = useDebounce(search, 500);\n  \n  useEffect(() => {\n    if (debouncedSearch) {\n      console.log('Search:', debouncedSearch);\n    }\n  }, [debouncedSearch]);\n  \n  return <input value={search} onChange={(e) => setSearch(e.target.value)} />;\n}"
+      }
     }
   }
-}
+]

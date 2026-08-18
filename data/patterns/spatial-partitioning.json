@@ -1,16 +1,18 @@
-{
-  "id": "spatial-partitioning",
-  "name": "Spatial Partitioning",
-  "category": "Game Development",
-  "description": "Divides game world into regions to optimize collision detection and rendering",
-  "when_to_use": "Large game worlds\nCollision detection\nRendering optimization",
-  "benefits": "Performance improvement\nScalability\nEfficient queries",
-  "drawbacks": "Implementation complexity\nMemory overhead\nDynamic object handling",
-  "use_cases": "Collision detection\nCulling systems\nNeighbor finding",
-  "complexity": "High",
-  "tags": [
-    "game",
-    "spatial",
-    "optimization"
-  ]
-}
+[
+  {
+    "id": "spatial-partitioning",
+    "name": "Spatial Partitioning",
+    "category": "Game Development",
+    "description": "Divides game world into regions to optimize collision detection and rendering",
+    "when_to_use": "Large game worlds\nCollision detection\nRendering optimization",
+    "benefits": "Performance improvement\nScalability\nEfficient queries",
+    "drawbacks": "Implementation complexity\nMemory overhead\nDynamic object handling",
+    "use_cases": "Collision detection\nCulling systems\nNeighbor finding",
+    "complexity": "High",
+    "tags": [
+      "game",
+      "spatial",
+      "optimization"
+    ]
+  }
+]

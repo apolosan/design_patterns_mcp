@@ -1,16 +1,18 @@
-{
-  "id": "self-supervised-learning",
-  "name": "Self-Supervised Learning",
-  "category": "AI/ML",
-  "description": "Creates supervision signals from the data itself without manual labels",
-  "when_to_use": "Limited labeled data\nLarge unlabeled datasets\nRepresentation learning",
-  "benefits": "No manual labeling\nScalable\nRich representations\nDomain adaptation",
-  "drawbacks": "Task design critical\nEvaluation challenges\nProxy task quality",
-  "use_cases": "Representation learning\nPre-training\nData-rich domains",
-  "complexity": "High",
-  "tags": [
-    "self-supervised",
-    "representation",
-    "unlabeled"
-  ]
-}
+[
+  {
+    "id": "self-supervised-learning",
+    "name": "Self-Supervised Learning",
+    "category": "AI/ML",
+    "description": "Creates supervision signals from the data itself without manual labels",
+    "when_to_use": "Limited labeled data\nLarge unlabeled datasets\nRepresentation learning",
+    "benefits": "No manual labeling\nScalable\nRich representations\nDomain adaptation",
+    "drawbacks": "Task design critical\nEvaluation challenges\nProxy task quality",
+    "use_cases": "Representation learning\nPre-training\nData-rich domains",
+    "complexity": "High",
+    "tags": [
+      "self-supervised",
+      "representation",
+      "unlabeled"
+    ]
+  }
+]

@@ -1,22 +1,24 @@
-{
-  "id": "observable",
-  "name": "Observable Pattern",
-  "category": "Reactive",
-  "description": "Represents a stream of data that can be observed and reacted to",
-  "when_to_use": "Asynchronous data streams\nEvent handling\nReactive programming",
-  "benefits": "Composable\nAsync handling\nEvent streams\nFunctional",
-  "drawbacks": "Learning curve\nMemory leaks\nDebugging complexity",
-  "use_cases": "User events\nAPI responses\nReal-time data",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "streams",
-    "async"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Observable: stream of async events\nclass Observable<T> {\n  constructor(private subscribe: (observer: Observer<T>) => () => void) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    const unsubscribe = this.subscribe(observer);\n    return { unsubscribe };\n  }\n  \n  map<R>(fn: (value: T) => R): Observable<R> {\n    return new Observable(observer => {\n      return this.subscribe({\n        next: value => observer.next(fn(value)),\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n  \n  filter(predicate: (value: T) => boolean): Observable<T> {\n    return new Observable(observer => {\n      return this.subscribe({\n        next: value => { if (predicate(value)) observer.next(value); },\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n}\n\ninterface Observer<T> {\n  next: (value: T) => void;\n  error: (err: any) => void;\n  complete: () => void;\n}\n\n// Usage\nconst numbers = new Observable<number>(observer => {\n  observer.next(1);\n  observer.next(2);\n  observer.next(3);\n  observer.complete();\n  return () => console.log('Unsubscribed');\n});\n\nnumbers\n  .map(x => x * 2)\n  .filter(x => x > 2)\n  .subscribe({\n    next: x => console.log(x),  // 4, 6\n    error: err => console.error(err),\n    complete: () => console.log('Done')\n  });"
+[
+  {
+    "id": "observable",
+    "name": "Observable Pattern",
+    "category": "Reactive",
+    "description": "Represents a stream of data that can be observed and reacted to",
+    "when_to_use": "Asynchronous data streams\nEvent handling\nReactive programming",
+    "benefits": "Composable\nAsync handling\nEvent streams\nFunctional",
+    "drawbacks": "Learning curve\nMemory leaks\nDebugging complexity",
+    "use_cases": "User events\nAPI responses\nReal-time data",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "streams",
+      "async"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Observable: stream of async events\nclass Observable<T> {\n  constructor(private subscribe: (observer: Observer<T>) => () => void) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    const unsubscribe = this.subscribe(observer);\n    return { unsubscribe };\n  }\n  \n  map<R>(fn: (value: T) => R): Observable<R> {\n    return new Observable(observer => {\n      return this.subscribe({\n        next: value => observer.next(fn(value)),\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n  \n  filter(predicate: (value: T) => boolean): Observable<T> {\n    return new Observable(observer => {\n      return this.subscribe({\n        next: value => { if (predicate(value)) observer.next(value); },\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n}\n\ninterface Observer<T> {\n  next: (value: T) => void;\n  error: (err: any) => void;\n  complete: () => void;\n}\n\n// Usage\nconst numbers = new Observable<number>(observer => {\n  observer.next(1);\n  observer.next(2);\n  observer.next(3);\n  observer.complete();\n  return () => console.log('Unsubscribed');\n});\n\nnumbers\n  .map(x => x * 2)\n  .filter(x => x > 2)\n  .subscribe({\n    next: x => console.log(x),  // 4, 6\n    error: err => console.error(err),\n    complete: () => console.log('Done')\n  });"
+      }
     }
   }
-}
+]

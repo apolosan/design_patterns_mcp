@@ -1,17 +1,19 @@
-{
-  "id": "windowed-deduplicator",
-  "name": "Windowed Deduplicator",
-  "category": "Error Management",
-  "description": "The Windowed Deduplicator pattern handles duplicated records by using time windows or dataset scopes to identify and remove duplicates. For streaming jobs, the limits will be time-based windows, while batch jobs will reduce the scope to the currently processed dataset.",
-  "when_to_use": "[\"At-least-once delivery semantics\",\"Need to process each record only once\"]",
-  "benefits": "[\"Ensures exactly-once processing\",\"Handles duplicates in streams\"]",
-  "drawbacks": "[\"State management complexity\",\"Window configuration challenges\"]",
-  "use_cases": "[\"Streaming deduplication\",\"Batch data cleaning\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"error-management\"",
-    "\"deduplication\"",
-    "\"windowing\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "windowed-deduplicator",
+    "name": "Windowed Deduplicator",
+    "category": "Error Management",
+    "description": "The Windowed Deduplicator pattern handles duplicated records by using time windows or dataset scopes to identify and remove duplicates. For streaming jobs, the limits will be time-based windows, while batch jobs will reduce the scope to the currently processed dataset.",
+    "when_to_use": "[\"At-least-once delivery semantics\",\"Need to process each record only once\"]",
+    "benefits": "[\"Ensures exactly-once processing\",\"Handles duplicates in streams\"]",
+    "drawbacks": "[\"State management complexity\",\"Window configuration challenges\"]",
+    "use_cases": "[\"Streaming deduplication\",\"Batch data cleaning\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"error-management\"",
+      "\"deduplication\"",
+      "\"windowing\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

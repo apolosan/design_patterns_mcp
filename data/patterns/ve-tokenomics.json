@@ -1,24 +1,26 @@
-{
-  "id": "ve-tokenomics",
-  "name": "ve-Tokenomics (Vote-Escrowed)",
-  "category": "DeFi Tokenomics",
-  "description": "Lock tokens for voting power that decays over time (Curve model)",
-  "when_to_use": "DeFi governance, long-term holder incentives",
-  "benefits": "Incentivizes locking, reduces sell pressure, long-term alignment",
-  "drawbacks": "Illiquid during lock, complex mechanisms",
-  "use_cases": "veCRV, veBAL, protocol governance with time commitment",
-  "complexity": "High",
-  "tags": [
-    "defi",
-    "tokenomics",
-    "governance",
-    "curve",
-    "vote-escrow"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// ve-Tokenomics: lock for voting power\nfunction createLock(uint256 amount, uint256 duration) external {\n    require(duration <= 4 years);\n    uint256 votingPower = amount * duration / MAX_TIME;\n    locks[msg.sender] = Lock({\n        amount: amount,\n        end: block.timestamp + duration,\n        power: votingPower\n    });\n}"
+[
+  {
+    "id": "ve-tokenomics",
+    "name": "ve-Tokenomics (Vote-Escrowed)",
+    "category": "DeFi Tokenomics",
+    "description": "Lock tokens for voting power that decays over time (Curve model)",
+    "when_to_use": "DeFi governance, long-term holder incentives",
+    "benefits": "Incentivizes locking, reduces sell pressure, long-term alignment",
+    "drawbacks": "Illiquid during lock, complex mechanisms",
+    "use_cases": "veCRV, veBAL, protocol governance with time commitment",
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "tokenomics",
+      "governance",
+      "curve",
+      "vote-escrow"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ve-Tokenomics: lock for voting power\nfunction createLock(uint256 amount, uint256 duration) external {\n    require(duration <= 4 years);\n    uint256 votingPower = amount * duration / MAX_TIME;\n    locks[msg.sender] = Lock({\n        amount: amount,\n        end: block.timestamp + duration,\n        power: votingPower\n    });\n}"
+      }
     }
   }
-}
+]

@@ -1,24 +1,26 @@
-{
-  "id": "ccip-messaging",
-  "name": "CCIP Cross-Chain Messaging",
-  "category": "Cross-Chain",
-  "description": "Chainlink CCIP for arbitrary cross-chain message passing and token transfers.",
-  "when_to_use": "Multi-chain dApps, cross-chain function calls, oracle-backed bridges",
-  "benefits": "Oracle security, programmable tokens, arbitrary messages",
-  "drawbacks": "Centralization (oracles), fees, limited chain support",
-  "use_cases": "Cross-chain lending, multi-chain NFTs, composable protocols",
-  "complexity": "Medium",
-  "tags": [
-    "cross-chain",
-    "ccip",
-    "chainlink",
-    "messaging",
-    "oracles"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// CCIP sender\nimport {IRouterClient} from \"@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol\";\n\nfunction sendMessage(uint64 destChainSelector, address receiver, string memory message) external {\n    Client.EVM2AnyMessage memory evm2AnyMessage = Client.EVM2AnyMessage({\n        receiver: abi.encode(receiver),\n        data: abi.encode(message),\n        tokenAmounts: new Client.EVMTokenAmount[](0),\n        feeToken: address(linkToken),\n        extraArgs: \"\"\n    });\n    \n    router.ccipSend(destChainSelector, evm2AnyMessage);\n}"
+[
+  {
+    "id": "ccip-messaging",
+    "name": "CCIP Cross-Chain Messaging",
+    "category": "Cross-Chain",
+    "description": "Chainlink CCIP for arbitrary cross-chain message passing and token transfers.",
+    "when_to_use": "Multi-chain dApps, cross-chain function calls, oracle-backed bridges",
+    "benefits": "Oracle security, programmable tokens, arbitrary messages",
+    "drawbacks": "Centralization (oracles), fees, limited chain support",
+    "use_cases": "Cross-chain lending, multi-chain NFTs, composable protocols",
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "ccip",
+      "chainlink",
+      "messaging",
+      "oracles"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// CCIP sender\nimport {IRouterClient} from \"@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol\";\n\nfunction sendMessage(uint64 destChainSelector, address receiver, string memory message) external {\n    Client.EVM2AnyMessage memory evm2AnyMessage = Client.EVM2AnyMessage({\n        receiver: abi.encode(receiver),\n        data: abi.encode(message),\n        tokenAmounts: new Client.EVMTokenAmount[](0),\n        feeToken: address(linkToken),\n        extraArgs: \"\"\n    });\n    \n    router.ccipSend(destChainSelector, evm2AnyMessage);\n}"
+      }
     }
   }
-}
+]

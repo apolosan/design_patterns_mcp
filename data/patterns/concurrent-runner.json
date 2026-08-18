@@ -1,17 +1,19 @@
-{
-  "id": "concurrent-runner",
-  "name": "Concurrent Runner",
-  "category": "Data Flow",
-  "description": "The Concurrent Runner allows multiple simultaneous executions.",
-  "when_to_use": "[\"Parallel execution\",\"Improve throughput\"]",
-  "benefits": "[\"Better performance\",\"Handles concurrency\"]",
-  "drawbacks": "[\"Resource contention\",\"Complexity\"]",
-  "use_cases": "[\"High-throughput pipelines\",\"Concurrent processing\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-flow\"",
-    "\"runner\"",
-    "\"concurrent\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "concurrent-runner",
+    "name": "Concurrent Runner",
+    "category": "Data Flow",
+    "description": "The Concurrent Runner allows multiple simultaneous executions.",
+    "when_to_use": "[\"Parallel execution\",\"Improve throughput\"]",
+    "benefits": "[\"Better performance\",\"Handles concurrency\"]",
+    "drawbacks": "[\"Resource contention\",\"Complexity\"]",
+    "use_cases": "[\"High-throughput pipelines\",\"Concurrent processing\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-flow\"",
+      "\"runner\"",
+      "\"concurrent\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

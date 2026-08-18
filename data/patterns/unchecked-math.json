@@ -1,23 +1,25 @@
-{
-  "id": "unchecked-math",
-  "name": "Unchecked Math",
-  "category": "Gas Optimization",
-  "description": "Skip overflow checks when safe Problem: Overflow checks add gas in Solidity 0.8+",
-  "when_to_use": "Use unchecked blocks for safe operations",
-  "benefits": "Saves ~20-40 gas per operation, cumulative in loops",
-  "drawbacks": "Manual overflow verification, potential security risk",
-  "use_cases": "Loops, counters, mathematically safe operations",
-  "complexity": "Low",
-  "tags": [
-    "gas-optimization",
-    "math",
-    "unchecked",
-    "solidity-0.8"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "function process(uint256[] calldata items) external {\n    uint256 length = items.length;\n    unchecked {\n        for (uint256 i = 0; i < length; ++i) {\n            // Loop counter cannot overflow\n        }\n    }\n}"
+[
+  {
+    "id": "unchecked-math",
+    "name": "Unchecked Math",
+    "category": "Gas Optimization",
+    "description": "Skip overflow checks when safe Problem: Overflow checks add gas in Solidity 0.8+",
+    "when_to_use": "Use unchecked blocks for safe operations",
+    "benefits": "Saves ~20-40 gas per operation, cumulative in loops",
+    "drawbacks": "Manual overflow verification, potential security risk",
+    "use_cases": "Loops, counters, mathematically safe operations",
+    "complexity": "Low",
+    "tags": [
+      "gas-optimization",
+      "math",
+      "unchecked",
+      "solidity-0.8"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "function process(uint256[] calldata items) external {\n    uint256 length = items.length;\n    unchecked {\n        for (uint256 i = 0; i < length; ++i) {\n            // Loop counter cannot overflow\n        }\n    }\n}"
+      }
     }
   }
-}
+]

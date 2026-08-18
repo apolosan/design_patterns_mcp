@@ -1,19 +1,21 @@
-{
-  "id": "parallelization-pattern",
-  "name": "Parallelization Pattern",
-  "category": "AI/ML",
-  "description": "Executes multiple components, such as LLM calls, tool usages, or sub-agents, concurrently to reduce overall execution time for tasks with independent parts.",
-  "when_to_use": "[\"Tasks can be broken into independent sub-tasks\",\"External services with latency\",\"Concurrent processing possible\"]",
-  "benefits": "[\"Reduced execution time\",\"Improved efficiency\",\"Better resource utilization\"]",
-  "drawbacks": "[\"Coordination complexity\",\"Potential race conditions\",\"Requires asynchronous support\"]",
-  "use_cases": "[\"Research agents\",\"Data processing pipelines\",\"Multi-source information gathering\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"parallelization\"",
-    "\"concurrency\"",
-    "\"efficiency\"",
-    "\"asynchronous\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "parallelization-pattern",
+    "name": "Parallelization Pattern",
+    "category": "AI/ML",
+    "description": "Executes multiple components, such as LLM calls, tool usages, or sub-agents, concurrently to reduce overall execution time for tasks with independent parts.",
+    "when_to_use": "[\"Tasks can be broken into independent sub-tasks\",\"External services with latency\",\"Concurrent processing possible\"]",
+    "benefits": "[\"Reduced execution time\",\"Improved efficiency\",\"Better resource utilization\"]",
+    "drawbacks": "[\"Coordination complexity\",\"Potential race conditions\",\"Requires asynchronous support\"]",
+    "use_cases": "[\"Research agents\",\"Data processing pipelines\",\"Multi-source information gathering\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"parallelization\"",
+      "\"concurrency\"",
+      "\"efficiency\"",
+      "\"asynchronous\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

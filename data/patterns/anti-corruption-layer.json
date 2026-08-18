@@ -1,22 +1,24 @@
-{
-  "id": "anti-corruption-layer",
-  "name": "Anti-Corruption Layer",
-  "category": "Cloud-Native",
-  "description": "Isolates different subsystems by translating between their models",
-  "when_to_use": "Legacy integration\nDifferent models\nSystem isolation",
-  "benefits": "System isolation\nModel protection\nIntegration flexibility",
-  "drawbacks": "Additional complexity\nPerformance overhead\nMaintenance",
-  "use_cases": "Legacy system integration\nThird-party APIs\nSystem modernization",
-  "complexity": "High",
-  "tags": [
-    "integration",
-    "isolation",
-    "translation"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Anti-Corruption Layer: isolate domain from external systems\ninterface DomainOrder {\n  id: string;\n  customerId: string;\n  total: number;\n  status: 'pending' | 'confirmed';\n}\n\ninterface LegacyDTO {\n  ORDER_ID: string;\n  CUST_ID: string;\n  AMT: number;\n  STAT: number;\n}\n\nclass LegacyAdapter {\n  toDomain(legacy: LegacyDTO): DomainOrder {\n    return {\n      id: legacy.ORDER_ID,\n      customerId: legacy.CUST_ID,\n      total: legacy.AMT,\n      status: legacy.STAT === 0 ? 'pending' : 'confirmed'\n    };\n  }\n  \n  toLegacy(order: DomainOrder): LegacyDTO {\n    return {\n      ORDER_ID: order.id,\n      CUST_ID: order.customerId,\n      AMT: order.total,\n      STAT: order.status === 'pending' ? 0 : 1\n    };\n  }\n}\n\nconst adapter = new LegacyAdapter();\nconst order = adapter.toDomain(legacyOrder);"
+[
+  {
+    "id": "anti-corruption-layer",
+    "name": "Anti-Corruption Layer",
+    "category": "Cloud-Native",
+    "description": "Isolates different subsystems by translating between their models",
+    "when_to_use": "Legacy integration\nDifferent models\nSystem isolation",
+    "benefits": "System isolation\nModel protection\nIntegration flexibility",
+    "drawbacks": "Additional complexity\nPerformance overhead\nMaintenance",
+    "use_cases": "Legacy system integration\nThird-party APIs\nSystem modernization",
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "isolation",
+      "translation"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Anti-Corruption Layer: isolate domain from external systems\ninterface DomainOrder {\n  id: string;\n  customerId: string;\n  total: number;\n  status: 'pending' | 'confirmed';\n}\n\ninterface LegacyDTO {\n  ORDER_ID: string;\n  CUST_ID: string;\n  AMT: number;\n  STAT: number;\n}\n\nclass LegacyAdapter {\n  toDomain(legacy: LegacyDTO): DomainOrder {\n    return {\n      id: legacy.ORDER_ID,\n      customerId: legacy.CUST_ID,\n      total: legacy.AMT,\n      status: legacy.STAT === 0 ? 'pending' : 'confirmed'\n    };\n  }\n  \n  toLegacy(order: DomainOrder): LegacyDTO {\n    return {\n      ORDER_ID: order.id,\n      CUST_ID: order.customerId,\n      AMT: order.total,\n      STAT: order.status === 'pending' ? 0 : 1\n    };\n  }\n}\n\nconst adapter = new LegacyAdapter();\nconst order = adapter.toDomain(legacyOrder);"
+      }
     }
   }
-}
+]

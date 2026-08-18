@@ -1,220 +1,582 @@
-{
-  "patterns": [
-    {
-      "id": "observable",
-      "name": "Observable Pattern",
-      "category": "Reactive",
-      "description": "Represents a stream of data that can be observed and reacted to",
-      "when_to_use": ["Asynchronous data streams", "Event handling", "Reactive programming"],
-      "benefits": ["Composable", "Async handling", "Event streams", "Functional"],
-      "drawbacks": ["Learning curve", "Memory leaks", "Debugging complexity"],
-      "use_cases": ["User events", "API responses", "Real-time data"],
-      "complexity": "Medium",
-      "tags": ["reactive", "streams", "async"]
-    },
-    {
-      "id": "subject",
-      "name": "Subject Pattern",
-      "category": "Reactive",
-      "description": "Acts as both observer and observable in reactive streams",
-      "when_to_use": ["Multicasting", "State management", "Event bridges"],
-      "benefits": ["Multicasting", "State sharing", "Event bridging", "Flexibility"],
-      "drawbacks": ["Complexity", "Memory management", "Subscription handling"],
-      "use_cases": ["State stores", "Event buses", "Data sharing"],
-      "complexity": "Medium",
-      "tags": ["reactive", "subject", "multicast"]
-    },
-    {
-      "id": "backpressure",
-      "name": "Backpressure Pattern",
-      "category": "Reactive",
-      "description": "Handles situations where data producers are faster than consumers",
-      "when_to_use": ["High-throughput systems", "Stream processing", "Rate limiting"],
-      "benefits": ["System stability", "Resource protection", "Flow control", "Performance"],
-      "drawbacks": ["Implementation complexity", "Buffering overhead", "Latency"],
-      "use_cases": ["Stream processing", "Message queues", "Data pipelines"],
-      "complexity": "High",
-      "tags": ["backpressure", "flow-control", "performance"]
-    },
-    {
-      "id": "observer",
-      "name": "Observer Pattern",
-      "category": "Reactive",
-      "description": "Defines subscription mechanism to notify multiple objects about events",
-      "when_to_use": ["Event handling", "State changes", "Decoupled notifications"],
-      "benefits": ["Loose coupling", "Dynamic subscriptions", "Event-driven", "Scalable"],
-      "drawbacks": ["Memory leaks", "Unexpected cascades", "Performance overhead"],
-      "use_cases": ["UI updates", "Model changes", "Event systems"],
-      "complexity": "Low",
-      "tags": ["reactive", "observer", "notifications"]
-    },
-    {
-      "id": "behavior-subject",
-      "name": "BehaviorSubject Pattern",
-      "category": "Reactive",
-      "description": "Subject that requires initial value and emits current value to new subscribers",
-      "when_to_use": ["State management", "Current value access", "Initial state"],
-      "benefits": ["Current value access", "State preservation", "Immediate emission"],
-      "drawbacks": ["Memory overhead", "State management complexity", "Initial value requirement"],
-      "use_cases": ["Application state", "User preferences", "Configuration"],
-      "complexity": "Medium",
-      "tags": ["reactive", "state", "behavior-subject"]
-    },
-    {
-      "id": "replay-subject",
-      "name": "ReplaySubject Pattern",
-      "category": "Reactive",
-      "description": "Subject that buffers and replays last N values to new subscribers",
-      "when_to_use": ["Event replay", "History tracking", "Late subscribers"],
-      "benefits": ["Event history", "Late subscriber support", "Buffer control"],
-      "drawbacks": ["Memory usage", "Buffer management", "Performance impact"],
-      "use_cases": ["Event sourcing", "Undo/redo", "Activity logs"],
-      "complexity": "Medium",
-      "tags": ["reactive", "replay", "history"]
-    },
-    {
-      "id": "async-subject",
-      "name": "AsyncSubject Pattern",
-      "category": "Reactive",
-      "description": "Subject that only emits the last value when the sequence completes",
-      "when_to_use": ["Single final result", "Async operations", "Promise-like behavior"],
-      "benefits": ["Single value emission", "Completion-based", "Promise compatibility"],
-      "drawbacks": ["No intermediate values", "Completion dependency", "Limited use cases"],
-      "use_cases": ["Single API calls", "Final calculations", "Promise conversions"],
-      "complexity": "Medium",
-      "tags": ["reactive", "async", "completion"]
-    },
-    {
-      "id": "hot-observable",
-      "name": "Hot Observable Pattern",
-      "category": "Reactive",
-      "description": "Observable that emits values regardless of whether anyone is subscribing",
-      "when_to_use": ["Real-time data", "Shared streams", "External events"],
-      "benefits": ["Shared data", "Real-time updates", "Resource efficiency"],
-      "drawbacks": ["Missed emissions", "Subscription timing", "Memory management"],
-      "use_cases": ["Stock prices", "Live data feeds", "System events"],
-      "complexity": "Medium",
-      "tags": ["reactive", "hot", "real-time"]
-    },
-    {
-      "id": "cold-observable",
-      "name": "Cold Observable Pattern",
-      "category": "Reactive",
-      "description": "Observable that starts emitting values only when subscribed to",
-      "when_to_use": ["On-demand data", "Independent streams", "HTTP requests"],
-      "benefits": ["On-demand execution", "Independent streams", "Resource control"],
-      "drawbacks": ["Multiple executions", "Resource duplication", "Timing differences"],
-      "use_cases": ["HTTP requests", "File reads", "Database queries"],
-      "complexity": "Low",
-      "tags": ["reactive", "cold", "on-demand"]
-    },
-    {
-      "id": "debounce",
-      "name": "Debounce Pattern",
-      "category": "Reactive",
-      "description": "Delays emission until a specified time has passed without another emission",
-      "when_to_use": ["User input", "Search queries", "API rate limiting"],
-      "benefits": ["Reduces noise", "Performance optimization", "Resource saving"],
-      "drawbacks": ["Delayed responses", "Timing complexity", "Lost events"],
-      "use_cases": ["Search inputs", "Button clicks", "Window resize"],
-      "complexity": "Medium",
-      "tags": ["reactive", "debounce", "timing"]
-    },
-    {
-      "id": "throttle",
-      "name": "Throttle Pattern",
-      "category": "Reactive",
-      "description": "Limits emissions to at most one value per specified time interval",
-      "when_to_use": ["Rate limiting", "Performance optimization", "Event control"],
-      "benefits": ["Rate control", "Performance protection", "Consistent timing"],
-      "drawbacks": ["Missed events", "Timing complexity", "Response delays"],
-      "use_cases": ["Scroll events", "Mouse movements", "API calls"],
-      "complexity": "Medium",
-      "tags": ["reactive", "throttle", "rate-limiting"]
-    },
-    {
-      "id": "buffer",
-      "name": "Buffer Pattern",
-      "category": "Reactive",
-      "description": "Collects emissions in bundles and emits them as arrays",
-      "when_to_use": ["Batch processing", "Performance optimization", "Grouping events"],
-      "benefits": ["Batch processing", "Performance optimization", "Event grouping"],
-      "drawbacks": ["Memory usage", "Timing complexity", "Delayed processing"],
-      "use_cases": ["Data analytics", "Batch operations", "Event aggregation"],
-      "complexity": "Medium",
-      "tags": ["reactive", "buffer", "batching"]
-    },
-    {
-      "id": "switch-map",
-      "name": "SwitchMap Pattern",
-      "category": "Reactive",
-      "description": "Projects emissions to inner observables and switches to new ones",
-      "when_to_use": ["Switching contexts", "Canceling previous", "Latest results"],
-      "benefits": ["Automatic cancellation", "Latest results", "Memory efficiency"],
-      "drawbacks": ["Lost emissions", "Complexity", "Race conditions"],
-      "use_cases": ["Search autocomplete", "Navigation", "Data fetching"],
-      "complexity": "High",
-      "tags": ["reactive", "switch", "projection"]
-    },
-    {
-      "id": "merge-map",
-      "name": "MergeMap Pattern",
-      "category": "Reactive",
-      "description": "Projects emissions to inner observables and merges all results",
-      "when_to_use": ["Concurrent operations", "Parallel processing", "Order independence"],
-      "benefits": ["Concurrency", "Parallel execution", "High throughput"],
-      "drawbacks": ["Order loss", "Resource consumption", "Complexity"],
-      "use_cases": ["Parallel API calls", "File processing", "Concurrent operations"],
-      "complexity": "High",
-      "tags": ["reactive", "merge", "concurrency"]
-    },
-    {
-      "id": "concat-map",
-      "name": "ConcatMap Pattern",
-      "category": "Reactive",
-      "description": "Projects emissions to inner observables and concatenates results in order",
-      "when_to_use": ["Sequential processing", "Order preservation", "Dependent operations"],
-      "benefits": ["Order preservation", "Sequential processing", "Predictable results"],
-      "drawbacks": ["Slower execution", "Head-of-line blocking", "Resource queueing"],
-      "use_cases": ["Sequential API calls", "File uploads", "Ordered processing"],
-      "complexity": "Medium",
-      "tags": ["reactive", "concat", "sequential"]
-    },
-    {
-      "id": "merge",
-      "name": "Merge Pattern",
-      "category": "Reactive",
-      "description": "Combines multiple observables into a single stream",
-      "when_to_use": ["Multiple sources", "Event combination", "Stream merging"],
-      "benefits": ["Stream combination", "Multiple sources", "Concurrency"],
-      "drawbacks": ["Order loss", "Timing complexity", "Race conditions"],
-      "use_cases": ["Multiple sensors", "Event aggregation", "Data combination"],
-      "complexity": "Medium",
-      "tags": ["reactive", "merge", "combination"]
-    },
-    {
-      "id": "zip",
-      "name": "Zip Pattern",
-      "category": "Reactive",
-      "description": "Combines emissions from multiple observables by pairing them",
-      "when_to_use": ["Pairing data", "Synchronization", "Parallel processing"],
-      "benefits": ["Data pairing", "Synchronization", "Parallel combination"],
-      "drawbacks": ["Slowest source limitation", "Memory buffering", "Timing dependency"],
-      "use_cases": ["Coordinate pairing", "Synchronized updates", "Data correlation"],
-      "complexity": "Medium",
-      "tags": ["reactive", "zip", "pairing"]
-    },
-    {
-      "id": "combine-latest",
-      "name": "CombineLatest Pattern",
-      "category": "Reactive",
-      "description": "Combines latest values from multiple observables when any emits",
-      "when_to_use": ["Form validation", "State combination", "Real-time updates"],
-      "benefits": ["Latest values", "Real-time combination", "State tracking"],
-      "drawbacks": ["Frequent emissions", "Memory usage", "Timing sensitivity"],
-      "use_cases": ["Form validation", "Real-time dashboards", "State management"],
-      "complexity": "Medium",
-      "tags": ["reactive", "combine", "latest"]
-    }
-  ]
-}
+[
+  {
+    "id": "observable",
+    "name": "Observable Pattern",
+    "category": "Reactive",
+    "description": "Represents a stream of data that can be observed and reacted to",
+    "when_to_use": [
+      "Asynchronous data streams",
+      "Event handling",
+      "Reactive programming"
+    ],
+    "benefits": [
+      "Composable",
+      "Async handling",
+      "Event streams",
+      "Functional"
+    ],
+    "drawbacks": [
+      "Learning curve",
+      "Memory leaks",
+      "Debugging complexity"
+    ],
+    "use_cases": [
+      "User events",
+      "API responses",
+      "Real-time data"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "streams",
+      "async"
+    ]
+  },
+  {
+    "id": "subject",
+    "name": "Subject Pattern",
+    "category": "Reactive",
+    "description": "Acts as both observer and observable in reactive streams",
+    "when_to_use": [
+      "Multicasting",
+      "State management",
+      "Event bridges"
+    ],
+    "benefits": [
+      "Multicasting",
+      "State sharing",
+      "Event bridging",
+      "Flexibility"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Memory management",
+      "Subscription handling"
+    ],
+    "use_cases": [
+      "State stores",
+      "Event buses",
+      "Data sharing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "subject",
+      "multicast"
+    ]
+  },
+  {
+    "id": "backpressure",
+    "name": "Backpressure Pattern",
+    "category": "Reactive",
+    "description": "Handles situations where data producers are faster than consumers",
+    "when_to_use": [
+      "High-throughput systems",
+      "Stream processing",
+      "Rate limiting"
+    ],
+    "benefits": [
+      "System stability",
+      "Resource protection",
+      "Flow control",
+      "Performance"
+    ],
+    "drawbacks": [
+      "Implementation complexity",
+      "Buffering overhead",
+      "Latency"
+    ],
+    "use_cases": [
+      "Stream processing",
+      "Message queues",
+      "Data pipelines"
+    ],
+    "complexity": "High",
+    "tags": [
+      "backpressure",
+      "flow-control",
+      "performance"
+    ]
+  },
+  {
+    "id": "observer",
+    "name": "Observer Pattern",
+    "category": "Reactive",
+    "description": "Defines subscription mechanism to notify multiple objects about events",
+    "when_to_use": [
+      "Event handling",
+      "State changes",
+      "Decoupled notifications"
+    ],
+    "benefits": [
+      "Loose coupling",
+      "Dynamic subscriptions",
+      "Event-driven",
+      "Scalable"
+    ],
+    "drawbacks": [
+      "Memory leaks",
+      "Unexpected cascades",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "UI updates",
+      "Model changes",
+      "Event systems"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "reactive",
+      "observer",
+      "notifications"
+    ]
+  },
+  {
+    "id": "behavior-subject",
+    "name": "BehaviorSubject Pattern",
+    "category": "Reactive",
+    "description": "Subject that requires initial value and emits current value to new subscribers",
+    "when_to_use": [
+      "State management",
+      "Current value access",
+      "Initial state"
+    ],
+    "benefits": [
+      "Current value access",
+      "State preservation",
+      "Immediate emission"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "State management complexity",
+      "Initial value requirement"
+    ],
+    "use_cases": [
+      "Application state",
+      "User preferences",
+      "Configuration"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "state",
+      "behavior-subject"
+    ]
+  },
+  {
+    "id": "replay-subject",
+    "name": "ReplaySubject Pattern",
+    "category": "Reactive",
+    "description": "Subject that buffers and replays last N values to new subscribers",
+    "when_to_use": [
+      "Event replay",
+      "History tracking",
+      "Late subscribers"
+    ],
+    "benefits": [
+      "Event history",
+      "Late subscriber support",
+      "Buffer control"
+    ],
+    "drawbacks": [
+      "Memory usage",
+      "Buffer management",
+      "Performance impact"
+    ],
+    "use_cases": [
+      "Event sourcing",
+      "Undo/redo",
+      "Activity logs"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "replay",
+      "history"
+    ]
+  },
+  {
+    "id": "async-subject",
+    "name": "AsyncSubject Pattern",
+    "category": "Reactive",
+    "description": "Subject that only emits the last value when the sequence completes",
+    "when_to_use": [
+      "Single final result",
+      "Async operations",
+      "Promise-like behavior"
+    ],
+    "benefits": [
+      "Single value emission",
+      "Completion-based",
+      "Promise compatibility"
+    ],
+    "drawbacks": [
+      "No intermediate values",
+      "Completion dependency",
+      "Limited use cases"
+    ],
+    "use_cases": [
+      "Single API calls",
+      "Final calculations",
+      "Promise conversions"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "async",
+      "completion"
+    ]
+  },
+  {
+    "id": "hot-observable",
+    "name": "Hot Observable Pattern",
+    "category": "Reactive",
+    "description": "Observable that emits values regardless of whether anyone is subscribing",
+    "when_to_use": [
+      "Real-time data",
+      "Shared streams",
+      "External events"
+    ],
+    "benefits": [
+      "Shared data",
+      "Real-time updates",
+      "Resource efficiency"
+    ],
+    "drawbacks": [
+      "Missed emissions",
+      "Subscription timing",
+      "Memory management"
+    ],
+    "use_cases": [
+      "Stock prices",
+      "Live data feeds",
+      "System events"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "hot",
+      "real-time"
+    ]
+  },
+  {
+    "id": "cold-observable",
+    "name": "Cold Observable Pattern",
+    "category": "Reactive",
+    "description": "Observable that starts emitting values only when subscribed to",
+    "when_to_use": [
+      "On-demand data",
+      "Independent streams",
+      "HTTP requests"
+    ],
+    "benefits": [
+      "On-demand execution",
+      "Independent streams",
+      "Resource control"
+    ],
+    "drawbacks": [
+      "Multiple executions",
+      "Resource duplication",
+      "Timing differences"
+    ],
+    "use_cases": [
+      "HTTP requests",
+      "File reads",
+      "Database queries"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "reactive",
+      "cold",
+      "on-demand"
+    ]
+  },
+  {
+    "id": "debounce",
+    "name": "Debounce Pattern",
+    "category": "Reactive",
+    "description": "Delays emission until a specified time has passed without another emission",
+    "when_to_use": [
+      "User input",
+      "Search queries",
+      "API rate limiting"
+    ],
+    "benefits": [
+      "Reduces noise",
+      "Performance optimization",
+      "Resource saving"
+    ],
+    "drawbacks": [
+      "Delayed responses",
+      "Timing complexity",
+      "Lost events"
+    ],
+    "use_cases": [
+      "Search inputs",
+      "Button clicks",
+      "Window resize"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "debounce",
+      "timing"
+    ]
+  },
+  {
+    "id": "throttle",
+    "name": "Throttle Pattern",
+    "category": "Reactive",
+    "description": "Limits emissions to at most one value per specified time interval",
+    "when_to_use": [
+      "Rate limiting",
+      "Performance optimization",
+      "Event control"
+    ],
+    "benefits": [
+      "Rate control",
+      "Performance protection",
+      "Consistent timing"
+    ],
+    "drawbacks": [
+      "Missed events",
+      "Timing complexity",
+      "Response delays"
+    ],
+    "use_cases": [
+      "Scroll events",
+      "Mouse movements",
+      "API calls"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "throttle",
+      "rate-limiting"
+    ]
+  },
+  {
+    "id": "buffer",
+    "name": "Buffer Pattern",
+    "category": "Reactive",
+    "description": "Collects emissions in bundles and emits them as arrays",
+    "when_to_use": [
+      "Batch processing",
+      "Performance optimization",
+      "Grouping events"
+    ],
+    "benefits": [
+      "Batch processing",
+      "Performance optimization",
+      "Event grouping"
+    ],
+    "drawbacks": [
+      "Memory usage",
+      "Timing complexity",
+      "Delayed processing"
+    ],
+    "use_cases": [
+      "Data analytics",
+      "Batch operations",
+      "Event aggregation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "buffer",
+      "batching"
+    ]
+  },
+  {
+    "id": "switch-map",
+    "name": "SwitchMap Pattern",
+    "category": "Reactive",
+    "description": "Projects emissions to inner observables and switches to new ones",
+    "when_to_use": [
+      "Switching contexts",
+      "Canceling previous",
+      "Latest results"
+    ],
+    "benefits": [
+      "Automatic cancellation",
+      "Latest results",
+      "Memory efficiency"
+    ],
+    "drawbacks": [
+      "Lost emissions",
+      "Complexity",
+      "Race conditions"
+    ],
+    "use_cases": [
+      "Search autocomplete",
+      "Navigation",
+      "Data fetching"
+    ],
+    "complexity": "High",
+    "tags": [
+      "reactive",
+      "switch",
+      "projection"
+    ]
+  },
+  {
+    "id": "merge-map",
+    "name": "MergeMap Pattern",
+    "category": "Reactive",
+    "description": "Projects emissions to inner observables and merges all results",
+    "when_to_use": [
+      "Concurrent operations",
+      "Parallel processing",
+      "Order independence"
+    ],
+    "benefits": [
+      "Concurrency",
+      "Parallel execution",
+      "High throughput"
+    ],
+    "drawbacks": [
+      "Order loss",
+      "Resource consumption",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Parallel API calls",
+      "File processing",
+      "Concurrent operations"
+    ],
+    "complexity": "High",
+    "tags": [
+      "reactive",
+      "merge",
+      "concurrency"
+    ]
+  },
+  {
+    "id": "concat-map",
+    "name": "ConcatMap Pattern",
+    "category": "Reactive",
+    "description": "Projects emissions to inner observables and concatenates results in order",
+    "when_to_use": [
+      "Sequential processing",
+      "Order preservation",
+      "Dependent operations"
+    ],
+    "benefits": [
+      "Order preservation",
+      "Sequential processing",
+      "Predictable results"
+    ],
+    "drawbacks": [
+      "Slower execution",
+      "Head-of-line blocking",
+      "Resource queueing"
+    ],
+    "use_cases": [
+      "Sequential API calls",
+      "File uploads",
+      "Ordered processing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "concat",
+      "sequential"
+    ]
+  },
+  {
+    "id": "merge",
+    "name": "Merge Pattern",
+    "category": "Reactive",
+    "description": "Combines multiple observables into a single stream",
+    "when_to_use": [
+      "Multiple sources",
+      "Event combination",
+      "Stream merging"
+    ],
+    "benefits": [
+      "Stream combination",
+      "Multiple sources",
+      "Concurrency"
+    ],
+    "drawbacks": [
+      "Order loss",
+      "Timing complexity",
+      "Race conditions"
+    ],
+    "use_cases": [
+      "Multiple sensors",
+      "Event aggregation",
+      "Data combination"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "merge",
+      "combination"
+    ]
+  },
+  {
+    "id": "zip",
+    "name": "Zip Pattern",
+    "category": "Reactive",
+    "description": "Combines emissions from multiple observables by pairing them",
+    "when_to_use": [
+      "Pairing data",
+      "Synchronization",
+      "Parallel processing"
+    ],
+    "benefits": [
+      "Data pairing",
+      "Synchronization",
+      "Parallel combination"
+    ],
+    "drawbacks": [
+      "Slowest source limitation",
+      "Memory buffering",
+      "Timing dependency"
+    ],
+    "use_cases": [
+      "Coordinate pairing",
+      "Synchronized updates",
+      "Data correlation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "zip",
+      "pairing"
+    ]
+  },
+  {
+    "id": "combine-latest",
+    "name": "CombineLatest Pattern",
+    "category": "Reactive",
+    "description": "Combines latest values from multiple observables when any emits",
+    "when_to_use": [
+      "Form validation",
+      "State combination",
+      "Real-time updates"
+    ],
+    "benefits": [
+      "Latest values",
+      "Real-time combination",
+      "State tracking"
+    ],
+    "drawbacks": [
+      "Frequent emissions",
+      "Memory usage",
+      "Timing sensitivity"
+    ],
+    "use_cases": [
+      "Form validation",
+      "Real-time dashboards",
+      "State management"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "combine",
+      "latest"
+    ]
+  }
+]

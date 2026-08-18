@@ -1,19 +1,21 @@
-{
-  "id": "goal-setting-monitoring-pattern",
-  "name": "Goal Setting and Monitoring Pattern",
-  "category": "AI/ML",
-  "description": "Involves setting clear, measurable goals and continuously monitoring progress towards them, allowing agents to track and adjust their actions.",
-  "when_to_use": "[\"Long-term tasks\",\"Progress tracking needed\",\"Adjustable objectives\"]",
-  "benefits": "[\"Focused execution\",\"Progress visibility\",\"Adaptive adjustments\"]",
-  "drawbacks": "[\"Goal definition complexity\",\"Monitoring overhead\",\"Potential misalignment\"]",
-  "use_cases": "[\"Project management\",\"Performance tracking\",\"Goal-oriented agents\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"goals\"",
-    "\"monitoring\"",
-    "\"tracking\"",
-    "\"adjustment\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "goal-setting-monitoring-pattern",
+    "name": "Goal Setting and Monitoring Pattern",
+    "category": "AI/ML",
+    "description": "Involves setting clear, measurable goals and continuously monitoring progress towards them, allowing agents to track and adjust their actions.",
+    "when_to_use": "[\"Long-term tasks\",\"Progress tracking needed\",\"Adjustable objectives\"]",
+    "benefits": "[\"Focused execution\",\"Progress visibility\",\"Adaptive adjustments\"]",
+    "drawbacks": "[\"Goal definition complexity\",\"Monitoring overhead\",\"Potential misalignment\"]",
+    "use_cases": "[\"Project management\",\"Performance tracking\",\"Goal-oriented agents\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"goals\"",
+      "\"monitoring\"",
+      "\"tracking\"",
+      "\"adjustment\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

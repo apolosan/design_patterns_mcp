@@ -1,16 +1,18 @@
-{
-  "id": "authorization-pattern",
-  "name": "Authorization Pattern",
-  "category": "Security",
-  "description": "Controls what authenticated users can access and what actions they can perform",
-  "when_to_use": "Access control\nPermission management\nResource protection",
-  "benefits": "Access control\nPermission granularity\nResource protection",
-  "drawbacks": "Complex permission models\nPerformance overhead\nManagement complexity",
-  "use_cases": "Role-based access\nResource permissions\nAction authorization",
-  "complexity": "High",
-  "tags": [
-    "security",
-    "authorization",
-    "access-control"
-  ]
-}
+[
+  {
+    "id": "authorization-pattern",
+    "name": "Authorization Pattern",
+    "category": "Security",
+    "description": "Controls what authenticated users can access and what actions they can perform",
+    "when_to_use": "Access control\nPermission management\nResource protection",
+    "benefits": "Access control\nPermission granularity\nResource protection",
+    "drawbacks": "Complex permission models\nPerformance overhead\nManagement complexity",
+    "use_cases": "Role-based access\nResource permissions\nAction authorization",
+    "complexity": "High",
+    "tags": [
+      "security",
+      "authorization",
+      "access-control"
+    ]
+  }
+]

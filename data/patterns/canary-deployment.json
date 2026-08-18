@@ -1,22 +1,24 @@
-{
-  "id": "canary-deployment",
-  "name": "Canary Deployment",
-  "category": "Microservices",
-  "description": "Gradually rolls out changes to subset of users before full deployment",
-  "when_to_use": "Risk reduction\nGradual rollout\nA/B testing",
-  "benefits": "Risk reduction\nGradual rollout\nReal-world testing",
-  "drawbacks": "Complex routing\nMonitoring overhead\nPartial rollbacks",
-  "use_cases": "Feature rollouts\nRisk mitigation\nPerformance testing",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "deployment",
-    "testing"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Canary Deployment: gradual rollout\nclass CanaryRouter {\n  private canaryPct = 0;\n  \n  constructor(\n    private stable: string,\n    private canary: string\n  ) {}\n  \n  route(request: Request): string {\n    const random = Math.random() * 100;\n    if (random < this.canaryPct) {\n      return this.canary;\n    }\n    return this.stable;\n  }\n  \n  increaseCanary(pct: number) {\n    this.canaryPct = Math.min(100, this.canaryPct + pct);\n  }\n  \n  async promoteCanary() {\n    const metrics = await this.getMetrics(this.canary);\n    if (metrics.errorRate < 0.01) {\n      this.canaryPct = 100;\n      console.log('Canary promoted');\n    }\n  }\n  \n  private async getMetrics(version: string) {\n    return { errorRate: 0.005 };\n  }\n}\n\nconst router = new CanaryRouter('http://v1:3000', 'http://v2:3000');\nrouter.increaseCanary(5);"
+[
+  {
+    "id": "canary-deployment",
+    "name": "Canary Deployment",
+    "category": "Microservices",
+    "description": "Gradually rolls out changes to subset of users before full deployment",
+    "when_to_use": "Risk reduction\nGradual rollout\nA/B testing",
+    "benefits": "Risk reduction\nGradual rollout\nReal-world testing",
+    "drawbacks": "Complex routing\nMonitoring overhead\nPartial rollbacks",
+    "use_cases": "Feature rollouts\nRisk mitigation\nPerformance testing",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "deployment",
+      "testing"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Canary Deployment: gradual rollout\nclass CanaryRouter {\n  private canaryPct = 0;\n  \n  constructor(\n    private stable: string,\n    private canary: string\n  ) {}\n  \n  route(request: Request): string {\n    const random = Math.random() * 100;\n    if (random < this.canaryPct) {\n      return this.canary;\n    }\n    return this.stable;\n  }\n  \n  increaseCanary(pct: number) {\n    this.canaryPct = Math.min(100, this.canaryPct + pct);\n  }\n  \n  async promoteCanary() {\n    const metrics = await this.getMetrics(this.canary);\n    if (metrics.errorRate < 0.01) {\n      this.canaryPct = 100;\n      console.log('Canary promoted');\n    }\n  }\n  \n  private async getMetrics(version: string) {\n    return { errorRate: 0.005 };\n  }\n}\n\nconst router = new CanaryRouter('http://v1:3000', 'http://v2:3000');\nrouter.increaseCanary(5);"
+      }
     }
   }
-}
+]

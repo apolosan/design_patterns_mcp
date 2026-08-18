@@ -1,19 +1,21 @@
-{
-  "id": "model-context-protocol",
-  "name": "Model Context Protocol (MCP)",
-  "category": "AI/ML",
-  "description": "Defines a protocol for managing and sharing context between models and systems, enabling better integration and communication.",
-  "when_to_use": "[\"Interoperability between models\",\"Context sharing needed\",\"Integrated AI systems\"]",
-  "benefits": "[\"Standardized communication\",\"Better integration\",\"Enhanced context handling\"]",
-  "drawbacks": "[\"Protocol complexity\",\"Compatibility issues\",\"Overhead\"]",
-  "use_cases": "[\"Multi-model systems\",\"Context-aware applications\",\"Integrated AI platforms\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"protocol\"",
-    "\"context\"",
-    "\"integration\"",
-    "\"communication\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "model-context-protocol",
+    "name": "Model Context Protocol (MCP)",
+    "category": "AI/ML",
+    "description": "Defines a protocol for managing and sharing context between models and systems, enabling better integration and communication.",
+    "when_to_use": "[\"Interoperability between models\",\"Context sharing needed\",\"Integrated AI systems\"]",
+    "benefits": "[\"Standardized communication\",\"Better integration\",\"Enhanced context handling\"]",
+    "drawbacks": "[\"Protocol complexity\",\"Compatibility issues\",\"Overhead\"]",
+    "use_cases": "[\"Multi-model systems\",\"Context-aware applications\",\"Integrated AI platforms\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"protocol\"",
+      "\"context\"",
+      "\"integration\"",
+      "\"communication\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

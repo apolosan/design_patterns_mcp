@@ -1,24 +1,26 @@
-{
-  "id": "clone-factory-eip1167",
-  "name": "Clone Factory (EIP-1167)",
-  "category": "Smart Contract Factory",
-  "description": "Deploy many identical contracts cheaply using minimal proxy pattern. 10x cheaper than normal deployment.",
-  "when_to_use": "Token factories, vault deployment, many identical contracts",
-  "benefits": "~10x cheaper deployment, predictable addresses, gas-efficient",
-  "drawbacks": "Slight call overhead (~2,600 gas), requires implementation contract",
-  "use_cases": "ERC-20 token factories, vault systems, contract cloning",
-  "complexity": "Medium",
-  "tags": [
-    "factory",
-    "clone",
-    "eip-1167",
-    "minimal-proxy",
-    "gas-optimization"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/proxy/Clones.sol\";\n\ncontract TokenFactory {\n    address public implementation;\n    \n    function createToken(string memory name) external returns (address) {\n        address clone = Clones.clone(implementation);\n        IToken(clone).initialize(name, msg.sender);\n        return clone;\n    }\n}\n\n// Minimal proxy: only 55 bytes, delegates all calls to implementation"
+[
+  {
+    "id": "clone-factory-eip1167",
+    "name": "Clone Factory (EIP-1167)",
+    "category": "Smart Contract Factory",
+    "description": "Deploy many identical contracts cheaply using minimal proxy pattern. 10x cheaper than normal deployment.",
+    "when_to_use": "Token factories, vault deployment, many identical contracts",
+    "benefits": "~10x cheaper deployment, predictable addresses, gas-efficient",
+    "drawbacks": "Slight call overhead (~2,600 gas), requires implementation contract",
+    "use_cases": "ERC-20 token factories, vault systems, contract cloning",
+    "complexity": "Medium",
+    "tags": [
+      "factory",
+      "clone",
+      "eip-1167",
+      "minimal-proxy",
+      "gas-optimization"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/proxy/Clones.sol\";\n\ncontract TokenFactory {\n    address public implementation;\n    \n    function createToken(string memory name) external returns (address) {\n        address clone = Clones.clone(implementation);\n        IToken(clone).initialize(name, msg.sender);\n        return clone;\n    }\n}\n\n// Minimal proxy: only 55 bytes, delegates all calls to implementation"
+      }
     }
   }
-}
+]

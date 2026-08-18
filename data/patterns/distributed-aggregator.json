@@ -1,17 +1,19 @@
-{
-  "id": "distributed-aggregator",
-  "name": "Distributed Aggregator",
-  "category": "Data Value",
-  "description": "The Distributed Aggregator performs aggregations across distributed data using distributed data processing frameworks.",
-  "when_to_use": "[\"Large-scale aggregations\",\"Distributed data processing\"]",
-  "benefits": "[\"Scalable aggregations\",\"Handles large datasets\"]",
-  "drawbacks": "[\"Shuffle overhead\",\"Network costs\"]",
-  "use_cases": "[\"Big data aggregations\",\"Distributed computing\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-value\"",
-    "\"aggregator\"",
-    "\"distributed\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "distributed-aggregator",
+    "name": "Distributed Aggregator",
+    "category": "Data Value",
+    "description": "The Distributed Aggregator performs aggregations across distributed data using distributed data processing frameworks.",
+    "when_to_use": "[\"Large-scale aggregations\",\"Distributed data processing\"]",
+    "benefits": "[\"Scalable aggregations\",\"Handles large datasets\"]",
+    "drawbacks": "[\"Shuffle overhead\",\"Network costs\"]",
+    "use_cases": "[\"Big data aggregations\",\"Distributed computing\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-value\"",
+      "\"aggregator\"",
+      "\"distributed\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

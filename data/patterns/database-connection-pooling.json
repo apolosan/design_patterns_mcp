@@ -1,22 +1,24 @@
-{
-  "id": "database-connection-pooling",
-  "name": "Database Connection Pooling",
-  "category": "Performance",
-  "description": "Maintains pool of reusable database connections to reduce connection overhead",
-  "when_to_use": "Database-heavy applications\nConnection overhead\nScalability",
-  "benefits": "Reduced connection overhead\nBetter resource utilization\nImproved throughput",
-  "drawbacks": "Pool management\nConnection leaks\nConfiguration complexity",
-  "use_cases": "Web applications\nEnterprise systems\nHigh-concurrency apps",
-  "complexity": "Medium",
-  "tags": [
-    "performance",
-    "database",
-    "pooling"
-  ],
-  "examples": {
-    "cross-reference": {
-      "language": "cross-reference",
-      "code": "// See Connection Pool pattern for implementation example\n// Reference pattern: connection-pool"
+[
+  {
+    "id": "database-connection-pooling",
+    "name": "Database Connection Pooling",
+    "category": "Performance",
+    "description": "Maintains pool of reusable database connections to reduce connection overhead",
+    "when_to_use": "Database-heavy applications\nConnection overhead\nScalability",
+    "benefits": "Reduced connection overhead\nBetter resource utilization\nImproved throughput",
+    "drawbacks": "Pool management\nConnection leaks\nConfiguration complexity",
+    "use_cases": "Web applications\nEnterprise systems\nHigh-concurrency apps",
+    "complexity": "Medium",
+    "tags": [
+      "performance",
+      "database",
+      "pooling"
+    ],
+    "examples": {
+      "cross-reference": {
+        "language": "cross-reference",
+        "code": "// See Connection Pool pattern for implementation example\n// Reference pattern: connection-pool"
+      }
     }
   }
-}
+]

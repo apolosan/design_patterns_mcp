@@ -1,24 +1,26 @@
-{
-  "id": "onchain-ai-inference",
-  "name": "On-Chain AI Inference (zkML/opML)",
-  "category": "AI & Blockchain",
-  "description": "Verifiable AI execution on-chain using zero-knowledge or optimistic machine learning.",
-  "when_to_use": "Trustless AI, verifiable computation, autonomous agents",
-  "benefits": "Trustless AI execution, verifiable, decentralized intelligence",
-  "drawbacks": "Computational limits, high costs, early tech",
-  "use_cases": "zkML (Modulus Labs), opML, verifiable AI agents",
-  "complexity": "Very High",
-  "tags": [
-    "ai",
-    "zkml",
-    "opml",
-    "zero-knowledge",
-    "ml-inference"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// zkML: Zero-knowledge machine learning\ncontract ZKMLInference {\n    address public zkmlVerifier;\n    \n    function verifyInference(\n        bytes calldata input,\n        bytes calldata output,\n        bytes calldata zkProof\n    ) external view returns (bool) {\n        // Verify that output = model(input) via ZK proof\n        return IZKMLVerifier(zkmlVerifier).verify(\n            input, output, zkProof\n        );\n    }\n    \n    function executeWithAI(bytes calldata input, bytes calldata mlOutput, bytes calldata proof) external {\n        require(verifyInference(input, mlOutput, proof), \"Invalid AI proof\");\n        \n        // Decode AI decision\n        uint256 prediction = abi.decode(mlOutput, (uint256));\n        \n        // Execute based on AI prediction\n        if (prediction > threshold) {\n            executeTrade();\n        }\n    }\n}"
+[
+  {
+    "id": "onchain-ai-inference",
+    "name": "On-Chain AI Inference (zkML/opML)",
+    "category": "AI & Blockchain",
+    "description": "Verifiable AI execution on-chain using zero-knowledge or optimistic machine learning.",
+    "when_to_use": "Trustless AI, verifiable computation, autonomous agents",
+    "benefits": "Trustless AI execution, verifiable, decentralized intelligence",
+    "drawbacks": "Computational limits, high costs, early tech",
+    "use_cases": "zkML (Modulus Labs), opML, verifiable AI agents",
+    "complexity": "Very High",
+    "tags": [
+      "ai",
+      "zkml",
+      "opml",
+      "zero-knowledge",
+      "ml-inference"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// zkML: Zero-knowledge machine learning\ncontract ZKMLInference {\n    address public zkmlVerifier;\n    \n    function verifyInference(\n        bytes calldata input,\n        bytes calldata output,\n        bytes calldata zkProof\n    ) external view returns (bool) {\n        // Verify that output = model(input) via ZK proof\n        return IZKMLVerifier(zkmlVerifier).verify(\n            input, output, zkProof\n        );\n    }\n    \n    function executeWithAI(bytes calldata input, bytes calldata mlOutput, bytes calldata proof) external {\n        require(verifyInference(input, mlOutput, proof), \"Invalid AI proof\");\n        \n        // Decode AI decision\n        uint256 prediction = abi.decode(mlOutput, (uint256));\n        \n        // Execute based on AI prediction\n        if (prediction > threshold) {\n            executeTrade();\n        }\n    }\n}"
+      }
     }
   }
-}
+]

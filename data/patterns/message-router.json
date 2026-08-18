@@ -1,16 +1,18 @@
-{
-  "id": "message-router",
-  "name": "Message Router",
-  "category": "Integration",
-  "description": "Routes messages to different destinations based on content or rules",
-  "when_to_use": "Message routing\nConditional processing\nDynamic destinations",
-  "benefits": "Flexible routing\nDecoupling\nDynamic behavior\nContent-based decisions",
-  "drawbacks": "Routing complexity\nPerformance overhead\nSingle point of failure",
-  "use_cases": "Message brokers\nWorkflow systems\nContent-based routing",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "messaging",
-    "routing"
-  ]
-}
+[
+  {
+    "id": "message-router",
+    "name": "Message Router",
+    "category": "Integration",
+    "description": "Routes messages to different destinations based on content or rules",
+    "when_to_use": "Message routing\nConditional processing\nDynamic destinations",
+    "benefits": "Flexible routing\nDecoupling\nDynamic behavior\nContent-based decisions",
+    "drawbacks": "Routing complexity\nPerformance overhead\nSingle point of failure",
+    "use_cases": "Message brokers\nWorkflow systems\nContent-based routing",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "messaging",
+      "routing"
+    ]
+  }
+]

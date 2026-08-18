@@ -1,16 +1,18 @@
-{
-  "id": "event-sourcing-iot",
-  "name": "Event Sourcing (IoT)",
-  "category": "IoT",
-  "description": "Stores all IoT device events as immutable log for replay and analysis",
-  "when_to_use": "Audit trails\nEvent replay\nHistorical analysis",
-  "benefits": "Complete history\nEvent replay\nAudit capability",
-  "drawbacks": "Storage requirements\nQuery complexity\nPerformance overhead",
-  "use_cases": "Compliance systems\nForensic analysis\nSystem debugging",
-  "complexity": "High",
-  "tags": [
-    "iot",
-    "events",
-    "sourcing"
-  ]
-}
+[
+  {
+    "id": "event-sourcing-iot",
+    "name": "Event Sourcing (IoT)",
+    "category": "IoT",
+    "description": "Stores all IoT device events as immutable log for replay and analysis",
+    "when_to_use": "Audit trails\nEvent replay\nHistorical analysis",
+    "benefits": "Complete history\nEvent replay\nAudit capability",
+    "drawbacks": "Storage requirements\nQuery complexity\nPerformance overhead",
+    "use_cases": "Compliance systems\nForensic analysis\nSystem debugging",
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "events",
+      "sourcing"
+    ]
+  }
+]

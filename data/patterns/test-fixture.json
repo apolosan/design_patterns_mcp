@@ -1,16 +1,18 @@
-{
-  "id": "test-fixture",
-  "name": "Test Fixture",
-  "category": "Testing",
-  "description": "Fixed state of software under test used as baseline for running tests",
-  "when_to_use": "Consistent test environment\nSetup/teardown\nShared state",
-  "benefits": "Consistent environment\nShared setup\nReliable tests",
-  "drawbacks": "Test coupling\nSetup complexity\nState management",
-  "use_cases": "Database setup\nFile systems\nConfiguration",
-  "complexity": "Medium",
-  "tags": [
-    "testing",
-    "fixture",
-    "setup"
-  ]
-}
+[
+  {
+    "id": "test-fixture",
+    "name": "Test Fixture",
+    "category": "Testing",
+    "description": "Fixed state of software under test used as baseline for running tests",
+    "when_to_use": "Consistent test environment\nSetup/teardown\nShared state",
+    "benefits": "Consistent environment\nShared setup\nReliable tests",
+    "drawbacks": "Test coupling\nSetup complexity\nState management",
+    "use_cases": "Database setup\nFile systems\nConfiguration",
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "fixture",
+      "setup"
+    ]
+  }
+]

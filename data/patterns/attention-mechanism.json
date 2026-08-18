@@ -1,22 +1,24 @@
-{
-  "id": "attention-mechanism",
-  "name": "Attention Mechanism",
-  "category": "AI/ML",
-  "description": "Focuses on relevant parts of input when making predictions",
-  "when_to_use": "Sequence modeling\nVariable input lengths\nRelevance weighting",
-  "benefits": "Improved performance\nInterpretability\nVariable lengths\nParallelization",
-  "drawbacks": "Computational overhead\nMemory requirements\nAttention collapse",
-  "use_cases": "Machine translation\nText summarization\nImage captioning",
-  "complexity": "High",
-  "tags": [
-    "attention",
-    "focus",
-    "weighting"
-  ],
-  "examples": {
-    "python": {
-      "language": "python",
-      "code": "# Attention: focus on relevant parts of input\n\nimport torch\nimport torch.nn as nn\n\nclass AttentionLayer(nn.Module):\n    def __init__(self, hidden_size):\n        super().__init__()\n        self.attention = nn.Linear(hidden_size, 1)\n    \n    def forward(self, encoder_outputs):\n        # encoder_outputs shape: (batch, seq_len, hidden_size)\n        \n        # Calculate attention scores\n        scores = self.attention(encoder_outputs)  # (batch, seq_len, 1)\n        weights = torch.softmax(scores, dim=1)    # normalize\n        \n        # Apply attention weights\n        context = torch.sum(weights * encoder_outputs, dim=1)\n        \n        return context, weights\n\n# Usage in sequence model\nclass AttentionSeq2Seq(nn.Module):\n    def __init__(self, vocab_size, hidden_size):\n        super().__init__()\n        self.embedding = nn.Embedding(vocab_size, hidden_size)\n        self.encoder = nn.LSTM(hidden_size, hidden_size, batch_first=True)\n        self.attention = AttentionLayer(hidden_size)\n        self.decoder = nn.Linear(hidden_size, vocab_size)\n    \n    def forward(self, input_ids):\n        # Encode\n        embedded = self.embedding(input_ids)\n        encoder_out, _ = self.encoder(embedded)\n        \n        # Attend to relevant parts\n        context, attn_weights = self.attention(encoder_out)\n        \n        # Decode\n        output = self.decoder(context)\n        return output, attn_weights\n\n# Example: attention focuses on \"Paris\" when translating \"capital of France\"\nmodel = AttentionSeq2Seq(vocab_size=10000, hidden_size=256)\noutput, attention = model(input_ids)"
+[
+  {
+    "id": "attention-mechanism",
+    "name": "Attention Mechanism",
+    "category": "AI/ML",
+    "description": "Focuses on relevant parts of input when making predictions",
+    "when_to_use": "Sequence modeling\nVariable input lengths\nRelevance weighting",
+    "benefits": "Improved performance\nInterpretability\nVariable lengths\nParallelization",
+    "drawbacks": "Computational overhead\nMemory requirements\nAttention collapse",
+    "use_cases": "Machine translation\nText summarization\nImage captioning",
+    "complexity": "High",
+    "tags": [
+      "attention",
+      "focus",
+      "weighting"
+    ],
+    "examples": {
+      "python": {
+        "language": "python",
+        "code": "# Attention: focus on relevant parts of input\n\nimport torch\nimport torch.nn as nn\n\nclass AttentionLayer(nn.Module):\n    def __init__(self, hidden_size):\n        super().__init__()\n        self.attention = nn.Linear(hidden_size, 1)\n    \n    def forward(self, encoder_outputs):\n        # encoder_outputs shape: (batch, seq_len, hidden_size)\n        \n        # Calculate attention scores\n        scores = self.attention(encoder_outputs)  # (batch, seq_len, 1)\n        weights = torch.softmax(scores, dim=1)    # normalize\n        \n        # Apply attention weights\n        context = torch.sum(weights * encoder_outputs, dim=1)\n        \n        return context, weights\n\n# Usage in sequence model\nclass AttentionSeq2Seq(nn.Module):\n    def __init__(self, vocab_size, hidden_size):\n        super().__init__()\n        self.embedding = nn.Embedding(vocab_size, hidden_size)\n        self.encoder = nn.LSTM(hidden_size, hidden_size, batch_first=True)\n        self.attention = AttentionLayer(hidden_size)\n        self.decoder = nn.Linear(hidden_size, vocab_size)\n    \n    def forward(self, input_ids):\n        # Encode\n        embedded = self.embedding(input_ids)\n        encoder_out, _ = self.encoder(embedded)\n        \n        # Attend to relevant parts\n        context, attn_weights = self.attention(encoder_out)\n        \n        # Decode\n        output = self.decoder(context)\n        return output, attn_weights\n\n# Example: attention focuses on \"Paris\" when translating \"capital of France\"\nmodel = AttentionSeq2Seq(vocab_size=10000, hidden_size=256)\noutput, attention = model(input_ids)"
+      }
     }
   }
-}
+]

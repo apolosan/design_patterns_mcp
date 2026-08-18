@@ -1,116 +1,118 @@
-{
-  "id": "feature-flag",
-  "name": "Feature Flag",
-  "category": "Architectural",
-  "description": "Controls application behavior at runtime by evaluating named flags, enabling release, experiment, operations, and permission decisions without redeploying code.",
-  "alsoKnownAs": [
-    "Feature Toggle",
-    "Feature Switch",
-    "Feature Gate",
-    "Feature Flipper"
-  ],
-  "when_to_use": "Separating feature release from code deployment\nTrunk-based development with incomplete or latent code paths\nProgressive rollout to cohorts, percentages, regions, tenants, plans, or beta users\nA/B or multivariate experiments that need stable user assignment\nOperational kill switches for fast degradation during incidents\nPermissioning or entitlement checks that must evolve without widespread code changes",
-  "benefits": "Runtime control without redeployment\nReduced release risk through gradual exposure\nFast rollback or kill switch behavior\nSafer continuous delivery and trunk-based development\nTargeted enablement by user, group, tenant, plan, region, device, time window, or percentage\nExperimentation and multivariate delivery\nClear separation between deployment, release, and business/operations decisions",
-  "drawbacks": "Stale flags create technical debt and cognitive load\nToo many scattered conditionals make code hard to reason about\nIncorrect defaults can expose unfinished or unsafe behavior\nFlag evaluation infrastructure can become a runtime dependency\nCombinatorial testing grows as flags interact\nLong-lived flags require stronger ownership, naming, audit, and cleanup discipline\nClient-side flags can leak intent and must not protect sensitive authorization alone",
-  "use_cases": "Release toggles for hiding incomplete functionality\nExperiment toggles for A/B and multivariate testing\nOps toggles for disabling expensive or risky paths under load\nPermissioning toggles for plans, roles, tenants, or beta programs\nProgressive delivery by percentage or canary cohort\nDark launches and internal-only validation\nEmergency rollback, graceful degradation, and circuit-breaker-like kill switches",
-  "complexity": "Medium",
-  "tags": [
-    "feature-flag",
-    "feature-toggle",
-    "progressive-delivery",
-    "runtime-configuration",
-    "release-management",
-    "experimentation",
-    "kill-switch",
-    "continuous-delivery",
-    "canary-release"
-  ],
-  "structure": "Define a Flag Store that owns flag definitions, defaults, variants, targeting rules, and metadata. Use a Flag Evaluator or Toggle Router to evaluate a flag key against an Evaluation Context. Keep business code behind named decision methods so feature decisions are decoupled from scattered conditionals. For short-lived release flags, a small conditional may be acceptable; for long-lived permission or experiment flags, prefer decision objects, dependency injection, strategy selection, or policy-like abstractions. Track owner, purpose, type, creation date, expiry date, and cleanup plan for every flag.",
-  "participants": [
-    "Flag Definition: stable key, type, default value, variants, targeting rules, metadata, owner, and expiry policy",
-    "Flag Store: durable source of flag configuration, often external to the application deployment",
-    "Flag Evaluator or Toggle Router: resolves the flag value for a request or execution context",
-    "Evaluation Context: user, tenant, plan, region, device, environment, request attributes, or operational state used for targeting",
-    "Decision Object: domain-facing API that answers meaningful questions instead of exposing raw flag keys everywhere",
-    "Toggle Point: the code location where behavior changes based on an evaluated decision",
-    "Administration and Audit Surface: controlled interface for changing flags, recording who changed what and why",
-    "Cleanup Process: recurring review that removes expired flags and dead code paths"
-  ],
-  "collaborations": [
-    "Callers ask a decision object or evaluator for a typed value using a stable flag key and an evaluation context.",
-    "The evaluator combines default values, stored configuration, targeting rules, percentage rollout, and optional time windows to produce a deterministic decision.",
-    "The toggle point selects behavior, delegates to a strategy, injects an implementation, or suppresses a nonessential operation.",
-    "Telemetry records evaluations, variants, exposure events, and operational outcomes so rollouts and experiments can be judged safely.",
-    "Owners retire temporary flags once the rollout, migration, or experiment is complete."
-  ],
-  "consequences": [
-    "Deployment and release become independent activities.",
-    "Behavior can change per request, per audience, or per environment without a new build.",
-    "The system gains a powerful operational control plane, so access control, audit, defaults, and failure modes become part of the design.",
-    "The pattern is safe only when paired with lifecycle management; unmanaged flags become hidden branches in production code.",
-    "Tests should cover default/off behavior, enabled behavior, targeting rules, fallback behavior, and important flag combinations."
-  ],
-  "implementation": "Classify every flag before creating it: release, experiment, ops, or permissioning. Choose static, dynamic-by-configuration, or dynamic-by-context evaluation according to that classification. Store flags outside the code deployment when runtime control is required, but keep safe defaults in code for availability. Centralize decision logic in a feature-decision layer instead of spreading raw flag checks across the codebase. Use deterministic bucketing for percentage rollouts so the same actor receives a stable experience. Prefer server-side evaluation for security-sensitive decisions. Instrument exposures and outcomes. Give each temporary flag an owner and expiry date, then remove the flag and obsolete code path after rollout or experiment completion.",
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "type FlagValue = boolean | string | number;\n\ninterface EvaluationContext {\n  userId: string;\n  groups: string[];\n  plan: 'free' | 'pro' | 'enterprise';\n  region: string;\n}\n\ninterface FlagRule {\n  attribute: keyof EvaluationContext;\n  includes: string[];\n  value: FlagValue;\n}\n\ninterface FlagDefinition {\n  key: string;\n  defaultValue: FlagValue;\n  rules: FlagRule[];\n  rolloutPercentage?: number;\n  rolloutValue?: FlagValue;\n}\n\nclass FeatureFlagEvaluator {\n  constructor(private readonly flags: Map<string, FlagDefinition>) {}\n\n  evaluate(key: string, context: EvaluationContext): FlagValue {\n    const flag = this.flags.get(key);\n    if (!flag) return false;\n\n    for (const rule of flag.rules) {\n      const actual = context[rule.attribute];\n      const values = Array.isArray(actual) ? actual : [String(actual)];\n      if (values.some(value => rule.includes.includes(value))) {\n        return rule.value;\n      }\n    }\n\n    if (flag.rolloutPercentage !== undefined && flag.rolloutValue !== undefined) {\n      const bucket = this.bucket(context.userId, flag.key);\n      if (bucket < flag.rolloutPercentage) return flag.rolloutValue;\n    }\n\n    return flag.defaultValue;\n  }\n\n  private bucket(actorId: string, flagKey: string): number {\n    const input = actorId + ':' + flagKey;\n    let hash = 0;\n    for (let index = 0; index < input.length; index += 1) {\n      hash = (hash * 31 + input.charCodeAt(index)) >>> 0;\n    }\n    return hash % 100;\n  }\n}\n\nclass CheckoutDecisions {\n  constructor(private readonly evaluator: FeatureFlagEvaluator) {}\n\n  useNewCheckout(context: EvaluationContext): boolean {\n    return this.evaluator.evaluate('checkout.new-flow', context) === true;\n  }\n}\n\nconst flags = new Map<string, FlagDefinition>([\n  [\n    'checkout.new-flow',\n    {\n      key: 'checkout.new-flow',\n      defaultValue: false,\n      rolloutPercentage: 10,\n      rolloutValue: true,\n      rules: [{ attribute: 'plan', includes: ['enterprise'], value: true }]\n    }\n  ]\n]);\n\nconst decisions = new CheckoutDecisions(new FeatureFlagEvaluator(flags));\nconst enabled = decisions.useNewCheckout({\n  userId: 'user-123',\n  groups: ['beta'],\n  plan: 'pro',\n  region: 'us'\n});"
-    },
-    "pseudocode": {
-      "language": "pseudocode",
-      "code": "decision = evaluate(flagKey, evaluationContext)\nif decision is enabled:\n    run new behavior\nelse:\n    run default behavior\nrecord exposure(flagKey, decision, evaluationContext)\nif flag is temporary and rollout is complete:\n    remove flag and obsolete code path"
-    }
-  },
-  "relationships": [
-    {
-      "target_pattern_id": "external-configuration-store",
-      "type": "uses",
-      "strength": 0.9,
-      "description": "Runtime feature flags often store definitions and current states outside the deployed application."
-    },
-    {
-      "target_pattern_id": "canary-deployment",
-      "type": "enables",
-      "strength": 0.9,
-      "description": "Percentage and cohort targeting enable canary-style progressive exposure."
-    },
-    {
-      "target_pattern_id": "blue-green-deployment",
-      "type": "complements",
-      "strength": 0.7,
-      "description": "Blue-green switches infrastructure versions while feature flags switch application behavior inside a deployed version."
-    },
-    {
-      "target_pattern_id": "circuit-breaker",
-      "type": "complements",
-      "strength": 0.7,
-      "description": "Operational flags can act as manual kill switches or graceful-degradation controls alongside automated circuit breakers."
-    },
-    {
-      "target_pattern_id": "strategy",
-      "type": "uses",
-      "strength": 0.7,
-      "description": "Long-lived flags can select strategies instead of scattering conditionals through business code."
-    },
-    {
-      "target_pattern_id": "strangler-fig",
-      "type": "complements",
-      "strength": 0.6,
-      "description": "Feature flags can gradually redirect behavior during incremental migration."
-    }
-  ],
-  "metadata": {
-    "source_research": [
-      "https://martinfowler.com/articles/feature-toggles.html",
-      "https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-feature-management",
-      "https://featureflags.io/feature-flags/"
+[
+  {
+    "id": "feature-flag",
+    "name": "Feature Flag",
+    "category": "Architectural",
+    "description": "Controls application behavior at runtime by evaluating named flags, enabling release, experiment, operations, and permission decisions without redeploying code.",
+    "alsoKnownAs": [
+      "Feature Toggle",
+      "Feature Switch",
+      "Feature Gate",
+      "Feature Flipper"
     ],
-    "toggle_categories": [
-      "release",
-      "experiment",
-      "operations",
-      "permissioning"
+    "when_to_use": "Separating feature release from code deployment\nTrunk-based development with incomplete or latent code paths\nProgressive rollout to cohorts, percentages, regions, tenants, plans, or beta users\nA/B or multivariate experiments that need stable user assignment\nOperational kill switches for fast degradation during incidents\nPermissioning or entitlement checks that must evolve without widespread code changes",
+    "benefits": "Runtime control without redeployment\nReduced release risk through gradual exposure\nFast rollback or kill switch behavior\nSafer continuous delivery and trunk-based development\nTargeted enablement by user, group, tenant, plan, region, device, time window, or percentage\nExperimentation and multivariate delivery\nClear separation between deployment, release, and business/operations decisions",
+    "drawbacks": "Stale flags create technical debt and cognitive load\nToo many scattered conditionals make code hard to reason about\nIncorrect defaults can expose unfinished or unsafe behavior\nFlag evaluation infrastructure can become a runtime dependency\nCombinatorial testing grows as flags interact\nLong-lived flags require stronger ownership, naming, audit, and cleanup discipline\nClient-side flags can leak intent and must not protect sensitive authorization alone",
+    "use_cases": "Release toggles for hiding incomplete functionality\nExperiment toggles for A/B and multivariate testing\nOps toggles for disabling expensive or risky paths under load\nPermissioning toggles for plans, roles, tenants, or beta programs\nProgressive delivery by percentage or canary cohort\nDark launches and internal-only validation\nEmergency rollback, graceful degradation, and circuit-breaker-like kill switches",
+    "complexity": "Medium",
+    "tags": [
+      "feature-flag",
+      "feature-toggle",
+      "progressive-delivery",
+      "runtime-configuration",
+      "release-management",
+      "experimentation",
+      "kill-switch",
+      "continuous-delivery",
+      "canary-release"
     ],
-    "governance_required": true
+    "structure": "Define a Flag Store that owns flag definitions, defaults, variants, targeting rules, and metadata. Use a Flag Evaluator or Toggle Router to evaluate a flag key against an Evaluation Context. Keep business code behind named decision methods so feature decisions are decoupled from scattered conditionals. For short-lived release flags, a small conditional may be acceptable; for long-lived permission or experiment flags, prefer decision objects, dependency injection, strategy selection, or policy-like abstractions. Track owner, purpose, type, creation date, expiry date, and cleanup plan for every flag.",
+    "participants": [
+      "Flag Definition: stable key, type, default value, variants, targeting rules, metadata, owner, and expiry policy",
+      "Flag Store: durable source of flag configuration, often external to the application deployment",
+      "Flag Evaluator or Toggle Router: resolves the flag value for a request or execution context",
+      "Evaluation Context: user, tenant, plan, region, device, environment, request attributes, or operational state used for targeting",
+      "Decision Object: domain-facing API that answers meaningful questions instead of exposing raw flag keys everywhere",
+      "Toggle Point: the code location where behavior changes based on an evaluated decision",
+      "Administration and Audit Surface: controlled interface for changing flags, recording who changed what and why",
+      "Cleanup Process: recurring review that removes expired flags and dead code paths"
+    ],
+    "collaborations": [
+      "Callers ask a decision object or evaluator for a typed value using a stable flag key and an evaluation context.",
+      "The evaluator combines default values, stored configuration, targeting rules, percentage rollout, and optional time windows to produce a deterministic decision.",
+      "The toggle point selects behavior, delegates to a strategy, injects an implementation, or suppresses a nonessential operation.",
+      "Telemetry records evaluations, variants, exposure events, and operational outcomes so rollouts and experiments can be judged safely.",
+      "Owners retire temporary flags once the rollout, migration, or experiment is complete."
+    ],
+    "consequences": [
+      "Deployment and release become independent activities.",
+      "Behavior can change per request, per audience, or per environment without a new build.",
+      "The system gains a powerful operational control plane, so access control, audit, defaults, and failure modes become part of the design.",
+      "The pattern is safe only when paired with lifecycle management; unmanaged flags become hidden branches in production code.",
+      "Tests should cover default/off behavior, enabled behavior, targeting rules, fallback behavior, and important flag combinations."
+    ],
+    "implementation": "Classify every flag before creating it: release, experiment, ops, or permissioning. Choose static, dynamic-by-configuration, or dynamic-by-context evaluation according to that classification. Store flags outside the code deployment when runtime control is required, but keep safe defaults in code for availability. Centralize decision logic in a feature-decision layer instead of spreading raw flag checks across the codebase. Use deterministic bucketing for percentage rollouts so the same actor receives a stable experience. Prefer server-side evaluation for security-sensitive decisions. Instrument exposures and outcomes. Give each temporary flag an owner and expiry date, then remove the flag and obsolete code path after rollout or experiment completion.",
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "type FlagValue = boolean | string | number;\n\ninterface EvaluationContext {\n  userId: string;\n  groups: string[];\n  plan: 'free' | 'pro' | 'enterprise';\n  region: string;\n}\n\ninterface FlagRule {\n  attribute: keyof EvaluationContext;\n  includes: string[];\n  value: FlagValue;\n}\n\ninterface FlagDefinition {\n  key: string;\n  defaultValue: FlagValue;\n  rules: FlagRule[];\n  rolloutPercentage?: number;\n  rolloutValue?: FlagValue;\n}\n\nclass FeatureFlagEvaluator {\n  constructor(private readonly flags: Map<string, FlagDefinition>) {}\n\n  evaluate(key: string, context: EvaluationContext): FlagValue {\n    const flag = this.flags.get(key);\n    if (!flag) return false;\n\n    for (const rule of flag.rules) {\n      const actual = context[rule.attribute];\n      const values = Array.isArray(actual) ? actual : [String(actual)];\n      if (values.some(value => rule.includes.includes(value))) {\n        return rule.value;\n      }\n    }\n\n    if (flag.rolloutPercentage !== undefined && flag.rolloutValue !== undefined) {\n      const bucket = this.bucket(context.userId, flag.key);\n      if (bucket < flag.rolloutPercentage) return flag.rolloutValue;\n    }\n\n    return flag.defaultValue;\n  }\n\n  private bucket(actorId: string, flagKey: string): number {\n    const input = actorId + ':' + flagKey;\n    let hash = 0;\n    for (let index = 0; index < input.length; index += 1) {\n      hash = (hash * 31 + input.charCodeAt(index)) >>> 0;\n    }\n    return hash % 100;\n  }\n}\n\nclass CheckoutDecisions {\n  constructor(private readonly evaluator: FeatureFlagEvaluator) {}\n\n  useNewCheckout(context: EvaluationContext): boolean {\n    return this.evaluator.evaluate('checkout.new-flow', context) === true;\n  }\n}\n\nconst flags = new Map<string, FlagDefinition>([\n  [\n    'checkout.new-flow',\n    {\n      key: 'checkout.new-flow',\n      defaultValue: false,\n      rolloutPercentage: 10,\n      rolloutValue: true,\n      rules: [{ attribute: 'plan', includes: ['enterprise'], value: true }]\n    }\n  ]\n]);\n\nconst decisions = new CheckoutDecisions(new FeatureFlagEvaluator(flags));\nconst enabled = decisions.useNewCheckout({\n  userId: 'user-123',\n  groups: ['beta'],\n  plan: 'pro',\n  region: 'us'\n});"
+      },
+      "pseudocode": {
+        "language": "pseudocode",
+        "code": "decision = evaluate(flagKey, evaluationContext)\nif decision is enabled:\n    run new behavior\nelse:\n    run default behavior\nrecord exposure(flagKey, decision, evaluationContext)\nif flag is temporary and rollout is complete:\n    remove flag and obsolete code path"
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "external-configuration-store",
+        "type": "uses",
+        "strength": 0.9,
+        "description": "Runtime feature flags often store definitions and current states outside the deployed application."
+      },
+      {
+        "target_pattern_id": "canary-deployment",
+        "type": "enables",
+        "strength": 0.9,
+        "description": "Percentage and cohort targeting enable canary-style progressive exposure."
+      },
+      {
+        "target_pattern_id": "blue-green-deployment",
+        "type": "complements",
+        "strength": 0.7,
+        "description": "Blue-green switches infrastructure versions while feature flags switch application behavior inside a deployed version."
+      },
+      {
+        "target_pattern_id": "circuit-breaker",
+        "type": "complements",
+        "strength": 0.7,
+        "description": "Operational flags can act as manual kill switches or graceful-degradation controls alongside automated circuit breakers."
+      },
+      {
+        "target_pattern_id": "strategy",
+        "type": "uses",
+        "strength": 0.7,
+        "description": "Long-lived flags can select strategies instead of scattering conditionals through business code."
+      },
+      {
+        "target_pattern_id": "strangler-fig",
+        "type": "complements",
+        "strength": 0.6,
+        "description": "Feature flags can gradually redirect behavior during incremental migration."
+      }
+    ],
+    "metadata": {
+      "source_research": [
+        "https://martinfowler.com/articles/feature-toggles.html",
+        "https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-feature-management",
+        "https://featureflags.io/feature-flags/"
+      ],
+      "toggle_categories": [
+        "release",
+        "experiment",
+        "operations",
+        "permissioning"
+      ],
+      "governance_required": true
+    }
   }
-}
+]

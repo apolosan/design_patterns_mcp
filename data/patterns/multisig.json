@@ -1,24 +1,26 @@
-{
-  "id": "multisig",
-  "name": "Multi-Signature",
-  "category": "Smart Contract Access Control",
-  "description": "M-of-N approvals required for execution Problem: Distribute authority and reduce single point of failure",
-  "when_to_use": "Require multiple signatures for critical operations",
-  "benefits": "Distributed trust, reduced failure risk, consensus-based",
-  "drawbacks": "Coordination overhead, slower execution, signer management",
-  "use_cases": "Treasury, protocol upgrades, admin functions, DAO operations",
-  "complexity": "Medium",
-  "tags": [
-    "access-control",
-    "multisig",
-    "gnosis-safe",
-    "security",
-    "governance"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "mapping(uint256 => mapping(address => bool)) approvals;\nuint256 public required = 3;\n\nfunction approve(uint256 txId) public onlySigner {\n    approvals[txId][msg.sender] = true;\n}\n\nfunction execute(uint256 txId) public {\n    require(getApprovalCount(txId) >= required);\n    // Execute\n}"
+[
+  {
+    "id": "multisig",
+    "name": "Multi-Signature",
+    "category": "Smart Contract Access Control",
+    "description": "M-of-N approvals required for execution Problem: Distribute authority and reduce single point of failure",
+    "when_to_use": "Require multiple signatures for critical operations",
+    "benefits": "Distributed trust, reduced failure risk, consensus-based",
+    "drawbacks": "Coordination overhead, slower execution, signer management",
+    "use_cases": "Treasury, protocol upgrades, admin functions, DAO operations",
+    "complexity": "Medium",
+    "tags": [
+      "access-control",
+      "multisig",
+      "gnosis-safe",
+      "security",
+      "governance"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "mapping(uint256 => mapping(address => bool)) approvals;\nuint256 public required = 3;\n\nfunction approve(uint256 txId) public onlySigner {\n    approvals[txId][msg.sender] = true;\n}\n\nfunction execute(uint256 txId) public {\n    require(getApprovalCount(txId) >= required);\n    // Execute\n}"
+      }
     }
   }
-}
+]

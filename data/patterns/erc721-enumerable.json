@@ -1,24 +1,26 @@
-{
-  "id": "erc721-enumerable",
-  "name": "ERC-721 Enumerable",
-  "category": "NFT",
-  "description": "Full on-chain enumeration of tokens",
-  "when_to_use": "Portfolio displays, marketplace listings, on-chain queries",
-  "benefits": "Full enumeration capability, query all tokens",
-  "drawbacks": "Significantly higher gas (+30-50%), storage overhead",
-  "use_cases": "Token galleries, ownership tracking, full enumeration",
-  "complexity": "Medium",
-  "tags": [
-    "nft",
-    "erc721",
-    "enumerable",
-    "on-chain",
-    "tracking"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// ERC-721 Enumerable\nimport \"@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol\";\n\ncontract NFT is ERC721Enumerable {\n    function tokensOfOwner(address owner) external view returns (uint256[] memory) {\n        uint256 count = balanceOf(owner);\n        uint256[] memory ids = new uint256[](count);\n        for (uint256 i = 0; i < count; i++) {\n            ids[i] = tokenOfOwnerByIndex(owner, i);\n        }\n        return ids;\n    }\n}"
+[
+  {
+    "id": "erc721-enumerable",
+    "name": "ERC-721 Enumerable",
+    "category": "NFT",
+    "description": "Full on-chain enumeration of tokens",
+    "when_to_use": "Portfolio displays, marketplace listings, on-chain queries",
+    "benefits": "Full enumeration capability, query all tokens",
+    "drawbacks": "Significantly higher gas (+30-50%), storage overhead",
+    "use_cases": "Token galleries, ownership tracking, full enumeration",
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "erc721",
+      "enumerable",
+      "on-chain",
+      "tracking"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ERC-721 Enumerable\nimport \"@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol\";\n\ncontract NFT is ERC721Enumerable {\n    function tokensOfOwner(address owner) external view returns (uint256[] memory) {\n        uint256 count = balanceOf(owner);\n        uint256[] memory ids = new uint256[](count);\n        for (uint256 i = 0; i < count; i++) {\n            ids[i] = tokenOfOwnerByIndex(owner, i);\n        }\n        return ids;\n    }\n}"
+      }
     }
   }
-}
+]

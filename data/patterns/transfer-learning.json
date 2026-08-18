@@ -1,16 +1,18 @@
-{
-  "id": "transfer-learning",
-  "name": "Transfer Learning",
-  "category": "AI/ML",
-  "description": "Leverages knowledge from pre-trained models for new tasks",
-  "when_to_use": "Limited training data\nSimilar domains\nFaster training",
-  "benefits": "Faster training\nBetter performance\nLess data needed\nKnowledge reuse",
-  "drawbacks": "Domain similarity required\nPotential negative transfer\nModel selection",
-  "use_cases": "Image classification\nNLP tasks\nDomain adaptation",
-  "complexity": "Medium",
-  "tags": [
-    "transfer",
-    "pre-trained",
-    "adaptation"
-  ]
-}
+[
+  {
+    "id": "transfer-learning",
+    "name": "Transfer Learning",
+    "category": "AI/ML",
+    "description": "Leverages knowledge from pre-trained models for new tasks",
+    "when_to_use": "Limited training data\nSimilar domains\nFaster training",
+    "benefits": "Faster training\nBetter performance\nLess data needed\nKnowledge reuse",
+    "drawbacks": "Domain similarity required\nPotential negative transfer\nModel selection",
+    "use_cases": "Image classification\nNLP tasks\nDomain adaptation",
+    "complexity": "Medium",
+    "tags": [
+      "transfer",
+      "pre-trained",
+      "adaptation"
+    ]
+  }
+]

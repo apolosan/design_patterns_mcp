@@ -1,22 +1,24 @@
-{
-  "id": "circuit-breaker",
-  "name": "Circuit Breaker",
-  "category": "Cloud-Native",
-  "description": "Prevents cascading failures by failing fast when service is unavailable",
-  "when_to_use": "Distributed systems\nExternal service calls\nFault tolerance",
-  "benefits": "Fail fast\nSystem stability\nResource protection\nGraceful degradation",
-  "drawbacks": "Additional complexity\nConfiguration tuning\nFalse positives",
-  "use_cases": "Microservices\nAPI gateways\nExternal integrations",
-  "complexity": "Medium",
-  "tags": [
-    "fault-tolerance",
-    "resilience",
-    "microservices"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Circuit Breaker: prevent cascading failures\nenum CircuitState { CLOSED, OPEN, HALF_OPEN }\n\nclass CircuitBreaker {\n  private state = CircuitState.CLOSED;\n  private failures = 0;\n  private threshold = 5;\n  \n  async execute<T>(fn: () => Promise<T>): Promise<T> {\n    if (this.state === CircuitState.OPEN) {\n      throw new Error('Circuit breaker is OPEN');\n    }\n    \n    try {\n      const result = await fn();\n      this.onSuccess();\n      return result;\n    } catch (error) {\n      this.onFailure();\n      throw error;\n    }\n  }\n  \n  private onSuccess() {\n    this.failures = 0;\n    this.state = CircuitState.CLOSED;\n  }\n  \n  private onFailure() {\n    this.failures++;\n    if (this.failures >= this.threshold) {\n      this.state = CircuitState.OPEN;\n    }\n  }\n}\n\nconst breaker = new CircuitBreaker();\nawait breaker.execute(() => fetch('https://api.example.com'));"
+[
+  {
+    "id": "circuit-breaker",
+    "name": "Circuit Breaker",
+    "category": "Cloud-Native",
+    "description": "Prevents cascading failures by failing fast when service is unavailable",
+    "when_to_use": "Distributed systems\nExternal service calls\nFault tolerance",
+    "benefits": "Fail fast\nSystem stability\nResource protection\nGraceful degradation",
+    "drawbacks": "Additional complexity\nConfiguration tuning\nFalse positives",
+    "use_cases": "Microservices\nAPI gateways\nExternal integrations",
+    "complexity": "Medium",
+    "tags": [
+      "fault-tolerance",
+      "resilience",
+      "microservices"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Circuit Breaker: prevent cascading failures\nenum CircuitState { CLOSED, OPEN, HALF_OPEN }\n\nclass CircuitBreaker {\n  private state = CircuitState.CLOSED;\n  private failures = 0;\n  private threshold = 5;\n  \n  async execute<T>(fn: () => Promise<T>): Promise<T> {\n    if (this.state === CircuitState.OPEN) {\n      throw new Error('Circuit breaker is OPEN');\n    }\n    \n    try {\n      const result = await fn();\n      this.onSuccess();\n      return result;\n    } catch (error) {\n      this.onFailure();\n      throw error;\n    }\n  }\n  \n  private onSuccess() {\n    this.failures = 0;\n    this.state = CircuitState.CLOSED;\n  }\n  \n  private onFailure() {\n    this.failures++;\n    if (this.failures >= this.threshold) {\n      this.state = CircuitState.OPEN;\n    }\n  }\n}\n\nconst breaker = new CircuitBreaker();\nawait breaker.execute(() => fetch('https://api.example.com'));"
+      }
     }
   }
-}
+]

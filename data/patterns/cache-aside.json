@@ -1,16 +1,18 @@
-{
-  "id": "cache-aside",
-  "name": "Cache-Aside Pattern",
-  "category": "Caching",
-  "description": "Application manages cache directly alongside data store",
-  "when_to_use": "Read-heavy workloads\nCache control needed\nSimple caching",
-  "benefits": "Simple implementation\nCache control\nFailure handling",
-  "drawbacks": "Cache management overhead\nPotential inconsistency\nApplication complexity",
-  "use_cases": "Database caching\nAPI response caching\nComputed results",
-  "complexity": "Medium",
-  "tags": [
-    "caching",
-    "performance",
-    "data-access"
-  ]
-}
+[
+  {
+    "id": "cache-aside",
+    "name": "Cache-Aside Pattern",
+    "category": "Caching",
+    "description": "Application manages cache directly alongside data store",
+    "when_to_use": "Read-heavy workloads\nCache control needed\nSimple caching",
+    "benefits": "Simple implementation\nCache control\nFailure handling",
+    "drawbacks": "Cache management overhead\nPotential inconsistency\nApplication complexity",
+    "use_cases": "Database caching\nAPI response caching\nComputed results",
+    "complexity": "Medium",
+    "tags": [
+      "caching",
+      "performance",
+      "data-access"
+    ]
+  }
+]

@@ -1,244 +1,665 @@
-{
-  "patterns": [
+[
   {
     "id": "rag-pattern",
     "name": "Retrieval-Augmented Generation (RAG)",
     "category": "AI/ML",
     "description": "Combines retrieval with generation for improved responses using external knowledge",
-    "when_to_use": ["Need accurate factual responses", "Reduce hallucinations", "Domain-specific knowledge"],
-    "benefits": ["Improved accuracy", "Factual responses", "Up-to-date information", "Reduced hallucinations"],
-    "drawbacks": ["Complex implementation", "Vector database required", "Latency overhead"],
-    "use_cases": ["Chatbots", "Q&A systems", "Content generation", "Documentation assistance"],
+    "when_to_use": [
+      "Need accurate factual responses",
+      "Reduce hallucinations",
+      "Domain-specific knowledge"
+    ],
+    "benefits": [
+      "Improved accuracy",
+      "Factual responses",
+      "Up-to-date information",
+      "Reduced hallucinations"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Vector database required",
+      "Latency overhead"
+    ],
+    "use_cases": [
+      "Chatbots",
+      "Q&A systems",
+      "Content generation",
+      "Documentation assistance"
+    ],
     "complexity": "High",
-    "tags": ["rag", "retrieval", "generation", "llm"]
+    "tags": [
+      "rag",
+      "retrieval",
+      "generation",
+      "llm"
+    ]
   },
   {
     "id": "reflection-pattern",
     "name": "Reflection Pattern",
     "category": "AI/ML",
     "description": "AI agent reflects on its own outputs to improve reasoning and catch errors",
-    "when_to_use": ["Complex reasoning tasks", "Error detection needed", "Multi-step problems"],
-    "benefits": ["Self-correction", "Improved accuracy", "Better reasoning", "Error detection"],
-    "drawbacks": ["Increased compute cost", "Higher latency", "Complexity"],
-    "use_cases": ["Code generation", "Mathematical reasoning", "Complex analysis"],
+    "when_to_use": [
+      "Complex reasoning tasks",
+      "Error detection needed",
+      "Multi-step problems"
+    ],
+    "benefits": [
+      "Self-correction",
+      "Improved accuracy",
+      "Better reasoning",
+      "Error detection"
+    ],
+    "drawbacks": [
+      "Increased compute cost",
+      "Higher latency",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Code generation",
+      "Mathematical reasoning",
+      "Complex analysis"
+    ],
     "complexity": "High",
-    "tags": ["reflection", "self-correction", "reasoning"]
+    "tags": [
+      "reflection",
+      "self-correction",
+      "reasoning"
+    ]
   },
   {
     "id": "tool-use-pattern",
     "name": "Tool Use Pattern",
     "category": "AI/ML",
     "description": "Enables AI agents to use external tools and APIs to extend capabilities",
-    "when_to_use": ["Need external data", "Calculations required", "API integrations"],
-    "benefits": ["Extended capabilities", "Real-time data", "Specialized functions", "Accurate computations"],
-    "drawbacks": ["Tool reliability dependency", "Security concerns", "Complexity"],
-    "use_cases": ["Code execution", "API calls", "Data analysis", "Web search"],
+    "when_to_use": [
+      "Need external data",
+      "Calculations required",
+      "API integrations"
+    ],
+    "benefits": [
+      "Extended capabilities",
+      "Real-time data",
+      "Specialized functions",
+      "Accurate computations"
+    ],
+    "drawbacks": [
+      "Tool reliability dependency",
+      "Security concerns",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Code execution",
+      "API calls",
+      "Data analysis",
+      "Web search"
+    ],
     "complexity": "Medium",
-    "tags": ["tools", "apis", "integration"]
+    "tags": [
+      "tools",
+      "apis",
+      "integration"
+    ]
   },
   {
     "id": "multi-agent-pattern",
     "name": "Multi-Agent Pattern",
     "category": "AI/ML",
     "description": "Multiple specialized agents collaborate to solve complex problems",
-    "when_to_use": ["Complex workflows", "Specialized expertise needed", "Parallel processing"],
-    "benefits": ["Specialization", "Scalability", "Parallel processing", "Expertise distribution"],
-    "drawbacks": ["Coordination complexity", "Communication overhead", "Consistency challenges"],
-    "use_cases": ["Software development", "Research analysis", "Content creation"],
+    "when_to_use": [
+      "Complex workflows",
+      "Specialized expertise needed",
+      "Parallel processing"
+    ],
+    "benefits": [
+      "Specialization",
+      "Scalability",
+      "Parallel processing",
+      "Expertise distribution"
+    ],
+    "drawbacks": [
+      "Coordination complexity",
+      "Communication overhead",
+      "Consistency challenges"
+    ],
+    "use_cases": [
+      "Software development",
+      "Research analysis",
+      "Content creation"
+    ],
     "complexity": "Very High",
-    "tags": ["multi-agent", "collaboration", "workflow"]
+    "tags": [
+      "multi-agent",
+      "collaboration",
+      "workflow"
+    ]
   },
   {
     "id": "chain-of-thought",
     "name": "Chain-of-Thought Prompting",
     "category": "AI/ML",
     "description": "Breaks down complex problems into step-by-step reasoning chains",
-    "when_to_use": ["Complex reasoning", "Mathematical problems", "Multi-step analysis"],
-    "benefits": ["Improved reasoning", "Transparency", "Better accuracy", "Debuggable"],
-    "drawbacks": ["Longer responses", "Higher token usage", "Potential verbosity"],
-    "use_cases": ["Math problems", "Logic puzzles", "Analysis tasks"],
+    "when_to_use": [
+      "Complex reasoning",
+      "Mathematical problems",
+      "Multi-step analysis"
+    ],
+    "benefits": [
+      "Improved reasoning",
+      "Transparency",
+      "Better accuracy",
+      "Debuggable"
+    ],
+    "drawbacks": [
+      "Longer responses",
+      "Higher token usage",
+      "Potential verbosity"
+    ],
+    "use_cases": [
+      "Math problems",
+      "Logic puzzles",
+      "Analysis tasks"
+    ],
     "complexity": "Low",
-    "tags": ["reasoning", "step-by-step", "prompting"]
+    "tags": [
+      "reasoning",
+      "step-by-step",
+      "prompting"
+    ]
   },
   {
     "id": "few-shot-learning",
     "name": "Few-Shot Learning",
     "category": "AI/ML",
     "description": "Provides examples in prompts to guide AI behavior and output format",
-    "when_to_use": ["Specific output format", "Consistent behavior", "Task demonstration"],
-    "benefits": ["Consistent outputs", "Quick adaptation", "No fine-tuning needed", "Format control"],
-    "drawbacks": ["Context length limits", "Example selection critical", "Token usage"],
-    "use_cases": ["Data formatting", "Classification", "Style matching"],
+    "when_to_use": [
+      "Specific output format",
+      "Consistent behavior",
+      "Task demonstration"
+    ],
+    "benefits": [
+      "Consistent outputs",
+      "Quick adaptation",
+      "No fine-tuning needed",
+      "Format control"
+    ],
+    "drawbacks": [
+      "Context length limits",
+      "Example selection critical",
+      "Token usage"
+    ],
+    "use_cases": [
+      "Data formatting",
+      "Classification",
+      "Style matching"
+    ],
     "complexity": "Low",
-    "tags": ["few-shot", "examples", "prompting"]
+    "tags": [
+      "few-shot",
+      "examples",
+      "prompting"
+    ]
   },
   {
     "id": "tree-of-thought",
     "name": "Tree-of-Thought",
     "category": "AI/ML",
     "description": "Explores multiple reasoning paths simultaneously like a decision tree",
-    "when_to_use": ["Complex decision making", "Multiple solution paths", "Strategic planning"],
-    "benefits": ["Comprehensive exploration", "Better decisions", "Multiple perspectives", "Backtracking ability"],
-    "drawbacks": ["High computational cost", "Complex implementation", "Exponential growth"],
-    "use_cases": ["Game playing", "Strategic planning", "Complex problem solving"],
+    "when_to_use": [
+      "Complex decision making",
+      "Multiple solution paths",
+      "Strategic planning"
+    ],
+    "benefits": [
+      "Comprehensive exploration",
+      "Better decisions",
+      "Multiple perspectives",
+      "Backtracking ability"
+    ],
+    "drawbacks": [
+      "High computational cost",
+      "Complex implementation",
+      "Exponential growth"
+    ],
+    "use_cases": [
+      "Game playing",
+      "Strategic planning",
+      "Complex problem solving"
+    ],
     "complexity": "Very High",
-    "tags": ["tree-search", "reasoning", "decision-making"]
+    "tags": [
+      "tree-search",
+      "reasoning",
+      "decision-making"
+    ]
   },
   {
     "id": "agent-loop",
     "name": "Agent Loop Pattern",
     "category": "AI/ML",
     "description": "Continuous cycle of observation, reasoning, action, and feedback",
-    "when_to_use": ["Interactive environments", "Continuous learning", "Adaptive behavior"],
-    "benefits": ["Continuous improvement", "Adaptive behavior", "Real-time response", "Learning capability"],
-    "drawbacks": ["Resource intensive", "Potential loops", "Complexity"],
-    "use_cases": ["Autonomous agents", "Game AI", "Robotic control"],
+    "when_to_use": [
+      "Interactive environments",
+      "Continuous learning",
+      "Adaptive behavior"
+    ],
+    "benefits": [
+      "Continuous improvement",
+      "Adaptive behavior",
+      "Real-time response",
+      "Learning capability"
+    ],
+    "drawbacks": [
+      "Resource intensive",
+      "Potential loops",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Autonomous agents",
+      "Game AI",
+      "Robotic control"
+    ],
     "complexity": "High",
-    "tags": ["agent", "loop", "continuous"]
+    "tags": [
+      "agent",
+      "loop",
+      "continuous"
+    ]
   },
   {
     "id": "embeddings-pattern",
     "name": "Embeddings Pattern",
     "category": "AI/ML",
     "description": "Converts text/data into high-dimensional vectors for similarity and search",
-    "when_to_use": ["Semantic search", "Similarity matching", "Clustering"],
-    "benefits": ["Semantic understanding", "Efficient search", "Similarity computation", "Clustering capability"],
-    "drawbacks": ["Storage requirements", "Dimensionality choice", "Quality dependence"],
-    "use_cases": ["Search engines", "Recommendation systems", "Document clustering"],
+    "when_to_use": [
+      "Semantic search",
+      "Similarity matching",
+      "Clustering"
+    ],
+    "benefits": [
+      "Semantic understanding",
+      "Efficient search",
+      "Similarity computation",
+      "Clustering capability"
+    ],
+    "drawbacks": [
+      "Storage requirements",
+      "Dimensionality choice",
+      "Quality dependence"
+    ],
+    "use_cases": [
+      "Search engines",
+      "Recommendation systems",
+      "Document clustering"
+    ],
     "complexity": "Medium",
-    "tags": ["embeddings", "vectors", "similarity"]
+    "tags": [
+      "embeddings",
+      "vectors",
+      "similarity"
+    ]
   },
   {
     "id": "fine-tuning-pattern",
     "name": "Fine-Tuning Pattern",
     "category": "AI/ML",
     "description": "Adapts pre-trained models to specific domains or tasks",
-    "when_to_use": ["Domain-specific tasks", "Improve performance", "Custom behavior"],
-    "benefits": ["Better performance", "Domain adaptation", "Custom behavior", "Efficiency"],
-    "drawbacks": ["Requires training data", "Computational cost", "Overfitting risk"],
-    "use_cases": ["Domain chatbots", "Classification", "Text generation"],
+    "when_to_use": [
+      "Domain-specific tasks",
+      "Improve performance",
+      "Custom behavior"
+    ],
+    "benefits": [
+      "Better performance",
+      "Domain adaptation",
+      "Custom behavior",
+      "Efficiency"
+    ],
+    "drawbacks": [
+      "Requires training data",
+      "Computational cost",
+      "Overfitting risk"
+    ],
+    "use_cases": [
+      "Domain chatbots",
+      "Classification",
+      "Text generation"
+    ],
     "complexity": "High",
-    "tags": ["fine-tuning", "training", "adaptation"]
+    "tags": [
+      "fine-tuning",
+      "training",
+      "adaptation"
+    ]
   },
   {
     "id": "prompt-engineering",
     "name": "Prompt Engineering",
     "category": "AI/ML",
     "description": "Systematic design of prompts to elicit desired AI behavior and outputs",
-    "when_to_use": ["Optimize AI responses", "Control output format", "Improve accuracy"],
-    "benefits": ["Better results", "Consistent behavior", "No training needed", "Quick iteration"],
-    "drawbacks": ["Trial and error", "Model dependency", "Prompt brittleness"],
-    "use_cases": ["Content generation", "Data extraction", "Classification"],
+    "when_to_use": [
+      "Optimize AI responses",
+      "Control output format",
+      "Improve accuracy"
+    ],
+    "benefits": [
+      "Better results",
+      "Consistent behavior",
+      "No training needed",
+      "Quick iteration"
+    ],
+    "drawbacks": [
+      "Trial and error",
+      "Model dependency",
+      "Prompt brittleness"
+    ],
+    "use_cases": [
+      "Content generation",
+      "Data extraction",
+      "Classification"
+    ],
     "complexity": "Low",
-    "tags": ["prompting", "optimization", "engineering"]
+    "tags": [
+      "prompting",
+      "optimization",
+      "engineering"
+    ]
   },
   {
     "id": "model-ensemble",
     "name": "Model Ensemble",
     "category": "AI/ML",
     "description": "Combines multiple models to improve performance and reliability",
-    "when_to_use": ["Improve accuracy", "Reduce overfitting", "Increase robustness"],
-    "benefits": ["Better accuracy", "Reduced variance", "Robustness", "Error reduction"],
-    "drawbacks": ["Increased complexity", "Higher cost", "Slower inference"],
-    "use_cases": ["Predictions", "Classification", "Recommendation"],
+    "when_to_use": [
+      "Improve accuracy",
+      "Reduce overfitting",
+      "Increase robustness"
+    ],
+    "benefits": [
+      "Better accuracy",
+      "Reduced variance",
+      "Robustness",
+      "Error reduction"
+    ],
+    "drawbacks": [
+      "Increased complexity",
+      "Higher cost",
+      "Slower inference"
+    ],
+    "use_cases": [
+      "Predictions",
+      "Classification",
+      "Recommendation"
+    ],
     "complexity": "High",
-    "tags": ["ensemble", "combination", "voting"]
+    "tags": [
+      "ensemble",
+      "combination",
+      "voting"
+    ]
   },
   {
     "id": "active-learning",
     "name": "Active Learning",
     "category": "AI/ML",
     "description": "Selectively queries for labels on most informative examples",
-    "when_to_use": ["Limited labeled data", "Expensive labeling", "Continuous learning"],
-    "benefits": ["Efficient labeling", "Improved performance", "Cost reduction", "Targeted learning"],
-    "drawbacks": ["Complex implementation", "Query strategy critical", "Cold start problem"],
-    "use_cases": ["Data annotation", "Model improvement", "Human-in-loop"],
+    "when_to_use": [
+      "Limited labeled data",
+      "Expensive labeling",
+      "Continuous learning"
+    ],
+    "benefits": [
+      "Efficient labeling",
+      "Improved performance",
+      "Cost reduction",
+      "Targeted learning"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Query strategy critical",
+      "Cold start problem"
+    ],
+    "use_cases": [
+      "Data annotation",
+      "Model improvement",
+      "Human-in-loop"
+    ],
     "complexity": "High",
-    "tags": ["active-learning", "labeling", "optimization"]
+    "tags": [
+      "active-learning",
+      "labeling",
+      "optimization"
+    ]
   },
   {
     "id": "transfer-learning",
     "name": "Transfer Learning",
     "category": "AI/ML",
     "description": "Leverages knowledge from pre-trained models for new tasks",
-    "when_to_use": ["Limited training data", "Similar domains", "Faster training"],
-    "benefits": ["Faster training", "Better performance", "Less data needed", "Knowledge reuse"],
-    "drawbacks": ["Domain similarity required", "Potential negative transfer", "Model selection"],
-    "use_cases": ["Image classification", "NLP tasks", "Domain adaptation"],
+    "when_to_use": [
+      "Limited training data",
+      "Similar domains",
+      "Faster training"
+    ],
+    "benefits": [
+      "Faster training",
+      "Better performance",
+      "Less data needed",
+      "Knowledge reuse"
+    ],
+    "drawbacks": [
+      "Domain similarity required",
+      "Potential negative transfer",
+      "Model selection"
+    ],
+    "use_cases": [
+      "Image classification",
+      "NLP tasks",
+      "Domain adaptation"
+    ],
     "complexity": "Medium",
-    "tags": ["transfer", "pre-trained", "adaptation"]
+    "tags": [
+      "transfer",
+      "pre-trained",
+      "adaptation"
+    ]
   },
   {
     "id": "federated-learning",
     "name": "Federated Learning",
     "category": "AI/ML",
     "description": "Trains models across distributed devices without centralizing data",
-    "when_to_use": ["Privacy requirements", "Distributed data", "Edge computing"],
-    "benefits": ["Privacy preservation", "Distributed training", "Reduced data transfer", "Edge deployment"],
-    "drawbacks": ["Communication overhead", "Heterogeneity challenges", "Coordination complexity"],
-    "use_cases": ["Mobile AI", "Healthcare", "IoT systems"],
+    "when_to_use": [
+      "Privacy requirements",
+      "Distributed data",
+      "Edge computing"
+    ],
+    "benefits": [
+      "Privacy preservation",
+      "Distributed training",
+      "Reduced data transfer",
+      "Edge deployment"
+    ],
+    "drawbacks": [
+      "Communication overhead",
+      "Heterogeneity challenges",
+      "Coordination complexity"
+    ],
+    "use_cases": [
+      "Mobile AI",
+      "Healthcare",
+      "IoT systems"
+    ],
     "complexity": "Very High",
-    "tags": ["federated", "distributed", "privacy"]
+    "tags": [
+      "federated",
+      "distributed",
+      "privacy"
+    ]
   },
   {
     "id": "continual-learning",
     "name": "Continual Learning",
     "category": "AI/ML",
     "description": "Learns new tasks while retaining knowledge of previous tasks",
-    "when_to_use": ["Sequential tasks", "Lifelong learning", "Dynamic environments"],
-    "benefits": ["Knowledge retention", "Continuous adaptation", "No catastrophic forgetting", "Efficiency"],
-    "drawbacks": ["Complex algorithms", "Memory requirements", "Stability-plasticity dilemma"],
-    "use_cases": ["Personalization", "Adaptive systems", "Lifelong AI"],
+    "when_to_use": [
+      "Sequential tasks",
+      "Lifelong learning",
+      "Dynamic environments"
+    ],
+    "benefits": [
+      "Knowledge retention",
+      "Continuous adaptation",
+      "No catastrophic forgetting",
+      "Efficiency"
+    ],
+    "drawbacks": [
+      "Complex algorithms",
+      "Memory requirements",
+      "Stability-plasticity dilemma"
+    ],
+    "use_cases": [
+      "Personalization",
+      "Adaptive systems",
+      "Lifelong AI"
+    ],
     "complexity": "Very High",
-    "tags": ["continual", "lifelong", "adaptation"]
+    "tags": [
+      "continual",
+      "lifelong",
+      "adaptation"
+    ]
   },
   {
     "id": "meta-learning",
     "name": "Meta-Learning",
     "category": "AI/ML",
     "description": "Learns how to learn, enabling fast adaptation to new tasks",
-    "when_to_use": ["Few examples available", "Fast adaptation needed", "Multiple related tasks"],
-    "benefits": ["Fast adaptation", "Sample efficiency", "Generalization", "Task diversity"],
-    "drawbacks": ["Complex implementation", "Meta-training required", "Task distribution dependency"],
-    "use_cases": ["Few-shot learning", "Personalization", "Rapid adaptation"],
+    "when_to_use": [
+      "Few examples available",
+      "Fast adaptation needed",
+      "Multiple related tasks"
+    ],
+    "benefits": [
+      "Fast adaptation",
+      "Sample efficiency",
+      "Generalization",
+      "Task diversity"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Meta-training required",
+      "Task distribution dependency"
+    ],
+    "use_cases": [
+      "Few-shot learning",
+      "Personalization",
+      "Rapid adaptation"
+    ],
     "complexity": "Very High",
-    "tags": ["meta-learning", "adaptation", "few-shot"]
+    "tags": [
+      "meta-learning",
+      "adaptation",
+      "few-shot"
+    ]
   },
   {
     "id": "self-supervised-learning",
     "name": "Self-Supervised Learning",
     "category": "AI/ML",
     "description": "Creates supervision signals from the data itself without manual labels",
-    "when_to_use": ["Limited labeled data", "Large unlabeled datasets", "Representation learning"],
-    "benefits": ["No manual labeling", "Scalable", "Rich representations", "Domain adaptation"],
-    "drawbacks": ["Task design critical", "Evaluation challenges", "Proxy task quality"],
-    "use_cases": ["Representation learning", "Pre-training", "Data-rich domains"],
+    "when_to_use": [
+      "Limited labeled data",
+      "Large unlabeled datasets",
+      "Representation learning"
+    ],
+    "benefits": [
+      "No manual labeling",
+      "Scalable",
+      "Rich representations",
+      "Domain adaptation"
+    ],
+    "drawbacks": [
+      "Task design critical",
+      "Evaluation challenges",
+      "Proxy task quality"
+    ],
+    "use_cases": [
+      "Representation learning",
+      "Pre-training",
+      "Data-rich domains"
+    ],
     "complexity": "High",
-    "tags": ["self-supervised", "representation", "unlabeled"]
+    "tags": [
+      "self-supervised",
+      "representation",
+      "unlabeled"
+    ]
   },
   {
     "id": "attention-mechanism",
     "name": "Attention Mechanism",
     "category": "AI/ML",
     "description": "Focuses on relevant parts of input when making predictions",
-    "when_to_use": ["Sequence modeling", "Variable input lengths", "Relevance weighting"],
-    "benefits": ["Improved performance", "Interpretability", "Variable lengths", "Parallelization"],
-    "drawbacks": ["Computational overhead", "Memory requirements", "Attention collapse"],
-    "use_cases": ["Machine translation", "Text summarization", "Image captioning"],
+    "when_to_use": [
+      "Sequence modeling",
+      "Variable input lengths",
+      "Relevance weighting"
+    ],
+    "benefits": [
+      "Improved performance",
+      "Interpretability",
+      "Variable lengths",
+      "Parallelization"
+    ],
+    "drawbacks": [
+      "Computational overhead",
+      "Memory requirements",
+      "Attention collapse"
+    ],
+    "use_cases": [
+      "Machine translation",
+      "Text summarization",
+      "Image captioning"
+    ],
     "complexity": "High",
-    "tags": ["attention", "focus", "weighting"]
+    "tags": [
+      "attention",
+      "focus",
+      "weighting"
+    ]
   },
   {
     "id": "transformer-pattern",
     "name": "Transformer Pattern",
     "category": "AI/ML",
     "description": "Architecture based entirely on attention mechanisms for sequence processing",
-    "when_to_use": ["Language modeling", "Sequence-to-sequence tasks", "Large-scale AI"],
-    "benefits": ["Parallelizable", "Long-range dependencies", "Transfer learning", "Scalability"],
-    "drawbacks": ["Computational requirements", "Memory intensive", "Training complexity"],
-    "use_cases": ["Language models", "Machine translation", "Text generation"],
+    "when_to_use": [
+      "Language modeling",
+      "Sequence-to-sequence tasks",
+      "Large-scale AI"
+    ],
+    "benefits": [
+      "Parallelizable",
+      "Long-range dependencies",
+      "Transfer learning",
+      "Scalability"
+    ],
+    "drawbacks": [
+      "Computational requirements",
+      "Memory intensive",
+      "Training complexity"
+    ],
+    "use_cases": [
+      "Language models",
+      "Machine translation",
+      "Text generation"
+    ],
     "complexity": "Very High",
-    "tags": ["transformer", "attention", "sequence"]
+    "tags": [
+      "transformer",
+      "attention",
+      "sequence"
+    ]
   }
-  ]
-}
+]

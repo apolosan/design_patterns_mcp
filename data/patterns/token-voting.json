@@ -1,23 +1,25 @@
-{
-  "id": "token-voting",
-  "name": "Token-Weighted Voting",
-  "category": "DAO Governance",
-  "description": "1 token = 1 vote governance Problem: Democratic decisions aligned with stake",
-  "when_to_use": "Voting power proportional to token holdings",
-  "benefits": "Simple, Sybil-resistant, stake-aligned",
-  "drawbacks": "Plutocratic, whale dominance, low participation",
-  "use_cases": "DAO governance, protocol parameters, treasury",
-  "complexity": "Medium",
-  "tags": [
-    "governance",
-    "dao",
-    "voting",
-    "erc20-votes"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/governance/Governor.sol\";\n\ncontract MyGovernor is Governor {\n    function castVote(uint256 proposalId, uint8 support) public {\n        uint256 weight = token.getPastVotes(msg.sender, snapshot);\n        _countVote(proposalId, msg.sender, support, weight);\n    }\n}"
+[
+  {
+    "id": "token-voting",
+    "name": "Token-Weighted Voting",
+    "category": "DAO Governance",
+    "description": "1 token = 1 vote governance Problem: Democratic decisions aligned with stake",
+    "when_to_use": "Voting power proportional to token holdings",
+    "benefits": "Simple, Sybil-resistant, stake-aligned",
+    "drawbacks": "Plutocratic, whale dominance, low participation",
+    "use_cases": "DAO governance, protocol parameters, treasury",
+    "complexity": "Medium",
+    "tags": [
+      "governance",
+      "dao",
+      "voting",
+      "erc20-votes"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/governance/Governor.sol\";\n\ncontract MyGovernor is Governor {\n    function castVote(uint256 proposalId, uint8 support) public {\n        uint256 weight = token.getPastVotes(msg.sender, snapshot);\n        _countVote(proposalId, msg.sender, support, weight);\n    }\n}"
+      }
     }
   }
-}
+]

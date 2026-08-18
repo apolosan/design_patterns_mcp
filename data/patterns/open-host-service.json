@@ -1,16 +1,18 @@
-{
-  "id": "open-host-service",
-  "name": "Open Host Service",
-  "category": "Domain-Driven Design",
-  "description": "Protocol that gives access to subsystem as set of services",
-  "when_to_use": "Multiple consumers\nPublic access\nService provision",
-  "benefits": "Multiple consumers\nStandardized access\nService orientation",
-  "drawbacks": "Protocol maintenance\nVersion management\nConsumer coordination",
-  "use_cases": "Public APIs\nShared services\nIntegration platforms",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "strategic",
-    "service"
-  ]
-}
+[
+  {
+    "id": "open-host-service",
+    "name": "Open Host Service",
+    "category": "Domain-Driven Design",
+    "description": "Protocol that gives access to subsystem as set of services",
+    "when_to_use": "Multiple consumers\nPublic access\nService provision",
+    "benefits": "Multiple consumers\nStandardized access\nService orientation",
+    "drawbacks": "Protocol maintenance\nVersion management\nConsumer coordination",
+    "use_cases": "Public APIs\nShared services\nIntegration platforms",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "service"
+    ]
+  }
+]

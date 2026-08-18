@@ -1,24 +1,26 @@
-{
-  "id": "validium",
-  "name": "Validium",
-  "category": "Layer 2 Scaling",
-  "description": "ZK-rollup variant with off-chain data availability. Uses validity proofs but stores transaction data off-chain.",
-  "when_to_use": "Ultra-low cost transactions, privacy requirements, trusted data availability",
-  "benefits": "Lowest L2 costs, instant finality, privacy",
-  "drawbacks": "Data availability assumptions, potential censorship, withdrawal delays if DA fails",
-  "use_cases": "Gaming, NFT marketplaces, private payments",
-  "complexity": "Very High",
-  "tags": [
-    "layer2",
-    "validium",
-    "zk",
-    "data-availability",
-    "privacy"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Validium: off-chain DA with validity proofs\ncontract Validium {\n    struct DataCommitment {\n        bytes32 dataHash;\n        address dataProvider;\n    }\n    \n    function submitBatch(bytes32 stateRoot, DataCommitment calldata commitment, uint256[] calldata proof) external {\n        require(verifyProof(proof, [stateRoot, commitment.dataHash]));\n        commits[batchNum] = commitment;\n    }\n}"
+[
+  {
+    "id": "validium",
+    "name": "Validium",
+    "category": "Layer 2 Scaling",
+    "description": "ZK-rollup variant with off-chain data availability. Uses validity proofs but stores transaction data off-chain.",
+    "when_to_use": "Ultra-low cost transactions, privacy requirements, trusted data availability",
+    "benefits": "Lowest L2 costs, instant finality, privacy",
+    "drawbacks": "Data availability assumptions, potential censorship, withdrawal delays if DA fails",
+    "use_cases": "Gaming, NFT marketplaces, private payments",
+    "complexity": "Very High",
+    "tags": [
+      "layer2",
+      "validium",
+      "zk",
+      "data-availability",
+      "privacy"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Validium: off-chain DA with validity proofs\ncontract Validium {\n    struct DataCommitment {\n        bytes32 dataHash;\n        address dataProvider;\n    }\n    \n    function submitBatch(bytes32 stateRoot, DataCommitment calldata commitment, uint256[] calldata proof) external {\n        require(verifyProof(proof, [stateRoot, commitment.dataHash]));\n        commits[batchNum] = commitment;\n    }\n}"
+      }
     }
   }
-}
+]

@@ -1,24 +1,26 @@
-{
-  "id": "sidechain-validator",
-  "name": "Sidechain with Validators",
-  "category": "Layer 2 Scaling",
-  "description": "Independent blockchain with own consensus, periodic checkpoints to mainnet.",
-  "when_to_use": "Custom consensus, EVM compatibility, independent chains",
-  "benefits": "Full EVM compatibility, high throughput, customizable",
-  "drawbacks": "Separate security model, validator trust, bridge risks",
-  "use_cases": "Polygon PoS, Gnosis Chain, enterprise chains",
-  "complexity": "High",
-  "tags": [
-    "layer2",
-    "sidechain",
-    "validators",
-    "pos",
-    "checkpointing"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Checkpoint submission to mainnet\nfunction submitCheckpoint(bytes32 rootHash, uint256 startBlock, uint256 endBlock) external onlyValidator {\n    require(validatorSet[msg.sender]);\n    checkpoints[checkpointId] = Checkpoint({\n        root: rootHash,\n        start: startBlock,\n        end: endBlock,\n        timestamp: block.timestamp\n    });\n}"
+[
+  {
+    "id": "sidechain-validator",
+    "name": "Sidechain with Validators",
+    "category": "Layer 2 Scaling",
+    "description": "Independent blockchain with own consensus, periodic checkpoints to mainnet.",
+    "when_to_use": "Custom consensus, EVM compatibility, independent chains",
+    "benefits": "Full EVM compatibility, high throughput, customizable",
+    "drawbacks": "Separate security model, validator trust, bridge risks",
+    "use_cases": "Polygon PoS, Gnosis Chain, enterprise chains",
+    "complexity": "High",
+    "tags": [
+      "layer2",
+      "sidechain",
+      "validators",
+      "pos",
+      "checkpointing"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Checkpoint submission to mainnet\nfunction submitCheckpoint(bytes32 rootHash, uint256 startBlock, uint256 endBlock) external onlyValidator {\n    require(validatorSet[msg.sender]);\n    checkpoints[checkpointId] = Checkpoint({\n        root: rootHash,\n        start: startBlock,\n        end: endBlock,\n        timestamp: block.timestamp\n    });\n}"
+      }
     }
   }
-}
+]

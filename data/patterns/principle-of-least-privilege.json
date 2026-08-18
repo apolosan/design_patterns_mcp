@@ -1,16 +1,18 @@
-{
-  "id": "principle-of-least-privilege",
-  "name": "Principle of Least Privilege",
-  "category": "Security",
-  "description": "Grants minimum necessary permissions required to perform specific tasks",
-  "when_to_use": "Access control design\nSecurity architecture\nRisk minimization",
-  "benefits": "Risk minimization\nSecurity enhancement\nDamage limitation",
-  "drawbacks": "Administrative overhead\nUser experience impact\nComplex permission management",
-  "use_cases": "System access\nApplication permissions\nDatabase access",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "privilege",
-    "access-control"
-  ]
-}
+[
+  {
+    "id": "principle-of-least-privilege",
+    "name": "Principle of Least Privilege",
+    "category": "Security",
+    "description": "Grants minimum necessary permissions required to perform specific tasks",
+    "when_to_use": "Access control design\nSecurity architecture\nRisk minimization",
+    "benefits": "Risk minimization\nSecurity enhancement\nDamage limitation",
+    "drawbacks": "Administrative overhead\nUser experience impact\nComplex permission management",
+    "use_cases": "System access\nApplication permissions\nDatabase access",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "privilege",
+      "access-control"
+    ]
+  }
+]

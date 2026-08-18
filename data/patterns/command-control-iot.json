@@ -1,16 +1,18 @@
-{
-  "id": "command-control-iot",
-  "name": "Command and Control",
-  "category": "IoT",
-  "description": "Sends commands to IoT devices and receives acknowledgments for remote control",
-  "when_to_use": "Device control\nRemote operations\nAutomation systems",
-  "benefits": "Remote control\nAutomation\nCentralized management",
-  "drawbacks": "Latency issues\nCommand reliability\nSecurity risks",
-  "use_cases": "Smart thermostats\nIndustrial automation\nSecurity systems",
-  "complexity": "Medium",
-  "tags": [
-    "iot",
-    "command",
-    "control"
-  ]
-}
+[
+  {
+    "id": "command-control-iot",
+    "name": "Command and Control",
+    "category": "IoT",
+    "description": "Sends commands to IoT devices and receives acknowledgments for remote control",
+    "when_to_use": "Device control\nRemote operations\nAutomation systems",
+    "benefits": "Remote control\nAutomation\nCentralized management",
+    "drawbacks": "Latency issues\nCommand reliability\nSecurity risks",
+    "use_cases": "Smart thermostats\nIndustrial automation\nSecurity systems",
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "command",
+      "control"
+    ]
+  }
+]

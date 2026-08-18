@@ -1,24 +1,26 @@
-{
-  "id": "rainbowkit-pattern",
-  "name": "RainbowKit Pattern",
-  "category": "Web3 Frontend",
-  "description": "Beautiful, React-based wallet connection UI. Built on wagmi, supports multiple wallets out of the box.",
-  "when_to_use": "React dApps, quick wallet integration, beautiful UI",
-  "benefits": "Beautiful UI, easy setup, multiple wallets, customizable, React hooks",
-  "drawbacks": "React-specific, opinionated design, bundle size",
-  "use_cases": "React dApps, Next.js apps, modern Web3 frontends",
-  "complexity": "Low",
-  "tags": [
-    "web3",
-    "wallet",
-    "rainbowkit",
-    "react",
-    "ui"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';\nimport { configureChains, createConfig, WagmiConfig } from 'wagmi';\n\nconst { chains, publicClient } = configureChains([mainnet], [publicProvider()]);\nconst { connectors } = getDefaultWallets({ appName: 'My dApp', chains });\nconst config = createConfig({ connectors, publicClient });\n\nfunction App() {\n  return (\n    <WagmiConfig config={config}>\n      <RainbowKitProvider chains={chains}>\n        <ConnectButton />\n      </RainbowKitProvider>\n    </WagmiConfig>\n  );\n}"
+[
+  {
+    "id": "rainbowkit-pattern",
+    "name": "RainbowKit Pattern",
+    "category": "Web3 Frontend",
+    "description": "Beautiful, React-based wallet connection UI. Built on wagmi, supports multiple wallets out of the box.",
+    "when_to_use": "React dApps, quick wallet integration, beautiful UI",
+    "benefits": "Beautiful UI, easy setup, multiple wallets, customizable, React hooks",
+    "drawbacks": "React-specific, opinionated design, bundle size",
+    "use_cases": "React dApps, Next.js apps, modern Web3 frontends",
+    "complexity": "Low",
+    "tags": [
+      "web3",
+      "wallet",
+      "rainbowkit",
+      "react",
+      "ui"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';\nimport { configureChains, createConfig, WagmiConfig } from 'wagmi';\n\nconst { chains, publicClient } = configureChains([mainnet], [publicProvider()]);\nconst { connectors } = getDefaultWallets({ appName: 'My dApp', chains });\nconst config = createConfig({ connectors, publicClient });\n\nfunction App() {\n  return (\n    <WagmiConfig config={config}>\n      <RainbowKitProvider chains={chains}>\n        <ConnectButton />\n      </RainbowKitProvider>\n    </WagmiConfig>\n  );\n}"
+      }
     }
   }
-}
+]

@@ -1,16 +1,18 @@
-{
-  "id": "event-queue-game",
-  "name": "Event Queue (Game)",
-  "category": "Game Development",
-  "description": "Queues events for processing to decouple game systems and manage timing",
-  "when_to_use": "Decoupled systems\nEvent management\nAudio systems",
-  "benefits": "System decoupling\nEvent ordering\nPerformance control",
-  "drawbacks": "Memory usage\nEvent management\nProcessing delays",
-  "use_cases": "Audio systems\nAnimation triggers\nGame events",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "events",
-    "queue"
-  ]
-}
+[
+  {
+    "id": "event-queue-game",
+    "name": "Event Queue (Game)",
+    "category": "Game Development",
+    "description": "Queues events for processing to decouple game systems and manage timing",
+    "when_to_use": "Decoupled systems\nEvent management\nAudio systems",
+    "benefits": "System decoupling\nEvent ordering\nPerformance control",
+    "drawbacks": "Memory usage\nEvent management\nProcessing delays",
+    "use_cases": "Audio systems\nAnimation triggers\nGame events",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "events",
+      "queue"
+    ]
+  }
+]

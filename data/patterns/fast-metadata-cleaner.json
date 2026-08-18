@@ -1,17 +1,19 @@
-{
-  "id": "fast-metadata-cleaner",
-  "name": "Fast Metadata Cleaner",
-  "category": "Idempotency",
-  "description": "The Fast Metadata Cleaner pattern leverages metadata to enable fast data cleaning for idempotent operations. Metadata operations are often the fastest since they operate on the logical level instead of the physical one.",
-  "when_to_use": "[\"Need fast data removal\",\"Metadata-level operations possible\"]",
-  "benefits": "[\"Fast execution\",\"No data file interaction\"]",
-  "drawbacks": "[\"Limited to metadata operations\",\"May not handle all cases\"]",
-  "use_cases": "[\"Table truncation\",\"Dataset reset\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"idempotency\"",
-    "\"metadata\"",
-    "\"cleaning\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "fast-metadata-cleaner",
+    "name": "Fast Metadata Cleaner",
+    "category": "Idempotency",
+    "description": "The Fast Metadata Cleaner pattern leverages metadata to enable fast data cleaning for idempotent operations. Metadata operations are often the fastest since they operate on the logical level instead of the physical one.",
+    "when_to_use": "[\"Need fast data removal\",\"Metadata-level operations possible\"]",
+    "benefits": "[\"Fast execution\",\"No data file interaction\"]",
+    "drawbacks": "[\"Limited to metadata operations\",\"May not handle all cases\"]",
+    "use_cases": "[\"Table truncation\",\"Dataset reset\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"idempotency\"",
+      "\"metadata\"",
+      "\"cleaning\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

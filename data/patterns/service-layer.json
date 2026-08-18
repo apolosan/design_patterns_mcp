@@ -1,22 +1,24 @@
-{
-  "id": "service-layer",
-  "name": "Service Layer",
-  "category": "Enterprise",
-  "description": "Defines application's boundary with layer of services that establishes a set of available operations",
-  "when_to_use": "Remote interface\nTransaction control\nSecurity boundaries",
-  "benefits": "Clear boundaries\nTransaction control\nSecurity enforcement\nRemote access",
-  "drawbacks": "Additional complexity\nPerformance overhead\nInterface proliferation",
-  "use_cases": "Web services\nAPI endpoints\nBusiness facades",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "service",
-    "boundary"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Service Layer: define application's boundary and operations\ninterface UserDTO {\n  id: string;\n  email: string;\n  name: string;\n}\n\nclass UserService {\n  constructor(\n    private userRepo: UserRepository,\n    private emailService: EmailService\n  ) {}\n  \n  async registerUser(email: string, name: string): Promise<UserDTO> {\n    // Validate\n    if (!email.includes('@')) {\n      throw new Error('Invalid email');\n    }\n    \n    // Business logic\n    const user = await this.userRepo.create({ email, name });\n    await this.emailService.sendWelcome(email);\n    \n    // Return DTO\n    return {\n      id: user.id,\n      email: user.email,\n      name: user.name\n    };\n  }\n  \n  async authenticateUser(email: string, password: string): Promise<UserDTO | null> {\n    const user = await this.userRepo.findByEmail(email);\n    if (!user || !await user.verifyPassword(password)) {\n      return null;\n    }\n    return { id: user.id, email: user.email, name: user.name };\n  }\n}\n\n// Controller uses service, not repository directly\nclass UserController {\n  constructor(private userService: UserService) {}\n  \n  async register(req: Request): Promise<Response> {\n    const { email, name } = req.body;\n    const user = await this.userService.registerUser(email, name);\n    return { status: 201, body: user };\n  }\n}"
+[
+  {
+    "id": "service-layer",
+    "name": "Service Layer",
+    "category": "Enterprise",
+    "description": "Defines application's boundary with layer of services that establishes a set of available operations",
+    "when_to_use": "Remote interface\nTransaction control\nSecurity boundaries",
+    "benefits": "Clear boundaries\nTransaction control\nSecurity enforcement\nRemote access",
+    "drawbacks": "Additional complexity\nPerformance overhead\nInterface proliferation",
+    "use_cases": "Web services\nAPI endpoints\nBusiness facades",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "service",
+      "boundary"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Service Layer: define application's boundary and operations\ninterface UserDTO {\n  id: string;\n  email: string;\n  name: string;\n}\n\nclass UserService {\n  constructor(\n    private userRepo: UserRepository,\n    private emailService: EmailService\n  ) {}\n  \n  async registerUser(email: string, name: string): Promise<UserDTO> {\n    // Validate\n    if (!email.includes('@')) {\n      throw new Error('Invalid email');\n    }\n    \n    // Business logic\n    const user = await this.userRepo.create({ email, name });\n    await this.emailService.sendWelcome(email);\n    \n    // Return DTO\n    return {\n      id: user.id,\n      email: user.email,\n      name: user.name\n    };\n  }\n  \n  async authenticateUser(email: string, password: string): Promise<UserDTO | null> {\n    const user = await this.userRepo.findByEmail(email);\n    if (!user || !await user.verifyPassword(password)) {\n      return null;\n    }\n    return { id: user.id, email: user.email, name: user.name };\n  }\n}\n\n// Controller uses service, not repository directly\nclass UserController {\n  constructor(private userService: UserService) {}\n  \n  async register(req: Request): Promise<Response> {\n    const { email, name } = req.body;\n    const user = await this.userService.registerUser(email, name);\n    return { status: 201, body: user };\n  }\n}"
+      }
     }
   }
-}
+]

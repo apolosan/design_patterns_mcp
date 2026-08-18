@@ -1,15 +1,17 @@
-{
-  "id": "spaghetti-code",
-  "name": "Spaghetti Code Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Code that is difficult to follow due to poor structure and organization",
-  "when_to_use": "Code lacks proper structure or organization\nControl flow is difficult to follow\nFunctions or methods are overly complex",
-  "drawbacks": "Hard to understand and maintain\nIncreases the likelihood of bugs\nMakes code refactoring very difficult\nReduces development team productivity",
-  "use_cases": "Legacy codebases with poor initial design\nCode written under extreme time pressure\nSystems that have grown organically without planning",
-  "complexity": "High",
-  "tags": [
-    "anti-pattern",
-    "code-quality",
-    "maintainability"
-  ]
-}
+[
+  {
+    "id": "spaghetti-code",
+    "name": "Spaghetti Code Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Code that is difficult to follow due to poor structure and organization",
+    "when_to_use": "Code lacks proper structure or organization\nControl flow is difficult to follow\nFunctions or methods are overly complex",
+    "drawbacks": "Hard to understand and maintain\nIncreases the likelihood of bugs\nMakes code refactoring very difficult\nReduces development team productivity",
+    "use_cases": "Legacy codebases with poor initial design\nCode written under extreme time pressure\nSystems that have grown organically without planning",
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "code-quality",
+      "maintainability"
+    ]
+  }
+]

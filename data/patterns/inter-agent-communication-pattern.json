@@ -1,19 +1,21 @@
-{
-  "id": "inter-agent-communication-pattern",
-  "name": "Inter-Agent Communication (A2A) Pattern",
-  "category": "AI/ML",
-  "description": "Defines protocols and mechanisms for communication and coordination between multiple agents in a system.",
-  "when_to_use": "[\"Multi-agent systems\",\"Coordination needed\",\"Distributed tasks\"]",
-  "benefits": "[\"Better collaboration\",\"Scalability\",\"Specialized task handling\"]",
-  "drawbacks": "[\"Communication overhead\",\"Synchronization challenges\",\"Complexity\"]",
-  "use_cases": "[\"Distributed AI systems\",\"Collaborative workflows\",\"Agent networks\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"inter-agent\"",
-    "\"communication\"",
-    "\"coordination\"",
-    "\"collaboration\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "inter-agent-communication-pattern",
+    "name": "Inter-Agent Communication (A2A) Pattern",
+    "category": "AI/ML",
+    "description": "Defines protocols and mechanisms for communication and coordination between multiple agents in a system.",
+    "when_to_use": "[\"Multi-agent systems\",\"Coordination needed\",\"Distributed tasks\"]",
+    "benefits": "[\"Better collaboration\",\"Scalability\",\"Specialized task handling\"]",
+    "drawbacks": "[\"Communication overhead\",\"Synchronization challenges\",\"Complexity\"]",
+    "use_cases": "[\"Distributed AI systems\",\"Collaborative workflows\",\"Agent networks\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"inter-agent\"",
+      "\"communication\"",
+      "\"coordination\"",
+      "\"collaboration\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

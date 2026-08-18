@@ -1,22 +1,24 @@
-{
-  "id": "factory-method",
-  "name": "Factory Method",
-  "category": "Creational",
-  "description": "Defines an interface for creating objects without specifying their exact classes",
-  "when_to_use": "Subclass decides which class to instantiate\nUnknown object types at compile time\nCentralize object creation",
-  "benefits": "Loose coupling\nCode reusability\nFlexibility in object creation",
-  "drawbacks": "Increased complexity\nRequires subclassing",
-  "use_cases": "UI element creation\nDatabase driver instantiation\nPlugin systems",
-  "complexity": "Medium",
-  "tags": [
-    "creational",
-    "factory",
-    "polymorphism"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Product {\n  use(): void;\n}\n\nabstract class Creator {\n  abstract createProduct(): Product;\n  \n  operation(): void {\n    const product = this.createProduct();\n    product.use();\n  }\n}\n\nclass ConcreteCreatorA extends Creator {\n  createProduct(): Product {\n    return { use: () => console.log('Product A') };\n  }\n}\n\n// Usage\nnew ConcreteCreatorA().operation(); // Product A"
+[
+  {
+    "id": "factory-method",
+    "name": "Factory Method",
+    "category": "Creational",
+    "description": "Defines an interface for creating objects without specifying their exact classes",
+    "when_to_use": "Subclass decides which class to instantiate\nUnknown object types at compile time\nCentralize object creation",
+    "benefits": "Loose coupling\nCode reusability\nFlexibility in object creation",
+    "drawbacks": "Increased complexity\nRequires subclassing",
+    "use_cases": "UI element creation\nDatabase driver instantiation\nPlugin systems",
+    "complexity": "Medium",
+    "tags": [
+      "creational",
+      "factory",
+      "polymorphism"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Product {\n  use(): void;\n}\n\nabstract class Creator {\n  abstract createProduct(): Product;\n  \n  operation(): void {\n    const product = this.createProduct();\n    product.use();\n  }\n}\n\nclass ConcreteCreatorA extends Creator {\n  createProduct(): Product {\n    return { use: () => console.log('Product A') };\n  }\n}\n\n// Usage\nnew ConcreteCreatorA().operation(); // Product A"
+      }
     }
   }
-}
+]

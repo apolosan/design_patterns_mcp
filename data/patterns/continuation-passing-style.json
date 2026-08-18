@@ -1,16 +1,18 @@
-{
-  "id": "continuation-passing-style",
-  "name": "Continuation-Passing Style (CPS)",
-  "category": "Functional",
-  "description": "Functions receive continuation function to call with their results",
-  "when_to_use": "Control flow\nAsync programming\nCallback management",
-  "benefits": "Explicit control flow\nTail call optimization\nCallback composition",
-  "drawbacks": "Complex syntax\nDifficult debugging\nPerformance overhead",
-  "use_cases": "Async operations\nParser combinators\nControl flow libraries",
-  "complexity": "High",
-  "tags": [
-    "functional",
-    "continuation",
-    "control-flow"
-  ]
-}
+[
+  {
+    "id": "continuation-passing-style",
+    "name": "Continuation-Passing Style (CPS)",
+    "category": "Functional",
+    "description": "Functions receive continuation function to call with their results",
+    "when_to_use": "Control flow\nAsync programming\nCallback management",
+    "benefits": "Explicit control flow\nTail call optimization\nCallback composition",
+    "drawbacks": "Complex syntax\nDifficult debugging\nPerformance overhead",
+    "use_cases": "Async operations\nParser combinators\nControl flow libraries",
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "continuation",
+      "control-flow"
+    ]
+  }
+]

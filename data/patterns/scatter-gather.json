@@ -1,16 +1,18 @@
-{
-  "id": "scatter-gather",
-  "name": "Scatter-Gather",
-  "category": "Integration",
-  "description": "Broadcasts request to multiple recipients and aggregates responses",
-  "when_to_use": "Multiple data sources\nParallel processing\nBest response selection",
-  "benefits": "Parallel processing\nMultiple sources\nResponse aggregation",
-  "drawbacks": "Complex aggregation\nTimeout handling\nPartial failures",
-  "use_cases": "Price comparisons\nDistributed queries\nParallel searches",
-  "complexity": "High",
-  "tags": [
-    "integration",
-    "messaging",
-    "aggregation"
-  ]
-}
+[
+  {
+    "id": "scatter-gather",
+    "name": "Scatter-Gather",
+    "category": "Integration",
+    "description": "Broadcasts request to multiple recipients and aggregates responses",
+    "when_to_use": "Multiple data sources\nParallel processing\nBest response selection",
+    "benefits": "Parallel processing\nMultiple sources\nResponse aggregation",
+    "drawbacks": "Complex aggregation\nTimeout handling\nPartial failures",
+    "use_cases": "Price comparisons\nDistributed queries\nParallel searches",
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "messaging",
+      "aggregation"
+    ]
+  }
+]

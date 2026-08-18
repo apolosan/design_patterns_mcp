@@ -1,24 +1,26 @@
-{
-  "id": "wagmi-hooks",
-  "name": "Wagmi Hooks Pattern",
-  "category": "Web3 Frontend",
-  "description": "React hooks for Web3 interactions. TypeScript-first, composable, with built-in caching.",
-  "when_to_use": "React dApps, TypeScript projects, modern Web3 frontends",
-  "benefits": "React-friendly, TypeScript support, auto-caching, composable, battle-tested",
-  "drawbacks": "React-specific, learning curve, opinionated patterns",
-  "use_cases": "Reading contracts, sending transactions, wallet management",
-  "complexity": "Low",
-  "tags": [
-    "web3",
-    "react",
-    "wagmi",
-    "hooks",
-    "typescript"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "import { useAccount, useBalance, useContractRead, useContractWrite } from 'wagmi';\n\nfunction TokenBalance() {\n  const { address } = useAccount();\n  const { data: balance } = useBalance({ address });\n  \n  const { data: tokenBalance } = useContractRead({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    functionName: 'balanceOf',\n    args: [address]\n  });\n  \n  const { write: transfer } = useContractWrite({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    functionName: 'transfer'\n  });\n  \n  return <div>Balance: {balance?.formatted} ETH</div>;\n}"
+[
+  {
+    "id": "wagmi-hooks",
+    "name": "Wagmi Hooks Pattern",
+    "category": "Web3 Frontend",
+    "description": "React hooks for Web3 interactions. TypeScript-first, composable, with built-in caching.",
+    "when_to_use": "React dApps, TypeScript projects, modern Web3 frontends",
+    "benefits": "React-friendly, TypeScript support, auto-caching, composable, battle-tested",
+    "drawbacks": "React-specific, learning curve, opinionated patterns",
+    "use_cases": "Reading contracts, sending transactions, wallet management",
+    "complexity": "Low",
+    "tags": [
+      "web3",
+      "react",
+      "wagmi",
+      "hooks",
+      "typescript"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { useAccount, useBalance, useContractRead, useContractWrite } from 'wagmi';\n\nfunction TokenBalance() {\n  const { address } = useAccount();\n  const { data: balance } = useBalance({ address });\n  \n  const { data: tokenBalance } = useContractRead({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    functionName: 'balanceOf',\n    args: [address]\n  });\n  \n  const { write: transfer } = useContractWrite({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    functionName: 'transfer'\n  });\n  \n  return <div>Balance: {balance?.formatted} ETH</div>;\n}"
+      }
     }
   }
-}
+]

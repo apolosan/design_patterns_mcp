@@ -1,24 +1,26 @@
-{
-  "id": "mev-boost-pattern",
-  "name": "MEV-Boost Pattern",
-  "category": "MEV",
-  "description": "Separate block building from proposing. Validators use relays to source blocks from builders.",
-  "when_to_use": "Validator revenue optimization post-Merge, MEV extraction",
-  "benefits": "Increased validator rewards (30-50%), competitive builder market",
-  "drawbacks": "Builder centralization risk, relay trust, censorship potential",
-  "use_cases": "Ethereum validators, MEV optimization, block building",
-  "complexity": "Very High",
-  "tags": [
-    "mev",
-    "mev-boost",
-    "ethereum",
-    "validators",
-    "block-building"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// MEV-Boost is off-chain infrastructure\n// Validators run MEV-Boost sidecar:\n// 1. Validator requests block from relay\n// 2. Relay aggregates bids from builders\n// 3. Validator signs highest-paying block\n// 4. Block propagated to network\n\n// On-chain impact: higher validator rewards via priority fees & MEV"
+[
+  {
+    "id": "mev-boost-pattern",
+    "name": "MEV-Boost Pattern",
+    "category": "MEV",
+    "description": "Separate block building from proposing. Validators use relays to source blocks from builders.",
+    "when_to_use": "Validator revenue optimization post-Merge, MEV extraction",
+    "benefits": "Increased validator rewards (30-50%), competitive builder market",
+    "drawbacks": "Builder centralization risk, relay trust, censorship potential",
+    "use_cases": "Ethereum validators, MEV optimization, block building",
+    "complexity": "Very High",
+    "tags": [
+      "mev",
+      "mev-boost",
+      "ethereum",
+      "validators",
+      "block-building"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// MEV-Boost is off-chain infrastructure\n// Validators run MEV-Boost sidecar:\n// 1. Validator requests block from relay\n// 2. Relay aggregates bids from builders\n// 3. Validator signs highest-paying block\n// 4. Block propagated to network\n\n// On-chain impact: higher validator rewards via priority fees & MEV"
+      }
     }
   }
-}
+]

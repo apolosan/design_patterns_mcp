@@ -1,22 +1,24 @@
-{
-  "id": "compression",
-  "name": "Compression Pattern",
-  "category": "Performance",
-  "description": "Reduces data size to improve transfer speed and storage efficiency",
-  "when_to_use": "Large data transfers\nStorage optimization\nBandwidth constraints",
-  "benefits": "Reduced bandwidth\nFaster transfers\nStorage savings",
-  "drawbacks": "CPU overhead\nCompression complexity\nDecompression time",
-  "use_cases": "Web assets\nFile transfers\nDatabase storage",
-  "complexity": "Medium",
-  "tags": [
-    "performance",
-    "compression",
-    "bandwidth"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Compression: reduce data size\nimport { gzip, gunzip } from 'zlib';\nimport { promisify } from 'util';\n\nconst gzipAsync = promisify(gzip);\nconst gunzipAsync = promisify(gunzip);\n\nclass CompressionCache<K, V> {\n  private cache = new Map<K, Buffer>();\n  \n  async set(key: K, value: V): Promise<void> {\n    const json = JSON.stringify(value);\n    const compressed = await gzipAsync(json);\n    this.cache.set(key, compressed);\n    \n    console.log('Original:', json.length, 'Compressed:', compressed.length);\n  }\n  \n  async get(key: K): Promise<V | undefined> {\n    const compressed = this.cache.get(key);\n    if (!compressed) return undefined;\n    \n    const decompressed = await gunzipAsync(compressed);\n    return JSON.parse(decompressed.toString());\n  }\n}\n\n// Example: Compress large objects\nconst cache = new CompressionCache();\nawait cache.set('data', { /* large object */ });\nconst data = await cache.get('data');"
+[
+  {
+    "id": "compression",
+    "name": "Compression Pattern",
+    "category": "Performance",
+    "description": "Reduces data size to improve transfer speed and storage efficiency",
+    "when_to_use": "Large data transfers\nStorage optimization\nBandwidth constraints",
+    "benefits": "Reduced bandwidth\nFaster transfers\nStorage savings",
+    "drawbacks": "CPU overhead\nCompression complexity\nDecompression time",
+    "use_cases": "Web assets\nFile transfers\nDatabase storage",
+    "complexity": "Medium",
+    "tags": [
+      "performance",
+      "compression",
+      "bandwidth"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Compression: reduce data size\nimport { gzip, gunzip } from 'zlib';\nimport { promisify } from 'util';\n\nconst gzipAsync = promisify(gzip);\nconst gunzipAsync = promisify(gunzip);\n\nclass CompressionCache<K, V> {\n  private cache = new Map<K, Buffer>();\n  \n  async set(key: K, value: V): Promise<void> {\n    const json = JSON.stringify(value);\n    const compressed = await gzipAsync(json);\n    this.cache.set(key, compressed);\n    \n    console.log('Original:', json.length, 'Compressed:', compressed.length);\n  }\n  \n  async get(key: K): Promise<V | undefined> {\n    const compressed = this.cache.get(key);\n    if (!compressed) return undefined;\n    \n    const decompressed = await gunzipAsync(compressed);\n    return JSON.parse(decompressed.toString());\n  }\n}\n\n// Example: Compress large objects\nconst cache = new CompressionCache();\nawait cache.set('data', { /* large object */ });\nconst data = await cache.get('data');"
+      }
     }
   }
-}
+]

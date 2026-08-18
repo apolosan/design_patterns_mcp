@@ -1,24 +1,26 @@
-{
-  "id": "optimistic-rollup",
-  "name": "Optimistic Rollup",
-  "category": "Layer 2 Scaling",
-  "description": "L2 with fraud proofs for dispute resolution Problem: Ethereum low throughput (15-30 TPS)",
-  "when_to_use": "Execute off-chain, fraud proofs for disputes",
-  "benefits": "10-100x throughput, EVM equivalence, lower fees",
-  "drawbacks": "7-day withdrawal period, fraud challenge window",
-  "use_cases": "DeFi, NFTs, payments, general L2 scaling",
-  "complexity": "High",
-  "tags": [
-    "layer2",
-    "rollup",
-    "optimistic",
-    "scaling",
-    "fraud-proof"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract FraudProofVerifier {\n    uint256 constant CHALLENGE_PERIOD = 7 days;\n    mapping(bytes32 => bool) public validBatches;\n    \n    function challengeBatch(bytes32 root, bytes proof) external {\n        require(block.timestamp < submissionTime[root] + CHALLENGE_PERIOD);\n        if (verifyFraudProof(proof)) {\n            validBatches[root] = false;\n        }\n    }\n}"
+[
+  {
+    "id": "optimistic-rollup",
+    "name": "Optimistic Rollup",
+    "category": "Layer 2 Scaling",
+    "description": "L2 with fraud proofs for dispute resolution Problem: Ethereum low throughput (15-30 TPS)",
+    "when_to_use": "Execute off-chain, fraud proofs for disputes",
+    "benefits": "10-100x throughput, EVM equivalence, lower fees",
+    "drawbacks": "7-day withdrawal period, fraud challenge window",
+    "use_cases": "DeFi, NFTs, payments, general L2 scaling",
+    "complexity": "High",
+    "tags": [
+      "layer2",
+      "rollup",
+      "optimistic",
+      "scaling",
+      "fraud-proof"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract FraudProofVerifier {\n    uint256 constant CHALLENGE_PERIOD = 7 days;\n    mapping(bytes32 => bool) public validBatches;\n    \n    function challengeBatch(bytes32 root, bytes proof) external {\n        require(block.timestamp < submissionTime[root] + CHALLENGE_PERIOD);\n        if (verifyFraudProof(proof)) {\n            validBatches[root] = false;\n        }\n    }\n}"
+      }
     }
   }
-}
+]

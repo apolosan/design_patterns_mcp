@@ -1,16 +1,18 @@
-{
-  "id": "double-buffer",
-  "name": "Double Buffer",
-  "category": "Game Development",
-  "description": "Uses two buffers to provide smooth rendering by eliminating flicker",
-  "when_to_use": "Smooth rendering\nAnimation systems\nGraphics programming",
-  "benefits": "Smooth rendering\nNo flicker\nBetter user experience",
-  "drawbacks": "Memory overhead\nImplementation complexity\nSynchronization",
-  "use_cases": "Graphics rendering\nAnimation\nScreen updates",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "rendering",
-    "graphics"
-  ]
-}
+[
+  {
+    "id": "double-buffer",
+    "name": "Double Buffer",
+    "category": "Game Development",
+    "description": "Uses two buffers to provide smooth rendering by eliminating flicker",
+    "when_to_use": "Smooth rendering\nAnimation systems\nGraphics programming",
+    "benefits": "Smooth rendering\nNo flicker\nBetter user experience",
+    "drawbacks": "Memory overhead\nImplementation complexity\nSynchronization",
+    "use_cases": "Graphics rendering\nAnimation\nScreen updates",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "rendering",
+      "graphics"
+    ]
+  }
+]

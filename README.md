@@ -1,6 +1,6 @@
 # Design Patterns MCP Server
 
-[![Version](https://img.shields.io/badge/version-0.7.1-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
+[![Version](https://img.shields.io/badge/version-0.7.2-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Test Status](https://img.shields.io/badge/tests-654%20%7C%20100%25-brightgreen.svg)](#testing)
 [![Patterns](https://img.shields.io/badge/patterns-710-orange.svg)](#available-pattern-categories)
@@ -307,6 +307,15 @@ Contributions are welcome! See the contributing guide.
 
 ## Release Notes
 
+### v0.7.2 — Version Bump (2026-08-16)
+
+- Canonical version bumped from `0.7.1` → `0.7.2` across active source and documentation files.
+- Files updated: `package.json`, `src/mcp-server.ts` (Server registration + runtime info), `AGENTS.md`, `CLAUDE.md` (canonical-identity header), `README.md` (badge, release-notes section, version footer), `CHANGELOG.md` (new entry). `docs/IMPROVEMENTS_03.md` and `QUICKSTART.md` audit-evidence references preserved untouched per state #45.
+- Stale version references corrected: `AGENTS.md` and `CLAUDE.md` header `(version 0.6.0)` → `(version 0.7.2)` (was 7 minor versions behind the actual `package.json`).
+- Runtime self-report now advertises `0.7.2` to MCP clients via `Server` constructor and `/info` endpoint.
+- No code-level behavioural change: pure release/version-canonicalisation patch.
+- Tests: full suite preserved (no test files modified), typecheck clean.
+
 ### v0.7.1 — Lint + Test Stabilization (2026-08-16)
 
 - Test suite fully validated: **654/654 GREEN, 0 skips, 0 todos** (was 651/654 with 3 pre-existing flakes).
@@ -345,7 +354,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Version**: 0.7.1
+**Version**: 0.7.2
 **Last Updated**: August 2026
 **Patterns**: 710 JSON definitions (highlight: **Feature Flag** / Feature Toggle)
 **Tests**: 654 test cases | 100% pass rate (0 failures, 0 skips)

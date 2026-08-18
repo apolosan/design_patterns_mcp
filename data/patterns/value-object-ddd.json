@@ -1,16 +1,18 @@
-{
-  "id": "value-object-ddd",
-  "name": "Value Object (DDD)",
-  "category": "Domain-Driven Design",
-  "description": "Object defined by its attributes rather than identity, immutable",
-  "when_to_use": "Attribute-based equality\nImmutable objects\nDomain concepts",
-  "benefits": "Immutability\nValue equality\nThread safety\nDomain clarity",
-  "drawbacks": "Object proliferation\nMemory overhead\nComplex creation",
-  "use_cases": "Money\nAddress\nDate ranges\nCoordinates",
-  "complexity": "Low",
-  "tags": [
-    "ddd",
-    "tactical",
-    "value"
-  ]
-}
+[
+  {
+    "id": "value-object-ddd",
+    "name": "Value Object (DDD)",
+    "category": "Domain-Driven Design",
+    "description": "Object defined by its attributes rather than identity, immutable",
+    "when_to_use": "Attribute-based equality\nImmutable objects\nDomain concepts",
+    "benefits": "Immutability\nValue equality\nThread safety\nDomain clarity",
+    "drawbacks": "Object proliferation\nMemory overhead\nComplex creation",
+    "use_cases": "Money\nAddress\nDate ranges\nCoordinates",
+    "complexity": "Low",
+    "tags": [
+      "ddd",
+      "tactical",
+      "value"
+    ]
+  }
+]

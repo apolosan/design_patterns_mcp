@@ -1,16 +1,18 @@
-{
-  "id": "thread-pool",
-  "name": "Thread Pool",
-  "category": "Concurrency",
-  "description": "Maintains multiple threads waiting for tasks to be allocated for concurrent execution",
-  "when_to_use": "Multiple tasks\nResource management\nPerformance optimization",
-  "benefits": "Resource control\nPerformance\nTask management\nOverhead reduction",
-  "drawbacks": "Memory overhead\nComplex configuration\nResource contention",
-  "use_cases": "Web servers\nTask processing\nParallel computation",
-  "complexity": "Medium",
-  "tags": [
-    "concurrency",
-    "threading",
-    "pooling"
-  ]
-}
+[
+  {
+    "id": "thread-pool",
+    "name": "Thread Pool",
+    "category": "Concurrency",
+    "description": "Maintains multiple threads waiting for tasks to be allocated for concurrent execution",
+    "when_to_use": "Multiple tasks\nResource management\nPerformance optimization",
+    "benefits": "Resource control\nPerformance\nTask management\nOverhead reduction",
+    "drawbacks": "Memory overhead\nComplex configuration\nResource contention",
+    "use_cases": "Web servers\nTask processing\nParallel computation",
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "threading",
+      "pooling"
+    ]
+  }
+]

@@ -1,24 +1,26 @@
-{
-  "id": "over-collateralized-lending",
-  "name": "Over-Collateralized Lending",
-  "category": "DeFi Lending",
-  "description": "Trustless lending requiring >100% collateral (Aave/Compound model)",
-  "when_to_use": "DeFi lending protocols, margin trading, liquidity without selling",
-  "benefits": "No counterparty risk, instant liquidity, trustless",
-  "drawbacks": "Capital inefficient, liquidation risk, over-collateralization",
-  "use_cases": "Borrowing stablecoins, leveraged positions, yield farming",
-  "complexity": "Medium",
-  "tags": [
-    "defi",
-    "lending",
-    "aave",
-    "compound",
-    "collateral"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Over-Collateralized Lending\nfunction borrow(address asset, uint256 amount) external {\n    uint256 collateralValue = getUserCollateralValue(msg.sender);\n    uint256 borrowValue = amount * getPrice(asset);\n    require(collateralValue * LTV / 100 >= borrowValue);\n    _transfer(asset, msg.sender, amount);\n}"
+[
+  {
+    "id": "over-collateralized-lending",
+    "name": "Over-Collateralized Lending",
+    "category": "DeFi Lending",
+    "description": "Trustless lending requiring >100% collateral (Aave/Compound model)",
+    "when_to_use": "DeFi lending protocols, margin trading, liquidity without selling",
+    "benefits": "No counterparty risk, instant liquidity, trustless",
+    "drawbacks": "Capital inefficient, liquidation risk, over-collateralization",
+    "use_cases": "Borrowing stablecoins, leveraged positions, yield farming",
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "lending",
+      "aave",
+      "compound",
+      "collateral"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Over-Collateralized Lending\nfunction borrow(address asset, uint256 amount) external {\n    uint256 collateralValue = getUserCollateralValue(msg.sender);\n    uint256 borrowValue = amount * getPrice(asset);\n    require(collateralValue * LTV / 100 >= borrowValue);\n    _transfer(asset, msg.sender, amount);\n}"
+      }
     }
   }
-}
+]

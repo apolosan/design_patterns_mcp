@@ -1,22 +1,24 @@
-{
-  "id": "service-discovery",
-  "name": "Service Discovery",
-  "category": "Microservices",
-  "description": "Mechanism for services to find and communicate with each other",
-  "when_to_use": "Dynamic environments\nService location\nLoad balancing",
-  "benefits": "Dynamic location\nLoad balancing\nFault tolerance\nScalability",
-  "drawbacks": "Network complexity\nDiscovery overhead\nFailure handling",
-  "use_cases": "Client-side discovery\nServer-side discovery\nService mesh",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "discovery",
-    "communication"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Service Discovery: dynamic service location\ninterface ServiceInstance {\n  id: string;\n  host: string;\n  port: number;\n  healthy: boolean;\n}\n\nclass ServiceRegistry {\n  private services = new Map<string, ServiceInstance[]>();\n  \n  register(serviceName: string, instance: ServiceInstance) {\n    const instances = this.services.get(serviceName) || [];\n    instances.push(instance);\n    this.services.set(serviceName, instances);\n  }\n  \n  discover(serviceName: string): ServiceInstance | null {\n    const instances = this.services.get(serviceName) || [];\n    const healthy = instances.filter(i => i.healthy);\n    if (healthy.length === 0) return null;\n    return healthy[Math.floor(Math.random() * healthy.length)];\n  }\n}\n\nconst registry = new ServiceRegistry();\nregistry.register('payment', { \n  id: 'p1', \n  host: '192.168.1.10', \n  port: 3000, \n  healthy: true \n});\nconst instance = registry.discover('payment');"
+[
+  {
+    "id": "service-discovery",
+    "name": "Service Discovery",
+    "category": "Microservices",
+    "description": "Mechanism for services to find and communicate with each other",
+    "when_to_use": "Dynamic environments\nService location\nLoad balancing",
+    "benefits": "Dynamic location\nLoad balancing\nFault tolerance\nScalability",
+    "drawbacks": "Network complexity\nDiscovery overhead\nFailure handling",
+    "use_cases": "Client-side discovery\nServer-side discovery\nService mesh",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "discovery",
+      "communication"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Service Discovery: dynamic service location\ninterface ServiceInstance {\n  id: string;\n  host: string;\n  port: number;\n  healthy: boolean;\n}\n\nclass ServiceRegistry {\n  private services = new Map<string, ServiceInstance[]>();\n  \n  register(serviceName: string, instance: ServiceInstance) {\n    const instances = this.services.get(serviceName) || [];\n    instances.push(instance);\n    this.services.set(serviceName, instances);\n  }\n  \n  discover(serviceName: string): ServiceInstance | null {\n    const instances = this.services.get(serviceName) || [];\n    const healthy = instances.filter(i => i.healthy);\n    if (healthy.length === 0) return null;\n    return healthy[Math.floor(Math.random() * healthy.length)];\n  }\n}\n\nconst registry = new ServiceRegistry();\nregistry.register('payment', { \n  id: 'p1', \n  host: '192.168.1.10', \n  port: 3000, \n  healthy: true \n});\nconst instance = registry.discover('payment');"
+      }
     }
   }
-}
+]

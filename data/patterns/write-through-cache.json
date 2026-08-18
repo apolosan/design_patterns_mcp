@@ -1,16 +1,18 @@
-{
-  "id": "write-through-cache",
-  "name": "Write-Through Cache",
-  "category": "Caching",
-  "description": "Writes go through cache to underlying data store synchronously",
-  "when_to_use": "Write consistency required\nRead-heavy workloads\nSimple consistency",
-  "benefits": "Data consistency\nSimple implementation\nCache warming",
-  "drawbacks": "Write latency\nCache complexity\nStorage overhead",
-  "use_cases": "Financial transactions\nUser profiles\nConfiguration data",
-  "complexity": "Medium",
-  "tags": [
-    "caching",
-    "consistency",
-    "performance"
-  ]
-}
+[
+  {
+    "id": "write-through-cache",
+    "name": "Write-Through Cache",
+    "category": "Caching",
+    "description": "Writes go through cache to underlying data store synchronously",
+    "when_to_use": "Write consistency required\nRead-heavy workloads\nSimple consistency",
+    "benefits": "Data consistency\nSimple implementation\nCache warming",
+    "drawbacks": "Write latency\nCache complexity\nStorage overhead",
+    "use_cases": "Financial transactions\nUser profiles\nConfiguration data",
+    "complexity": "Medium",
+    "tags": [
+      "caching",
+      "consistency",
+      "performance"
+    ]
+  }
+]

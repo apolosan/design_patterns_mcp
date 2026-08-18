@@ -1,16 +1,18 @@
-{
-  "id": "type-object",
-  "name": "Type Object Pattern",
-  "category": "Game Development",
-  "description": "Creates breed objects to define behavior and properties of game entities",
-  "when_to_use": "Data-driven design\nEntity types\nConfiguration systems",
-  "benefits": "Data-driven\nRuntime configuration\nEasy modifications",
-  "drawbacks": "Indirection overhead\nComplex relationships\nRuntime dependencies",
-  "use_cases": "Monster breeds\nWeapon types\nCharacter classes",
-  "complexity": "High",
-  "tags": [
-    "game",
-    "data-driven",
-    "types"
-  ]
-}
+[
+  {
+    "id": "type-object",
+    "name": "Type Object Pattern",
+    "category": "Game Development",
+    "description": "Creates breed objects to define behavior and properties of game entities",
+    "when_to_use": "Data-driven design\nEntity types\nConfiguration systems",
+    "benefits": "Data-driven\nRuntime configuration\nEasy modifications",
+    "drawbacks": "Indirection overhead\nComplex relationships\nRuntime dependencies",
+    "use_cases": "Monster breeds\nWeapon types\nCharacter classes",
+    "complexity": "High",
+    "tags": [
+      "game",
+      "data-driven",
+      "types"
+    ]
+  }
+]

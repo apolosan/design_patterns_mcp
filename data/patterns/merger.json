@@ -1,17 +1,19 @@
-{
-  "id": "merger",
-  "name": "Merger",
-  "category": "Idempotency",
-  "description": "The Merger pattern combines new data with existing data to handle updates and inserts idempotently when dataset identity is static.",
-  "when_to_use": "[\"Static dataset identity\",\"Updates and inserts only\"]",
-  "benefits": "[\"Handles updates efficiently\",\"Preserves existing data\"]",
-  "drawbacks": "[\"Complexity with identity changes\",\"Backfilling issues\"]",
-  "use_cases": "[\"Incremental updates\",\"Change data integration\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"idempotency\"",
-    "\"merger\"",
-    "\"updates\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "merger",
+    "name": "Merger",
+    "category": "Idempotency",
+    "description": "The Merger pattern combines new data with existing data to handle updates and inserts idempotently when dataset identity is static.",
+    "when_to_use": "[\"Static dataset identity\",\"Updates and inserts only\"]",
+    "benefits": "[\"Handles updates efficiently\",\"Preserves existing data\"]",
+    "drawbacks": "[\"Complexity with identity changes\",\"Backfilling issues\"]",
+    "use_cases": "[\"Incremental updates\",\"Change data integration\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"idempotency\"",
+      "\"merger\"",
+      "\"updates\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

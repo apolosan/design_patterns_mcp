@@ -1,17 +1,19 @@
-{
-  "id": "horizontal-partitioner",
-  "name": "Horizontal Partitioner",
-  "category": "Data Storage",
-  "description": "The Horizontal Partitioner divides data horizontally for better organization and performance.",
-  "when_to_use": "[\"Large dataset organization\",\"Performance optimization\"]",
-  "benefits": "[\"Improved performance\",\"Scalability\"]",
-  "drawbacks": "[\"Partition management\",\"Query complexity\"]",
-  "use_cases": "[\"Data partitioning\",\"Storage optimization\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-storage\"",
-    "\"partitioner\"",
-    "\"horizontal\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "horizontal-partitioner",
+    "name": "Horizontal Partitioner",
+    "category": "Data Storage",
+    "description": "The Horizontal Partitioner divides data horizontally for better organization and performance.",
+    "when_to_use": "[\"Large dataset organization\",\"Performance optimization\"]",
+    "benefits": "[\"Improved performance\",\"Scalability\"]",
+    "drawbacks": "[\"Partition management\",\"Query complexity\"]",
+    "use_cases": "[\"Data partitioning\",\"Storage optimization\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-storage\"",
+      "\"partitioner\"",
+      "\"horizontal\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

@@ -1,39 +1,54 @@
-{
-  "id": "skew-detector",
-  "name": "Skew Detector",
-  "category": "Data Engineering",
-  "description": "Detects data skew (uneven distribution across partitions, keys, or workers) before or during pipeline execution. Emits alerts and can suggest rebalancing strategies such as salting, custom partitioners, or capacity scaling.",
-  "when_to_use": [
-    "Shuffle/join stages exhibit slow stragglers",
-    "Hot keys dominate a partition",
-    "Throughput is bottlenecked by a few workers"
-  ],
-  "benefits": [
-    "Early warning before SLA breach",
-    "Suggests remediation actions",
-    "Improves cluster utilization"
-  ],
-  "drawbacks": [
-    "Statistics collection adds overhead",
-    "False positives during legitimate spikes",
-    "Auto-remediation can destabilize"
-  ],
-  "use_cases": [
-    "Spark skew detection on shuffle stages",
-    "Kafka hot-partition alerting",
-    "DB index usage imbalance"
-  ],
-  "complexity": "Medium",
-  "tags": ["data-engineering", "monitoring", "skew", "performance"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "function skewScore(counts: number[]): number {\n  const max = Math.max(...counts);\n  const avg = counts.reduce((a,b)=>a+b,0) / counts.length;\n  return max / Math.max(avg, 1);\n}",
-      "description": "Max-over-average skew metric."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "horizontal-partitioner", "type": "relates-to", "strength": 0.6},
-    {"target_pattern_id": "sla-misses-detector", "type": "complements", "strength": 0.7}
-  ]
-}
+[
+  {
+    "id": "skew-detector",
+    "name": "Skew Detector",
+    "category": "Data Engineering",
+    "description": "Detects data skew (uneven distribution across partitions, keys, or workers) before or during pipeline execution. Emits alerts and can suggest rebalancing strategies such as salting, custom partitioners, or capacity scaling.",
+    "when_to_use": [
+      "Shuffle/join stages exhibit slow stragglers",
+      "Hot keys dominate a partition",
+      "Throughput is bottlenecked by a few workers"
+    ],
+    "benefits": [
+      "Early warning before SLA breach",
+      "Suggests remediation actions",
+      "Improves cluster utilization"
+    ],
+    "drawbacks": [
+      "Statistics collection adds overhead",
+      "False positives during legitimate spikes",
+      "Auto-remediation can destabilize"
+    ],
+    "use_cases": [
+      "Spark skew detection on shuffle stages",
+      "Kafka hot-partition alerting",
+      "DB index usage imbalance"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-engineering",
+      "monitoring",
+      "skew",
+      "performance"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "function skewScore(counts: number[]): number {\n  const max = Math.max(...counts);\n  const avg = counts.reduce((a,b)=>a+b,0) / counts.length;\n  return max / Math.max(avg, 1);\n}",
+        "description": "Max-over-average skew metric."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "horizontal-partitioner",
+        "type": "relates-to",
+        "strength": 0.6
+      },
+      {
+        "target_pattern_id": "sla-misses-detector",
+        "type": "complements",
+        "strength": 0.7
+      }
+    ]
+  }
+]

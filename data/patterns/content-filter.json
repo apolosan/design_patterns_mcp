@@ -1,16 +1,18 @@
-{
-  "id": "content-filter",
-  "name": "Content Filter",
-  "category": "Integration",
-  "description": "Filters message content based on criteria to remove unnecessary data",
-  "when_to_use": "Data filtering\nBandwidth optimization\nSecurity filtering",
-  "benefits": "Reduced bandwidth\nSecurity\nPerformance\nSelective processing",
-  "drawbacks": "Filter complexity\nData loss risk\nMaintenance overhead",
-  "use_cases": "Data streaming\nSecurity filtering\nBandwidth optimization",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "filtering",
-    "content"
-  ]
-}
+[
+  {
+    "id": "content-filter",
+    "name": "Content Filter",
+    "category": "Integration",
+    "description": "Filters message content based on criteria to remove unnecessary data",
+    "when_to_use": "Data filtering\nBandwidth optimization\nSecurity filtering",
+    "benefits": "Reduced bandwidth\nSecurity\nPerformance\nSelective processing",
+    "drawbacks": "Filter complexity\nData loss risk\nMaintenance overhead",
+    "use_cases": "Data streaming\nSecurity filtering\nBandwidth optimization",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "filtering",
+      "content"
+    ]
+  }
+]

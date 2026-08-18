@@ -1,24 +1,26 @@
-{
-  "id": "strategy-vault-yearn",
-  "name": "Strategy Vault (Yearn)",
-  "category": "DeFi Vault",
-  "description": "Automated yield optimization with pluggable strategies. Vault manages capital, strategies execute.",
-  "when_to_use": "Yield optimization, automated strategy execution, capital pooling",
-  "benefits": "Automated, gas-efficient for users, expert strategies, composable",
-  "drawbacks": "Smart contract risk, strategy risk, complexity",
-  "use_cases": "Yearn vaults, automated yield farming, strategy aggregation",
-  "complexity": "High",
-  "tags": [
-    "defi",
-    "vault",
-    "yearn",
-    "strategy",
-    "yield-optimization"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract Vault {\n    IStrategy public strategy;\n    \n    function deposit(uint256 amount) external {\n        token.transferFrom(msg.sender, address(this), amount);\n        uint256 shares = (amount * totalSupply) / totalAssets();\n        _mint(msg.sender, shares);\n        token.transfer(address(strategy), amount);\n        strategy.invest(amount);\n    }\n    \n    function harvest() external {\n        strategy.harvest(); // Execute strategy, collect rewards\n    }\n}"
+[
+  {
+    "id": "strategy-vault-yearn",
+    "name": "Strategy Vault (Yearn)",
+    "category": "DeFi Vault",
+    "description": "Automated yield optimization with pluggable strategies. Vault manages capital, strategies execute.",
+    "when_to_use": "Yield optimization, automated strategy execution, capital pooling",
+    "benefits": "Automated, gas-efficient for users, expert strategies, composable",
+    "drawbacks": "Smart contract risk, strategy risk, complexity",
+    "use_cases": "Yearn vaults, automated yield farming, strategy aggregation",
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "vault",
+      "yearn",
+      "strategy",
+      "yield-optimization"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract Vault {\n    IStrategy public strategy;\n    \n    function deposit(uint256 amount) external {\n        token.transferFrom(msg.sender, address(this), amount);\n        uint256 shares = (amount * totalSupply) / totalAssets();\n        _mint(msg.sender, shares);\n        token.transfer(address(strategy), amount);\n        strategy.invest(amount);\n    }\n    \n    function harvest() external {\n        strategy.harvest(); // Execute strategy, collect rewards\n    }\n}"
+      }
     }
   }
-}
+]

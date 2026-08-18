@@ -1,22 +1,24 @@
-{
-  "id": "pipeline-concurrency",
-  "name": "Pipeline (Concurrency)",
-  "category": "Concurrency",
-  "description": "Processes data through sequence of concurrent stages",
-  "when_to_use": "Stream processing\nAssembly line processing\nData transformation",
-  "benefits": "Throughput\nParallelism\nModularity\nScalability",
-  "drawbacks": "Latency\nSynchronization\nBuffer management",
-  "use_cases": "Data processing\nImage processing\nNetwork protocols",
-  "complexity": "Medium",
-  "tags": [
-    "concurrency",
-    "pipeline",
-    "streaming"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Pipeline: chain of processing stages\ninterface Stage<T, R> {\n  process(input: T): Promise<R>;\n}\n\nclass Pipeline<T> {\n  private stages: Stage<any, any>[] = [];\n  \n  addStage<R>(stage: Stage<T, R>): Pipeline<R> {\n    this.stages.push(stage);\n    return this as any;\n  }\n  \n  async execute(input: T): Promise<any> {\n    let result: any = input;\n    \n    for (const stage of this.stages) {\n      result = await stage.process(result);\n    }\n    \n    return result;\n  }\n  \n  async executeMany(inputs: T[]): Promise<any[]> {\n    return Promise.all(inputs.map(input => this.execute(input)));\n  }\n}\n\n// Stages\nconst fetchStage: Stage<string, any> = {\n  async process(url: string) {\n    const response = await fetch(url);\n    return response.json();\n  }\n};\n\nconst transformStage: Stage<any, any> = {\n  async process(data: any) {\n    return data.items.map((i: any) => i.name);\n  }\n};\n\nconst filterStage: Stage<string[], string[]> = {\n  async process(items: string[]) {\n    return items.filter(item => item.length > 5);\n  }\n};\n\n// Usage\nconst pipeline = new Pipeline<string>()\n  .addStage(fetchStage)\n  .addStage(transformStage)\n  .addStage(filterStage);\n\nconst result = await pipeline.execute('https://api.example.com/data');"
+[
+  {
+    "id": "pipeline-concurrency",
+    "name": "Pipeline (Concurrency)",
+    "category": "Concurrency",
+    "description": "Processes data through sequence of concurrent stages",
+    "when_to_use": "Stream processing\nAssembly line processing\nData transformation",
+    "benefits": "Throughput\nParallelism\nModularity\nScalability",
+    "drawbacks": "Latency\nSynchronization\nBuffer management",
+    "use_cases": "Data processing\nImage processing\nNetwork protocols",
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "pipeline",
+      "streaming"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Pipeline: chain of processing stages\ninterface Stage<T, R> {\n  process(input: T): Promise<R>;\n}\n\nclass Pipeline<T> {\n  private stages: Stage<any, any>[] = [];\n  \n  addStage<R>(stage: Stage<T, R>): Pipeline<R> {\n    this.stages.push(stage);\n    return this as any;\n  }\n  \n  async execute(input: T): Promise<any> {\n    let result: any = input;\n    \n    for (const stage of this.stages) {\n      result = await stage.process(result);\n    }\n    \n    return result;\n  }\n  \n  async executeMany(inputs: T[]): Promise<any[]> {\n    return Promise.all(inputs.map(input => this.execute(input)));\n  }\n}\n\n// Stages\nconst fetchStage: Stage<string, any> = {\n  async process(url: string) {\n    const response = await fetch(url);\n    return response.json();\n  }\n};\n\nconst transformStage: Stage<any, any> = {\n  async process(data: any) {\n    return data.items.map((i: any) => i.name);\n  }\n};\n\nconst filterStage: Stage<string[], string[]> = {\n  async process(items: string[]) {\n    return items.filter(item => item.length > 5);\n  }\n};\n\n// Usage\nconst pipeline = new Pipeline<string>()\n  .addStage(fetchStage)\n  .addStage(transformStage)\n  .addStage(filterStage);\n\nconst result = await pipeline.execute('https://api.example.com/data');"
+      }
     }
   }
-}
+]

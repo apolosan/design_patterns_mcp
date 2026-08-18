@@ -1,17 +1,19 @@
-{
-  "id": "flow-interruption-detector",
-  "name": "Flow Interruption Detector",
-  "category": "Data Observability",
-  "description": "The Flow Interruption Detector identifies interruptions in data flows.",
-  "when_to_use": "[\"Flow monitoring\",\"Interruption detection\"]",
-  "benefits": "[\"Early detection\",\"Flow monitoring\"]",
-  "drawbacks": "[\"False positives\",\"Configuration\"]",
-  "use_cases": "[\"Pipeline monitoring\",\"Flow health\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-observability\"",
-    "\"detector\"",
-    "\"flow\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "flow-interruption-detector",
+    "name": "Flow Interruption Detector",
+    "category": "Data Observability",
+    "description": "The Flow Interruption Detector identifies interruptions in data flows.",
+    "when_to_use": "[\"Flow monitoring\",\"Interruption detection\"]",
+    "benefits": "[\"Early detection\",\"Flow monitoring\"]",
+    "drawbacks": "[\"False positives\",\"Configuration\"]",
+    "use_cases": "[\"Pipeline monitoring\",\"Flow health\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-observability\"",
+      "\"detector\"",
+      "\"flow\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

@@ -1,16 +1,18 @@
-{
-  "id": "device-lifecycle",
-  "name": "Device Lifecycle Management",
-  "category": "IoT",
-  "description": "Manages complete lifecycle of IoT devices from provisioning to decommissioning",
-  "when_to_use": "Device management\nFleet operations\nSecurity compliance",
-  "benefits": "Complete lifecycle control\nSecurity management\nOperational efficiency",
-  "drawbacks": "Management complexity\nProcess overhead\nCoordination challenges",
-  "use_cases": "Enterprise IoT\nSmart city infrastructure\nIndustrial systems",
-  "complexity": "High",
-  "tags": [
-    "iot",
-    "lifecycle",
-    "management"
-  ]
-}
+[
+  {
+    "id": "device-lifecycle",
+    "name": "Device Lifecycle Management",
+    "category": "IoT",
+    "description": "Manages complete lifecycle of IoT devices from provisioning to decommissioning",
+    "when_to_use": "Device management\nFleet operations\nSecurity compliance",
+    "benefits": "Complete lifecycle control\nSecurity management\nOperational efficiency",
+    "drawbacks": "Management complexity\nProcess overhead\nCoordination challenges",
+    "use_cases": "Enterprise IoT\nSmart city infrastructure\nIndustrial systems",
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "lifecycle",
+      "management"
+    ]
+  }
+]

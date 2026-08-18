@@ -1,24 +1,26 @@
-{
-  "id": "quadratic-voting",
-  "name": "Quadratic Voting",
-  "category": "DAO Governance",
-  "description": "Vote cost = votes² to reduce whale dominance",
-  "when_to_use": "Democratic outcomes, funding decisions, Gitcoin grants",
-  "benefits": "More democratic, reduces whale power, preference intensity",
-  "drawbacks": "Requires Sybil resistance, complex, gas intensive",
-  "use_cases": "Public goods funding, preference intensity signaling",
-  "complexity": "High",
-  "tags": [
-    "governance",
-    "dao",
-    "quadratic-voting",
-    "gitcoin",
-    "democracy"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Quadratic Voting: cost = votes²\nfunction vote(uint256 proposalId, uint256 votes) external {\n    uint256 cost = votes * votes;\n    require(votingPower[msg.sender] >= cost);\n    votingPower[msg.sender] -= cost;\n    proposals[proposalId].votesFor += votes;\n}"
+[
+  {
+    "id": "quadratic-voting",
+    "name": "Quadratic Voting",
+    "category": "DAO Governance",
+    "description": "Vote cost = votes² to reduce whale dominance",
+    "when_to_use": "Democratic outcomes, funding decisions, Gitcoin grants",
+    "benefits": "More democratic, reduces whale power, preference intensity",
+    "drawbacks": "Requires Sybil resistance, complex, gas intensive",
+    "use_cases": "Public goods funding, preference intensity signaling",
+    "complexity": "High",
+    "tags": [
+      "governance",
+      "dao",
+      "quadratic-voting",
+      "gitcoin",
+      "democracy"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Quadratic Voting: cost = votes²\nfunction vote(uint256 proposalId, uint256 votes) external {\n    uint256 cost = votes * votes;\n    require(votingPower[msg.sender] >= cost);\n    votingPower[msg.sender] -= cost;\n    proposals[proposalId].votesFor += votes;\n}"
+      }
     }
   }
-}
+]

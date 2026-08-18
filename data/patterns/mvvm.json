@@ -1,22 +1,24 @@
-{
-  "id": "mvvm",
-  "name": "Model-View-ViewModel",
-  "category": "Architectural",
-  "description": "Uses data binding to connect view with view model",
-  "when_to_use": "Data binding support\nRich UI applications\nDeclarative UI",
-  "benefits": "Data binding\nTestability\nView independence\nRich UI support",
-  "drawbacks": "Complex debugging\nMemory leaks risk\nFramework dependency",
-  "use_cases": "WPF applications\nAngular/Vue apps\nMobile applications",
-  "complexity": "Medium",
-  "tags": [
-    "data-binding",
-    "ui",
-    "framework"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// MVVM: adds ViewModel for two-way data binding\n\n// Model\nclass Task {\n  constructor(public id: string, public title: string, public done: boolean) {}\n}\n\nclass TaskModel {\n  private tasks: Task[] = [];\n  \n  addTask(title: string) {\n    this.tasks.push(new Task(crypto.randomUUID(), title, false));\n  }\n  \n  getTasks() { return this.tasks; }\n}\n\n// ViewModel (mediator between Model and View)\nclass TaskViewModel {\n  private tasks: Task[] = [];\n  private listeners: Function[] = [];\n  \n  constructor(private model: TaskModel) {\n    this.tasks = model.getTasks();\n  }\n  \n  // Observable property\n  get taskList() { return this.tasks; }\n  \n  addTask(title: string) {\n    this.model.addTask(title);\n    this.notify(); // notify view of changes\n  }\n  \n  toggleTask(id: string) {\n    const task = this.tasks.find(t => t.id === id);\n    if (task) {\n      task.done = !task.done;\n      this.notify();\n    }\n  }\n  \n  subscribe(listener: Function) {\n    this.listeners.push(listener);\n  }\n  \n  private notify() {\n    this.listeners.forEach(l => l(this.tasks));\n  }\n}\n\n// View (binds to ViewModel)\nclass TaskView {\n  constructor(private viewModel: TaskViewModel) {\n    viewModel.subscribe((tasks: Task[]) => this.render(tasks));\n  }\n  \n  render(tasks: Task[]) {\n    console.log('Render:', tasks);\n  }\n}\n\n// Usage: View observes ViewModel\nconst vm = new TaskViewModel(new TaskModel());\nnew TaskView(vm);\nvm.addTask('Learn MVVM');"
+[
+  {
+    "id": "mvvm",
+    "name": "Model-View-ViewModel",
+    "category": "Architectural",
+    "description": "Uses data binding to connect view with view model",
+    "when_to_use": "Data binding support\nRich UI applications\nDeclarative UI",
+    "benefits": "Data binding\nTestability\nView independence\nRich UI support",
+    "drawbacks": "Complex debugging\nMemory leaks risk\nFramework dependency",
+    "use_cases": "WPF applications\nAngular/Vue apps\nMobile applications",
+    "complexity": "Medium",
+    "tags": [
+      "data-binding",
+      "ui",
+      "framework"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// MVVM: adds ViewModel for two-way data binding\n\n// Model\nclass Task {\n  constructor(public id: string, public title: string, public done: boolean) {}\n}\n\nclass TaskModel {\n  private tasks: Task[] = [];\n  \n  addTask(title: string) {\n    this.tasks.push(new Task(crypto.randomUUID(), title, false));\n  }\n  \n  getTasks() { return this.tasks; }\n}\n\n// ViewModel (mediator between Model and View)\nclass TaskViewModel {\n  private tasks: Task[] = [];\n  private listeners: Function[] = [];\n  \n  constructor(private model: TaskModel) {\n    this.tasks = model.getTasks();\n  }\n  \n  // Observable property\n  get taskList() { return this.tasks; }\n  \n  addTask(title: string) {\n    this.model.addTask(title);\n    this.notify(); // notify view of changes\n  }\n  \n  toggleTask(id: string) {\n    const task = this.tasks.find(t => t.id === id);\n    if (task) {\n      task.done = !task.done;\n      this.notify();\n    }\n  }\n  \n  subscribe(listener: Function) {\n    this.listeners.push(listener);\n  }\n  \n  private notify() {\n    this.listeners.forEach(l => l(this.tasks));\n  }\n}\n\n// View (binds to ViewModel)\nclass TaskView {\n  constructor(private viewModel: TaskViewModel) {\n    viewModel.subscribe((tasks: Task[]) => this.render(tasks));\n  }\n  \n  render(tasks: Task[]) {\n    console.log('Render:', tasks);\n  }\n}\n\n// Usage: View observes ViewModel\nconst vm = new TaskViewModel(new TaskModel());\nnew TaskView(vm);\nvm.addTask('Learn MVVM');"
+      }
     }
   }
-}
+]

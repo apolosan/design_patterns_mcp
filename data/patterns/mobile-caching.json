@@ -1,16 +1,18 @@
-{
-  "id": "mobile-caching",
-  "name": "Mobile Caching Pattern",
-  "category": "Mobile",
-  "description": "Caching strategies optimized for mobile constraints like storage and memory",
-  "when_to_use": "Performance optimization\nOffline capability\nData usage reduction",
-  "benefits": "Improved performance\nReduced data usage\nOffline access",
-  "drawbacks": "Storage limitations\nCache invalidation\nMemory management",
-  "use_cases": "Image caching\nAPI responses\nStatic content",
-  "complexity": "Medium",
-  "tags": [
-    "mobile",
-    "caching",
-    "performance"
-  ]
-}
+[
+  {
+    "id": "mobile-caching",
+    "name": "Mobile Caching Pattern",
+    "category": "Mobile",
+    "description": "Caching strategies optimized for mobile constraints like storage and memory",
+    "when_to_use": "Performance optimization\nOffline capability\nData usage reduction",
+    "benefits": "Improved performance\nReduced data usage\nOffline access",
+    "drawbacks": "Storage limitations\nCache invalidation\nMemory management",
+    "use_cases": "Image caching\nAPI responses\nStatic content",
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "caching",
+      "performance"
+    ]
+  }
+]

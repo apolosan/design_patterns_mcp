@@ -1,22 +1,24 @@
-{
-  "id": "data-locality",
-  "name": "Data Locality Pattern",
-  "category": "Performance",
-  "description": "Arranges data in memory to optimize cache performance and access patterns",
-  "when_to_use": "Performance-critical code\nCache optimization\nMemory efficiency",
-  "benefits": "Cache efficiency\nMemory performance\nCPU optimization",
-  "drawbacks": "Data structure constraints\nComplexity\nMaintenance overhead",
-  "use_cases": "Game engines\nScientific computing\nHigh-performance systems",
-  "complexity": "High",
-  "tags": [
-    "performance",
-    "locality",
-    "cache"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Data Locality: organize data for cache efficiency\nclass ParticleSystemAOS {\n  positions: Array<{x: number; y: number}> = [];\n  velocities: Array<{x: number; y: number}> = [];\n  \n  update(dt: number) {\n    for (let i = 0; i < this.positions.length; i++) {\n      this.positions[i].x += this.velocities[i].x * dt;\n      this.positions[i].y += this.velocities[i].y * dt;\n    }\n  }\n}\n\nclass ParticleSystemSOA {\n  positionsX: number[] = [];\n  positionsY: number[] = [];\n  velocitiesX: number[] = [];\n  velocitiesY: number[] = [];\n  \n  update(dt: number) {\n    for (let i = 0; i < this.positionsX.length; i++) {\n      this.positionsX[i] += this.velocitiesX[i] * dt;\n      this.positionsY[i] += this.velocitiesY[i] * dt;\n    }\n  }\n}\n\n// SOA is faster due to cache locality"
+[
+  {
+    "id": "data-locality",
+    "name": "Data Locality Pattern",
+    "category": "Performance",
+    "description": "Arranges data in memory to optimize cache performance and access patterns",
+    "when_to_use": "Performance-critical code\nCache optimization\nMemory efficiency",
+    "benefits": "Cache efficiency\nMemory performance\nCPU optimization",
+    "drawbacks": "Data structure constraints\nComplexity\nMaintenance overhead",
+    "use_cases": "Game engines\nScientific computing\nHigh-performance systems",
+    "complexity": "High",
+    "tags": [
+      "performance",
+      "locality",
+      "cache"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Data Locality: organize data for cache efficiency\nclass ParticleSystemAOS {\n  positions: Array<{x: number; y: number}> = [];\n  velocities: Array<{x: number; y: number}> = [];\n  \n  update(dt: number) {\n    for (let i = 0; i < this.positions.length; i++) {\n      this.positions[i].x += this.velocities[i].x * dt;\n      this.positions[i].y += this.velocities[i].y * dt;\n    }\n  }\n}\n\nclass ParticleSystemSOA {\n  positionsX: number[] = [];\n  positionsY: number[] = [];\n  velocitiesX: number[] = [];\n  velocitiesY: number[] = [];\n  \n  update(dt: number) {\n    for (let i = 0; i < this.positionsX.length; i++) {\n      this.positionsX[i] += this.velocitiesX[i] * dt;\n      this.positionsY[i] += this.velocitiesY[i] * dt;\n    }\n  }\n}\n\n// SOA is faster due to cache locality"
+      }
     }
   }
-}
+]

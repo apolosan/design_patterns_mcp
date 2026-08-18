@@ -1,22 +1,24 @@
-{
-  "id": "materialized-view",
-  "name": "Materialized View Pattern",
-  "category": "Data Management",
-  "description": "Pre-computes and stores query results for fast access",
-  "when_to_use": "Complex queries\nReporting needs\nPerformance optimization",
-  "benefits": "Fast query performance\nReduced computation\nConsistent results",
-  "drawbacks": "Storage overhead\nRefresh complexity\nStaleness issues",
-  "use_cases": "Dashboards\nReports\nAnalytics\nSearch results",
-  "complexity": "Medium",
-  "tags": [
-    "data-management",
-    "performance",
-    "querying"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Materialized View: precomputed query results\nclass MaterializedView {\n  async refresh() {\n    await db.query(\\`\n      CREATE OR REPLACE MATERIALIZED VIEW user_stats AS\n      SELECT \n        u.id,\n        u.email,\n        COUNT(o.id) as order_count,\n        SUM(o.total) as total_spent\n      FROM users u\n      LEFT JOIN orders o ON u.id = o.user_id\n      GROUP BY u.id, u.email\n    \\`);\n  }\n  \n  async query(userId: string) {\n    const row = await db.query(\n      'SELECT * FROM user_stats WHERE id = $1',\n      [userId]\n    );\n    return row;\n  }\n}\n\nclass UserStatsService {\n  constructor(private view: MaterializedView) {}\n  \n  async getUserStats(userId: string) {\n    return this.view.query(userId);\n  }\n  \n  async refreshStats() {\n    await this.view.refresh();\n  }\n}\n\nconst view = new MaterializedView();\nawait view.refresh();\nconst stats = await view.query('user123');\nconsole.log('Orders:', stats.order_count, 'Total:', stats.total_spent);"
+[
+  {
+    "id": "materialized-view",
+    "name": "Materialized View Pattern",
+    "category": "Data Management",
+    "description": "Pre-computes and stores query results for fast access",
+    "when_to_use": "Complex queries\nReporting needs\nPerformance optimization",
+    "benefits": "Fast query performance\nReduced computation\nConsistent results",
+    "drawbacks": "Storage overhead\nRefresh complexity\nStaleness issues",
+    "use_cases": "Dashboards\nReports\nAnalytics\nSearch results",
+    "complexity": "Medium",
+    "tags": [
+      "data-management",
+      "performance",
+      "querying"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Materialized View: precomputed query results\nclass MaterializedView {\n  async refresh() {\n    await db.query(\\`\n      CREATE OR REPLACE MATERIALIZED VIEW user_stats AS\n      SELECT \n        u.id,\n        u.email,\n        COUNT(o.id) as order_count,\n        SUM(o.total) as total_spent\n      FROM users u\n      LEFT JOIN orders o ON u.id = o.user_id\n      GROUP BY u.id, u.email\n    \\`);\n  }\n  \n  async query(userId: string) {\n    const row = await db.query(\n      'SELECT * FROM user_stats WHERE id = $1',\n      [userId]\n    );\n    return row;\n  }\n}\n\nclass UserStatsService {\n  constructor(private view: MaterializedView) {}\n  \n  async getUserStats(userId: string) {\n    return this.view.query(userId);\n  }\n  \n  async refreshStats() {\n    await this.view.refresh();\n  }\n}\n\nconst view = new MaterializedView();\nawait view.refresh();\nconst stats = await view.query('user123');\nconsole.log('Orders:', stats.order_count, 'Total:', stats.total_spent);"
+      }
     }
   }
-}
+]

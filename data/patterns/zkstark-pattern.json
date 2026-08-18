@@ -1,24 +1,26 @@
-{
-  "id": "zkstark-pattern",
-  "name": "zkSTARK Pattern",
-  "category": "Zero-Knowledge",
-  "description": "Transparent ZK without trusted setup. Post-quantum secure, larger proofs but no setup ceremony.",
-  "when_to_use": "Transparent setup, post-quantum security, StarkNet",
-  "benefits": "No trusted setup, quantum-resistant, scalable",
-  "drawbacks": "Larger proofs (40-100KB), higher verification cost",
-  "use_cases": "StarkNet, StarkEx, post-quantum privacy",
-  "complexity": "Very High",
-  "tags": [
-    "zero-knowledge",
-    "zkstark",
-    "starknet",
-    "cairo",
-    "post-quantum"
-  ],
-  "examples": {
-    "cairo": {
-      "language": "cairo",
-      "code": "// Cairo (StarkNet language) - STARK-friendly\n@external\nfunc verify_computation{\n    syscall_ptr: felt*,\n    pedersen_ptr: HashBuiltin*,\n    range_check_ptr\n}(claim: felt, proof: felt*) -> (is_valid: felt) {\n    // FRI (Fast Reed-Solomon IOP) verification\n    let (result) = stark_verify(claim, proof);\n    return (is_valid=result);\n}\n\n// No trusted setup needed\n// Quantum-resistant via hash-based commitments"
+[
+  {
+    "id": "zkstark-pattern",
+    "name": "zkSTARK Pattern",
+    "category": "Zero-Knowledge",
+    "description": "Transparent ZK without trusted setup. Post-quantum secure, larger proofs but no setup ceremony.",
+    "when_to_use": "Transparent setup, post-quantum security, StarkNet",
+    "benefits": "No trusted setup, quantum-resistant, scalable",
+    "drawbacks": "Larger proofs (40-100KB), higher verification cost",
+    "use_cases": "StarkNet, StarkEx, post-quantum privacy",
+    "complexity": "Very High",
+    "tags": [
+      "zero-knowledge",
+      "zkstark",
+      "starknet",
+      "cairo",
+      "post-quantum"
+    ],
+    "examples": {
+      "cairo": {
+        "language": "cairo",
+        "code": "// Cairo (StarkNet language) - STARK-friendly\n@external\nfunc verify_computation{\n    syscall_ptr: felt*,\n    pedersen_ptr: HashBuiltin*,\n    range_check_ptr\n}(claim: felt, proof: felt*) -> (is_valid: felt) {\n    // FRI (Fast Reed-Solomon IOP) verification\n    let (result) = stark_verify(claim, proof);\n    return (is_valid=result);\n}\n\n// No trusted setup needed\n// Quantum-resistant via hash-based commitments"
+      }
     }
   }
-}
+]

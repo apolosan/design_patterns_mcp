@@ -1,512 +1,508 @@
-{
-  "category": "DeFi Lending",
-  "description": "DeFi Lending design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "algorithmic-stablecoin",
-      "name": "Algorithmic Stablecoin Pattern",
-      "category": "DeFi Lending",
-      "description": "Capital-efficient stablecoins using algorithmic supply adjustments. Dual token model (stable + volatile).",
-      "when_to_use": [
-        "Experimental stablecoins",
-        "capital efficiency prioritized over safety"
-      ],
-      "benefits": [
-        "Capital efficient",
-        "no collateral needed",
-        "scalable"
-      ],
-      "drawbacks": [
-        "Death spiral risk (UST/LUNA)",
-        "complex mechanisms",
-        "stability challenges"
-      ],
-      "use_cases": [
-        "Seigniorage shares",
-        "rebase tokens (high risk - see UST collapse)"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "defi",
-        "stablecoin",
-        "algorithmic",
-        "rebase",
-        "high-risk"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Dual token: stable (UST) + volatile (LUNA)\nfunction expandSupply(uint256 amount) external {\n    if (price > 1.01e18) { // Above peg\n        stableToken.mint(msg.sender, amount);\n        volatileToken.burn(msg.sender, getVolatileAmount(amount));\n    }\n}\n\nfunction contractSupply(uint256 amount) external {\n    if (price < 0.99e18) { // Below peg\n        stableToken.burn(msg.sender, amount);\n        volatileToken.mint(msg.sender, getVolatileAmount(amount));\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "auto-compounding",
-      "name": "Auto-Compounding",
-      "category": "DeFi Lending",
-      "description": "Automated harvest and reinvestment of yields",
-      "when_to_use": [
-        "Yield aggregators",
-        "vault strategies",
-        "gas optimization"
-      ],
-      "benefits": [
-        "Gas-efficient",
-        "higher APY",
-        "automated"
-      ],
-      "drawbacks": [
-        "Smart contract risk",
-        "keeper dependency",
-        "fees"
-      ],
-      "use_cases": [
-        "Yearn auto-compound",
-        "Beefy vaults",
-        "yield optimization"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "defi",
-        "yield",
-        "auto-compound",
-        "vault",
-        "harvest"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Auto-Compound: harvest + reinvest\nfunction harvest() external {\n    uint256 rewards = rewardToken.balanceOf(address(this));\n    rewardToken.approve(dex, rewards);\n    uint256 newAssets = dex.swap(rewardToken, asset, rewards);\n    _deposit(newAssets); // Reinvest\n    emit Harvested(rewards, newAssets);\n}"
-        }
-      }
-    },
-    {
-      "id": "cdp-maker",
-      "name": "Collateralized Debt Position (CDP)",
-      "category": "DeFi Lending",
-      "description": "Lock collateral to mint stablecoin (MakerDAO model)",
-      "when_to_use": [
-        "Decentralized stablecoin creation",
-        "DAI minting"
-      ],
-      "benefits": [
-        "Decentralized",
-        "over-collateralized secure"
-      ],
-      "drawbacks": [
-        "Capital inefficient",
-        "liquidation risk",
-        "complex governance"
-      ],
-      "use_cases": [
-        "DAI generation",
-        "stablecoin protocols",
-        "collateralized debt"
-      ],
-      "complexity": "High",
-      "tags": [
-        "defi",
-        "stablecoin",
-        "makerdao",
-        "cdp",
-        "dai"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// CDP: lock collateral, mint DAI\nfunction openVault(uint256 ethAmount) external payable {\n    require(msg.value == ethAmount);\n    vaults[msg.sender].collateral += ethAmount;\n}\n\nfunction mintDAI(uint256 amount) external {\n    uint256 maxDebt = vaults[msg.sender].collateral * RATIO / 100;\n    require(vaults[msg.sender].debt + amount <= maxDebt);\n    dai.mint(msg.sender, amount);\n}"
-        }
-      }
-    },
-    {
-      "id": "erc4626-vault",
-      "name": "ERC-4626 Tokenized Vault",
-      "category": "DeFi Lending",
-      "description": "Standard vault interface for yield-bearing tokens",
-      "when_to_use": [
-        "Yield vaults",
-        "strategy vaults",
-        "composable DeFi"
-      ],
-      "benefits": [
-        "Composability",
-        "standardization",
-        "tooling ecosystem"
-      ],
-      "drawbacks": [
-        "Still evolving",
-        "integration overhead"
-      ],
-      "use_cases": [
-        "Yearn vaults",
-        "strategy execution",
-        "standardized yields"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "defi",
-        "vault",
-        "erc4626",
-        "yield",
-        "standard"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// ERC-4626: standard vault\nimport \"@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol\";\n\ncontract YieldVault is ERC4626 {\n    function totalAssets() public view override returns (uint256) {\n        return asset.balanceOf(address(this)) + deployed;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "flash-loan",
-      "name": "Flash Loan",
-      "category": "DeFi Lending",
-      "description": "Uncollateralized loan repaid in same transaction Problem: Need capital without upfront collateral",
-      "when_to_use": [
-        "Loan and repayment atomic",
-        "reverts if not repaid"
-      ],
-      "benefits": [
-        "No capital needed",
-        "instant liquidity",
-        "atomic"
-      ],
-      "drawbacks": [
-        "Same-transaction repayment",
-        "complex logic",
-        "exploit risk"
-      ],
-      "use_cases": [
-        "Arbitrage",
-        "collateral swaps",
-        "liquidations",
-        "refinancing"
-      ],
-      "complexity": "High",
-      "tags": [
-        "defi",
-        "flash-loan",
-        "lending",
-        "arbitrage",
-        "aave"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "interface IFlashLoanReceiver {\n    function executeOperation(\n        address[] calldata assets,\n        uint256[] calldata amounts,\n        uint256[] calldata premiums,\n        bytes calldata params\n    ) external returns (bool);\n}"
-        }
-      }
-    },
-    {
-      "id": "hybrid-stablecoin-frax",
-      "name": "Hybrid Stablecoin (Frax)",
-      "category": "DeFi Lending",
-      "description": "Partially collateralized stablecoin. Balance between full collateral and algorithmic.",
-      "when_to_use": [
-        "Stablecoins seeking balance between capital efficiency and stability"
-      ],
-      "benefits": [
-        "More capital efficient than fully collateralized",
-        "more stable than algorithmic"
-      ],
-      "drawbacks": [
-        "Complex mechanism",
-        "still has stability risks",
-        "governance dependency"
-      ],
-      "use_cases": [
-        "FRAX (fractional reserves)",
-        "hybrid collateral models"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "defi",
-        "stablecoin",
-        "frax",
-        "hybrid",
-        "fractional-reserve"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Fractional reserve model (e.g., 85% USDC, 15% FXS)\nfunction mint(uint256 fraxAmount) external {\n    uint256 collateralRatio = getCollateralRatio(); // e.g., 85%\n    uint256 collateralNeeded = (fraxAmount * collateralRatio) / 1e6;\n    uint256 fxsToBurn = (fraxAmount * (1e6 - collateralRatio)) / 1e6;\n    \n    usdc.transferFrom(msg.sender, address(this), collateralNeeded);\n    fxs.burn(msg.sender, fxsToBurn);\n    frax.mint(msg.sender, fraxAmount);\n}"
-        }
-      }
-    },
-    {
-      "id": "interest-rate-model",
-      "name": "Interest Rate Model",
-      "category": "DeFi Lending",
-      "description": "Dynamic rates based on utilization with kink mechanism",
-      "when_to_use": [
-        "All lending protocols",
-        "borrow/supply rate calculation"
-      ],
-      "benefits": [
-        "Market-driven",
-        "incentivizes balance",
-        "automatic adjustment"
-      ],
-      "drawbacks": [
-        "Can spike during high demand",
-        "complex parameters"
-      ],
-      "use_cases": [
-        "Aave rates",
-        "Compound rates",
-        "optimal utilization"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "defi",
-        "lending",
-        "interest-rates",
-        "utilization"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Interest Rate: kink model\nfunction getBorrowRate(uint256 utilization) public view returns (uint256) {\n    if (utilization <= KINK) {\n        return BASE_RATE + utilization * SLOPE1 / 1e18;\n    } else {\n        return BASE_RATE + KINK * SLOPE1 / 1e18 +\n               (utilization - KINK) * SLOPE2 / 1e18;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "liquid-restaking-lrt",
-      "name": "Liquid Restaking Token (LRT)",
-      "category": "DeFi Lending",
-      "description": "Liquidity for restaked positions via wrapped tokens. Composable restaking, DeFi integration.",
-      "when_to_use": [
-        "Liquidity while restaking",
-        "DeFi composability",
-        "yield optimization"
-      ],
-      "benefits": [
-        "Liquidity while restaking",
-        "composable in DeFi",
-        "additional yield layers"
-      ],
-      "drawbacks": [
-        "Smart contract risk",
-        "de-pegging risk",
-        "complexity stacking"
-      ],
-      "use_cases": [
-        "ether.fi eETH",
-        "Puffer Finance",
-        "Renzo ezETH"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "restaking",
-        "lrt",
-        "liquidity",
-        "defi",
-        "eigenlayer"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract LiquidRestakingToken is ERC20 {\n    IEigenLayer public eigenLayer;\n    \n    function deposit() external payable {\n        // 1. Stake ETH to beacon chain\n        beaconChain.stake{value: msg.value}();\n        \n        // 2. Restake via EigenLayer\n        eigenLayer.depositBeaconChainETH(msg.sender, msg.value);\n        \n        // 3. Mint liquid token (eETH, ezETH, etc.)\n        uint256 shares = (msg.value * totalSupply()) / getTotalPooledEther();\n        _mint(msg.sender, shares);\n    }\n    \n    // Users can use LRT in DeFi while earning:\n    // - Beacon chain rewards\n    // - EigenLayer restaking rewards  \n    // - AVS rewards\n}"
-        }
-      }
-    },
-    {
-      "id": "liquidation-mechanism",
-      "name": "Liquidation Mechanism",
-      "category": "DeFi Lending",
-      "description": "Automated liquidation to maintain protocol solvency with liquidator incentives",
-      "when_to_use": [
-        "All collateralized lending",
-        "maintain solvency"
-      ],
-      "benefits": [
-        "Protects lenders",
-        "incentivizes liquidators",
-        "automatic"
-      ],
-      "drawbacks": [
-        "Can cascade",
-        "user loss",
-        "gas wars"
-      ],
-      "use_cases": [
-        "Aave liquidations",
-        "Compound liquidations",
-        "MEV"
-      ],
-      "complexity": "High",
-      "tags": [
-        "defi",
-        "lending",
-        "liquidation",
-        "mev",
-        "incentives"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Liquidation: discount for liquidators\nfunction liquidate(address borrower, address collateral) external {\n    require(isLiquidatable(borrower));\n    uint256 debt = getUserDebt(borrower);\n    uint256 collateralSeized = debt * LIQUIDATION_BONUS / 100;\n    _transfer(collateral, msg.sender, collateralSeized);\n}"
-        }
-      }
-    },
-    {
-      "id": "native-restaking-eigenlayer",
-      "name": "Native Restaking (EigenLayer)",
-      "category": "DeFi Lending",
-      "description": "Reuse staked ETH to secure additional protocols (AVS). Earn additional yields, share security.",
-      "when_to_use": [
-        "Capital efficiency",
-        "securing AVSs",
-        "increased ETH yields"
-      ],
-      "benefits": [
-        "Capital efficient",
-        "shared security",
-        "$20B+ TVL",
-        "additional yields"
-      ],
-      "drawbacks": [
-        "Increased slashing risk",
-        "complexity",
-        "protocol dependencies"
-      ],
-      "use_cases": [
-        "EigenLayer AVS",
-        "additional protocol security",
-        "yield enhancement"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "restaking",
-        "eigenlayer",
-        "eth",
-        "avs",
-        "capital-efficiency"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// EigenLayer restaking\ncontract EigenPodManager {\n    mapping(address => IEigenPod) public pods;\n    \n    function createPod() external returns (address) {\n        IEigenPod pod = IEigenPod(Create2.deploy(podImplementation));\n        pods[msg.sender] = pod;\n        return address(pod);\n    }\n    \n    function verifyWithdrawalCredentials(...) external {\n        // Verify ETH is staked and withdrawal creds point to EigenPod\n        // Now ETH is restakable to secure AVSs\n    }\n}\n\n// Opt into AVS (Actively Validated Service)\nfunction optIntoAVS(address avs) external {\n    require(hasMinimumStake(msg.sender));\n    avsDirectory.registerOperator(msg.sender, avs);\n    // Now securing AVS, earning additional rewards, subject to AVS slashing\n}"
-        }
-      }
-    },
-    {
-      "id": "over-collateralized-lending",
-      "name": "Over-Collateralized Lending",
-      "category": "DeFi Lending",
-      "description": "Trustless lending requiring >100% collateral (Aave/Compound model)",
-      "when_to_use": [
-        "DeFi lending protocols",
-        "margin trading",
-        "liquidity without selling"
-      ],
-      "benefits": [
-        "No counterparty risk",
-        "instant liquidity",
-        "trustless"
-      ],
-      "drawbacks": [
-        "Capital inefficient",
-        "liquidation risk",
-        "over-collateralization"
-      ],
-      "use_cases": [
-        "Borrowing stablecoins",
-        "leveraged positions",
-        "yield farming"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "defi",
-        "lending",
-        "aave",
-        "compound",
-        "collateral"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Over-Collateralized Lending\nfunction borrow(address asset, uint256 amount) external {\n    uint256 collateralValue = getUserCollateralValue(msg.sender);\n    uint256 borrowValue = amount * getPrice(asset);\n    require(collateralValue * LTV / 100 >= borrowValue);\n    _transfer(asset, msg.sender, amount);\n}"
-        }
-      }
-    },
-    {
-      "id": "staking-rewards",
-      "name": "Staking Rewards",
-      "category": "DeFi Lending",
-      "description": "Proportional rewards for token staking Problem: Incentivize token locking and participation",
-      "when_to_use": [
-        "Rewards proportional to stake and time"
-      ],
-      "benefits": [
-        "Simple incentive",
-        "effective for bootstrapping"
-      ],
-      "drawbacks": [
-        "Sell pressure",
-        "complex reward math",
-        "sustainability"
-      ],
-      "use_cases": [
-        "Governance",
-        "liquidity mining",
-        "yield farming"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "defi",
-        "staking",
-        "rewards",
-        "yield",
-        "liquidity-mining"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "uint256 public rewardPerTokenStored;\nmapping(address => uint256) public userRewardPerTokenPaid;\n\nfunction earned(address account) public view returns (uint256) {\n    return balances[account] * \n        (rewardPerTokenStored - userRewardPerTokenPaid[account]);\n}"
-        }
-      }
-    },
-    {
-      "id": "strategy-vault-yearn",
-      "name": "Strategy Vault (Yearn)",
-      "category": "DeFi Lending",
-      "description": "Automated yield optimization with pluggable strategies. Vault manages capital, strategies execute.",
-      "when_to_use": [
-        "Yield optimization",
-        "automated strategy execution",
-        "capital pooling"
-      ],
-      "benefits": [
-        "Automated",
-        "gas-efficient for users",
-        "expert strategies",
-        "composable"
-      ],
-      "drawbacks": [
-        "Smart contract risk",
-        "strategy risk",
-        "complexity"
-      ],
-      "use_cases": [
-        "Yearn vaults",
-        "automated yield farming",
-        "strategy aggregation"
-      ],
-      "complexity": "High",
-      "tags": [
-        "defi",
-        "vault",
-        "yearn",
-        "strategy",
-        "yield-optimization"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract Vault {\n    IStrategy public strategy;\n    \n    function deposit(uint256 amount) external {\n        token.transferFrom(msg.sender, address(this), amount);\n        uint256 shares = (amount * totalSupply) / totalAssets();\n        _mint(msg.sender, shares);\n        token.transfer(address(strategy), amount);\n        strategy.invest(amount);\n    }\n    \n    function harvest() external {\n        strategy.harvest(); // Execute strategy, collect rewards\n    }\n}"
-        }
+[
+  {
+    "id": "algorithmic-stablecoin",
+    "name": "Algorithmic Stablecoin Pattern",
+    "category": "DeFi Lending",
+    "description": "Capital-efficient stablecoins using algorithmic supply adjustments. Dual token model (stable + volatile).",
+    "when_to_use": [
+      "Experimental stablecoins",
+      "capital efficiency prioritized over safety"
+    ],
+    "benefits": [
+      "Capital efficient",
+      "no collateral needed",
+      "scalable"
+    ],
+    "drawbacks": [
+      "Death spiral risk (UST/LUNA)",
+      "complex mechanisms",
+      "stability challenges"
+    ],
+    "use_cases": [
+      "Seigniorage shares",
+      "rebase tokens (high risk - see UST collapse)"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "defi",
+      "stablecoin",
+      "algorithmic",
+      "rebase",
+      "high-risk"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Dual token: stable (UST) + volatile (LUNA)\nfunction expandSupply(uint256 amount) external {\n    if (price > 1.01e18) { // Above peg\n        stableToken.mint(msg.sender, amount);\n        volatileToken.burn(msg.sender, getVolatileAmount(amount));\n    }\n}\n\nfunction contractSupply(uint256 amount) external {\n    if (price < 0.99e18) { // Below peg\n        stableToken.burn(msg.sender, amount);\n        volatileToken.mint(msg.sender, getVolatileAmount(amount));\n    }\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "auto-compounding",
+    "name": "Auto-Compounding",
+    "category": "DeFi Lending",
+    "description": "Automated harvest and reinvestment of yields",
+    "when_to_use": [
+      "Yield aggregators",
+      "vault strategies",
+      "gas optimization"
+    ],
+    "benefits": [
+      "Gas-efficient",
+      "higher APY",
+      "automated"
+    ],
+    "drawbacks": [
+      "Smart contract risk",
+      "keeper dependency",
+      "fees"
+    ],
+    "use_cases": [
+      "Yearn auto-compound",
+      "Beefy vaults",
+      "yield optimization"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "yield",
+      "auto-compound",
+      "vault",
+      "harvest"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Auto-Compound: harvest + reinvest\nfunction harvest() external {\n    uint256 rewards = rewardToken.balanceOf(address(this));\n    rewardToken.approve(dex, rewards);\n    uint256 newAssets = dex.swap(rewardToken, asset, rewards);\n    _deposit(newAssets); // Reinvest\n    emit Harvested(rewards, newAssets);\n}"
+      }
+    }
+  },
+  {
+    "id": "cdp-maker",
+    "name": "Collateralized Debt Position (CDP)",
+    "category": "DeFi Lending",
+    "description": "Lock collateral to mint stablecoin (MakerDAO model)",
+    "when_to_use": [
+      "Decentralized stablecoin creation",
+      "DAI minting"
+    ],
+    "benefits": [
+      "Decentralized",
+      "over-collateralized secure"
+    ],
+    "drawbacks": [
+      "Capital inefficient",
+      "liquidation risk",
+      "complex governance"
+    ],
+    "use_cases": [
+      "DAI generation",
+      "stablecoin protocols",
+      "collateralized debt"
+    ],
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "stablecoin",
+      "makerdao",
+      "cdp",
+      "dai"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// CDP: lock collateral, mint DAI\nfunction openVault(uint256 ethAmount) external payable {\n    require(msg.value == ethAmount);\n    vaults[msg.sender].collateral += ethAmount;\n}\n\nfunction mintDAI(uint256 amount) external {\n    uint256 maxDebt = vaults[msg.sender].collateral * RATIO / 100;\n    require(vaults[msg.sender].debt + amount <= maxDebt);\n    dai.mint(msg.sender, amount);\n}"
+      }
+    }
+  },
+  {
+    "id": "erc4626-vault",
+    "name": "ERC-4626 Tokenized Vault",
+    "category": "DeFi Lending",
+    "description": "Standard vault interface for yield-bearing tokens",
+    "when_to_use": [
+      "Yield vaults",
+      "strategy vaults",
+      "composable DeFi"
+    ],
+    "benefits": [
+      "Composability",
+      "standardization",
+      "tooling ecosystem"
+    ],
+    "drawbacks": [
+      "Still evolving",
+      "integration overhead"
+    ],
+    "use_cases": [
+      "Yearn vaults",
+      "strategy execution",
+      "standardized yields"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "vault",
+      "erc4626",
+      "yield",
+      "standard"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ERC-4626: standard vault\nimport \"@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol\";\n\ncontract YieldVault is ERC4626 {\n    function totalAssets() public view override returns (uint256) {\n        return asset.balanceOf(address(this)) + deployed;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "flash-loan",
+    "name": "Flash Loan",
+    "category": "DeFi Lending",
+    "description": "Uncollateralized loan repaid in same transaction Problem: Need capital without upfront collateral",
+    "when_to_use": [
+      "Loan and repayment atomic",
+      "reverts if not repaid"
+    ],
+    "benefits": [
+      "No capital needed",
+      "instant liquidity",
+      "atomic"
+    ],
+    "drawbacks": [
+      "Same-transaction repayment",
+      "complex logic",
+      "exploit risk"
+    ],
+    "use_cases": [
+      "Arbitrage",
+      "collateral swaps",
+      "liquidations",
+      "refinancing"
+    ],
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "flash-loan",
+      "lending",
+      "arbitrage",
+      "aave"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "interface IFlashLoanReceiver {\n    function executeOperation(\n        address[] calldata assets,\n        uint256[] calldata amounts,\n        uint256[] calldata premiums,\n        bytes calldata params\n    ) external returns (bool);\n}"
+      }
+    }
+  },
+  {
+    "id": "hybrid-stablecoin-frax",
+    "name": "Hybrid Stablecoin (Frax)",
+    "category": "DeFi Lending",
+    "description": "Partially collateralized stablecoin. Balance between full collateral and algorithmic.",
+    "when_to_use": [
+      "Stablecoins seeking balance between capital efficiency and stability"
+    ],
+    "benefits": [
+      "More capital efficient than fully collateralized",
+      "more stable than algorithmic"
+    ],
+    "drawbacks": [
+      "Complex mechanism",
+      "still has stability risks",
+      "governance dependency"
+    ],
+    "use_cases": [
+      "FRAX (fractional reserves)",
+      "hybrid collateral models"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "defi",
+      "stablecoin",
+      "frax",
+      "hybrid",
+      "fractional-reserve"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Fractional reserve model (e.g., 85% USDC, 15% FXS)\nfunction mint(uint256 fraxAmount) external {\n    uint256 collateralRatio = getCollateralRatio(); // e.g., 85%\n    uint256 collateralNeeded = (fraxAmount * collateralRatio) / 1e6;\n    uint256 fxsToBurn = (fraxAmount * (1e6 - collateralRatio)) / 1e6;\n    \n    usdc.transferFrom(msg.sender, address(this), collateralNeeded);\n    fxs.burn(msg.sender, fxsToBurn);\n    frax.mint(msg.sender, fraxAmount);\n}"
+      }
+    }
+  },
+  {
+    "id": "interest-rate-model",
+    "name": "Interest Rate Model",
+    "category": "DeFi Lending",
+    "description": "Dynamic rates based on utilization with kink mechanism",
+    "when_to_use": [
+      "All lending protocols",
+      "borrow/supply rate calculation"
+    ],
+    "benefits": [
+      "Market-driven",
+      "incentivizes balance",
+      "automatic adjustment"
+    ],
+    "drawbacks": [
+      "Can spike during high demand",
+      "complex parameters"
+    ],
+    "use_cases": [
+      "Aave rates",
+      "Compound rates",
+      "optimal utilization"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "lending",
+      "interest-rates",
+      "utilization"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Interest Rate: kink model\nfunction getBorrowRate(uint256 utilization) public view returns (uint256) {\n    if (utilization <= KINK) {\n        return BASE_RATE + utilization * SLOPE1 / 1e18;\n    } else {\n        return BASE_RATE + KINK * SLOPE1 / 1e18 +\n               (utilization - KINK) * SLOPE2 / 1e18;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "liquid-restaking-lrt",
+    "name": "Liquid Restaking Token (LRT)",
+    "category": "DeFi Lending",
+    "description": "Liquidity for restaked positions via wrapped tokens. Composable restaking, DeFi integration.",
+    "when_to_use": [
+      "Liquidity while restaking",
+      "DeFi composability",
+      "yield optimization"
+    ],
+    "benefits": [
+      "Liquidity while restaking",
+      "composable in DeFi",
+      "additional yield layers"
+    ],
+    "drawbacks": [
+      "Smart contract risk",
+      "de-pegging risk",
+      "complexity stacking"
+    ],
+    "use_cases": [
+      "ether.fi eETH",
+      "Puffer Finance",
+      "Renzo ezETH"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "restaking",
+      "lrt",
+      "liquidity",
+      "defi",
+      "eigenlayer"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract LiquidRestakingToken is ERC20 {\n    IEigenLayer public eigenLayer;\n    \n    function deposit() external payable {\n        // 1. Stake ETH to beacon chain\n        beaconChain.stake{value: msg.value}();\n        \n        // 2. Restake via EigenLayer\n        eigenLayer.depositBeaconChainETH(msg.sender, msg.value);\n        \n        // 3. Mint liquid token (eETH, ezETH, etc.)\n        uint256 shares = (msg.value * totalSupply()) / getTotalPooledEther();\n        _mint(msg.sender, shares);\n    }\n    \n    // Users can use LRT in DeFi while earning:\n    // - Beacon chain rewards\n    // - EigenLayer restaking rewards  \n    // - AVS rewards\n}"
+      }
+    }
+  },
+  {
+    "id": "liquidation-mechanism",
+    "name": "Liquidation Mechanism",
+    "category": "DeFi Lending",
+    "description": "Automated liquidation to maintain protocol solvency with liquidator incentives",
+    "when_to_use": [
+      "All collateralized lending",
+      "maintain solvency"
+    ],
+    "benefits": [
+      "Protects lenders",
+      "incentivizes liquidators",
+      "automatic"
+    ],
+    "drawbacks": [
+      "Can cascade",
+      "user loss",
+      "gas wars"
+    ],
+    "use_cases": [
+      "Aave liquidations",
+      "Compound liquidations",
+      "MEV"
+    ],
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "lending",
+      "liquidation",
+      "mev",
+      "incentives"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Liquidation: discount for liquidators\nfunction liquidate(address borrower, address collateral) external {\n    require(isLiquidatable(borrower));\n    uint256 debt = getUserDebt(borrower);\n    uint256 collateralSeized = debt * LIQUIDATION_BONUS / 100;\n    _transfer(collateral, msg.sender, collateralSeized);\n}"
+      }
+    }
+  },
+  {
+    "id": "native-restaking-eigenlayer",
+    "name": "Native Restaking (EigenLayer)",
+    "category": "DeFi Lending",
+    "description": "Reuse staked ETH to secure additional protocols (AVS). Earn additional yields, share security.",
+    "when_to_use": [
+      "Capital efficiency",
+      "securing AVSs",
+      "increased ETH yields"
+    ],
+    "benefits": [
+      "Capital efficient",
+      "shared security",
+      "$20B+ TVL",
+      "additional yields"
+    ],
+    "drawbacks": [
+      "Increased slashing risk",
+      "complexity",
+      "protocol dependencies"
+    ],
+    "use_cases": [
+      "EigenLayer AVS",
+      "additional protocol security",
+      "yield enhancement"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "restaking",
+      "eigenlayer",
+      "eth",
+      "avs",
+      "capital-efficiency"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// EigenLayer restaking\ncontract EigenPodManager {\n    mapping(address => IEigenPod) public pods;\n    \n    function createPod() external returns (address) {\n        IEigenPod pod = IEigenPod(Create2.deploy(podImplementation));\n        pods[msg.sender] = pod;\n        return address(pod);\n    }\n    \n    function verifyWithdrawalCredentials(...) external {\n        // Verify ETH is staked and withdrawal creds point to EigenPod\n        // Now ETH is restakable to secure AVSs\n    }\n}\n\n// Opt into AVS (Actively Validated Service)\nfunction optIntoAVS(address avs) external {\n    require(hasMinimumStake(msg.sender));\n    avsDirectory.registerOperator(msg.sender, avs);\n    // Now securing AVS, earning additional rewards, subject to AVS slashing\n}"
+      }
+    }
+  },
+  {
+    "id": "over-collateralized-lending",
+    "name": "Over-Collateralized Lending",
+    "category": "DeFi Lending",
+    "description": "Trustless lending requiring >100% collateral (Aave/Compound model)",
+    "when_to_use": [
+      "DeFi lending protocols",
+      "margin trading",
+      "liquidity without selling"
+    ],
+    "benefits": [
+      "No counterparty risk",
+      "instant liquidity",
+      "trustless"
+    ],
+    "drawbacks": [
+      "Capital inefficient",
+      "liquidation risk",
+      "over-collateralization"
+    ],
+    "use_cases": [
+      "Borrowing stablecoins",
+      "leveraged positions",
+      "yield farming"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "lending",
+      "aave",
+      "compound",
+      "collateral"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Over-Collateralized Lending\nfunction borrow(address asset, uint256 amount) external {\n    uint256 collateralValue = getUserCollateralValue(msg.sender);\n    uint256 borrowValue = amount * getPrice(asset);\n    require(collateralValue * LTV / 100 >= borrowValue);\n    _transfer(asset, msg.sender, amount);\n}"
+      }
+    }
+  },
+  {
+    "id": "staking-rewards",
+    "name": "Staking Rewards",
+    "category": "DeFi Lending",
+    "description": "Proportional rewards for token staking Problem: Incentivize token locking and participation",
+    "when_to_use": [
+      "Rewards proportional to stake and time"
+    ],
+    "benefits": [
+      "Simple incentive",
+      "effective for bootstrapping"
+    ],
+    "drawbacks": [
+      "Sell pressure",
+      "complex reward math",
+      "sustainability"
+    ],
+    "use_cases": [
+      "Governance",
+      "liquidity mining",
+      "yield farming"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "staking",
+      "rewards",
+      "yield",
+      "liquidity-mining"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "uint256 public rewardPerTokenStored;\nmapping(address => uint256) public userRewardPerTokenPaid;\n\nfunction earned(address account) public view returns (uint256) {\n    return balances[account] * \n        (rewardPerTokenStored - userRewardPerTokenPaid[account]);\n}"
+      }
+    }
+  },
+  {
+    "id": "strategy-vault-yearn",
+    "name": "Strategy Vault (Yearn)",
+    "category": "DeFi Lending",
+    "description": "Automated yield optimization with pluggable strategies. Vault manages capital, strategies execute.",
+    "when_to_use": [
+      "Yield optimization",
+      "automated strategy execution",
+      "capital pooling"
+    ],
+    "benefits": [
+      "Automated",
+      "gas-efficient for users",
+      "expert strategies",
+      "composable"
+    ],
+    "drawbacks": [
+      "Smart contract risk",
+      "strategy risk",
+      "complexity"
+    ],
+    "use_cases": [
+      "Yearn vaults",
+      "automated yield farming",
+      "strategy aggregation"
+    ],
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "vault",
+      "yearn",
+      "strategy",
+      "yield-optimization"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract Vault {\n    IStrategy public strategy;\n    \n    function deposit(uint256 amount) external {\n        token.transferFrom(msg.sender, address(this), amount);\n        uint256 shares = (amount * totalSupply) / totalAssets();\n        _mint(msg.sender, shares);\n        token.transfer(address(strategy), amount);\n        strategy.invest(amount);\n    }\n    \n    function harvest() external {\n        strategy.harvest(); // Execute strategy, collect rewards\n    }\n}"
+      }
+    }
+  }
+]

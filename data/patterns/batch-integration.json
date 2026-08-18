@@ -1,16 +1,18 @@
-{
-  "id": "batch-integration",
-  "name": "Batch Integration",
-  "category": "Integration",
-  "description": "Processes data in batches at scheduled intervals for integration",
-  "when_to_use": "Large data volumes\nScheduled processing\nETL operations",
-  "benefits": "High throughput\nResource efficiency\nScheduled processing",
-  "drawbacks": "Latency\nError handling\nResource spikes",
-  "use_cases": "ETL processes\nData synchronization\nBulk operations",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "batch",
-    "processing"
-  ]
-}
+[
+  {
+    "id": "batch-integration",
+    "name": "Batch Integration",
+    "category": "Integration",
+    "description": "Processes data in batches at scheduled intervals for integration",
+    "when_to_use": "Large data volumes\nScheduled processing\nETL operations",
+    "benefits": "High throughput\nResource efficiency\nScheduled processing",
+    "drawbacks": "Latency\nError handling\nResource spikes",
+    "use_cases": "ETL processes\nData synchronization\nBulk operations",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "batch",
+      "processing"
+    ]
+  }
+]

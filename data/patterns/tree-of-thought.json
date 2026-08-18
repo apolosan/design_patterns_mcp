@@ -1,16 +1,18 @@
-{
-  "id": "tree-of-thought",
-  "name": "Tree-of-Thought",
-  "category": "AI/ML",
-  "description": "Explores multiple reasoning paths simultaneously like a decision tree",
-  "when_to_use": "Complex decision making\nMultiple solution paths\nStrategic planning",
-  "benefits": "Comprehensive exploration\nBetter decisions\nMultiple perspectives\nBacktracking ability",
-  "drawbacks": "High computational cost\nComplex implementation\nExponential growth",
-  "use_cases": "Game playing\nStrategic planning\nComplex problem solving",
-  "complexity": "Very High",
-  "tags": [
-    "tree-search",
-    "reasoning",
-    "decision-making"
-  ]
-}
+[
+  {
+    "id": "tree-of-thought",
+    "name": "Tree-of-Thought",
+    "category": "AI/ML",
+    "description": "Explores multiple reasoning paths simultaneously like a decision tree",
+    "when_to_use": "Complex decision making\nMultiple solution paths\nStrategic planning",
+    "benefits": "Comprehensive exploration\nBetter decisions\nMultiple perspectives\nBacktracking ability",
+    "drawbacks": "High computational cost\nComplex implementation\nExponential growth",
+    "use_cases": "Game playing\nStrategic planning\nComplex problem solving",
+    "complexity": "Very High",
+    "tags": [
+      "tree-search",
+      "reasoning",
+      "decision-making"
+    ]
+  }
+]

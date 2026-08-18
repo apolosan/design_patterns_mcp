@@ -1,604 +1,602 @@
-{
-  "patterns": [
-    {
-      "name": "Prompt Chaining",
-      "id": "prompt-chaining",
-      "category": "AI/ML",
-      "description": "Breaks down complex problems into a sequence of smaller, manageable sub-problems, each addressed through specifically designed prompts where the output of one becomes the input for the next.",
-      "when_to_use": [
-        "Tasks too complex for a single prompt",
-        "Sequential processing needed",
-        "Information processing workflows",
-        "Complex query answering"
-      ],
-      "benefits": [
-        "Improved reliability and manageability",
-        "Modularity and clarity",
-        "Enhanced accuracy",
-        "Integration of external tools"
-      ],
-      "drawbacks": [
-        "Increased complexity",
-        "Potential for error propagation if not structured properly"
-      ],
-      "use_cases": [
-        "Automated content analysis",
-        "AI-driven research assistants",
-        "Complex report generation",
-        "Multi-step inference"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "prompt-chaining",
-        "pipeline",
-        "sequential",
-        "modularity",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Routing Pattern",
-      "id": "routing-pattern",
-      "category": "AI/ML",
-      "description": "Introduces conditional logic into an agent's operational framework, enabling dynamic evaluation of criteria to select from a set of possible subsequent actions, moving beyond fixed execution paths.",
-      "when_to_use": [
-        "Adaptive responses required",
-        "Classifying and directing queries",
-        "Multiple potential actions based on input",
-        "Dynamic decision-making"
-      ],
-      "benefits": [
-        "Flexibility",
-        "Context-aware behavior",
-        "Dynamic decision-making",
-        "Better handling of diverse inputs"
-      ],
-      "drawbacks": [
-        "Implementation complexity",
-        "Potential for misrouting if criteria are not well-defined"
-      ],
-      "use_cases": [
-        "Virtual assistants",
-        "AI-driven tutors",
-        "Automated data processing pipelines",
-        "Multi-agent systems"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "routing",
-        "conditional-logic",
-        "delegation",
-        "dynamic",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Parallelization Pattern",
-      "id": "parallelization-pattern",
-      "category": "AI/ML",
-      "description": "Executes multiple components, such as LLM calls, tool usages, or sub-agents, concurrently to reduce overall execution time for tasks with independent parts.",
-      "when_to_use": [
-        "Tasks can be broken into independent sub-tasks",
-        "External services with latency",
-        "Concurrent processing possible"
-      ],
-      "benefits": [
-        "Reduced execution time",
-        "Improved efficiency",
-        "Better resource utilization"
-      ],
-      "drawbacks": [
-        "Coordination complexity",
-        "Potential race conditions",
-        "Requires asynchronous support"
-      ],
-      "use_cases": [
-        "Research agents",
-        "Data processing pipelines",
-        "Multi-source information gathering"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "parallelization",
-        "concurrency",
-        "efficiency",
-        "asynchronous",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Planning Pattern",
-      "id": "planning-pattern",
-      "category": "AI/ML",
-      "description": "Enables an agent to autonomously chart a course to a goal by understanding initial and goal states, discovering optimal sequences of actions, and adapting to new information.",
-      "when_to_use": [
-        "Complex goals where how is not predetermined",
-        "Dynamic environments",
-        "Need for adaptability"
-      ],
-      "benefits": [
-        "Goal-oriented behavior",
-        "Adaptability",
-        "Structured problem-solving"
-      ],
-      "drawbacks": [
-        "Trade-off with predictability",
-        "Potential for unpredictable behavior",
-        "Requires careful constraint setting"
-      ],
-      "use_cases": [
-        "Procedural task automation",
-        "Autonomous navigation",
-        "Information synthesis",
-        "Customer support"
-      ],
-      "complexity": "High",
-      "tags": [
-        "planning",
-        "goal-oriented",
-        "adaptability",
-        "sequence",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Memory Management Pattern",
-      "id": "memory-management-pattern",
-      "category": "AI/ML",
-      "description": "Manages state and memory across interactions, allowing agents to retain information, maintain context, and learn from past experiences.",
-      "when_to_use": [
-        "Conversational continuity needed",
-        "State persistence required",
-        "Learning from interactions"
-      ],
-      "benefits": [
-        "Context retention",
-        "Improved user experience",
-        "Knowledge accumulation"
-      ],
-      "drawbacks": [
-        "Storage requirements",
-        "Privacy concerns",
-        "Complexity in implementation"
-      ],
-      "use_cases": [
-        "Chatbots",
-        "Personal assistants",
-        "Long-term agent interactions"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "memory",
-        "state",
-        "persistence",
-        "context",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Learning and Adaptation Pattern",
-      "id": "learning-adaptation-pattern",
-      "category": "AI/ML",
-      "description": "Allows agents to learn from interactions, adapt behavior, and improve performance over time through feedback and experience.",
-      "when_to_use": [
-        "Continuous improvement needed",
-        "Dynamic tasks",
-        "Personalization"
-      ],
-      "benefits": [
-        "Self-improvement",
-        "Adaptation to new scenarios",
-        "Personalized responses"
-      ],
-      "drawbacks": [
-        "Requires feedback mechanisms",
-        "Potential overfitting",
-        "Resource intensive"
-      ],
-      "use_cases": [
-        "Personalization systems",
-        "Adaptive assistants",
-        "Evolving workflows"
-      ],
-      "complexity": "High",
-      "tags": [
-        "learning",
-        "adaptation",
-        "feedback",
-        "improvement",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Model Context Protocol (MCP)",
-      "id": "model-context-protocol",
-      "category": "AI/ML",
-      "description": "Defines a protocol for managing and sharing context between models and systems, enabling better integration and communication.",
-      "when_to_use": [
-        "Interoperability between models",
-        "Context sharing needed",
-        "Integrated AI systems"
-      ],
-      "benefits": [
-        "Standardized communication",
-        "Better integration",
-        "Enhanced context handling"
-      ],
-      "drawbacks": [
-        "Protocol complexity",
-        "Compatibility issues",
-        "Overhead"
-      ],
-      "use_cases": [
-        "Multi-model systems",
-        "Context-aware applications",
-        "Integrated AI platforms"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "protocol",
-        "context",
-        "integration",
-        "communication",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Goal Setting and Monitoring Pattern",
-      "id": "goal-setting-monitoring-pattern",
-      "category": "AI/ML",
-      "description": "Involves setting clear, measurable goals and continuously monitoring progress towards them, allowing agents to track and adjust their actions.",
-      "when_to_use": [
-        "Long-term tasks",
-        "Progress tracking needed",
-        "Adjustable objectives"
-      ],
-      "benefits": [
-        "Focused execution",
-        "Progress visibility",
-        "Adaptive adjustments"
-      ],
-      "drawbacks": [
-        "Goal definition complexity",
-        "Monitoring overhead",
-        "Potential misalignment"
-      ],
-      "use_cases": [
-        "Project management",
-        "Performance tracking",
-        "Goal-oriented agents"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "goals",
-        "monitoring",
-        "tracking",
-        "adjustment",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Exception Handling and Recovery Pattern",
-      "id": "exception-handling-recovery-pattern",
-      "category": "AI/ML",
-      "description": "Provides mechanisms for detecting, handling, and recovering from errors or unexpected situations in agent operations.",
-      "when_to_use": [
-        "Unreliable environments",
-        "Error-prone tasks",
-        "Robustness required"
-      ],
-      "benefits": [
-        "Improved reliability",
-        "Graceful failure handling",
-        "System stability"
-      ],
-      "drawbacks": [
-        "Complexity in error detection",
-        "Recovery strategy design",
-        "Potential performance impact"
-      ],
-      "use_cases": [
-        "Fault-tolerant systems",
-        "Error-prone workflows",
-        "Critical applications"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "exception",
-        "recovery",
-        "error-handling",
-        "robustness",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Human-in-the-Loop Pattern",
-      "id": "human-in-the-loop-pattern",
-      "category": "AI/ML",
-      "description": "Incorporates human oversight, intervention, or feedback into the agent's decision-making process to improve accuracy and trust.",
-      "when_to_use": [
-        "High-stakes decisions",
-        "Complex judgments",
-        "Trust and accuracy critical"
-      ],
-      "benefits": [
-        "Improved accuracy",
-        "Human oversight",
-        "Better handling of edge cases"
-      ],
-      "drawbacks": [
-        "Latency from human involvement",
-        "Scalability issues",
-        "Dependency on humans"
-      ],
-      "use_cases": [
-        "Medical diagnosis",
-        "Legal analysis",
-        "Quality control"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "human-in-loop",
-        "oversight",
-        "feedback",
-        "trust",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Inter-Agent Communication (A2A) Pattern",
-      "id": "inter-agent-communication-pattern",
-      "category": "AI/ML",
-      "description": "Defines protocols and mechanisms for communication and coordination between multiple agents in a system.",
-      "when_to_use": [
-        "Multi-agent systems",
-        "Coordination needed",
-        "Distributed tasks"
-      ],
-      "benefits": [
-        "Better collaboration",
-        "Scalability",
-        "Specialized task handling"
-      ],
-      "drawbacks": [
-        "Communication overhead",
-        "Synchronization challenges",
-        "Complexity"
-      ],
-      "use_cases": [
-        "Distributed AI systems",
-        "Collaborative workflows",
-        "Agent networks"
-      ],
-      "complexity": "High",
-      "tags": [
-        "inter-agent",
-        "communication",
-        "coordination",
-        "collaboration",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Resource-Aware Optimization Pattern",
-      "id": "resource-aware-optimization-pattern",
-      "category": "AI/ML",
-      "description": "Optimizes agent operations considering resource constraints like compute, memory, and time, ensuring efficient use of available resources.",
-      "when_to_use": [
-        "Resource-limited environments",
-        "Cost optimization",
-        "Performance tuning"
-      ],
-      "benefits": [
-        "Efficient resource use",
-        "Cost reduction",
-        "Better performance"
-      ],
-      "drawbacks": [
-        "Optimization complexity",
-        "Trade-off decisions",
-        "Monitoring requirements"
-      ],
-      "use_cases": [
-        "Edge computing",
-        "Cloud deployments",
-        "Resource-constrained systems"
-      ],
-      "complexity": "High",
-      "tags": [
-        "resource",
-        "optimization",
-        "efficiency",
-        "constraints",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Reasoning Techniques Pattern",
-      "id": "reasoning-techniques-pattern",
-      "category": "AI/ML",
-      "description": "Applies various reasoning methods like chain-of-thought, tree-of-thought, or other logical processes to enhance decision-making and problem-solving.",
-      "when_to_use": [
-        "Complex reasoning required",
-        "Multi-step analysis",
-        "Logical problem-solving"
-      ],
-      "benefits": [
-        "Improved reasoning",
-        "Better decisions",
-        "Transparency"
-      ],
-      "drawbacks": [
-        "Increased computation",
-        "Complexity",
-        "Potential verbosity"
-      ],
-      "use_cases": [
-        "Mathematical problems",
-        "Strategic planning",
-        "Analysis tasks"
-      ],
-      "complexity": "High",
-      "tags": [
-        "reasoning",
-        "logic",
-        "decision-making",
-        "analysis",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Guardrails/Safety Patterns",
-      "id": "guardrails-safety-patterns",
-      "category": "AI/ML",
-      "description": "Implements safety measures, constraints, and guardrails to prevent harmful outputs, ensure ethical behavior, and maintain system security.",
-      "when_to_use": [
-        "Safety-critical applications",
-        "Ethical concerns",
-        "Harm prevention"
-      ],
-      "benefits": [
-        "Enhanced safety",
-        "Ethical compliance",
-        "Risk reduction"
-      ],
-      "drawbacks": [
-        "Implementation overhead",
-        "Potential creativity limits",
-        "False positives"
-      ],
-      "use_cases": [
-        "Content moderation",
-        "Autonomous systems",
-        "Public-facing AI"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "safety",
-        "guardrails",
-        "ethics",
-        "security",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Evaluation and Monitoring Pattern",
-      "id": "evaluation-monitoring-pattern",
-      "category": "AI/ML",
-      "description": "Continuously evaluates agent performance, monitors behavior, and collects metrics to ensure quality and enable improvements.",
-      "when_to_use": [
-        "Performance tracking",
-        "Quality assurance",
-        "Continuous improvement"
-      ],
-      "benefits": [
-        "Quality assurance",
-        "Performance insights",
-        "Iterative improvement"
-      ],
-      "drawbacks": [
-        "Monitoring overhead",
-        "Metric design complexity",
-        "Data collection challenges"
-      ],
-      "use_cases": [
-        "Production systems",
-        "Research platforms",
-        "Quality control"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "evaluation",
-        "monitoring",
-        "metrics",
-        "quality",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Prioritization Pattern",
-      "id": "prioritization-pattern",
-      "category": "AI/ML",
-      "description": "Enables agents to prioritize tasks, requests, or actions based on importance, urgency, or other criteria to optimize resource allocation.",
-      "when_to_use": [
-        "Multiple concurrent tasks",
-        "Resource constraints",
-        "Time-sensitive operations"
-      ],
-      "benefits": [
-        "Optimized resource use",
-        "Better task management",
-        "Improved efficiency"
-      ],
-      "drawbacks": [
-        "Prioritization logic complexity",
-        "Potential bias",
-        "Dynamic adjustment needs"
-      ],
-      "use_cases": [
-        "Task schedulers",
-        "Resource managers",
-        "Workflow systems"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "prioritization",
-        "scheduling",
-        "optimization",
-        "resources",
-        "agentic",
-        "ai-ml"
-      ]
-    },
-    {
-      "name": "Exploration and Discovery Pattern",
-      "id": "exploration-discovery-pattern",
-      "category": "AI/ML",
-      "description": "Allows agents to explore new possibilities, discover patterns, or generate novel solutions through curiosity-driven or systematic exploration.",
-      "when_to_use": [
-        "Innovation needed",
-        "Unknown domains",
-        "Creative problem-solving"
-      ],
-      "benefits": [
-        "Novel solutions",
-        "Adaptation to new scenarios",
-        "Knowledge expansion"
-      ],
-      "drawbacks": [
-        "Unpredictability",
-        "Resource consumption",
-        "Evaluation challenges"
-      ],
-      "use_cases": [
-        "Research agents",
-        "Creative systems",
-        "Adaptive learning"
-      ],
-      "complexity": "High",
-      "tags": [
-        "exploration",
-        "discovery",
-        "innovation",
-        "creativity",
-        "agentic",
-        "ai-ml"
-      ]
-    }
-  ]
-}
+[
+  {
+    "name": "Prompt Chaining",
+    "id": "prompt-chaining",
+    "category": "AI/ML",
+    "description": "Breaks down complex problems into a sequence of smaller, manageable sub-problems, each addressed through specifically designed prompts where the output of one becomes the input for the next.",
+    "when_to_use": [
+      "Tasks too complex for a single prompt",
+      "Sequential processing needed",
+      "Information processing workflows",
+      "Complex query answering"
+    ],
+    "benefits": [
+      "Improved reliability and manageability",
+      "Modularity and clarity",
+      "Enhanced accuracy",
+      "Integration of external tools"
+    ],
+    "drawbacks": [
+      "Increased complexity",
+      "Potential for error propagation if not structured properly"
+    ],
+    "use_cases": [
+      "Automated content analysis",
+      "AI-driven research assistants",
+      "Complex report generation",
+      "Multi-step inference"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "prompt-chaining",
+      "pipeline",
+      "sequential",
+      "modularity",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Routing Pattern",
+    "id": "routing-pattern",
+    "category": "AI/ML",
+    "description": "Introduces conditional logic into an agent's operational framework, enabling dynamic evaluation of criteria to select from a set of possible subsequent actions, moving beyond fixed execution paths.",
+    "when_to_use": [
+      "Adaptive responses required",
+      "Classifying and directing queries",
+      "Multiple potential actions based on input",
+      "Dynamic decision-making"
+    ],
+    "benefits": [
+      "Flexibility",
+      "Context-aware behavior",
+      "Dynamic decision-making",
+      "Better handling of diverse inputs"
+    ],
+    "drawbacks": [
+      "Implementation complexity",
+      "Potential for misrouting if criteria are not well-defined"
+    ],
+    "use_cases": [
+      "Virtual assistants",
+      "AI-driven tutors",
+      "Automated data processing pipelines",
+      "Multi-agent systems"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "routing",
+      "conditional-logic",
+      "delegation",
+      "dynamic",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Parallelization Pattern",
+    "id": "parallelization-pattern",
+    "category": "AI/ML",
+    "description": "Executes multiple components, such as LLM calls, tool usages, or sub-agents, concurrently to reduce overall execution time for tasks with independent parts.",
+    "when_to_use": [
+      "Tasks can be broken into independent sub-tasks",
+      "External services with latency",
+      "Concurrent processing possible"
+    ],
+    "benefits": [
+      "Reduced execution time",
+      "Improved efficiency",
+      "Better resource utilization"
+    ],
+    "drawbacks": [
+      "Coordination complexity",
+      "Potential race conditions",
+      "Requires asynchronous support"
+    ],
+    "use_cases": [
+      "Research agents",
+      "Data processing pipelines",
+      "Multi-source information gathering"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "parallelization",
+      "concurrency",
+      "efficiency",
+      "asynchronous",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Planning Pattern",
+    "id": "planning-pattern",
+    "category": "AI/ML",
+    "description": "Enables an agent to autonomously chart a course to a goal by understanding initial and goal states, discovering optimal sequences of actions, and adapting to new information.",
+    "when_to_use": [
+      "Complex goals where how is not predetermined",
+      "Dynamic environments",
+      "Need for adaptability"
+    ],
+    "benefits": [
+      "Goal-oriented behavior",
+      "Adaptability",
+      "Structured problem-solving"
+    ],
+    "drawbacks": [
+      "Trade-off with predictability",
+      "Potential for unpredictable behavior",
+      "Requires careful constraint setting"
+    ],
+    "use_cases": [
+      "Procedural task automation",
+      "Autonomous navigation",
+      "Information synthesis",
+      "Customer support"
+    ],
+    "complexity": "High",
+    "tags": [
+      "planning",
+      "goal-oriented",
+      "adaptability",
+      "sequence",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Memory Management Pattern",
+    "id": "memory-management-pattern",
+    "category": "AI/ML",
+    "description": "Manages state and memory across interactions, allowing agents to retain information, maintain context, and learn from past experiences.",
+    "when_to_use": [
+      "Conversational continuity needed",
+      "State persistence required",
+      "Learning from interactions"
+    ],
+    "benefits": [
+      "Context retention",
+      "Improved user experience",
+      "Knowledge accumulation"
+    ],
+    "drawbacks": [
+      "Storage requirements",
+      "Privacy concerns",
+      "Complexity in implementation"
+    ],
+    "use_cases": [
+      "Chatbots",
+      "Personal assistants",
+      "Long-term agent interactions"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "memory",
+      "state",
+      "persistence",
+      "context",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Learning and Adaptation Pattern",
+    "id": "learning-adaptation-pattern",
+    "category": "AI/ML",
+    "description": "Allows agents to learn from interactions, adapt behavior, and improve performance over time through feedback and experience.",
+    "when_to_use": [
+      "Continuous improvement needed",
+      "Dynamic tasks",
+      "Personalization"
+    ],
+    "benefits": [
+      "Self-improvement",
+      "Adaptation to new scenarios",
+      "Personalized responses"
+    ],
+    "drawbacks": [
+      "Requires feedback mechanisms",
+      "Potential overfitting",
+      "Resource intensive"
+    ],
+    "use_cases": [
+      "Personalization systems",
+      "Adaptive assistants",
+      "Evolving workflows"
+    ],
+    "complexity": "High",
+    "tags": [
+      "learning",
+      "adaptation",
+      "feedback",
+      "improvement",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Model Context Protocol (MCP)",
+    "id": "model-context-protocol",
+    "category": "AI/ML",
+    "description": "Defines a protocol for managing and sharing context between models and systems, enabling better integration and communication.",
+    "when_to_use": [
+      "Interoperability between models",
+      "Context sharing needed",
+      "Integrated AI systems"
+    ],
+    "benefits": [
+      "Standardized communication",
+      "Better integration",
+      "Enhanced context handling"
+    ],
+    "drawbacks": [
+      "Protocol complexity",
+      "Compatibility issues",
+      "Overhead"
+    ],
+    "use_cases": [
+      "Multi-model systems",
+      "Context-aware applications",
+      "Integrated AI platforms"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "protocol",
+      "context",
+      "integration",
+      "communication",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Goal Setting and Monitoring Pattern",
+    "id": "goal-setting-monitoring-pattern",
+    "category": "AI/ML",
+    "description": "Involves setting clear, measurable goals and continuously monitoring progress towards them, allowing agents to track and adjust their actions.",
+    "when_to_use": [
+      "Long-term tasks",
+      "Progress tracking needed",
+      "Adjustable objectives"
+    ],
+    "benefits": [
+      "Focused execution",
+      "Progress visibility",
+      "Adaptive adjustments"
+    ],
+    "drawbacks": [
+      "Goal definition complexity",
+      "Monitoring overhead",
+      "Potential misalignment"
+    ],
+    "use_cases": [
+      "Project management",
+      "Performance tracking",
+      "Goal-oriented agents"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "goals",
+      "monitoring",
+      "tracking",
+      "adjustment",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Exception Handling and Recovery Pattern",
+    "id": "exception-handling-recovery-pattern",
+    "category": "AI/ML",
+    "description": "Provides mechanisms for detecting, handling, and recovering from errors or unexpected situations in agent operations.",
+    "when_to_use": [
+      "Unreliable environments",
+      "Error-prone tasks",
+      "Robustness required"
+    ],
+    "benefits": [
+      "Improved reliability",
+      "Graceful failure handling",
+      "System stability"
+    ],
+    "drawbacks": [
+      "Complexity in error detection",
+      "Recovery strategy design",
+      "Potential performance impact"
+    ],
+    "use_cases": [
+      "Fault-tolerant systems",
+      "Error-prone workflows",
+      "Critical applications"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "exception",
+      "recovery",
+      "error-handling",
+      "robustness",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Human-in-the-Loop Pattern",
+    "id": "human-in-the-loop-pattern",
+    "category": "AI/ML",
+    "description": "Incorporates human oversight, intervention, or feedback into the agent's decision-making process to improve accuracy and trust.",
+    "when_to_use": [
+      "High-stakes decisions",
+      "Complex judgments",
+      "Trust and accuracy critical"
+    ],
+    "benefits": [
+      "Improved accuracy",
+      "Human oversight",
+      "Better handling of edge cases"
+    ],
+    "drawbacks": [
+      "Latency from human involvement",
+      "Scalability issues",
+      "Dependency on humans"
+    ],
+    "use_cases": [
+      "Medical diagnosis",
+      "Legal analysis",
+      "Quality control"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "human-in-loop",
+      "oversight",
+      "feedback",
+      "trust",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Inter-Agent Communication (A2A) Pattern",
+    "id": "inter-agent-communication-pattern",
+    "category": "AI/ML",
+    "description": "Defines protocols and mechanisms for communication and coordination between multiple agents in a system.",
+    "when_to_use": [
+      "Multi-agent systems",
+      "Coordination needed",
+      "Distributed tasks"
+    ],
+    "benefits": [
+      "Better collaboration",
+      "Scalability",
+      "Specialized task handling"
+    ],
+    "drawbacks": [
+      "Communication overhead",
+      "Synchronization challenges",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Distributed AI systems",
+      "Collaborative workflows",
+      "Agent networks"
+    ],
+    "complexity": "High",
+    "tags": [
+      "inter-agent",
+      "communication",
+      "coordination",
+      "collaboration",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Resource-Aware Optimization Pattern",
+    "id": "resource-aware-optimization-pattern",
+    "category": "AI/ML",
+    "description": "Optimizes agent operations considering resource constraints like compute, memory, and time, ensuring efficient use of available resources.",
+    "when_to_use": [
+      "Resource-limited environments",
+      "Cost optimization",
+      "Performance tuning"
+    ],
+    "benefits": [
+      "Efficient resource use",
+      "Cost reduction",
+      "Better performance"
+    ],
+    "drawbacks": [
+      "Optimization complexity",
+      "Trade-off decisions",
+      "Monitoring requirements"
+    ],
+    "use_cases": [
+      "Edge computing",
+      "Cloud deployments",
+      "Resource-constrained systems"
+    ],
+    "complexity": "High",
+    "tags": [
+      "resource",
+      "optimization",
+      "efficiency",
+      "constraints",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Reasoning Techniques Pattern",
+    "id": "reasoning-techniques-pattern",
+    "category": "AI/ML",
+    "description": "Applies various reasoning methods like chain-of-thought, tree-of-thought, or other logical processes to enhance decision-making and problem-solving.",
+    "when_to_use": [
+      "Complex reasoning required",
+      "Multi-step analysis",
+      "Logical problem-solving"
+    ],
+    "benefits": [
+      "Improved reasoning",
+      "Better decisions",
+      "Transparency"
+    ],
+    "drawbacks": [
+      "Increased computation",
+      "Complexity",
+      "Potential verbosity"
+    ],
+    "use_cases": [
+      "Mathematical problems",
+      "Strategic planning",
+      "Analysis tasks"
+    ],
+    "complexity": "High",
+    "tags": [
+      "reasoning",
+      "logic",
+      "decision-making",
+      "analysis",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Guardrails/Safety Patterns",
+    "id": "guardrails-safety-patterns",
+    "category": "AI/ML",
+    "description": "Implements safety measures, constraints, and guardrails to prevent harmful outputs, ensure ethical behavior, and maintain system security.",
+    "when_to_use": [
+      "Safety-critical applications",
+      "Ethical concerns",
+      "Harm prevention"
+    ],
+    "benefits": [
+      "Enhanced safety",
+      "Ethical compliance",
+      "Risk reduction"
+    ],
+    "drawbacks": [
+      "Implementation overhead",
+      "Potential creativity limits",
+      "False positives"
+    ],
+    "use_cases": [
+      "Content moderation",
+      "Autonomous systems",
+      "Public-facing AI"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "safety",
+      "guardrails",
+      "ethics",
+      "security",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Evaluation and Monitoring Pattern",
+    "id": "evaluation-monitoring-pattern",
+    "category": "AI/ML",
+    "description": "Continuously evaluates agent performance, monitors behavior, and collects metrics to ensure quality and enable improvements.",
+    "when_to_use": [
+      "Performance tracking",
+      "Quality assurance",
+      "Continuous improvement"
+    ],
+    "benefits": [
+      "Quality assurance",
+      "Performance insights",
+      "Iterative improvement"
+    ],
+    "drawbacks": [
+      "Monitoring overhead",
+      "Metric design complexity",
+      "Data collection challenges"
+    ],
+    "use_cases": [
+      "Production systems",
+      "Research platforms",
+      "Quality control"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "evaluation",
+      "monitoring",
+      "metrics",
+      "quality",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Prioritization Pattern",
+    "id": "prioritization-pattern",
+    "category": "AI/ML",
+    "description": "Enables agents to prioritize tasks, requests, or actions based on importance, urgency, or other criteria to optimize resource allocation.",
+    "when_to_use": [
+      "Multiple concurrent tasks",
+      "Resource constraints",
+      "Time-sensitive operations"
+    ],
+    "benefits": [
+      "Optimized resource use",
+      "Better task management",
+      "Improved efficiency"
+    ],
+    "drawbacks": [
+      "Prioritization logic complexity",
+      "Potential bias",
+      "Dynamic adjustment needs"
+    ],
+    "use_cases": [
+      "Task schedulers",
+      "Resource managers",
+      "Workflow systems"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "prioritization",
+      "scheduling",
+      "optimization",
+      "resources",
+      "agentic",
+      "ai-ml"
+    ]
+  },
+  {
+    "name": "Exploration and Discovery Pattern",
+    "id": "exploration-discovery-pattern",
+    "category": "AI/ML",
+    "description": "Allows agents to explore new possibilities, discover patterns, or generate novel solutions through curiosity-driven or systematic exploration.",
+    "when_to_use": [
+      "Innovation needed",
+      "Unknown domains",
+      "Creative problem-solving"
+    ],
+    "benefits": [
+      "Novel solutions",
+      "Adaptation to new scenarios",
+      "Knowledge expansion"
+    ],
+    "drawbacks": [
+      "Unpredictability",
+      "Resource consumption",
+      "Evaluation challenges"
+    ],
+    "use_cases": [
+      "Research agents",
+      "Creative systems",
+      "Adaptive learning"
+    ],
+    "complexity": "High",
+    "tags": [
+      "exploration",
+      "discovery",
+      "innovation",
+      "creativity",
+      "agentic",
+      "ai-ml"
+    ]
+  }
+]

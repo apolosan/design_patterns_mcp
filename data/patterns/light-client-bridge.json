@@ -1,23 +1,25 @@
-{
-  "id": "light-client-bridge",
-  "name": "Light Client Bridge",
-  "category": "Cross-Chain",
-  "description": "Verify source chain state using light client proofs. Most trustless but complex.",
-  "when_to_use": "Maximum security, trustless bridges, consensus proof verification",
-  "benefits": "Trustless, cryptographically secure, no relayer trust",
-  "drawbacks": "Very high gas costs, complex implementation, client maintenance",
-  "use_cases": "Rainbow Bridge (NEAR-Ethereum), IBC (Cosmos)",
-  "complexity": "Very High",
-  "tags": [
-    "cross-chain",
-    "light-client",
-    "trustless",
-    "consensus-proof"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Verify using light client\nfunction submitBlockHeader(bytes memory header, bytes memory proof) external {\n    require(verifyConsensusProof(header, proof));\n    blockHashes[blockNum] = keccak256(header);\n}\n\nfunction verifyTransaction(bytes memory txProof, uint256 blockNum) external view returns (bool) {\n    return MerkleProof.verify(txProof, blockHashes[blockNum], txHash);\n}"
+[
+  {
+    "id": "light-client-bridge",
+    "name": "Light Client Bridge",
+    "category": "Cross-Chain",
+    "description": "Verify source chain state using light client proofs. Most trustless but complex.",
+    "when_to_use": "Maximum security, trustless bridges, consensus proof verification",
+    "benefits": "Trustless, cryptographically secure, no relayer trust",
+    "drawbacks": "Very high gas costs, complex implementation, client maintenance",
+    "use_cases": "Rainbow Bridge (NEAR-Ethereum), IBC (Cosmos)",
+    "complexity": "Very High",
+    "tags": [
+      "cross-chain",
+      "light-client",
+      "trustless",
+      "consensus-proof"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Verify using light client\nfunction submitBlockHeader(bytes memory header, bytes memory proof) external {\n    require(verifyConsensusProof(header, proof));\n    blockHashes[blockNum] = keccak256(header);\n}\n\nfunction verifyTransaction(bytes memory txProof, uint256 blockNum) external view returns (bool) {\n    return MerkleProof.verify(txProof, blockHashes[blockNum], txHash);\n}"
+      }
     }
   }
-}
+]

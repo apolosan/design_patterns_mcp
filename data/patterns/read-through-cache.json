@@ -1,16 +1,18 @@
-{
-  "id": "read-through-cache",
-  "name": "Read-Through Cache",
-  "category": "Caching",
-  "description": "Cache automatically loads data from store on cache miss",
-  "when_to_use": "Transparent caching\nRead optimization\nCache warming",
-  "benefits": "Transparent caching\nAutomatic loading\nSimplified application",
-  "drawbacks": "Initial load latency\nCache complexity\nError handling",
-  "use_cases": "Reference data\nProduct catalogs\nUser sessions",
-  "complexity": "Medium",
-  "tags": [
-    "caching",
-    "transparency",
-    "loading"
-  ]
-}
+[
+  {
+    "id": "read-through-cache",
+    "name": "Read-Through Cache",
+    "category": "Caching",
+    "description": "Cache automatically loads data from store on cache miss",
+    "when_to_use": "Transparent caching\nRead optimization\nCache warming",
+    "benefits": "Transparent caching\nAutomatic loading\nSimplified application",
+    "drawbacks": "Initial load latency\nCache complexity\nError handling",
+    "use_cases": "Reference data\nProduct catalogs\nUser sessions",
+    "complexity": "Medium",
+    "tags": [
+      "caching",
+      "transparency",
+      "loading"
+    ]
+  }
+]

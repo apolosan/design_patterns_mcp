@@ -1,24 +1,26 @@
-{
-  "id": "zksnark-groth16",
-  "name": "zkSNARK (Groth16)",
-  "category": "Zero-Knowledge",
-  "description": "Succinct zero-knowledge proofs with trusted setup. Constant ~200 byte proofs, fast verification.",
-  "when_to_use": "Privacy-preserving verification, private transactions, scaling",
-  "benefits": "Tiny proofs (288 bytes), fast on-chain verification (~280k gas)",
-  "drawbacks": "Requires trusted setup per circuit, not quantum-resistant",
-  "use_cases": "Tornado Cash, zkRollups, private voting",
-  "complexity": "Very High",
-  "tags": [
-    "zero-knowledge",
-    "zksnark",
-    "groth16",
-    "privacy",
-    "circom"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Groth16 verifier (auto-generated from Circom)\ncontract Groth16Verifier {\n    struct Proof {\n        uint256[2] a;\n        uint256[2][2] b;\n        uint256[2] c;\n    }\n    \n    function verifyProof(\n        uint256[2] memory a,\n        uint256[2][2] memory b,\n        uint256[2] memory c,\n        uint256[] memory input\n    ) public view returns (bool) {\n        // Pairing check: e(A, B) = e(α, β) · e(C, δ) · e(vk, γ)\n        // Constant ~280k gas regardless of circuit complexity\n    }\n}\n\n// Usage: Prove you know secret without revealing it\n// Prove balance > X without revealing balance"
+[
+  {
+    "id": "zksnark-groth16",
+    "name": "zkSNARK (Groth16)",
+    "category": "Zero-Knowledge",
+    "description": "Succinct zero-knowledge proofs with trusted setup. Constant ~200 byte proofs, fast verification.",
+    "when_to_use": "Privacy-preserving verification, private transactions, scaling",
+    "benefits": "Tiny proofs (288 bytes), fast on-chain verification (~280k gas)",
+    "drawbacks": "Requires trusted setup per circuit, not quantum-resistant",
+    "use_cases": "Tornado Cash, zkRollups, private voting",
+    "complexity": "Very High",
+    "tags": [
+      "zero-knowledge",
+      "zksnark",
+      "groth16",
+      "privacy",
+      "circom"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Groth16 verifier (auto-generated from Circom)\ncontract Groth16Verifier {\n    struct Proof {\n        uint256[2] a;\n        uint256[2][2] b;\n        uint256[2] c;\n    }\n    \n    function verifyProof(\n        uint256[2] memory a,\n        uint256[2][2] memory b,\n        uint256[2] memory c,\n        uint256[] memory input\n    ) public view returns (bool) {\n        // Pairing check: e(A, B) = e(α, β) · e(C, δ) · e(vk, γ)\n        // Constant ~280k gas regardless of circuit complexity\n    }\n}\n\n// Usage: Prove you know secret without revealing it\n// Prove balance > X without revealing balance"
+      }
     }
   }
-}
+]

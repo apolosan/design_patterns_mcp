@@ -1,60 +1,65 @@
-{
-  "patterns": [
-    {
-      "id": "abstract-server",
-      "name": "Abstract Server",
-      "category": "Structural",
-      "description": "Creates an abstraction layer between clients and server implementations, allowing multiple implementations without coupling the client to concrete classes. This pattern is fundamental to the Dependency Inversion Principle (DIP) and enables flexible, testable architectures in both object-oriented and functional programming.",
-      "when_to_use": [
-        "Need to decouple clients from server implementations",
-        "Multiple server implementations exist or may be needed",
-        "Want to apply Dependency Inversion Principle",
-        "Testing requires mock or stub implementations",
-        "Building plugin or extensible architectures"
-      ],
-      "benefits": [
-        "Loose coupling between client and server",
-        "Easy to add new implementations",
-        "Supports Dependency Inversion Principle",
-        "Facilitates testing with mocks and stubs",
-        "Promotes interface-based design",
-        "Enables runtime implementation switching"
-      ],
-      "drawbacks": [
-        "Adds abstraction layer complexity",
-        "May introduce performance overhead",
-        "Requires careful interface design",
-        "Can lead to over-abstraction"
-      ],
-      "use_cases": [
-        "Database access layers",
-        "File system operations",
-        "Network communication services",
-        "Logging frameworks",
-        "Authentication systems",
-        "Data persistence layers",
-        "External API integrations"
-      ],
-      "complexity": "Medium",
-      "tags": ["structural", "abstraction", "dependency-inversion", "SOLID", "interface", "functional-programming"],
-      "examples": {
-        "typescript": {
-          "description": "Abstract Server pattern in TypeScript with interface abstraction",
-          "code": "// Abstract Server Interface\ninterface MessageServer {\n  send(message: string): Promise<void>;\n  receive(): Promise<string>;\n}\n\n// Concrete Implementation 1: Email Server\nclass EmailServer implements MessageServer {\n  async send(message: string): Promise<void> {\n    console.log(`Sending email: ${message}`);\n    // Email sending logic\n  }\n\n  async receive(): Promise<string> {\n    return \"Email received\";\n  }\n}\n\n// Concrete Implementation 2: SMS Server\nclass SmsServer implements MessageServer {\n  async send(message: string): Promise<void> {\n    console.log(`Sending SMS: ${message}`);\n    // SMS sending logic\n  }\n\n  async receive(): Promise<string> {\n    return \"SMS received\";\n  }\n}\n\n// Client depends on abstraction, not concrete implementation\nclass MessageClient {\n  constructor(private server: MessageServer) {}\n\n  async sendMessage(msg: string): Promise<void> {\n    await this.server.send(msg);\n  }\n\n  async getMessage(): Promise<string> {\n    return await this.server.receive();\n  }\n}\n\n// Usage: Client works with any implementation\nconst emailClient = new MessageClient(new EmailServer());\nawait emailClient.sendMessage(\"Hello via Email\");\n\nconst smsClient = new MessageClient(new SmsServer());\nawait smsClient.sendMessage(\"Hello via SMS\");"
-        },
-        "clojure": {
-          "description": "Abstract Server pattern in Clojure using protocols (functional approach)",
-          "code": ";; Define protocol (abstract interface)\n(defprotocol MessageServer\n  (send-msg [this message])\n  (receive-msg [this]))\n\n;; Email implementation\n(defrecord EmailServer []\n  MessageServer\n  (send-msg [this message]\n    (println \"Sending email:\" message)\n    :sent)\n  (receive-msg [this]\n    \"Email received\"))\n\n;; SMS implementation\n(defrecord SmsServer []\n  MessageServer\n  (send-msg [this message]\n    (println \"Sending SMS:\" message)\n    :sent)\n  (receive-msg [this]\n    \"SMS received\"))\n\n;; Client function depends on protocol, not implementation\n(defn send-message [server message]\n  (send-msg server message))\n\n(defn get-message [server]\n  (receive-msg server))\n\n;; Usage\n(def email-server (->EmailServer))\n(def sms-server (->SmsServer))\n\n(send-message email-server \"Hello via Email\")\n(send-message sms-server \"Hello via SMS\")\n\n;; Alternative: Pure functional approach with multimethods\n(defmulti send-msg-mm (fn [server-type message] server-type))\n\n(defmethod send-msg-mm :email [_ message]\n  (println \"Sending email:\" message))\n\n(defmethod send-msg-mm :sms [_ message]\n  (println \"Sending SMS:\" message))\n\n;; Usage\n(send-msg-mm :email \"Functional email\")\n(send-msg-mm :sms \"Functional SMS\")"
-        },
-        "python": {
-          "description": "Abstract Server pattern in Python using Abstract Base Classes",
-          "code": "from abc import ABC, abstractmethod\nfrom typing import Protocol\n\n# Abstract Server using ABC\nclass MessageServer(ABC):\n    @abstractmethod\n    def send(self, message: str) -> None:\n        pass\n    \n    @abstractmethod\n    def receive(self) -> str:\n        pass\n\n# Concrete Implementation 1\nclass EmailServer(MessageServer):\n    def send(self, message: str) -> None:\n        print(f\"Sending email: {message}\")\n    \n    def receive(self) -> str:\n        return \"Email received\"\n\n# Concrete Implementation 2\nclass SmsServer(MessageServer):\n    def send(self, message: str) -> None:\n        print(f\"Sending SMS: {message}\")\n    \n    def receive(self) -> str:\n        return \"SMS received\"\n\n# Client depends on abstraction\nclass MessageClient:\n    def __init__(self, server: MessageServer):\n        self.server = server\n    \n    def send_message(self, msg: str) -> None:\n        self.server.send(msg)\n    \n    def get_message(self) -> str:\n        return self.server.receive()\n\n# Usage\nemail_client = MessageClient(EmailServer())\nemail_client.send_message(\"Hello via Email\")\n\nsms_client = MessageClient(SmsServer())\nsms_client.send_message(\"Hello via SMS\")\n\n# Alternative: Using Protocol (structural subtyping)\nclass MessageServerProtocol(Protocol):\n    def send(self, message: str) -> None: ...\n    def receive(self) -> str: ..."
-        },
-        "java": {
-          "description": "Abstract Server pattern in Java with interface and dependency injection",
-          "code": "// Abstract Server Interface\npublic interface MessageServer {\n    void send(String message);\n    String receive();\n}\n\n// Concrete Implementation 1: Email Server\npublic class EmailServer implements MessageServer {\n    @Override\n    public void send(String message) {\n        System.out.println(\"Sending email: \" + message);\n    }\n    \n    @Override\n    public String receive() {\n        return \"Email received\";\n    }\n}\n\n// Concrete Implementation 2: SMS Server\npublic class SmsServer implements MessageServer {\n    @Override\n    public void send(String message) {\n        System.out.println(\"Sending SMS: \" + message);\n    }\n    \n    @Override\n    public String receive() {\n        return \"SMS received\";\n    }\n}\n\n// Client depends on abstraction (DIP)\npublic class MessageClient {\n    private final MessageServer server;\n    \n    // Dependency Injection via constructor\n    public MessageClient(MessageServer server) {\n        this.server = server;\n    }\n    \n    public void sendMessage(String message) {\n        server.send(message);\n    }\n    \n    public String getMessage() {\n        return server.receive();\n    }\n}\n\n// Usage\npublic class Main {\n    public static void main(String[] args) {\n        MessageClient emailClient = new MessageClient(new EmailServer());\n        emailClient.sendMessage(\"Hello via Email\");\n        \n        MessageClient smsClient = new MessageClient(new SmsServer());\n        smsClient.sendMessage(\"Hello via SMS\");\n    }\n}"
-        }
+[
+  {
+    "id": "abstract-server",
+    "name": "Abstract Server",
+    "category": "Structural",
+    "description": "Creates an abstraction layer between clients and server implementations, allowing multiple implementations without coupling the client to concrete classes. This pattern is fundamental to the Dependency Inversion Principle (DIP) and enables flexible, testable architectures in both object-oriented and functional programming.",
+    "when_to_use": [
+      "Need to decouple clients from server implementations",
+      "Multiple server implementations exist or may be needed",
+      "Want to apply Dependency Inversion Principle",
+      "Testing requires mock or stub implementations",
+      "Building plugin or extensible architectures"
+    ],
+    "benefits": [
+      "Loose coupling between client and server",
+      "Easy to add new implementations",
+      "Supports Dependency Inversion Principle",
+      "Facilitates testing with mocks and stubs",
+      "Promotes interface-based design",
+      "Enables runtime implementation switching"
+    ],
+    "drawbacks": [
+      "Adds abstraction layer complexity",
+      "May introduce performance overhead",
+      "Requires careful interface design",
+      "Can lead to over-abstraction"
+    ],
+    "use_cases": [
+      "Database access layers",
+      "File system operations",
+      "Network communication services",
+      "Logging frameworks",
+      "Authentication systems",
+      "Data persistence layers",
+      "External API integrations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "structural",
+      "abstraction",
+      "dependency-inversion",
+      "SOLID",
+      "interface",
+      "functional-programming"
+    ],
+    "examples": {
+      "typescript": {
+        "description": "Abstract Server pattern in TypeScript with interface abstraction",
+        "code": "// Abstract Server Interface\ninterface MessageServer {\n  send(message: string): Promise<void>;\n  receive(): Promise<string>;\n}\n\n// Concrete Implementation 1: Email Server\nclass EmailServer implements MessageServer {\n  async send(message: string): Promise<void> {\n    console.log(`Sending email: ${message}`);\n    // Email sending logic\n  }\n\n  async receive(): Promise<string> {\n    return \"Email received\";\n  }\n}\n\n// Concrete Implementation 2: SMS Server\nclass SmsServer implements MessageServer {\n  async send(message: string): Promise<void> {\n    console.log(`Sending SMS: ${message}`);\n    // SMS sending logic\n  }\n\n  async receive(): Promise<string> {\n    return \"SMS received\";\n  }\n}\n\n// Client depends on abstraction, not concrete implementation\nclass MessageClient {\n  constructor(private server: MessageServer) {}\n\n  async sendMessage(msg: string): Promise<void> {\n    await this.server.send(msg);\n  }\n\n  async getMessage(): Promise<string> {\n    return await this.server.receive();\n  }\n}\n\n// Usage: Client works with any implementation\nconst emailClient = new MessageClient(new EmailServer());\nawait emailClient.sendMessage(\"Hello via Email\");\n\nconst smsClient = new MessageClient(new SmsServer());\nawait smsClient.sendMessage(\"Hello via SMS\");"
+      },
+      "clojure": {
+        "description": "Abstract Server pattern in Clojure using protocols (functional approach)",
+        "code": ";; Define protocol (abstract interface)\n(defprotocol MessageServer\n  (send-msg [this message])\n  (receive-msg [this]))\n\n;; Email implementation\n(defrecord EmailServer []\n  MessageServer\n  (send-msg [this message]\n    (println \"Sending email:\" message)\n    :sent)\n  (receive-msg [this]\n    \"Email received\"))\n\n;; SMS implementation\n(defrecord SmsServer []\n  MessageServer\n  (send-msg [this message]\n    (println \"Sending SMS:\" message)\n    :sent)\n  (receive-msg [this]\n    \"SMS received\"))\n\n;; Client function depends on protocol, not implementation\n(defn send-message [server message]\n  (send-msg server message))\n\n(defn get-message [server]\n  (receive-msg server))\n\n;; Usage\n(def email-server (->EmailServer))\n(def sms-server (->SmsServer))\n\n(send-message email-server \"Hello via Email\")\n(send-message sms-server \"Hello via SMS\")\n\n;; Alternative: Pure functional approach with multimethods\n(defmulti send-msg-mm (fn [server-type message] server-type))\n\n(defmethod send-msg-mm :email [_ message]\n  (println \"Sending email:\" message))\n\n(defmethod send-msg-mm :sms [_ message]\n  (println \"Sending SMS:\" message))\n\n;; Usage\n(send-msg-mm :email \"Functional email\")\n(send-msg-mm :sms \"Functional SMS\")"
+      },
+      "python": {
+        "description": "Abstract Server pattern in Python using Abstract Base Classes",
+        "code": "from abc import ABC, abstractmethod\nfrom typing import Protocol\n\n# Abstract Server using ABC\nclass MessageServer(ABC):\n    @abstractmethod\n    def send(self, message: str) -> None:\n        pass\n    \n    @abstractmethod\n    def receive(self) -> str:\n        pass\n\n# Concrete Implementation 1\nclass EmailServer(MessageServer):\n    def send(self, message: str) -> None:\n        print(f\"Sending email: {message}\")\n    \n    def receive(self) -> str:\n        return \"Email received\"\n\n# Concrete Implementation 2\nclass SmsServer(MessageServer):\n    def send(self, message: str) -> None:\n        print(f\"Sending SMS: {message}\")\n    \n    def receive(self) -> str:\n        return \"SMS received\"\n\n# Client depends on abstraction\nclass MessageClient:\n    def __init__(self, server: MessageServer):\n        self.server = server\n    \n    def send_message(self, msg: str) -> None:\n        self.server.send(msg)\n    \n    def get_message(self) -> str:\n        return self.server.receive()\n\n# Usage\nemail_client = MessageClient(EmailServer())\nemail_client.send_message(\"Hello via Email\")\n\nsms_client = MessageClient(SmsServer())\nsms_client.send_message(\"Hello via SMS\")\n\n# Alternative: Using Protocol (structural subtyping)\nclass MessageServerProtocol(Protocol):\n    def send(self, message: str) -> None: ...\n    def receive(self) -> str: ..."
+      },
+      "java": {
+        "description": "Abstract Server pattern in Java with interface and dependency injection",
+        "code": "// Abstract Server Interface\npublic interface MessageServer {\n    void send(String message);\n    String receive();\n}\n\n// Concrete Implementation 1: Email Server\npublic class EmailServer implements MessageServer {\n    @Override\n    public void send(String message) {\n        System.out.println(\"Sending email: \" + message);\n    }\n    \n    @Override\n    public String receive() {\n        return \"Email received\";\n    }\n}\n\n// Concrete Implementation 2: SMS Server\npublic class SmsServer implements MessageServer {\n    @Override\n    public void send(String message) {\n        System.out.println(\"Sending SMS: \" + message);\n    }\n    \n    @Override\n    public String receive() {\n        return \"SMS received\";\n    }\n}\n\n// Client depends on abstraction (DIP)\npublic class MessageClient {\n    private final MessageServer server;\n    \n    // Dependency Injection via constructor\n    public MessageClient(MessageServer server) {\n        this.server = server;\n    }\n    \n    public void sendMessage(String message) {\n        server.send(message);\n    }\n    \n    public String getMessage() {\n        return server.receive();\n    }\n}\n\n// Usage\npublic class Main {\n    public static void main(String[] args) {\n        MessageClient emailClient = new MessageClient(new EmailServer());\n        emailClient.sendMessage(\"Hello via Email\");\n        \n        MessageClient smsClient = new MessageClient(new SmsServer());\n        smsClient.sendMessage(\"Hello via SMS\");\n    }\n}"
       }
     }
-  ]
-}
+  }
+]

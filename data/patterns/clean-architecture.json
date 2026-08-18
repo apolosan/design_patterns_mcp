@@ -1,22 +1,24 @@
-{
-  "id": "clean-architecture",
-  "name": "Clean Architecture",
-  "category": "Architectural",
-  "description": "Separates concerns by organizing code into layers with dependencies flowing inward",
-  "when_to_use": "Complex business logic\nLong-term maintainability\nFramework independence",
-  "benefits": "Testability\nFramework independence\nDatabase independence\nClear separation of concerns",
-  "drawbacks": "Increased complexity\nOver-engineering for simple apps\nLearning curve",
-  "use_cases": "Enterprise applications\nMicroservices\nDomain-rich applications",
-  "complexity": "High",
-  "tags": [
-    "clean",
-    "layered",
-    "dependency-inversion"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Clean Architecture: Dependency Rule - dependencies point inward\n\n// Domain Layer (innermost - no dependencies)\ninterface User {\n  id: string;\n  email: string;\n}\n\n// Use Case Layer (depends only on domain)\ninterface UserRepository {\n  save(user: User): Promise<void>;\n  findById(id: string): Promise<User | null>;\n}\n\nclass CreateUserUseCase {\n  constructor(private userRepo: UserRepository) {}\n  \n  async execute(email: string): Promise<User> {\n    const user: User = { id: crypto.randomUUID(), email };\n    await this.userRepo.save(user);\n    return user;\n  }\n}\n\n// Infrastructure Layer (outermost - implements interfaces)\nclass PostgresUserRepository implements UserRepository {\n  async save(user: User) { /* DB logic */ }\n  async findById(id: string) { /* DB logic */ return null; }\n}\n\n// Usage: inject dependencies from outside\nconst repo = new PostgresUserRepository();\nconst useCase = new CreateUserUseCase(repo);\nawait useCase.execute('user@example.com');"
+[
+  {
+    "id": "clean-architecture",
+    "name": "Clean Architecture",
+    "category": "Architectural",
+    "description": "Separates concerns by organizing code into layers with dependencies flowing inward",
+    "when_to_use": "Complex business logic\nLong-term maintainability\nFramework independence",
+    "benefits": "Testability\nFramework independence\nDatabase independence\nClear separation of concerns",
+    "drawbacks": "Increased complexity\nOver-engineering for simple apps\nLearning curve",
+    "use_cases": "Enterprise applications\nMicroservices\nDomain-rich applications",
+    "complexity": "High",
+    "tags": [
+      "clean",
+      "layered",
+      "dependency-inversion"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Clean Architecture: Dependency Rule - dependencies point inward\n\n// Domain Layer (innermost - no dependencies)\ninterface User {\n  id: string;\n  email: string;\n}\n\n// Use Case Layer (depends only on domain)\ninterface UserRepository {\n  save(user: User): Promise<void>;\n  findById(id: string): Promise<User | null>;\n}\n\nclass CreateUserUseCase {\n  constructor(private userRepo: UserRepository) {}\n  \n  async execute(email: string): Promise<User> {\n    const user: User = { id: crypto.randomUUID(), email };\n    await this.userRepo.save(user);\n    return user;\n  }\n}\n\n// Infrastructure Layer (outermost - implements interfaces)\nclass PostgresUserRepository implements UserRepository {\n  async save(user: User) { /* DB logic */ }\n  async findById(id: string) { /* DB logic */ return null; }\n}\n\n// Usage: inject dependencies from outside\nconst repo = new PostgresUserRepository();\nconst useCase = new CreateUserUseCase(repo);\nawait useCase.execute('user@example.com');"
+      }
     }
   }
-}
+]

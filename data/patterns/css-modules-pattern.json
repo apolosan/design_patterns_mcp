@@ -1,25 +1,27 @@
-{
-  "id": "css-modules-pattern",
-  "name": "CSS Modules Pattern",
-  "category": "React Styling",
-  "description": "Scoped CSS with modules. Still recommended by Next.js for custom styles in 2024.",
-  "when_to_use": "Component-scoped custom styles, when Tailwind is not enough",
-  "benefits": "Scoped styles, no naming conflicts, standard CSS, type-safe with TypeScript",
-  "drawbacks": "Separate files, more boilerplate than Tailwind",
-  "use_cases": "Complex animations, custom designs, component libraries",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "css-modules",
-    "styling",
-    "scoped",
-    "nextjs",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "// Button.module.css\n.button {\n  padding: 0.5rem 1rem;\n  border-radius: 0.25rem;\n  font-weight: 500;\n  transition: background-color 0.2s;\n}\n\n.primary {\n  background-color: #3b82f6;\n  color: white;\n}\n\n.primary:hover {\n  background-color: #2563eb;\n}\n\n// Button.tsx\nimport styles from './Button.module.css';\n\ninterface ButtonProps {\n  variant?: 'primary' | 'secondary';\n  children: ReactNode;\n}\n\nexport function Button({ variant = 'primary', children }: ButtonProps) {\n  return (\n    <button className={`${styles.button} ${styles[variant]}`}>\n      {children}\n    </button>\n  );\n}\n\n// Composition\nimport buttonStyles from './Button.module.css';\nimport cardStyles from './Card.module.css';\n\nfunction Component() {\n  return (\n    <div className={cardStyles.card}>\n      <button className={`${buttonStyles.button} ${buttonStyles.primary}`}>\n        Click me\n      </button>\n    </div>\n  );\n}"
+[
+  {
+    "id": "css-modules-pattern",
+    "name": "CSS Modules Pattern",
+    "category": "React Styling",
+    "description": "Scoped CSS with modules. Still recommended by Next.js for custom styles in 2024.",
+    "when_to_use": "Component-scoped custom styles, when Tailwind is not enough",
+    "benefits": "Scoped styles, no naming conflicts, standard CSS, type-safe with TypeScript",
+    "drawbacks": "Separate files, more boilerplate than Tailwind",
+    "use_cases": "Complex animations, custom designs, component libraries",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "css-modules",
+      "styling",
+      "scoped",
+      "nextjs",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "// Button.module.css\n.button {\n  padding: 0.5rem 1rem;\n  border-radius: 0.25rem;\n  font-weight: 500;\n  transition: background-color 0.2s;\n}\n\n.primary {\n  background-color: #3b82f6;\n  color: white;\n}\n\n.primary:hover {\n  background-color: #2563eb;\n}\n\n// Button.tsx\nimport styles from './Button.module.css';\n\ninterface ButtonProps {\n  variant?: 'primary' | 'secondary';\n  children: ReactNode;\n}\n\nexport function Button({ variant = 'primary', children }: ButtonProps) {\n  return (\n    <button className={`${styles.button} ${styles[variant]}`}>\n      {children}\n    </button>\n  );\n}\n\n// Composition\nimport buttonStyles from './Button.module.css';\nimport cardStyles from './Card.module.css';\n\nfunction Component() {\n  return (\n    <div className={cardStyles.card}>\n      <button className={`${buttonStyles.button} ${buttonStyles.primary}`}>\n        Click me\n      </button>\n    </div>\n  );\n}"
+      }
     }
   }
-}
+]

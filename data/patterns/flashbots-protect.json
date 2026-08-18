@@ -1,24 +1,26 @@
-{
-  "id": "flashbots-protect",
-  "name": "Flashbots Protect Pattern",
-  "category": "MEV",
-  "description": "Private mempool to prevent front-running and sandwich attacks. Transactions sent directly to miners.",
-  "when_to_use": "Large swaps, MEV-sensitive transactions, front-running protection",
-  "benefits": "MEV protection, no failed transaction costs, sandwich attack prevention",
-  "drawbacks": "Slower execution (wait for next block), centralized relayer",
-  "use_cases": "Large DEX trades, NFT mints, auction participation",
-  "complexity": "Medium",
-  "tags": [
-    "mev",
-    "flashbots",
-    "front-running",
-    "protection",
-    "private-mempool"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "import { FlashbotsBundleProvider } from '@flashbots/ethers-provider-bundle';\n\nconst flashbotsProvider = await FlashbotsBundleProvider.create(\n  provider,\n  authSigner,\n  'https://relay.flashbots.net'\n);\n\n// Send transaction via Flashbots\nconst signedBundle = await flashbotsProvider.signBundle([\n  { signer: wallet, transaction: tx }\n]);\n\nconst simulation = await flashbotsProvider.simulate(signedBundle, targetBlock);\nconst bundleSubmission = await flashbotsProvider.sendRawBundle(signedBundle, targetBlock);"
+[
+  {
+    "id": "flashbots-protect",
+    "name": "Flashbots Protect Pattern",
+    "category": "MEV",
+    "description": "Private mempool to prevent front-running and sandwich attacks. Transactions sent directly to miners.",
+    "when_to_use": "Large swaps, MEV-sensitive transactions, front-running protection",
+    "benefits": "MEV protection, no failed transaction costs, sandwich attack prevention",
+    "drawbacks": "Slower execution (wait for next block), centralized relayer",
+    "use_cases": "Large DEX trades, NFT mints, auction participation",
+    "complexity": "Medium",
+    "tags": [
+      "mev",
+      "flashbots",
+      "front-running",
+      "protection",
+      "private-mempool"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { FlashbotsBundleProvider } from '@flashbots/ethers-provider-bundle';\n\nconst flashbotsProvider = await FlashbotsBundleProvider.create(\n  provider,\n  authSigner,\n  'https://relay.flashbots.net'\n);\n\n// Send transaction via Flashbots\nconst signedBundle = await flashbotsProvider.signBundle([\n  { signer: wallet, transaction: tx }\n]);\n\nconst simulation = await flashbotsProvider.simulate(signedBundle, targetBlock);\nconst bundleSubmission = await flashbotsProvider.sendRawBundle(signedBundle, targetBlock);"
+      }
     }
   }
-}
+]

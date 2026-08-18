@@ -1,22 +1,24 @@
-{
-  "id": "merge",
-  "name": "Merge Pattern",
-  "category": "Reactive",
-  "description": "Combines multiple observables into a single stream",
-  "when_to_use": "Multiple sources\nEvent combination\nStream merging",
-  "benefits": "Stream combination\nMultiple sources\nConcurrency",
-  "drawbacks": "Order loss\nTiming complexity\nRace conditions",
-  "use_cases": "Multiple sensors\nEvent aggregation\nData combination",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "merge",
-    "combination"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Merge: combine multiple observables\nfunction merge<T>(...observables: Observable<T>[]): Observable<T> {\n  return new Observable(observer => {\n    const subscriptions = observables.map(obs =>\n      obs.subscribe({\n        next: value => observer.next(value),\n        error: err => observer.error(err),\n        complete: () => {}  // Complete when all complete\n      })\n    );\n    \n    return () => subscriptions.forEach(sub => sub.unsubscribe());\n  });\n}\n\n// Usage: Merge mouse and touch events\nconst clicks = fromEvent(document, 'click');\nconst touches = fromEvent(document, 'touchstart');\n\nmerge(clicks, touches).subscribe({\n  next: event => console.log('Interaction:', event),\n  error: () => {},\n  complete: () => {}\n});"
+[
+  {
+    "id": "merge",
+    "name": "Merge Pattern",
+    "category": "Reactive",
+    "description": "Combines multiple observables into a single stream",
+    "when_to_use": "Multiple sources\nEvent combination\nStream merging",
+    "benefits": "Stream combination\nMultiple sources\nConcurrency",
+    "drawbacks": "Order loss\nTiming complexity\nRace conditions",
+    "use_cases": "Multiple sensors\nEvent aggregation\nData combination",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "merge",
+      "combination"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Merge: combine multiple observables\nfunction merge<T>(...observables: Observable<T>[]): Observable<T> {\n  return new Observable(observer => {\n    const subscriptions = observables.map(obs =>\n      obs.subscribe({\n        next: value => observer.next(value),\n        error: err => observer.error(err),\n        complete: () => {}  // Complete when all complete\n      })\n    );\n    \n    return () => subscriptions.forEach(sub => sub.unsubscribe());\n  });\n}\n\n// Usage: Merge mouse and touch events\nconst clicks = fromEvent(document, 'click');\nconst touches = fromEvent(document, 'touchstart');\n\nmerge(clicks, touches).subscribe({\n  next: event => console.log('Interaction:', event),\n  error: () => {},\n  complete: () => {}\n});"
+      }
     }
   }
-}
+]

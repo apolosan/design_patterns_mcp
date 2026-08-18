@@ -1,17 +1,19 @@
-{
-  "id": "parallel-split",
-  "name": "Parallel Split",
-  "category": "Data Flow",
-  "description": "The Parallel Split sends one input to multiple parallel outputs.",
-  "when_to_use": "[\"One-to-many distribution\",\"Parallel processing\"]",
-  "benefits": "[\"Enables parallelism\",\"Scales processing\"]",
-  "drawbacks": "[\"Coordination overhead\",\"Resource management\"]",
-  "use_cases": "[\"Data distribution\",\"Parallel analytics\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-flow\"",
-    "\"split\"",
-    "\"parallel\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "parallel-split",
+    "name": "Parallel Split",
+    "category": "Data Flow",
+    "description": "The Parallel Split sends one input to multiple parallel outputs.",
+    "when_to_use": "[\"One-to-many distribution\",\"Parallel processing\"]",
+    "benefits": "[\"Enables parallelism\",\"Scales processing\"]",
+    "drawbacks": "[\"Coordination overhead\",\"Resource management\"]",
+    "use_cases": "[\"Data distribution\",\"Parallel analytics\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-flow\"",
+      "\"split\"",
+      "\"parallel\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

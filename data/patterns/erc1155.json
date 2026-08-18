@@ -1,24 +1,26 @@
-{
-  "id": "erc1155",
-  "name": "ERC-1155 Multi-Token",
-  "category": "NFT",
-  "description": "Multi-token standard for fungible and non-fungible Problem: Efficient multi-token management",
-  "when_to_use": "Single contract for multiple token types",
-  "benefits": "Batch operations, gas-efficient, flexible",
-  "drawbacks": "More complex, less marketplace support",
-  "use_cases": "Gaming items, batch operations, mixed tokens",
-  "complexity": "Medium",
-  "tags": [
-    "nft",
-    "erc1155",
-    "multi-token",
-    "gaming",
-    "batch"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/token/ERC1155/ERC1155.sol\";\n\ncontract GameItems is ERC1155 {\n    uint256 public constant SWORD = 0;\n    uint256 public constant SHIELD = 1;\n    \n    function mintBatch(address to) public {\n        uint256[] memory ids = new uint256[](2);\n        ids[0] = SWORD; ids[1] = SHIELD;\n        uint256[] memory amounts = new uint256[](2);\n        amounts[0] = 1; amounts[1] = 1;\n        _mintBatch(to, ids, amounts, \"\");\n    }\n}"
+[
+  {
+    "id": "erc1155",
+    "name": "ERC-1155 Multi-Token",
+    "category": "NFT",
+    "description": "Multi-token standard for fungible and non-fungible Problem: Efficient multi-token management",
+    "when_to_use": "Single contract for multiple token types",
+    "benefits": "Batch operations, gas-efficient, flexible",
+    "drawbacks": "More complex, less marketplace support",
+    "use_cases": "Gaming items, batch operations, mixed tokens",
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "erc1155",
+      "multi-token",
+      "gaming",
+      "batch"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/ERC1155/ERC1155.sol\";\n\ncontract GameItems is ERC1155 {\n    uint256 public constant SWORD = 0;\n    uint256 public constant SHIELD = 1;\n    \n    function mintBatch(address to) public {\n        uint256[] memory ids = new uint256[](2);\n        ids[0] = SWORD; ids[1] = SHIELD;\n        uint256[] memory amounts = new uint256[](2);\n        amounts[0] = 1; amounts[1] = 1;\n        _mintBatch(to, ids, amounts, \"\");\n    }\n}"
+      }
     }
   }
-}
+]

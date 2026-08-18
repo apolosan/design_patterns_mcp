@@ -1,23 +1,25 @@
-{
-  "id": "atomic-swap",
-  "name": "Atomic Swap (HTLC)",
-  "category": "Cross-Chain",
-  "description": "Hash Time-Locked Contracts for trustless cross-chain swaps. Both sides lock with same hash.",
-  "when_to_use": "Trustless exchanges, cross-chain swaps, P2P trading",
-  "benefits": "Trustless, no intermediary, atomic execution",
-  "drawbacks": "Requires both chains online, timelock delays, UX complexity",
-  "use_cases": "Bitcoin-Ethereum swaps, decentralized exchanges",
-  "complexity": "Medium",
-  "tags": [
-    "cross-chain",
-    "atomic-swap",
-    "htlc",
-    "trustless"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Hash Time-Locked Contract\nfunction lock(bytes32 hashlock, uint256 timelock) external payable {\n    require(msg.value > 0);\n    swaps[hashlock] = Swap({\n        amount: msg.value,\n        timelock: block.timestamp + timelock,\n        sender: msg.sender\n    });\n}\n\nfunction claim(bytes32 preimage) external {\n    require(keccak256(abi.encodePacked(preimage)) == hashlock);\n    payable(msg.sender).transfer(swaps[hashlock].amount);\n}"
+[
+  {
+    "id": "atomic-swap",
+    "name": "Atomic Swap (HTLC)",
+    "category": "Cross-Chain",
+    "description": "Hash Time-Locked Contracts for trustless cross-chain swaps. Both sides lock with same hash.",
+    "when_to_use": "Trustless exchanges, cross-chain swaps, P2P trading",
+    "benefits": "Trustless, no intermediary, atomic execution",
+    "drawbacks": "Requires both chains online, timelock delays, UX complexity",
+    "use_cases": "Bitcoin-Ethereum swaps, decentralized exchanges",
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "atomic-swap",
+      "htlc",
+      "trustless"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Hash Time-Locked Contract\nfunction lock(bytes32 hashlock, uint256 timelock) external payable {\n    require(msg.value > 0);\n    swaps[hashlock] = Swap({\n        amount: msg.value,\n        timelock: block.timestamp + timelock,\n        sender: msg.sender\n    });\n}\n\nfunction claim(bytes32 preimage) external {\n    require(keccak256(abi.encodePacked(preimage)) == hashlock);\n    payable(msg.sender).transfer(swaps[hashlock].amount);\n}"
+      }
     }
   }
-}
+]

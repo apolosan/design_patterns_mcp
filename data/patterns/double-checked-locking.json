@@ -1,22 +1,24 @@
-{
-  "id": "double-checked-locking",
-  "name": "Double-Checked Locking",
-  "category": "Concurrency",
-  "description": "Reduces locking overhead when implementing lazy initialization",
-  "when_to_use": "Lazy initialization\nPerformance optimization\nSingleton pattern",
-  "benefits": "Performance optimization\nLazy initialization\nReduced locking",
-  "drawbacks": "Complex implementation\nMemory model issues\nError-prone",
-  "use_cases": "Singleton pattern\nLazy loading\nResource initialization",
-  "complexity": "High",
-  "tags": [
-    "concurrency",
-    "initialization",
-    "optimization"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Double-Checked Locking: reduce locking overhead\nclass Singleton {\n  private static instance: Singleton | null = null;\n  private static lock = false;\n  private static lockQueue: Array<() => void> = [];\n  \n  private constructor() {\n    // Expensive initialization\n  }\n  \n  static async getInstance(): Promise<Singleton> {\n    // First check (no lock)\n    if (this.instance !== null) {\n      return this.instance;\n    }\n    \n    // Acquire lock\n    await this.acquireLock();\n    \n    try {\n      // Second check (with lock)\n      if (this.instance === null) {\n        this.instance = new Singleton();\n      }\n      return this.instance;\n    } finally {\n      this.releaseLock();\n    }\n  }\n  \n  private static async acquireLock(): Promise<void> {\n    while (this.lock) {\n      await new Promise<void>(resolve => this.lockQueue.push(resolve));\n    }\n    this.lock = true;\n  }\n  \n  private static releaseLock(): void {\n    this.lock = false;\n    const next = this.lockQueue.shift();\n    if (next) next();\n  }\n}\n\n// Usage: Multiple concurrent calls, only one initialization\nconst [s1, s2, s3] = await Promise.all([\n  Singleton.getInstance(),\n  Singleton.getInstance(),\n  Singleton.getInstance()\n]);\n\nconsole.log(s1 === s2 && s2 === s3); // true"
+[
+  {
+    "id": "double-checked-locking",
+    "name": "Double-Checked Locking",
+    "category": "Concurrency",
+    "description": "Reduces locking overhead when implementing lazy initialization",
+    "when_to_use": "Lazy initialization\nPerformance optimization\nSingleton pattern",
+    "benefits": "Performance optimization\nLazy initialization\nReduced locking",
+    "drawbacks": "Complex implementation\nMemory model issues\nError-prone",
+    "use_cases": "Singleton pattern\nLazy loading\nResource initialization",
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "initialization",
+      "optimization"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Double-Checked Locking: reduce locking overhead\nclass Singleton {\n  private static instance: Singleton | null = null;\n  private static lock = false;\n  private static lockQueue: Array<() => void> = [];\n  \n  private constructor() {\n    // Expensive initialization\n  }\n  \n  static async getInstance(): Promise<Singleton> {\n    // First check (no lock)\n    if (this.instance !== null) {\n      return this.instance;\n    }\n    \n    // Acquire lock\n    await this.acquireLock();\n    \n    try {\n      // Second check (with lock)\n      if (this.instance === null) {\n        this.instance = new Singleton();\n      }\n      return this.instance;\n    } finally {\n      this.releaseLock();\n    }\n  }\n  \n  private static async acquireLock(): Promise<void> {\n    while (this.lock) {\n      await new Promise<void>(resolve => this.lockQueue.push(resolve));\n    }\n    this.lock = true;\n  }\n  \n  private static releaseLock(): void {\n    this.lock = false;\n    const next = this.lockQueue.shift();\n    if (next) next();\n  }\n}\n\n// Usage: Multiple concurrent calls, only one initialization\nconst [s1, s2, s3] = await Promise.all([\n  Singleton.getInstance(),\n  Singleton.getInstance(),\n  Singleton.getInstance()\n]);\n\nconsole.log(s1 === s2 && s2 === s3); // true"
+      }
     }
   }
-}
+]

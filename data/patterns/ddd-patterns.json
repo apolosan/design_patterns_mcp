@@ -1,218 +1,555 @@
-{
-  "patterns": [
-    {
-      "id": "bounded-context",
-      "name": "Bounded Context",
-      "category": "Domain-Driven Design",
-      "description": "Explicit boundary within which a domain model applies and has specific meaning",
-      "when_to_use": ["Large domains", "Multiple teams", "Context separation"],
-      "benefits": ["Clear boundaries", "Team autonomy", "Model clarity", "Reduced complexity"],
-      "drawbacks": ["Integration complexity", "Data duplication", "Coordination overhead"],
-      "use_cases": ["Microservices boundaries", "Team organization", "Domain separation"],
-      "complexity": "High",
-      "tags": ["ddd", "strategic", "boundary"]
-    },
-    {
-      "id": "context-mapping",
-      "name": "Context Mapping",
-      "category": "Domain-Driven Design",
-      "description": "Map showing relationships and integration patterns between bounded contexts",
-      "when_to_use": ["Multiple contexts", "Integration planning", "Team coordination"],
-      "benefits": [
-        "Clear relationships",
-        "Integration strategy",
-        "Team coordination",
-        "Risk identification"
-      ],
-      "drawbacks": ["Maintenance overhead", "Complexity", "Documentation burden"],
-      "use_cases": ["System architecture", "Integration planning", "Team boundaries"],
-      "complexity": "Medium",
-      "tags": ["ddd", "strategic", "mapping"]
-    },
-    {
-      "id": "ubiquitous-language",
-      "name": "Ubiquitous Language",
-      "category": "Domain-Driven Design",
-      "description": "Common language shared by domain experts and developers within bounded context",
-      "when_to_use": ["Domain modeling", "Team communication", "Knowledge sharing"],
-      "benefits": [
-        "Clear communication",
-        "Shared understanding",
-        "Accurate modeling",
-        "Reduced ambiguity"
-      ],
-      "drawbacks": ["Establishment effort", "Maintenance overhead", "Cultural resistance"],
-      "use_cases": ["Domain modeling", "Documentation", "Code naming"],
-      "complexity": "Medium",
-      "tags": ["ddd", "strategic", "language"]
-    },
-    {
-      "id": "shared-kernel",
-      "name": "Shared Kernel",
-      "category": "Domain-Driven Design",
-      "description": "Subset of domain model shared between multiple bounded contexts",
-      "when_to_use": ["Close collaboration", "Shared concepts", "Small teams"],
-      "benefits": ["Code reuse", "Consistency", "Reduced duplication"],
-      "drawbacks": ["Tight coupling", "Coordination overhead", "Change management"],
-      "use_cases": ["Common utilities", "Shared data structures", "Base types"],
-      "complexity": "Medium",
-      "tags": ["ddd", "strategic", "sharing"]
-    },
-    {
-      "id": "customer-supplier",
-      "name": "Customer/Supplier",
-      "category": "Domain-Driven Design",
-      "description": "Relationship where upstream team acts as supplier to downstream customer team",
-      "when_to_use": ["Clear dependencies", "Service provision", "Team relationships"],
-      "benefits": ["Clear responsibilities", "Service orientation", "Defined interfaces"],
-      "drawbacks": ["Dependency management", "Communication overhead", "Power imbalance"],
-      "use_cases": ["Service relationships", "API provision", "Data feeds"],
-      "complexity": "Medium",
-      "tags": ["ddd", "strategic", "relationship"]
-    },
-    {
-      "id": "conformist",
-      "name": "Conformist",
-      "category": "Domain-Driven Design",
-      "description": "Downstream team conforms to upstream team's model without translation",
-      "when_to_use": ["Power imbalance", "Standard compliance", "Simple integration"],
-      "benefits": ["Simple integration", "No translation layer", "Alignment"],
-      "drawbacks": ["Model contamination", "Lost autonomy", "Dependency"],
-      "use_cases": ["Standard protocols", "Vendor APIs", "Legacy systems"],
-      "complexity": "Low",
-      "tags": ["ddd", "strategic", "conformity"]
-    },
-    {
-      "id": "partnership",
-      "name": "Partnership",
-      "category": "Domain-Driven Design",
-      "description": "Mutual dependency where teams must coordinate development efforts",
-      "when_to_use": ["Mutual dependency", "Joint development", "Shared goals"],
-      "benefits": ["Aligned goals", "Coordinated development", "Mutual support"],
-      "drawbacks": ["Coordination overhead", "Shared risk", "Complex planning"],
-      "use_cases": ["Joint features", "Shared platforms", "Integrated systems"],
-      "complexity": "High",
-      "tags": ["ddd", "strategic", "partnership"]
-    },
-    {
-      "id": "published-language",
-      "name": "Published Language",
-      "category": "Domain-Driven Design",
-      "description": "Well-documented shared language for information exchange",
-      "when_to_use": ["Multiple integrations", "Public APIs", "Standard protocols"],
-      "benefits": ["Standardization", "Multiple consumers", "Clear documentation"],
-      "drawbacks": ["Documentation overhead", "Version management", "Rigidity"],
-      "use_cases": ["Public APIs", "Data formats", "Integration protocols"],
-      "complexity": "Medium",
-      "tags": ["ddd", "strategic", "protocol"]
-    },
-    {
-      "id": "aggregate",
-      "name": "Aggregate",
-      "category": "Domain-Driven Design",
-      "description": "Cluster of domain objects treated as single unit for data changes",
-      "when_to_use": ["Consistency boundaries", "Transaction boundaries", "Invariant protection"],
-      "benefits": ["Consistency", "Encapsulation", "Clear boundaries", "Invariant protection"],
-      "drawbacks": ["Complex design", "Performance impact", "Large object graphs"],
-      "use_cases": ["Order processing", "User accounts", "Business transactions"],
-      "complexity": "High",
-      "tags": ["ddd", "tactical", "consistency"]
-    },
-    {
-      "id": "entity",
-      "name": "Entity",
-      "category": "Domain-Driven Design",
-      "description": "Object with distinct identity that persists over time and changes",
-      "when_to_use": ["Distinct identity", "Lifecycle management", "Identity tracking"],
-      "benefits": ["Identity clarity", "Lifecycle management", "State tracking"],
-      "drawbacks": ["Identity management", "Equality complexity", "Persistence complexity"],
-      "use_cases": ["Users", "Orders", "Products", "Accounts"],
-      "complexity": "Medium",
-      "tags": ["ddd", "tactical", "identity"]
-    },
-    {
-      "id": "value-object-ddd",
-      "name": "Value Object (DDD)",
-      "category": "Domain-Driven Design",
-      "description": "Object defined by its attributes rather than identity, immutable",
-      "when_to_use": ["Attribute-based equality", "Immutable objects", "Domain concepts"],
-      "benefits": ["Immutability", "Value equality", "Thread safety", "Domain clarity"],
-      "drawbacks": ["Object proliferation", "Memory overhead", "Complex creation"],
-      "use_cases": ["Money", "Address", "Date ranges", "Coordinates"],
-      "complexity": "Low",
-      "tags": ["ddd", "tactical", "value"]
-    },
-    {
-      "id": "domain-service",
-      "name": "Domain Service",
-      "category": "Domain-Driven Design",
-      "description": "Operation that doesn't naturally belong to any entity or value object",
-      "when_to_use": ["Cross-entity operations", "Complex calculations", "Domain logic"],
-      "benefits": ["Clear responsibility", "Domain logic encapsulation", "Reusability"],
-      "drawbacks": ["Service proliferation", "Anemic domain risk", "Dependency complexity"],
-      "use_cases": ["Complex calculations", "Multi-entity operations", "External integrations"],
-      "complexity": "Medium",
-      "tags": ["ddd", "tactical", "service"]
-    },
-    {
-      "id": "domain-event",
-      "name": "Domain Event",
-      "category": "Domain-Driven Design",
-      "description": "Something that happened in the domain that domain experts care about",
-      "when_to_use": ["Event-driven architecture", "Decoupling", "Integration"],
-      "benefits": ["Decoupling", "Integration", "Audit trail", "Flexibility"],
-      "drawbacks": ["Complexity", "Event management", "Eventual consistency"],
-      "use_cases": ["Order placed", "User registered", "Payment processed"],
-      "complexity": "Medium",
-      "tags": ["ddd", "tactical", "event"]
-    },
-    {
-      "id": "event-storming",
-      "name": "Event Storming",
-      "category": "Domain-Driven Design",
-      "description": "Workshop technique for exploring complex business domains",
-      "when_to_use": ["Domain exploration", "Team collaboration", "Process understanding"],
-      "benefits": ["Shared understanding", "Process clarity", "Team alignment"],
-      "drawbacks": ["Time intensive", "Facilitation skills required", "Follow-up needed"],
-      "use_cases": ["Domain modeling", "Process mapping", "Team workshops"],
-      "complexity": "Medium",
-      "tags": ["ddd", "tactical", "workshop"]
-    },
-    {
-      "id": "open-host-service",
-      "name": "Open Host Service",
-      "category": "Domain-Driven Design",
-      "description": "Protocol that gives access to subsystem as set of services",
-      "when_to_use": ["Multiple consumers", "Public access", "Service provision"],
-      "benefits": ["Multiple consumers", "Standardized access", "Service orientation"],
-      "drawbacks": ["Protocol maintenance", "Version management", "Consumer coordination"],
-      "use_cases": ["Public APIs", "Shared services", "Integration platforms"],
-      "complexity": "Medium",
-      "tags": ["ddd", "strategic", "service"]
-    },
-    {
-      "id": "separate-ways",
-      "name": "Separate Ways",
-      "category": "Domain-Driven Design",
-      "description": "Bounded contexts with no connection between them",
-      "when_to_use": ["No integration needed", "Independent development", "Cost considerations"],
-      "benefits": ["Independence", "No integration cost", "Team autonomy"],
-      "drawbacks": ["Data duplication", "No shared functionality", "Potential inconsistency"],
-      "use_cases": ["Independent modules", "Legacy isolation", "Prototype development"],
-      "complexity": "Low",
-      "tags": ["ddd", "strategic", "independence"]
-    },
-    {
-      "id": "specification",
-      "name": "Specification Pattern",
-      "category": "Domain-Driven Design",
-      "description": "Encapsulates business rules that can be combined and reused",
-      "when_to_use": ["Complex business rules", "Rule combination", "Validation"],
-      "benefits": ["Rule reuse", "Combinability", "Testability", "Domain clarity"],
-      "drawbacks": ["Object proliferation", "Complex composition", "Performance overhead"],
-      "use_cases": ["Business rule validation", "Query filtering", "Rule composition"],
-      "complexity": "Medium",
-      "tags": ["ddd", "tactical", "rules"]
-    }
-  ]
-}
+[
+  {
+    "id": "bounded-context",
+    "name": "Bounded Context",
+    "category": "Domain-Driven Design",
+    "description": "Explicit boundary within which a domain model applies and has specific meaning",
+    "when_to_use": [
+      "Large domains",
+      "Multiple teams",
+      "Context separation"
+    ],
+    "benefits": [
+      "Clear boundaries",
+      "Team autonomy",
+      "Model clarity",
+      "Reduced complexity"
+    ],
+    "drawbacks": [
+      "Integration complexity",
+      "Data duplication",
+      "Coordination overhead"
+    ],
+    "use_cases": [
+      "Microservices boundaries",
+      "Team organization",
+      "Domain separation"
+    ],
+    "complexity": "High",
+    "tags": [
+      "ddd",
+      "strategic",
+      "boundary"
+    ]
+  },
+  {
+    "id": "context-mapping",
+    "name": "Context Mapping",
+    "category": "Domain-Driven Design",
+    "description": "Map showing relationships and integration patterns between bounded contexts",
+    "when_to_use": [
+      "Multiple contexts",
+      "Integration planning",
+      "Team coordination"
+    ],
+    "benefits": [
+      "Clear relationships",
+      "Integration strategy",
+      "Team coordination",
+      "Risk identification"
+    ],
+    "drawbacks": [
+      "Maintenance overhead",
+      "Complexity",
+      "Documentation burden"
+    ],
+    "use_cases": [
+      "System architecture",
+      "Integration planning",
+      "Team boundaries"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "mapping"
+    ]
+  },
+  {
+    "id": "ubiquitous-language",
+    "name": "Ubiquitous Language",
+    "category": "Domain-Driven Design",
+    "description": "Common language shared by domain experts and developers within bounded context",
+    "when_to_use": [
+      "Domain modeling",
+      "Team communication",
+      "Knowledge sharing"
+    ],
+    "benefits": [
+      "Clear communication",
+      "Shared understanding",
+      "Accurate modeling",
+      "Reduced ambiguity"
+    ],
+    "drawbacks": [
+      "Establishment effort",
+      "Maintenance overhead",
+      "Cultural resistance"
+    ],
+    "use_cases": [
+      "Domain modeling",
+      "Documentation",
+      "Code naming"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "language"
+    ]
+  },
+  {
+    "id": "shared-kernel",
+    "name": "Shared Kernel",
+    "category": "Domain-Driven Design",
+    "description": "Subset of domain model shared between multiple bounded contexts",
+    "when_to_use": [
+      "Close collaboration",
+      "Shared concepts",
+      "Small teams"
+    ],
+    "benefits": [
+      "Code reuse",
+      "Consistency",
+      "Reduced duplication"
+    ],
+    "drawbacks": [
+      "Tight coupling",
+      "Coordination overhead",
+      "Change management"
+    ],
+    "use_cases": [
+      "Common utilities",
+      "Shared data structures",
+      "Base types"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "sharing"
+    ]
+  },
+  {
+    "id": "customer-supplier",
+    "name": "Customer/Supplier",
+    "category": "Domain-Driven Design",
+    "description": "Relationship where upstream team acts as supplier to downstream customer team",
+    "when_to_use": [
+      "Clear dependencies",
+      "Service provision",
+      "Team relationships"
+    ],
+    "benefits": [
+      "Clear responsibilities",
+      "Service orientation",
+      "Defined interfaces"
+    ],
+    "drawbacks": [
+      "Dependency management",
+      "Communication overhead",
+      "Power imbalance"
+    ],
+    "use_cases": [
+      "Service relationships",
+      "API provision",
+      "Data feeds"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "relationship"
+    ]
+  },
+  {
+    "id": "conformist",
+    "name": "Conformist",
+    "category": "Domain-Driven Design",
+    "description": "Downstream team conforms to upstream team's model without translation",
+    "when_to_use": [
+      "Power imbalance",
+      "Standard compliance",
+      "Simple integration"
+    ],
+    "benefits": [
+      "Simple integration",
+      "No translation layer",
+      "Alignment"
+    ],
+    "drawbacks": [
+      "Model contamination",
+      "Lost autonomy",
+      "Dependency"
+    ],
+    "use_cases": [
+      "Standard protocols",
+      "Vendor APIs",
+      "Legacy systems"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "ddd",
+      "strategic",
+      "conformity"
+    ]
+  },
+  {
+    "id": "partnership",
+    "name": "Partnership",
+    "category": "Domain-Driven Design",
+    "description": "Mutual dependency where teams must coordinate development efforts",
+    "when_to_use": [
+      "Mutual dependency",
+      "Joint development",
+      "Shared goals"
+    ],
+    "benefits": [
+      "Aligned goals",
+      "Coordinated development",
+      "Mutual support"
+    ],
+    "drawbacks": [
+      "Coordination overhead",
+      "Shared risk",
+      "Complex planning"
+    ],
+    "use_cases": [
+      "Joint features",
+      "Shared platforms",
+      "Integrated systems"
+    ],
+    "complexity": "High",
+    "tags": [
+      "ddd",
+      "strategic",
+      "partnership"
+    ]
+  },
+  {
+    "id": "published-language",
+    "name": "Published Language",
+    "category": "Domain-Driven Design",
+    "description": "Well-documented shared language for information exchange",
+    "when_to_use": [
+      "Multiple integrations",
+      "Public APIs",
+      "Standard protocols"
+    ],
+    "benefits": [
+      "Standardization",
+      "Multiple consumers",
+      "Clear documentation"
+    ],
+    "drawbacks": [
+      "Documentation overhead",
+      "Version management",
+      "Rigidity"
+    ],
+    "use_cases": [
+      "Public APIs",
+      "Data formats",
+      "Integration protocols"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "protocol"
+    ]
+  },
+  {
+    "id": "aggregate",
+    "name": "Aggregate",
+    "category": "Domain-Driven Design",
+    "description": "Cluster of domain objects treated as single unit for data changes",
+    "when_to_use": [
+      "Consistency boundaries",
+      "Transaction boundaries",
+      "Invariant protection"
+    ],
+    "benefits": [
+      "Consistency",
+      "Encapsulation",
+      "Clear boundaries",
+      "Invariant protection"
+    ],
+    "drawbacks": [
+      "Complex design",
+      "Performance impact",
+      "Large object graphs"
+    ],
+    "use_cases": [
+      "Order processing",
+      "User accounts",
+      "Business transactions"
+    ],
+    "complexity": "High",
+    "tags": [
+      "ddd",
+      "tactical",
+      "consistency"
+    ]
+  },
+  {
+    "id": "entity",
+    "name": "Entity",
+    "category": "Domain-Driven Design",
+    "description": "Object with distinct identity that persists over time and changes",
+    "when_to_use": [
+      "Distinct identity",
+      "Lifecycle management",
+      "Identity tracking"
+    ],
+    "benefits": [
+      "Identity clarity",
+      "Lifecycle management",
+      "State tracking"
+    ],
+    "drawbacks": [
+      "Identity management",
+      "Equality complexity",
+      "Persistence complexity"
+    ],
+    "use_cases": [
+      "Users",
+      "Orders",
+      "Products",
+      "Accounts"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "tactical",
+      "identity"
+    ]
+  },
+  {
+    "id": "value-object-ddd",
+    "name": "Value Object (DDD)",
+    "category": "Domain-Driven Design",
+    "description": "Object defined by its attributes rather than identity, immutable",
+    "when_to_use": [
+      "Attribute-based equality",
+      "Immutable objects",
+      "Domain concepts"
+    ],
+    "benefits": [
+      "Immutability",
+      "Value equality",
+      "Thread safety",
+      "Domain clarity"
+    ],
+    "drawbacks": [
+      "Object proliferation",
+      "Memory overhead",
+      "Complex creation"
+    ],
+    "use_cases": [
+      "Money",
+      "Address",
+      "Date ranges",
+      "Coordinates"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "ddd",
+      "tactical",
+      "value"
+    ]
+  },
+  {
+    "id": "domain-service",
+    "name": "Domain Service",
+    "category": "Domain-Driven Design",
+    "description": "Operation that doesn't naturally belong to any entity or value object",
+    "when_to_use": [
+      "Cross-entity operations",
+      "Complex calculations",
+      "Domain logic"
+    ],
+    "benefits": [
+      "Clear responsibility",
+      "Domain logic encapsulation",
+      "Reusability"
+    ],
+    "drawbacks": [
+      "Service proliferation",
+      "Anemic domain risk",
+      "Dependency complexity"
+    ],
+    "use_cases": [
+      "Complex calculations",
+      "Multi-entity operations",
+      "External integrations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "tactical",
+      "service"
+    ]
+  },
+  {
+    "id": "domain-event",
+    "name": "Domain Event",
+    "category": "Domain-Driven Design",
+    "description": "Something that happened in the domain that domain experts care about",
+    "when_to_use": [
+      "Event-driven architecture",
+      "Decoupling",
+      "Integration"
+    ],
+    "benefits": [
+      "Decoupling",
+      "Integration",
+      "Audit trail",
+      "Flexibility"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Event management",
+      "Eventual consistency"
+    ],
+    "use_cases": [
+      "Order placed",
+      "User registered",
+      "Payment processed"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "tactical",
+      "event"
+    ]
+  },
+  {
+    "id": "event-storming",
+    "name": "Event Storming",
+    "category": "Domain-Driven Design",
+    "description": "Workshop technique for exploring complex business domains",
+    "when_to_use": [
+      "Domain exploration",
+      "Team collaboration",
+      "Process understanding"
+    ],
+    "benefits": [
+      "Shared understanding",
+      "Process clarity",
+      "Team alignment"
+    ],
+    "drawbacks": [
+      "Time intensive",
+      "Facilitation skills required",
+      "Follow-up needed"
+    ],
+    "use_cases": [
+      "Domain modeling",
+      "Process mapping",
+      "Team workshops"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "tactical",
+      "workshop"
+    ]
+  },
+  {
+    "id": "open-host-service",
+    "name": "Open Host Service",
+    "category": "Domain-Driven Design",
+    "description": "Protocol that gives access to subsystem as set of services",
+    "when_to_use": [
+      "Multiple consumers",
+      "Public access",
+      "Service provision"
+    ],
+    "benefits": [
+      "Multiple consumers",
+      "Standardized access",
+      "Service orientation"
+    ],
+    "drawbacks": [
+      "Protocol maintenance",
+      "Version management",
+      "Consumer coordination"
+    ],
+    "use_cases": [
+      "Public APIs",
+      "Shared services",
+      "Integration platforms"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "service"
+    ]
+  },
+  {
+    "id": "separate-ways",
+    "name": "Separate Ways",
+    "category": "Domain-Driven Design",
+    "description": "Bounded contexts with no connection between them",
+    "when_to_use": [
+      "No integration needed",
+      "Independent development",
+      "Cost considerations"
+    ],
+    "benefits": [
+      "Independence",
+      "No integration cost",
+      "Team autonomy"
+    ],
+    "drawbacks": [
+      "Data duplication",
+      "No shared functionality",
+      "Potential inconsistency"
+    ],
+    "use_cases": [
+      "Independent modules",
+      "Legacy isolation",
+      "Prototype development"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "ddd",
+      "strategic",
+      "independence"
+    ]
+  },
+  {
+    "id": "specification",
+    "name": "Specification Pattern",
+    "category": "Domain-Driven Design",
+    "description": "Encapsulates business rules that can be combined and reused",
+    "when_to_use": [
+      "Complex business rules",
+      "Rule combination",
+      "Validation"
+    ],
+    "benefits": [
+      "Rule reuse",
+      "Combinability",
+      "Testability",
+      "Domain clarity"
+    ],
+    "drawbacks": [
+      "Object proliferation",
+      "Complex composition",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "Business rule validation",
+      "Query filtering",
+      "Rule composition"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "tactical",
+      "rules"
+    ]
+  }
+]

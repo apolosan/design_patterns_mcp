@@ -1,39 +1,54 @@
-{
-  "id": "isolated-sequencer",
-  "name": "Isolated Sequencer",
-  "category": "Data Engineering",
-  "description": "Assigns monotonic sequence numbers per logical partition (key, tenant, or shard) using independent counter spaces. Avoids global contention while preserving per-partition ordering for downstream consumers.",
-  "when_to_use": [
-    "Global sequencing is a contention bottleneck",
-    "Per-partition ordering suffices for downstream",
-    "Sharded systems need parallel sequence assignment"
-  ],
-  "benefits": [
-    "Scales per partition without global lock",
-    "Preserves per-key order",
-    "Lower latency than global sequencer"
-  ],
-  "drawbacks": [
-    "No total order across partitions",
-    "Downstream must tolerate per-partition sequences",
-    "Resharding requires sequence re-mapping"
-  ],
-  "use_cases": [
-    "Kafka per-partition offsets",
-    "DynamoDB per-shard sequences",
-    "Multi-tenant event ordering"
-  ],
-  "complexity": "Medium",
-  "tags": ["data-engineering", "sequencing", "partitioning", "scalability"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "class IsolatedSequencer {\n  private counters = new Map<string, number>();\n  next(key: string): bigint {\n    const v = (this.counters.get(key) ?? 0n) + 1n;\n    this.counters.set(key, v);\n    return v;\n  }\n}",
-      "description": "Per-key monotonic counter."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "fifo-orderer", "type": "relates-to", "strength": 0.6},
-    {"target_pattern_id": "local-sequencer", "type": "similar-to", "strength": 0.7}
-  ]
-}
+[
+  {
+    "id": "isolated-sequencer",
+    "name": "Isolated Sequencer",
+    "category": "Data Engineering",
+    "description": "Assigns monotonic sequence numbers per logical partition (key, tenant, or shard) using independent counter spaces. Avoids global contention while preserving per-partition ordering for downstream consumers.",
+    "when_to_use": [
+      "Global sequencing is a contention bottleneck",
+      "Per-partition ordering suffices for downstream",
+      "Sharded systems need parallel sequence assignment"
+    ],
+    "benefits": [
+      "Scales per partition without global lock",
+      "Preserves per-key order",
+      "Lower latency than global sequencer"
+    ],
+    "drawbacks": [
+      "No total order across partitions",
+      "Downstream must tolerate per-partition sequences",
+      "Resharding requires sequence re-mapping"
+    ],
+    "use_cases": [
+      "Kafka per-partition offsets",
+      "DynamoDB per-shard sequences",
+      "Multi-tenant event ordering"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-engineering",
+      "sequencing",
+      "partitioning",
+      "scalability"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "class IsolatedSequencer {\n  private counters = new Map<string, number>();\n  next(key: string): bigint {\n    const v = (this.counters.get(key) ?? 0n) + 1n;\n    this.counters.set(key, v);\n    return v;\n  }\n}",
+        "description": "Per-key monotonic counter."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "fifo-orderer",
+        "type": "relates-to",
+        "strength": 0.6
+      },
+      {
+        "target_pattern_id": "local-sequencer",
+        "type": "similar-to",
+        "strength": 0.7
+      }
+    ]
+  }
+]

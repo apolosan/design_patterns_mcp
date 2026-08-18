@@ -1,22 +1,24 @@
-{
-  "id": "domain-driven-design",
-  "name": "Domain-Driven Design",
-  "category": "Architectural",
-  "description": "Focuses on modeling complex business domains through ubiquitous language",
-  "when_to_use": "Complex business domains\nLarge teams\nLong-term projects",
-  "benefits": "Business alignment\nMaintainable code\nTeam communication\nDomain focus",
-  "drawbacks": "High learning curve\nInitial overhead\nRequires domain expertise",
-  "use_cases": "Enterprise software\nFinancial systems\nHealthcare applications",
-  "complexity": "High",
-  "tags": [
-    "domain-modeling",
-    "ubiquitous-language",
-    "bounded-context"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// DDD: model complex business domains\n\n// Value Object (immutable)\nclass Money {\n  constructor(\n    public readonly amount: number,\n    public readonly currency: string\n  ) {\n    if (amount < 0) throw new Error('Amount cannot be negative');\n  }\n  \n  add(other: Money): Money {\n    if (this.currency !== other.currency) {\n      throw new Error('Currency mismatch');\n    }\n    return new Money(this.amount + other.amount, this.currency);\n  }\n}\n\n// Entity (has identity)\nclass Product {\n  constructor(\n    public readonly id: string,\n    public name: string,\n    public price: Money\n  ) {}\n}\n\n// Aggregate Root (consistency boundary)\nclass Order {\n  private items: Map<string, { product: Product, quantity: number }> = new Map();\n  \n  constructor(\n    public readonly id: string,\n    public status: 'pending' | 'completed' = 'pending'\n  ) {}\n  \n  addItem(product: Product, quantity: number) {\n    if (this.status === 'completed') {\n      throw new Error('Cannot modify completed order');\n    }\n    this.items.set(product.id, { product, quantity });\n  }\n  \n  getTotal(): Money {\n    let total = new Money(0, 'USD');\n    for (const { product, quantity } of this.items.values()) {\n      const itemTotal = new Money(product.price.amount * quantity, product.price.currency);\n      total = total.add(itemTotal);\n    }\n    return total;\n  }\n  \n  complete() {\n    if (this.items.size === 0) {\n      throw new Error('Cannot complete empty order');\n    }\n    this.status = 'completed';\n  }\n}\n\n// Repository (aggregate persistence)\ninterface OrderRepository {\n  save(order: Order): Promise<void>;\n  findById(id: string): Promise<Order | null>;\n}\n\n// Usage: express business rules in code\nconst order = new Order('order-1');\norder.addItem(new Product('p1', 'Laptop', new Money(999, 'USD')), 1);\norder.complete();"
+[
+  {
+    "id": "domain-driven-design",
+    "name": "Domain-Driven Design",
+    "category": "Architectural",
+    "description": "Focuses on modeling complex business domains through ubiquitous language",
+    "when_to_use": "Complex business domains\nLarge teams\nLong-term projects",
+    "benefits": "Business alignment\nMaintainable code\nTeam communication\nDomain focus",
+    "drawbacks": "High learning curve\nInitial overhead\nRequires domain expertise",
+    "use_cases": "Enterprise software\nFinancial systems\nHealthcare applications",
+    "complexity": "High",
+    "tags": [
+      "domain-modeling",
+      "ubiquitous-language",
+      "bounded-context"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// DDD: model complex business domains\n\n// Value Object (immutable)\nclass Money {\n  constructor(\n    public readonly amount: number,\n    public readonly currency: string\n  ) {\n    if (amount < 0) throw new Error('Amount cannot be negative');\n  }\n  \n  add(other: Money): Money {\n    if (this.currency !== other.currency) {\n      throw new Error('Currency mismatch');\n    }\n    return new Money(this.amount + other.amount, this.currency);\n  }\n}\n\n// Entity (has identity)\nclass Product {\n  constructor(\n    public readonly id: string,\n    public name: string,\n    public price: Money\n  ) {}\n}\n\n// Aggregate Root (consistency boundary)\nclass Order {\n  private items: Map<string, { product: Product, quantity: number }> = new Map();\n  \n  constructor(\n    public readonly id: string,\n    public status: 'pending' | 'completed' = 'pending'\n  ) {}\n  \n  addItem(product: Product, quantity: number) {\n    if (this.status === 'completed') {\n      throw new Error('Cannot modify completed order');\n    }\n    this.items.set(product.id, { product, quantity });\n  }\n  \n  getTotal(): Money {\n    let total = new Money(0, 'USD');\n    for (const { product, quantity } of this.items.values()) {\n      const itemTotal = new Money(product.price.amount * quantity, product.price.currency);\n      total = total.add(itemTotal);\n    }\n    return total;\n  }\n  \n  complete() {\n    if (this.items.size === 0) {\n      throw new Error('Cannot complete empty order');\n    }\n    this.status = 'completed';\n  }\n}\n\n// Repository (aggregate persistence)\ninterface OrderRepository {\n  save(order: Order): Promise<void>;\n  findById(id: string): Promise<Order | null>;\n}\n\n// Usage: express business rules in code\nconst order = new Order('order-1');\norder.addItem(new Product('p1', 'Laptop', new Money(999, 'USD')), 1);\norder.complete();"
+      }
     }
   }
-}
+]

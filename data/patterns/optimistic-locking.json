@@ -1,22 +1,24 @@
-{
-  "id": "optimistic-locking",
-  "name": "Optimistic Locking",
-  "category": "Data Access",
-  "description": "Assumes conflicts are rare and checks for conflicts at commit time",
-  "when_to_use": "Low conflict scenarios\nPerformance requirements\nScalable systems",
-  "benefits": "Better performance\nNo deadlocks\nHigh concurrency",
-  "drawbacks": "Conflict handling\nRetry logic\nVersion management",
-  "use_cases": "Web applications\nDistributed systems\nHigh-concurrency scenarios",
-  "complexity": "Medium",
-  "tags": [
-    "data-access",
-    "concurrency",
-    "locking"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Optimistic Locking: detect concurrent modifications\ninterface Product {\n  id: string;\n  name: string;\n  price: number;\n  version: number;\n}\n\nclass ProductRepository {\n  async findById(id: string): Promise<Product> {\n    const row = await db.query('SELECT * FROM products WHERE id = $1', [id]);\n    return row;\n  }\n  \n  async update(product: Product): Promise<void> {\n    const result = await db.query(\n      \\`UPDATE products \n       SET name = $1, price = $2, version = version + 1\n       WHERE id = $3 AND version = $4\\`,\n      [product.name, product.price, product.id, product.version]\n    );\n    \n    if (result.rowsAffected === 0) {\n      throw new Error('Concurrent modification detected - product was updated by another transaction');\n    }\n  }\n}\n\n// Usage\nconst product = await repo.findById('123');\nproduct.price = 99.99;\ntry {\n  await repo.update(product);\n} catch (error) {\n  console.log('Product was modified by another user, please reload');\n}"
+[
+  {
+    "id": "optimistic-locking",
+    "name": "Optimistic Locking",
+    "category": "Data Access",
+    "description": "Assumes conflicts are rare and checks for conflicts at commit time",
+    "when_to_use": "Low conflict scenarios\nPerformance requirements\nScalable systems",
+    "benefits": "Better performance\nNo deadlocks\nHigh concurrency",
+    "drawbacks": "Conflict handling\nRetry logic\nVersion management",
+    "use_cases": "Web applications\nDistributed systems\nHigh-concurrency scenarios",
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "concurrency",
+      "locking"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Optimistic Locking: detect concurrent modifications\ninterface Product {\n  id: string;\n  name: string;\n  price: number;\n  version: number;\n}\n\nclass ProductRepository {\n  async findById(id: string): Promise<Product> {\n    const row = await db.query('SELECT * FROM products WHERE id = $1', [id]);\n    return row;\n  }\n  \n  async update(product: Product): Promise<void> {\n    const result = await db.query(\n      \\`UPDATE products \n       SET name = $1, price = $2, version = version + 1\n       WHERE id = $3 AND version = $4\\`,\n      [product.name, product.price, product.id, product.version]\n    );\n    \n    if (result.rowsAffected === 0) {\n      throw new Error('Concurrent modification detected - product was updated by another transaction');\n    }\n  }\n}\n\n// Usage\nconst product = await repo.findById('123');\nproduct.price = 99.99;\ntry {\n  await repo.update(product);\n} catch (error) {\n  console.log('Product was modified by another user, please reload');\n}"
+      }
     }
   }
-}
+]

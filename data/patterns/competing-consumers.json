@@ -1,16 +1,18 @@
-{
-  "id": "competing-consumers",
-  "name": "Competing Consumers Pattern",
-  "category": "Messaging",
-  "description": "Multiple consumers process messages from same queue concurrently",
-  "when_to_use": "High throughput\nParallel processing\nScalability",
-  "benefits": "High throughput\nAutomatic scaling\nFault tolerance",
-  "drawbacks": "Message ordering\nLoad balancing\nError handling",
-  "use_cases": "Order processing\nEmail sending\nData transformation",
-  "complexity": "Medium",
-  "tags": [
-    "messaging",
-    "concurrency",
-    "scalability"
-  ]
-}
+[
+  {
+    "id": "competing-consumers",
+    "name": "Competing Consumers Pattern",
+    "category": "Messaging",
+    "description": "Multiple consumers process messages from same queue concurrently",
+    "when_to_use": "High throughput\nParallel processing\nScalability",
+    "benefits": "High throughput\nAutomatic scaling\nFault tolerance",
+    "drawbacks": "Message ordering\nLoad balancing\nError handling",
+    "use_cases": "Order processing\nEmail sending\nData transformation",
+    "complexity": "Medium",
+    "tags": [
+      "messaging",
+      "concurrency",
+      "scalability"
+    ]
+  }
+]

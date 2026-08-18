@@ -1,23 +1,25 @@
-{
-  "id": "paymaster-pattern",
-  "name": "Paymaster Pattern (ERC-4337)",
-  "category": "Account Abstraction",
-  "description": "Third-party gas sponsorship. Paymasters pay gas for users, enabling novel business models.",
-  "when_to_use": "Sponsored transactions, ERC-20 gas payment, dApp gas subsidies",
-  "benefits": "Flexible fee structures, novel business models, improved UX",
-  "drawbacks": "Staking requirements, DoS vectors, paymaster griefing",
-  "use_cases": "Free onboarding, ERC-20 gas fees, subscription models",
-  "complexity": "Very High",
-  "tags": [
-    "account-abstraction",
-    "paymaster",
-    "gas-sponsorship",
-    "erc-4337"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract Paymaster is IPaymaster {\n    function validatePaymasterUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 maxCost\n    ) external returns (bytes memory context, uint256 validationData) {\n        // Verify userOp meets sponsorship criteria\n        require(isEligible(userOp.sender));\n        \n        return (\"\", 0); // approve sponsorship\n    }\n    \n    function postOp(\n        PostOpMode mode,\n        bytes calldata context,\n        uint256 actualGasCost\n    ) external {\n        // Optional: charge user in ERC-20, or handle refunds\n    }\n}"
+[
+  {
+    "id": "paymaster-pattern",
+    "name": "Paymaster Pattern (ERC-4337)",
+    "category": "Account Abstraction",
+    "description": "Third-party gas sponsorship. Paymasters pay gas for users, enabling novel business models.",
+    "when_to_use": "Sponsored transactions, ERC-20 gas payment, dApp gas subsidies",
+    "benefits": "Flexible fee structures, novel business models, improved UX",
+    "drawbacks": "Staking requirements, DoS vectors, paymaster griefing",
+    "use_cases": "Free onboarding, ERC-20 gas fees, subscription models",
+    "complexity": "Very High",
+    "tags": [
+      "account-abstraction",
+      "paymaster",
+      "gas-sponsorship",
+      "erc-4337"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract Paymaster is IPaymaster {\n    function validatePaymasterUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 maxCost\n    ) external returns (bytes memory context, uint256 validationData) {\n        // Verify userOp meets sponsorship criteria\n        require(isEligible(userOp.sender));\n        \n        return (\"\", 0); // approve sponsorship\n    }\n    \n    function postOp(\n        PostOpMode mode,\n        bytes calldata context,\n        uint256 actualGasCost\n    ) external {\n        // Optional: charge user in ERC-20, or handle refunds\n    }\n}"
+      }
     }
   }
-}
+]

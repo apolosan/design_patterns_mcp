@@ -1,24 +1,26 @@
-{
-  "id": "reentrancy-guard",
-  "name": "ReentrancyGuard",
-  "category": "Smart Contract Security",
-  "description": "Modifier-based mutex lock to prevent reentrant calls Problem: Need systematic reentrancy protection across multiple functions",
-  "when_to_use": "Use mutex state variable with nonReentrant modifier",
-  "benefits": "Easy implementation, comprehensive, battle-tested (OpenZeppelin)",
-  "drawbacks": "Gas cost (~2,900), storage slot overhead",
-  "use_cases": "DeFi protocols, token contracts, multi-function protection",
-  "complexity": "Low",
-  "tags": [
-    "security",
-    "reentrancy",
-    "modifier",
-    "openzeppelin",
-    "mutex"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "uint256 private _status;\nmodifier nonReentrant() {\n    require(_status != 2);\n    _status = 2;\n    _;\n    _status = 1;\n}\n\nfunction withdraw(uint256 amount) public nonReentrant {\n    // Protected function\n}"
+[
+  {
+    "id": "reentrancy-guard",
+    "name": "ReentrancyGuard",
+    "category": "Smart Contract Security",
+    "description": "Modifier-based mutex lock to prevent reentrant calls Problem: Need systematic reentrancy protection across multiple functions",
+    "when_to_use": "Use mutex state variable with nonReentrant modifier",
+    "benefits": "Easy implementation, comprehensive, battle-tested (OpenZeppelin)",
+    "drawbacks": "Gas cost (~2,900), storage slot overhead",
+    "use_cases": "DeFi protocols, token contracts, multi-function protection",
+    "complexity": "Low",
+    "tags": [
+      "security",
+      "reentrancy",
+      "modifier",
+      "openzeppelin",
+      "mutex"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "uint256 private _status;\nmodifier nonReentrant() {\n    require(_status != 2);\n    _status = 2;\n    _;\n    _status = 1;\n}\n\nfunction withdraw(uint256 amount) public nonReentrant {\n    // Protected function\n}"
+      }
     }
   }
-}
+]

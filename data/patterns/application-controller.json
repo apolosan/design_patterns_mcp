@@ -1,16 +1,18 @@
-{
-  "id": "application-controller",
-  "name": "Application Controller",
-  "category": "Enterprise",
-  "description": "Centralized point for handling screen navigation and flow of application",
-  "when_to_use": "Complex navigation\nWorkflow management\nCentralized control",
-  "benefits": "Centralized navigation\nFlow control\nState management\nReusability",
-  "drawbacks": "Complex implementation\nSingle point of failure\nPerformance overhead",
-  "use_cases": "Wizards\nComplex workflows\nNavigation systems",
-  "complexity": "High",
-  "tags": [
-    "enterprise",
-    "navigation",
-    "workflow"
-  ]
-}
+[
+  {
+    "id": "application-controller",
+    "name": "Application Controller",
+    "category": "Enterprise",
+    "description": "Centralized point for handling screen navigation and flow of application",
+    "when_to_use": "Complex navigation\nWorkflow management\nCentralized control",
+    "benefits": "Centralized navigation\nFlow control\nState management\nReusability",
+    "drawbacks": "Complex implementation\nSingle point of failure\nPerformance overhead",
+    "use_cases": "Wizards\nComplex workflows\nNavigation systems",
+    "complexity": "High",
+    "tags": [
+      "enterprise",
+      "navigation",
+      "workflow"
+    ]
+  }
+]

@@ -1,22 +1,24 @@
-{
-  "id": "lazy-load",
-  "name": "Lazy Load",
-  "category": "Enterprise",
-  "description": "Object that doesn't contain all data you need but knows how to get it",
-  "when_to_use": "Performance optimization\nLarge datasets\nOn-demand loading",
-  "benefits": "Performance optimization\nMemory efficiency\nOn-demand loading",
-  "drawbacks": "Complex implementation\nN+1 query problem\nDelayed loading",
-  "use_cases": "Large object graphs\nRelated data\nPerformance optimization",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "optimization",
-    "loading"
-  ],
-  "examples": {
-    "cross-reference": {
-      "language": "cross-reference",
-      "code": "// See Lazy Loading pattern for implementation example\n// Reference pattern: lazy-loading"
+[
+  {
+    "id": "lazy-load",
+    "name": "Lazy Load",
+    "category": "Enterprise",
+    "description": "Object that doesn't contain all data you need but knows how to get it",
+    "when_to_use": "Performance optimization\nLarge datasets\nOn-demand loading",
+    "benefits": "Performance optimization\nMemory efficiency\nOn-demand loading",
+    "drawbacks": "Complex implementation\nN+1 query problem\nDelayed loading",
+    "use_cases": "Large object graphs\nRelated data\nPerformance optimization",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "optimization",
+      "loading"
+    ],
+    "examples": {
+      "cross-reference": {
+        "language": "cross-reference",
+        "code": "// See Lazy Loading pattern for implementation example\n// Reference pattern: lazy-loading"
+      }
     }
   }
-}
+]

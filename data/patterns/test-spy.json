@@ -1,16 +1,18 @@
-{
-  "id": "test-spy",
-  "name": "Test Spy",
-  "category": "Testing",
-  "description": "Records information about how it was called for later verification",
-  "when_to_use": "Interaction verification\nCall tracking\nBehavior testing",
-  "benefits": "Call verification\nArgument capture\nInteraction testing",
-  "drawbacks": "Complex setup\nState management\nVerification complexity",
-  "use_cases": "Logging verification\nEvent tracking\nCallback testing",
-  "complexity": "Medium",
-  "tags": [
-    "testing",
-    "spy",
-    "verification"
-  ]
-}
+[
+  {
+    "id": "test-spy",
+    "name": "Test Spy",
+    "category": "Testing",
+    "description": "Records information about how it was called for later verification",
+    "when_to_use": "Interaction verification\nCall tracking\nBehavior testing",
+    "benefits": "Call verification\nArgument capture\nInteraction testing",
+    "drawbacks": "Complex setup\nState management\nVerification complexity",
+    "use_cases": "Logging verification\nEvent tracking\nCallback testing",
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "spy",
+      "verification"
+    ]
+  }
+]

@@ -1,23 +1,25 @@
-{
-  "id": "pull-over-push",
-  "name": "Pull Over Push Payment",
-  "category": "Smart Contract Security",
-  "description": "Users withdraw funds instead of contract pushing payments Problem: Push payments can fail and create DoS vulnerabilities",
-  "when_to_use": "Store pending payments, users withdraw when ready",
-  "benefits": "Prevents DoS, gas-efficient, user-controlled timing",
-  "drawbacks": "Users must actively withdraw, unclaimed funds",
-  "use_cases": "Auctions, crowdfunding, rewards, dividend distribution",
-  "complexity": "Low",
-  "tags": [
-    "security",
-    "payment",
-    "withdrawal",
-    "dos-prevention"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "mapping(address => uint256) public pendingWithdrawals;\n\nfunction withdraw() public {\n    uint256 amount = pendingWithdrawals[msg.sender];\n    pendingWithdrawals[msg.sender] = 0;\n    payable(msg.sender).transfer(amount);\n}"
+[
+  {
+    "id": "pull-over-push",
+    "name": "Pull Over Push Payment",
+    "category": "Smart Contract Security",
+    "description": "Users withdraw funds instead of contract pushing payments Problem: Push payments can fail and create DoS vulnerabilities",
+    "when_to_use": "Store pending payments, users withdraw when ready",
+    "benefits": "Prevents DoS, gas-efficient, user-controlled timing",
+    "drawbacks": "Users must actively withdraw, unclaimed funds",
+    "use_cases": "Auctions, crowdfunding, rewards, dividend distribution",
+    "complexity": "Low",
+    "tags": [
+      "security",
+      "payment",
+      "withdrawal",
+      "dos-prevention"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "mapping(address => uint256) public pendingWithdrawals;\n\nfunction withdraw() public {\n    uint256 amount = pendingWithdrawals[msg.sender];\n    pendingWithdrawals[msg.sender] = 0;\n    payable(msg.sender).transfer(amount);\n}"
+      }
     }
   }
-}
+]

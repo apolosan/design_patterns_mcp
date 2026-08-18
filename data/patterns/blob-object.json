@@ -1,15 +1,17 @@
-{
-  "id": "blob-object",
-  "name": "Blob Object Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "An object that holds too much data or has grown too large without proper organization",
-  "when_to_use": "Objects with excessive data\nPoor data organization\nSingle objects handling multiple concerns",
-  "drawbacks": "Memory inefficiency\nPoor performance\nHard to understand\nDifficult to extend",
-  "use_cases": "Configuration objects with all settings\nData transfer objects with excessive fields\nCache objects storing unrelated data",
-  "complexity": "High",
-  "tags": [
-    "anti-pattern",
-    "data-structure",
-    "organization"
-  ]
-}
+[
+  {
+    "id": "blob-object",
+    "name": "Blob Object Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "An object that holds too much data or has grown too large without proper organization",
+    "when_to_use": "Objects with excessive data\nPoor data organization\nSingle objects handling multiple concerns",
+    "drawbacks": "Memory inefficiency\nPoor performance\nHard to understand\nDifficult to extend",
+    "use_cases": "Configuration objects with all settings\nData transfer objects with excessive fields\nCache objects storing unrelated data",
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "data-structure",
+      "organization"
+    ]
+  }
+]

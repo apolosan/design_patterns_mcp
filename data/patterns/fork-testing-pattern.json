@@ -1,25 +1,27 @@
-{
-  "id": "fork-testing-pattern",
-  "name": "Fork Testing Pattern",
-  "category": "Development & Testing",
-  "description": "Test against mainnet state by forking at specific block. Real contracts, real data.",
-  "when_to_use": "DeFi protocol testing, integration testing, mainnet simulation",
-  "benefits": "Real state and contracts, realistic testing, bug discovery",
-  "drawbacks": "Slow (requires archive node), expensive RPC calls",
-  "use_cases": "Testing against Uniswap/Aave, integration tests, attack simulation",
-  "complexity": "Medium",
-  "tags": [
-    "testing",
-    "fork",
-    "mainnet",
-    "hardhat",
-    "foundry",
-    "integration"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Hardhat fork testing\nimport { network } from 'hardhat';\n\ndescribe('Mainnet Fork Tests', () => {\n  beforeEach(async () => {\n    await network.provider.request({\n      method: 'hardhat_reset',\n      params: [{\n        forking: {\n          jsonRpcUrl: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,\n          blockNumber: 18000000\n        }\n      }]\n    });\n  });\n  \n  it('should interact with real Uniswap', async () => {\n    const uniswap = await ethers.getContractAt('IUniswapV2Router', UNISWAP_ROUTER);\n    await uniswap.swapExactTokensForTokens(...);\n  });\n});"
+[
+  {
+    "id": "fork-testing-pattern",
+    "name": "Fork Testing Pattern",
+    "category": "Development & Testing",
+    "description": "Test against mainnet state by forking at specific block. Real contracts, real data.",
+    "when_to_use": "DeFi protocol testing, integration testing, mainnet simulation",
+    "benefits": "Real state and contracts, realistic testing, bug discovery",
+    "drawbacks": "Slow (requires archive node), expensive RPC calls",
+    "use_cases": "Testing against Uniswap/Aave, integration tests, attack simulation",
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "fork",
+      "mainnet",
+      "hardhat",
+      "foundry",
+      "integration"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Hardhat fork testing\nimport { network } from 'hardhat';\n\ndescribe('Mainnet Fork Tests', () => {\n  beforeEach(async () => {\n    await network.provider.request({\n      method: 'hardhat_reset',\n      params: [{\n        forking: {\n          jsonRpcUrl: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,\n          blockNumber: 18000000\n        }\n      }]\n    });\n  });\n  \n  it('should interact with real Uniswap', async () => {\n    const uniswap = await ethers.getContractAt('IUniswapV2Router', UNISWAP_ROUTER);\n    await uniswap.swapExactTokensForTokens(...);\n  });\n});"
+      }
     }
   }
-}
+]

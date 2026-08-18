@@ -1,23 +1,25 @@
-{
-  "id": "erc721",
-  "name": "ERC-721 NFT Standard",
-  "category": "NFT",
-  "description": "Standard for non-fungible tokens Problem: Need standard for unique tokens",
-  "when_to_use": "ERC-721 interface with ownerOf, transfer, approve",
-  "benefits": "Industry standard, wide support, proven, marketplace compatible",
-  "drawbacks": "Higher gas than ERC-1155, expensive individual operations",
-  "use_cases": "Art, collectibles, gaming, real estate, tickets",
-  "complexity": "Low",
-  "tags": [
-    "nft",
-    "erc721",
-    "token-standard",
-    "collectibles"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/token/ERC721/ERC721.sol\";\n\ncontract MyNFT is ERC721 {\n    function mint(address to, uint256 tokenId) public {\n        _mint(to, tokenId);\n    }\n}"
+[
+  {
+    "id": "erc721",
+    "name": "ERC-721 NFT Standard",
+    "category": "NFT",
+    "description": "Standard for non-fungible tokens Problem: Need standard for unique tokens",
+    "when_to_use": "ERC-721 interface with ownerOf, transfer, approve",
+    "benefits": "Industry standard, wide support, proven, marketplace compatible",
+    "drawbacks": "Higher gas than ERC-1155, expensive individual operations",
+    "use_cases": "Art, collectibles, gaming, real estate, tickets",
+    "complexity": "Low",
+    "tags": [
+      "nft",
+      "erc721",
+      "token-standard",
+      "collectibles"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/ERC721/ERC721.sol\";\n\ncontract MyNFT is ERC721 {\n    function mint(address to, uint256 tokenId) public {\n        _mint(to, tokenId);\n    }\n}"
+      }
     }
   }
-}
+]

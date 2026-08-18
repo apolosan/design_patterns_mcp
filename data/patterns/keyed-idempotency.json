@@ -1,17 +1,19 @@
-{
-  "id": "keyed-idempotency",
-  "name": "Keyed Idempotency",
-  "category": "Idempotency",
-  "description": "The Keyed Idempotency pattern ensures operations are idempotent using unique keys with key-based data stores.",
-  "when_to_use": "[\"Key-based data stores\",\"Need exactly-once semantics\"]",
-  "benefits": "[\"Guarantees exactly-once\",\"Simple key-based approach\"]",
-  "drawbacks": "[\"Requires unique key generation\",\"Key collision risks\"]",
-  "use_cases": "[\"Transactional writes\",\"Deduplication\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"idempotency\"",
-    "\"keyed\"",
-    "\"exactly-once\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "keyed-idempotency",
+    "name": "Keyed Idempotency",
+    "category": "Idempotency",
+    "description": "The Keyed Idempotency pattern ensures operations are idempotent using unique keys with key-based data stores.",
+    "when_to_use": "[\"Key-based data stores\",\"Need exactly-once semantics\"]",
+    "benefits": "[\"Guarantees exactly-once\",\"Simple key-based approach\"]",
+    "drawbacks": "[\"Requires unique key generation\",\"Key collision risks\"]",
+    "use_cases": "[\"Transactional writes\",\"Deduplication\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"idempotency\"",
+      "\"keyed\"",
+      "\"exactly-once\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

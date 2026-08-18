@@ -1,24 +1,26 @@
-{
-  "id": "on-chain-metadata",
-  "name": "On-Chain Metadata Pattern",
-  "category": "NFT Storage",
-  "description": "Store NFT metadata entirely on-chain. Maximum decentralization, no external dependencies.",
-  "when_to_use": "Fully on-chain art, critical data, maximum permanence",
-  "benefits": "No external dependencies, permanent as blockchain, maximum decentralization",
-  "drawbacks": "Extremely expensive (SSTORE costs), size limited, complex encoding",
-  "use_cases": "On-chain SVG art, fully decentralized NFTs, loot-style projects",
-  "complexity": "High",
-  "tags": [
-    "nft",
-    "on-chain",
-    "metadata",
-    "svg",
-    "decentralization"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "function tokenURI(uint256 tokenId) public view override returns (string memory) {\n    string memory svg = generateSVG(tokenId);\n    string memory json = Base64.encode(bytes(string(abi.encodePacked(\n        '{\"name\": \"Token #', tokenId.toString(), '\",',\n        '\"image\": \"data:image/svg+xml;base64,', Base64.encode(bytes(svg)), '\"}'\n    ))));\n    \n    return string(abi.encodePacked('data:application/json;base64,', json));\n}"
+[
+  {
+    "id": "on-chain-metadata",
+    "name": "On-Chain Metadata Pattern",
+    "category": "NFT Storage",
+    "description": "Store NFT metadata entirely on-chain. Maximum decentralization, no external dependencies.",
+    "when_to_use": "Fully on-chain art, critical data, maximum permanence",
+    "benefits": "No external dependencies, permanent as blockchain, maximum decentralization",
+    "drawbacks": "Extremely expensive (SSTORE costs), size limited, complex encoding",
+    "use_cases": "On-chain SVG art, fully decentralized NFTs, loot-style projects",
+    "complexity": "High",
+    "tags": [
+      "nft",
+      "on-chain",
+      "metadata",
+      "svg",
+      "decentralization"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "function tokenURI(uint256 tokenId) public view override returns (string memory) {\n    string memory svg = generateSVG(tokenId);\n    string memory json = Base64.encode(bytes(string(abi.encodePacked(\n        '{\"name\": \"Token #', tokenId.toString(), '\",',\n        '\"image\": \"data:image/svg+xml;base64,', Base64.encode(bytes(svg)), '\"}'\n    ))));\n    \n    return string(abi.encodePacked('data:application/json;base64,', json));\n}"
+      }
     }
   }
-}
+]

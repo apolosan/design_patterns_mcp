@@ -1,25 +1,27 @@
-{
-  "id": "react-context-api-pattern",
-  "name": "Context API Pattern",
-  "category": "React State Management",
-  "description": "Global state management without prop drilling. Built-in React solution for sharing data.",
-  "when_to_use": "Theme, auth, language, user settings, avoiding prop drilling",
-  "benefits": "Built-in, no dependencies, simple API, works with hooks",
-  "drawbacks": "Re-renders all consumers, not optimized for frequent updates",
-  "use_cases": "Global UI state, user preferences, feature flags, shared data",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "context",
-    "state-management",
-    "global-state",
-    "prop-drilling",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { createContext, useContext, useState, ReactNode } from 'react';\n\ninterface AuthContextType {\n  user: User | null;\n  login: (email: string, password: string) => Promise<void>;\n  logout: () => void;\n}\n\nconst AuthContext = createContext<AuthContextType | undefined>(undefined);\n\nexport function AuthProvider({ children }: { children: ReactNode }) {\n  const [user, setUser] = useState<User | null>(null);\n  \n  const login = async (email: string, password: string) => {\n    const userData = await fetch('/api/login', {\n      method: 'POST',\n      body: JSON.stringify({ email, password })\n    }).then(r => r.json());\n    setUser(userData);\n  };\n  \n  const logout = () => {\n    setUser(null);\n  };\n  \n  return (\n    <AuthContext.Provider value={{ user, login, logout }}>\n      {children}\n    </AuthContext.Provider>\n  );\n}\n\nexport function useAuth() {\n  const context = useContext(AuthContext);\n  if (!context) {\n    throw new Error('useAuth must be used within AuthProvider');\n  }\n  return context;\n}\n\nfunction App() {\n  return (\n    <AuthProvider>\n      <Header />\n      <Dashboard />\n    </AuthProvider>\n  );\n}\n\nfunction Header() {\n  const { user, logout } = useAuth();\n  \n  return (\n    <header>\n      {user ? (\n        <>\n          <span>Welcome, {user.name}</span>\n          <button onClick={logout}>Logout</button>\n        </>\n      ) : (\n        <span>Not logged in</span>\n      )}\n    </header>\n  );\n}\n\nfunction Dashboard() {\n  const { user } = useAuth();\n  \n  if (!user) return <LoginForm />;\n  return <div>Dashboard for {user.name}</div>;\n}"
+[
+  {
+    "id": "react-context-api-pattern",
+    "name": "Context API Pattern",
+    "category": "React State Management",
+    "description": "Global state management without prop drilling. Built-in React solution for sharing data.",
+    "when_to_use": "Theme, auth, language, user settings, avoiding prop drilling",
+    "benefits": "Built-in, no dependencies, simple API, works with hooks",
+    "drawbacks": "Re-renders all consumers, not optimized for frequent updates",
+    "use_cases": "Global UI state, user preferences, feature flags, shared data",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "context",
+      "state-management",
+      "global-state",
+      "prop-drilling",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { createContext, useContext, useState, ReactNode } from 'react';\n\ninterface AuthContextType {\n  user: User | null;\n  login: (email: string, password: string) => Promise<void>;\n  logout: () => void;\n}\n\nconst AuthContext = createContext<AuthContextType | undefined>(undefined);\n\nexport function AuthProvider({ children }: { children: ReactNode }) {\n  const [user, setUser] = useState<User | null>(null);\n  \n  const login = async (email: string, password: string) => {\n    const userData = await fetch('/api/login', {\n      method: 'POST',\n      body: JSON.stringify({ email, password })\n    }).then(r => r.json());\n    setUser(userData);\n  };\n  \n  const logout = () => {\n    setUser(null);\n  };\n  \n  return (\n    <AuthContext.Provider value={{ user, login, logout }}>\n      {children}\n    </AuthContext.Provider>\n  );\n}\n\nexport function useAuth() {\n  const context = useContext(AuthContext);\n  if (!context) {\n    throw new Error('useAuth must be used within AuthProvider');\n  }\n  return context;\n}\n\nfunction App() {\n  return (\n    <AuthProvider>\n      <Header />\n      <Dashboard />\n    </AuthProvider>\n  );\n}\n\nfunction Header() {\n  const { user, logout } = useAuth();\n  \n  return (\n    <header>\n      {user ? (\n        <>\n          <span>Welcome, {user.name}</span>\n          <button onClick={logout}>Logout</button>\n        </>\n      ) : (\n        <span>Not logged in</span>\n      )}\n    </header>\n  );\n}\n\nfunction Dashboard() {\n  const { user } = useAuth();\n  \n  if (!user) return <LoginForm />;\n  return <div>Dashboard for {user.name}</div>;\n}"
+      }
     }
   }
-}
+]

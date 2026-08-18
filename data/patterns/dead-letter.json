@@ -1,17 +1,19 @@
-{
-  "id": "dead-letter",
-  "name": "Dead-Letter",
-  "category": "Error Management",
-  "description": "The Dead-Letter pattern provides a way to handle unprocessable records by routing them to a separate location for later analysis. It allows the pipeline to continue processing correct records while preserving bad records for investigation.",
-  "when_to_use": "[\"Unprocessable records in data streams\",\"Need to continue processing despite errors\"]",
-  "benefits": "[\"Allows pipeline to continue\",\"Preserves bad records for analysis\"]",
-  "drawbacks": "[\"Potential data loss if not handled\",\"Additional storage for dead letters\"]",
-  "use_cases": "[\"Fault-tolerant data pipelines\",\"Error isolation\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"error-management\"",
-    "\"dead-letter\"",
-    "\"fault-tolerance\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "dead-letter",
+    "name": "Dead-Letter",
+    "category": "Error Management",
+    "description": "The Dead-Letter pattern provides a way to handle unprocessable records by routing them to a separate location for later analysis. It allows the pipeline to continue processing correct records while preserving bad records for investigation.",
+    "when_to_use": "[\"Unprocessable records in data streams\",\"Need to continue processing despite errors\"]",
+    "benefits": "[\"Allows pipeline to continue\",\"Preserves bad records for analysis\"]",
+    "drawbacks": "[\"Potential data loss if not handled\",\"Additional storage for dead letters\"]",
+    "use_cases": "[\"Fault-tolerant data pipelines\",\"Error isolation\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"error-management\"",
+      "\"dead-letter\"",
+      "\"fault-tolerance\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

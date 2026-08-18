@@ -1,180 +1,419 @@
-{
-  "patterns": [
-    {
-      "id": "dao-pattern",
-      "name": "Data Access Object (DAO)",
-      "category": "Data Access",
-      "description": "Abstract interface to database or persistence mechanism",
-      "when_to_use": ["Database abstraction", "Legacy systems", "Multiple data sources"],
-      "benefits": ["Database independence", "Centralized data access", "Code reusability"],
-      "drawbacks": ["Additional layer", "Complexity", "Performance overhead"],
-      "use_cases": [
-        "Enterprise applications",
-        "Legacy database integration",
-        "Multi-database systems"
-      ],
-      "complexity": "Medium",
-      "tags": ["data-access", "abstraction", "database"]
-    },
-    {
-      "id": "orm-pattern",
-      "name": "Object-Relational Mapping (ORM)",
-      "category": "Data Access",
-      "description": "Technique for converting data between incompatible type systems in OOP languages and relational databases",
-      "when_to_use": [
-        "Object-oriented applications",
-        "Complex domain models",
-        "Database abstraction"
-      ],
-      "benefits": ["Object-oriented data access", "Database independence", "Automatic mapping"],
-      "drawbacks": ["Performance overhead", "Complex queries", "Learning curve"],
-      "use_cases": ["Enterprise applications", "Domain-driven design", "Rapid development"],
-      "complexity": "High",
-      "tags": ["data-access", "mapping", "orm"]
-    },
-    {
-      "id": "connection-pool",
-      "name": "Connection Pool",
-      "category": "Data Access",
-      "description": "Maintains cache of database connections to improve performance and resource utilization",
-      "when_to_use": [
-        "High-traffic applications",
-        "Performance optimization",
-        "Resource management"
-      ],
-      "benefits": ["Performance improvement", "Resource efficiency", "Connection reuse"],
-      "drawbacks": ["Configuration complexity", "Memory overhead", "Connection leaks"],
-      "use_cases": ["Web applications", "Enterprise systems", "High-concurrency applications"],
-      "complexity": "Medium",
-      "tags": ["data-access", "performance", "pooling"]
-    },
-    {
-      "id": "database-transaction",
-      "name": "Database Transaction Pattern",
-      "category": "Data Access",
-      "description": "Ensures data consistency through ACID properties in database operations",
-      "when_to_use": ["Data integrity", "Multi-step operations", "Consistency requirements"],
-      "benefits": ["Data consistency", "Error recovery", "Atomicity", "Isolation"],
-      "drawbacks": ["Performance overhead", "Deadlock risk", "Complex error handling"],
-      "use_cases": ["Financial systems", "E-commerce", "Multi-table operations"],
-      "complexity": "Medium",
-      "tags": ["data-access", "transaction", "consistency"]
-    },
-    {
-      "id": "read-through-cache",
-      "name": "Read-Through Cache",
-      "category": "Data Access",
-      "description": "Cache that automatically loads data from data source on cache miss",
-      "when_to_use": ["Frequent data access", "Performance optimization", "Reduced database load"],
-      "benefits": ["Automatic loading", "Simplified client code", "Performance improvement"],
-      "drawbacks": ["Cache complexity", "Potential inconsistency", "Memory usage"],
-      "use_cases": [
-        "High-read applications",
-        "Database performance optimization",
-        "Content delivery"
-      ],
-      "complexity": "Medium",
-      "tags": ["data-access", "caching", "performance"]
-    },
-    {
-      "id": "write-through-cache",
-      "name": "Write-Through Cache",
-      "category": "Data Access",
-      "description": "Cache that writes data to storage immediately when cache is updated",
-      "when_to_use": ["Data consistency", "Write-heavy applications", "Durability requirements"],
-      "benefits": ["Data consistency", "Durability", "Simplified recovery"],
-      "drawbacks": ["Performance overhead", "Write latency", "Complex implementation"],
-      "use_cases": ["Critical data systems", "Financial applications", "Audit trails"],
-      "complexity": "High",
-      "tags": ["data-access", "caching", "consistency"]
-    },
-    {
-      "id": "write-behind-cache",
-      "name": "Write-Behind Cache",
-      "category": "Data Access",
-      "description": "Cache that delays writing to storage to improve write performance",
-      "when_to_use": ["High write volume", "Performance optimization", "Batch processing"],
-      "benefits": ["Write performance", "Reduced database load", "Batch operations"],
-      "drawbacks": ["Data loss risk", "Complex recovery", "Eventual consistency"],
-      "use_cases": ["High-throughput systems", "Logging systems", "Analytics"],
-      "complexity": "High",
-      "tags": ["data-access", "caching", "performance"]
-    },
-    {
-      "id": "optimistic-locking",
-      "name": "Optimistic Locking",
-      "category": "Data Access",
-      "description": "Assumes conflicts are rare and checks for conflicts at commit time",
-      "when_to_use": ["Low conflict scenarios", "Performance requirements", "Scalable systems"],
-      "benefits": ["Better performance", "No deadlocks", "High concurrency"],
-      "drawbacks": ["Conflict handling", "Retry logic", "Version management"],
-      "use_cases": ["Web applications", "Distributed systems", "High-concurrency scenarios"],
-      "complexity": "Medium",
-      "tags": ["data-access", "concurrency", "locking"]
-    },
-    {
-      "id": "pessimistic-locking",
-      "name": "Pessimistic Locking",
-      "category": "Data Access",
-      "description": "Locks resources immediately when accessed to prevent conflicts",
-      "when_to_use": ["High conflict scenarios", "Critical data", "Strong consistency"],
-      "benefits": ["Prevents conflicts", "Data consistency", "Simple conflict resolution"],
-      "drawbacks": ["Reduced performance", "Deadlock risk", "Limited scalability"],
-      "use_cases": ["Financial systems", "Inventory management", "Critical updates"],
-      "complexity": "Medium",
-      "tags": ["data-access", "concurrency", "locking"]
-    },
-    {
-      "id": "database-sharding",
-      "name": "Database Sharding",
-      "category": "Data Access",
-      "description": "Horizontal partitioning of data across multiple databases",
-      "when_to_use": ["Large datasets", "Scalability requirements", "Performance optimization"],
-      "benefits": ["Horizontal scaling", "Performance improvement", "Load distribution"],
-      "drawbacks": ["Complex queries", "Data consistency", "Operational complexity"],
-      "use_cases": ["Large-scale applications", "Big data systems", "Global applications"],
-      "complexity": "High",
-      "tags": ["data-access", "scaling", "partitioning"]
-    },
-    {
-      "id": "database-replication",
-      "name": "Database Replication",
-      "category": "Data Access",
-      "description": "Maintains copies of data across multiple database instances",
-      "when_to_use": ["High availability", "Read scaling", "Disaster recovery"],
-      "benefits": ["High availability", "Read performance", "Fault tolerance"],
-      "drawbacks": ["Consistency challenges", "Replication lag", "Storage overhead"],
-      "use_cases": [
-        "High-availability systems",
-        "Read-heavy applications",
-        "Geographic distribution"
-      ],
-      "complexity": "High",
-      "tags": ["data-access", "replication", "availability"]
-    },
-    {
-      "id": "lazy-loading",
-      "name": "Lazy Loading",
-      "category": "Data Access",
-      "description": "Defers loading of data until it is actually needed",
-      "when_to_use": ["Large object graphs", "Performance optimization", "Memory constraints"],
-      "benefits": ["Performance optimization", "Memory efficiency", "On-demand loading"],
-      "drawbacks": ["N+1 query problem", "Complex implementation", "Delayed loading"],
-      "use_cases": ["ORM frameworks", "Large datasets", "Performance-critical applications"],
-      "complexity": "Medium",
-      "tags": ["data-access", "optimization", "loading"]
-    },
-    {
-      "id": "eager-loading",
-      "name": "Eager Loading",
-      "category": "Data Access",
-      "description": "Loads related data upfront to avoid multiple database queries",
-      "when_to_use": ["Known data requirements", "Query optimization", "Reducing database calls"],
-      "benefits": ["Fewer database calls", "Predictable performance", "Simple implementation"],
-      "drawbacks": ["Memory overhead", "Potential over-fetching", "Complex queries"],
-      "use_cases": ["Known access patterns", "Performance optimization", "Reporting systems"],
-      "complexity": "Medium",
-      "tags": ["data-access", "optimization", "loading"]
-    }
-  ]
-}
+[
+  {
+    "id": "dao-pattern",
+    "name": "Data Access Object (DAO)",
+    "category": "Data Access",
+    "description": "Abstract interface to database or persistence mechanism",
+    "when_to_use": [
+      "Database abstraction",
+      "Legacy systems",
+      "Multiple data sources"
+    ],
+    "benefits": [
+      "Database independence",
+      "Centralized data access",
+      "Code reusability"
+    ],
+    "drawbacks": [
+      "Additional layer",
+      "Complexity",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "Enterprise applications",
+      "Legacy database integration",
+      "Multi-database systems"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "abstraction",
+      "database"
+    ]
+  },
+  {
+    "id": "orm-pattern",
+    "name": "Object-Relational Mapping (ORM)",
+    "category": "Data Access",
+    "description": "Technique for converting data between incompatible type systems in OOP languages and relational databases",
+    "when_to_use": [
+      "Object-oriented applications",
+      "Complex domain models",
+      "Database abstraction"
+    ],
+    "benefits": [
+      "Object-oriented data access",
+      "Database independence",
+      "Automatic mapping"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Complex queries",
+      "Learning curve"
+    ],
+    "use_cases": [
+      "Enterprise applications",
+      "Domain-driven design",
+      "Rapid development"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-access",
+      "mapping",
+      "orm"
+    ]
+  },
+  {
+    "id": "connection-pool",
+    "name": "Connection Pool",
+    "category": "Data Access",
+    "description": "Maintains cache of database connections to improve performance and resource utilization",
+    "when_to_use": [
+      "High-traffic applications",
+      "Performance optimization",
+      "Resource management"
+    ],
+    "benefits": [
+      "Performance improvement",
+      "Resource efficiency",
+      "Connection reuse"
+    ],
+    "drawbacks": [
+      "Configuration complexity",
+      "Memory overhead",
+      "Connection leaks"
+    ],
+    "use_cases": [
+      "Web applications",
+      "Enterprise systems",
+      "High-concurrency applications"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "performance",
+      "pooling"
+    ]
+  },
+  {
+    "id": "database-transaction",
+    "name": "Database Transaction Pattern",
+    "category": "Data Access",
+    "description": "Ensures data consistency through ACID properties in database operations",
+    "when_to_use": [
+      "Data integrity",
+      "Multi-step operations",
+      "Consistency requirements"
+    ],
+    "benefits": [
+      "Data consistency",
+      "Error recovery",
+      "Atomicity",
+      "Isolation"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Deadlock risk",
+      "Complex error handling"
+    ],
+    "use_cases": [
+      "Financial systems",
+      "E-commerce",
+      "Multi-table operations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "transaction",
+      "consistency"
+    ]
+  },
+  {
+    "id": "read-through-cache",
+    "name": "Read-Through Cache",
+    "category": "Data Access",
+    "description": "Cache that automatically loads data from data source on cache miss",
+    "when_to_use": [
+      "Frequent data access",
+      "Performance optimization",
+      "Reduced database load"
+    ],
+    "benefits": [
+      "Automatic loading",
+      "Simplified client code",
+      "Performance improvement"
+    ],
+    "drawbacks": [
+      "Cache complexity",
+      "Potential inconsistency",
+      "Memory usage"
+    ],
+    "use_cases": [
+      "High-read applications",
+      "Database performance optimization",
+      "Content delivery"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "caching",
+      "performance"
+    ]
+  },
+  {
+    "id": "write-through-cache",
+    "name": "Write-Through Cache",
+    "category": "Data Access",
+    "description": "Cache that writes data to storage immediately when cache is updated",
+    "when_to_use": [
+      "Data consistency",
+      "Write-heavy applications",
+      "Durability requirements"
+    ],
+    "benefits": [
+      "Data consistency",
+      "Durability",
+      "Simplified recovery"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Write latency",
+      "Complex implementation"
+    ],
+    "use_cases": [
+      "Critical data systems",
+      "Financial applications",
+      "Audit trails"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-access",
+      "caching",
+      "consistency"
+    ]
+  },
+  {
+    "id": "write-behind-cache",
+    "name": "Write-Behind Cache",
+    "category": "Data Access",
+    "description": "Cache that delays writing to storage to improve write performance",
+    "when_to_use": [
+      "High write volume",
+      "Performance optimization",
+      "Batch processing"
+    ],
+    "benefits": [
+      "Write performance",
+      "Reduced database load",
+      "Batch operations"
+    ],
+    "drawbacks": [
+      "Data loss risk",
+      "Complex recovery",
+      "Eventual consistency"
+    ],
+    "use_cases": [
+      "High-throughput systems",
+      "Logging systems",
+      "Analytics"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-access",
+      "caching",
+      "performance"
+    ]
+  },
+  {
+    "id": "optimistic-locking",
+    "name": "Optimistic Locking",
+    "category": "Data Access",
+    "description": "Assumes conflicts are rare and checks for conflicts at commit time",
+    "when_to_use": [
+      "Low conflict scenarios",
+      "Performance requirements",
+      "Scalable systems"
+    ],
+    "benefits": [
+      "Better performance",
+      "No deadlocks",
+      "High concurrency"
+    ],
+    "drawbacks": [
+      "Conflict handling",
+      "Retry logic",
+      "Version management"
+    ],
+    "use_cases": [
+      "Web applications",
+      "Distributed systems",
+      "High-concurrency scenarios"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "concurrency",
+      "locking"
+    ]
+  },
+  {
+    "id": "pessimistic-locking",
+    "name": "Pessimistic Locking",
+    "category": "Data Access",
+    "description": "Locks resources immediately when accessed to prevent conflicts",
+    "when_to_use": [
+      "High conflict scenarios",
+      "Critical data",
+      "Strong consistency"
+    ],
+    "benefits": [
+      "Prevents conflicts",
+      "Data consistency",
+      "Simple conflict resolution"
+    ],
+    "drawbacks": [
+      "Reduced performance",
+      "Deadlock risk",
+      "Limited scalability"
+    ],
+    "use_cases": [
+      "Financial systems",
+      "Inventory management",
+      "Critical updates"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "concurrency",
+      "locking"
+    ]
+  },
+  {
+    "id": "database-sharding",
+    "name": "Database Sharding",
+    "category": "Data Access",
+    "description": "Horizontal partitioning of data across multiple databases",
+    "when_to_use": [
+      "Large datasets",
+      "Scalability requirements",
+      "Performance optimization"
+    ],
+    "benefits": [
+      "Horizontal scaling",
+      "Performance improvement",
+      "Load distribution"
+    ],
+    "drawbacks": [
+      "Complex queries",
+      "Data consistency",
+      "Operational complexity"
+    ],
+    "use_cases": [
+      "Large-scale applications",
+      "Big data systems",
+      "Global applications"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-access",
+      "scaling",
+      "partitioning"
+    ]
+  },
+  {
+    "id": "database-replication",
+    "name": "Database Replication",
+    "category": "Data Access",
+    "description": "Maintains copies of data across multiple database instances",
+    "when_to_use": [
+      "High availability",
+      "Read scaling",
+      "Disaster recovery"
+    ],
+    "benefits": [
+      "High availability",
+      "Read performance",
+      "Fault tolerance"
+    ],
+    "drawbacks": [
+      "Consistency challenges",
+      "Replication lag",
+      "Storage overhead"
+    ],
+    "use_cases": [
+      "High-availability systems",
+      "Read-heavy applications",
+      "Geographic distribution"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-access",
+      "replication",
+      "availability"
+    ]
+  },
+  {
+    "id": "lazy-loading",
+    "name": "Lazy Loading",
+    "category": "Data Access",
+    "description": "Defers loading of data until it is actually needed",
+    "when_to_use": [
+      "Large object graphs",
+      "Performance optimization",
+      "Memory constraints"
+    ],
+    "benefits": [
+      "Performance optimization",
+      "Memory efficiency",
+      "On-demand loading"
+    ],
+    "drawbacks": [
+      "N+1 query problem",
+      "Complex implementation",
+      "Delayed loading"
+    ],
+    "use_cases": [
+      "ORM frameworks",
+      "Large datasets",
+      "Performance-critical applications"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "optimization",
+      "loading"
+    ]
+  },
+  {
+    "id": "eager-loading",
+    "name": "Eager Loading",
+    "category": "Data Access",
+    "description": "Loads related data upfront to avoid multiple database queries",
+    "when_to_use": [
+      "Known data requirements",
+      "Query optimization",
+      "Reducing database calls"
+    ],
+    "benefits": [
+      "Fewer database calls",
+      "Predictable performance",
+      "Simple implementation"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "Potential over-fetching",
+      "Complex queries"
+    ],
+    "use_cases": [
+      "Known access patterns",
+      "Performance optimization",
+      "Reporting systems"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "optimization",
+      "loading"
+    ]
+  }
+]

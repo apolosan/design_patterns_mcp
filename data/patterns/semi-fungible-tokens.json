@@ -1,24 +1,26 @@
-{
-  "id": "semi-fungible-tokens",
-  "name": "Semi-Fungible Tokens (ERC-1155)",
-  "category": "NFT",
-  "description": "Tokens that transition from fungible to non-fungible. Efficient for items with limited editions.",
-  "when_to_use": "Event tickets, limited editions, gaming items with quantities",
-  "benefits": "Flexible tokenomics, gas-efficient, combines fungible and NFT properties",
-  "drawbacks": "Complex state tracking, less common standard",
-  "use_cases": "Concert tickets (fungible until used), game items, edition NFTs",
-  "complexity": "Medium",
-  "tags": [
-    "nft",
-    "erc1155",
-    "semi-fungible",
-    "gaming",
-    "tickets"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract SemiFungible is ERC1155 {\n    mapping(uint256 => uint256) public supply;\n    \n    function mint(uint256 id, uint256 amount) external {\n        require(supply[id] + amount <= MAX_SUPPLY[id]);\n        supply[id] += amount;\n        _mint(msg.sender, id, amount, \"\");\n    }\n    \n    // Transition: when supply reaches max, becomes unique NFT\n    function isFungible(uint256 id) public view returns (bool) {\n        return supply[id] < MAX_SUPPLY[id];\n    }\n}"
+[
+  {
+    "id": "semi-fungible-tokens",
+    "name": "Semi-Fungible Tokens (ERC-1155)",
+    "category": "NFT",
+    "description": "Tokens that transition from fungible to non-fungible. Efficient for items with limited editions.",
+    "when_to_use": "Event tickets, limited editions, gaming items with quantities",
+    "benefits": "Flexible tokenomics, gas-efficient, combines fungible and NFT properties",
+    "drawbacks": "Complex state tracking, less common standard",
+    "use_cases": "Concert tickets (fungible until used), game items, edition NFTs",
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "erc1155",
+      "semi-fungible",
+      "gaming",
+      "tickets"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract SemiFungible is ERC1155 {\n    mapping(uint256 => uint256) public supply;\n    \n    function mint(uint256 id, uint256 amount) external {\n        require(supply[id] + amount <= MAX_SUPPLY[id]);\n        supply[id] += amount;\n        _mint(msg.sender, id, amount, \"\");\n    }\n    \n    // Transition: when supply reaches max, becomes unique NFT\n    function isFungible(uint256 id) public view returns (bool) {\n        return supply[id] < MAX_SUPPLY[id];\n    }\n}"
+      }
     }
   }
-}
+]

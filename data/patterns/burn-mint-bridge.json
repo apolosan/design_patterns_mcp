@@ -1,23 +1,25 @@
-{
-  "id": "burn-mint-bridge",
-  "name": "Burn-and-Mint Bridge",
-  "category": "Cross-Chain",
-  "description": "Burn tokens on source, mint on destination. For native multi-chain tokens.",
-  "when_to_use": "Native multi-chain tokens, no canonical chain, symmetric chains",
-  "benefits": "No custodial risk, symmetric design, scalable to N chains",
-  "drawbacks": "Requires token contract control on all chains, irreversible burns",
-  "use_cases": "Circle USDC, native multi-chain protocols",
-  "complexity": "Medium",
-  "tags": [
-    "cross-chain",
-    "bridge",
-    "burn-mint",
-    "multi-chain"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Source chain: burn\nfunction bridgeBurn(uint256 amount, uint256 destChainId) external {\n    _burn(msg.sender, amount);\n    emit BridgeBurn(msg.sender, amount, destChainId);\n}\n\n// Destination chain: mint\nfunction bridgeMint(address to, uint256 amount, bytes calldata proof) external onlyRelayer {\n    require(verifyBurnProof(proof));\n    _mint(to, amount);\n}"
+[
+  {
+    "id": "burn-mint-bridge",
+    "name": "Burn-and-Mint Bridge",
+    "category": "Cross-Chain",
+    "description": "Burn tokens on source, mint on destination. For native multi-chain tokens.",
+    "when_to_use": "Native multi-chain tokens, no canonical chain, symmetric chains",
+    "benefits": "No custodial risk, symmetric design, scalable to N chains",
+    "drawbacks": "Requires token contract control on all chains, irreversible burns",
+    "use_cases": "Circle USDC, native multi-chain protocols",
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "bridge",
+      "burn-mint",
+      "multi-chain"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Source chain: burn\nfunction bridgeBurn(uint256 amount, uint256 destChainId) external {\n    _burn(msg.sender, amount);\n    emit BridgeBurn(msg.sender, amount, destChainId);\n}\n\n// Destination chain: mint\nfunction bridgeMint(address to, uint256 amount, bytes calldata proof) external onlyRelayer {\n    require(verifyBurnProof(proof));\n    _mint(to, amount);\n}"
+      }
     }
   }
-}
+]

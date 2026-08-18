@@ -1,22 +1,24 @@
-{
-  "id": "monitor-object",
-  "name": "Monitor Object",
-  "category": "Concurrency",
-  "description": "Synchronizes concurrent method execution to ensure only one method runs at a time",
-  "when_to_use": "Thread-safe objects\nMethod synchronization\nCritical sections",
-  "benefits": "Thread safety\nSimplicity\nEncapsulation\nData integrity",
-  "drawbacks": "Performance bottleneck\nDeadlock risk\nLimited concurrency",
-  "use_cases": "Shared resources\nCritical sections\nState management",
-  "complexity": "Medium",
-  "tags": [
-    "concurrency",
-    "synchronization",
-    "monitor"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Monitor Object: synchronize method execution\nclass Monitor {\n  private mutex = Promise.resolve();\n  \n  async synchronized<T>(fn: () => Promise<T>): Promise<T> {\n    const previous = this.mutex;\n    \n    let resolve!: () => void;\n    this.mutex = new Promise(r => resolve = r);\n    \n    try {\n      await previous;\n      return await fn();\n    } finally {\n      resolve();\n    }\n  }\n}\n\nclass BankAccount {\n  private balance = 0;\n  private monitor = new Monitor();\n  \n  async deposit(amount: number): Promise<void> {\n    await this.monitor.synchronized(async () => {\n      const current = this.balance;\n      await new Promise(resolve => setTimeout(resolve, 10));\n      this.balance = current + amount;\n      console.log('Deposited:', amount, 'Balance:', this.balance);\n    });\n  }\n  \n  async withdraw(amount: number): Promise<boolean> {\n    return this.monitor.synchronized(async () => {\n      if (this.balance >= amount) {\n        this.balance -= amount;\n        console.log('Withdrew:', amount, 'Balance:', this.balance);\n        return true;\n      }\n      return false;\n    });\n  }\n  \n  async getBalance(): Promise<number> {\n    return this.monitor.synchronized(async () => this.balance);\n  }\n}\n\nconst account = new BankAccount();\naccount.deposit(100);\naccount.withdraw(50);"
+[
+  {
+    "id": "monitor-object",
+    "name": "Monitor Object",
+    "category": "Concurrency",
+    "description": "Synchronizes concurrent method execution to ensure only one method runs at a time",
+    "when_to_use": "Thread-safe objects\nMethod synchronization\nCritical sections",
+    "benefits": "Thread safety\nSimplicity\nEncapsulation\nData integrity",
+    "drawbacks": "Performance bottleneck\nDeadlock risk\nLimited concurrency",
+    "use_cases": "Shared resources\nCritical sections\nState management",
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "synchronization",
+      "monitor"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Monitor Object: synchronize method execution\nclass Monitor {\n  private mutex = Promise.resolve();\n  \n  async synchronized<T>(fn: () => Promise<T>): Promise<T> {\n    const previous = this.mutex;\n    \n    let resolve!: () => void;\n    this.mutex = new Promise(r => resolve = r);\n    \n    try {\n      await previous;\n      return await fn();\n    } finally {\n      resolve();\n    }\n  }\n}\n\nclass BankAccount {\n  private balance = 0;\n  private monitor = new Monitor();\n  \n  async deposit(amount: number): Promise<void> {\n    await this.monitor.synchronized(async () => {\n      const current = this.balance;\n      await new Promise(resolve => setTimeout(resolve, 10));\n      this.balance = current + amount;\n      console.log('Deposited:', amount, 'Balance:', this.balance);\n    });\n  }\n  \n  async withdraw(amount: number): Promise<boolean> {\n    return this.monitor.synchronized(async () => {\n      if (this.balance >= amount) {\n        this.balance -= amount;\n        console.log('Withdrew:', amount, 'Balance:', this.balance);\n        return true;\n      }\n      return false;\n    });\n  }\n  \n  async getBalance(): Promise<number> {\n    return this.monitor.synchronized(async () => this.balance);\n  }\n}\n\nconst account = new BankAccount();\naccount.deposit(100);\naccount.withdraw(50);"
+      }
     }
   }
-}
+]

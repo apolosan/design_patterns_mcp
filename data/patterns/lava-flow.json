@@ -1,15 +1,17 @@
-{
-  "id": "lava-flow",
-  "name": "Lava Flow Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Dead code and forgotten design information fossilized in the software",
-  "when_to_use": "Obsolete code remains in codebase\nUnknown purpose code\nFear of removing potentially important code",
-  "drawbacks": "Increased codebase size\nConfusion about purpose\nMaintenance overhead\nSecurity risks",
-  "use_cases": "Legacy code with unknown purpose\nCommented-out code left in place\nUnused configuration options",
-  "complexity": "Medium",
-  "tags": [
-    "anti-pattern",
-    "legacy",
-    "cleanup"
-  ]
-}
+[
+  {
+    "id": "lava-flow",
+    "name": "Lava Flow Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Dead code and forgotten design information fossilized in the software",
+    "when_to_use": "Obsolete code remains in codebase\nUnknown purpose code\nFear of removing potentially important code",
+    "drawbacks": "Increased codebase size\nConfusion about purpose\nMaintenance overhead\nSecurity risks",
+    "use_cases": "Legacy code with unknown purpose\nCommented-out code left in place\nUnused configuration options",
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "legacy",
+      "cleanup"
+    ]
+  }
+]

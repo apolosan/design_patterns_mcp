@@ -1,16 +1,18 @@
-{
-  "id": "active-learning",
-  "name": "Active Learning",
-  "category": "AI/ML",
-  "description": "Selectively queries for labels on most informative examples",
-  "when_to_use": "Limited labeled data\nExpensive labeling\nContinuous learning",
-  "benefits": "Efficient labeling\nImproved performance\nCost reduction\nTargeted learning",
-  "drawbacks": "Complex implementation\nQuery strategy critical\nCold start problem",
-  "use_cases": "Data annotation\nModel improvement\nHuman-in-loop",
-  "complexity": "High",
-  "tags": [
-    "active-learning",
-    "labeling",
-    "optimization"
-  ]
-}
+[
+  {
+    "id": "active-learning",
+    "name": "Active Learning",
+    "category": "AI/ML",
+    "description": "Selectively queries for labels on most informative examples",
+    "when_to_use": "Limited labeled data\nExpensive labeling\nContinuous learning",
+    "benefits": "Efficient labeling\nImproved performance\nCost reduction\nTargeted learning",
+    "drawbacks": "Complex implementation\nQuery strategy critical\nCold start problem",
+    "use_cases": "Data annotation\nModel improvement\nHuman-in-loop",
+    "complexity": "High",
+    "tags": [
+      "active-learning",
+      "labeling",
+      "optimization"
+    ]
+  }
+]

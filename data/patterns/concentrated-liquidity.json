@@ -1,24 +1,26 @@
-{
-  "id": "concentrated-liquidity",
-  "name": "Concentrated Liquidity (Uniswap V3)",
-  "category": "DeFi AMM",
-  "description": "Capital-efficient liquidity provision with price ranges. 4000x more efficient than V2 for certain ranges.",
-  "when_to_use": "Stablecoin pairs, active market making, high-fee environments",
-  "benefits": "4000x capital efficiency, higher LP fees, flexible ranges",
-  "drawbacks": "Complex, requires active management, amplified impermanent loss",
-  "use_cases": "DEX liquidity, market making, capital efficiency",
-  "complexity": "High",
-  "tags": [
-    "defi",
-    "amm",
-    "uniswap-v3",
-    "capital-efficiency",
-    "liquidity"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Concentrated Liquidity: tick-based positions\nstruct Position {\n    uint128 liquidity;\n    int24 tickLower;\n    int24 tickUpper;\n}\n\nfunction mint(int24 tickLower, int24 tickUpper, uint128 amount) external {\n    require(tickLower < tickUpper);\n    // Add liquidity to specific price range\n}"
+[
+  {
+    "id": "concentrated-liquidity",
+    "name": "Concentrated Liquidity (Uniswap V3)",
+    "category": "DeFi AMM",
+    "description": "Capital-efficient liquidity provision with price ranges. 4000x more efficient than V2 for certain ranges.",
+    "when_to_use": "Stablecoin pairs, active market making, high-fee environments",
+    "benefits": "4000x capital efficiency, higher LP fees, flexible ranges",
+    "drawbacks": "Complex, requires active management, amplified impermanent loss",
+    "use_cases": "DEX liquidity, market making, capital efficiency",
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "amm",
+      "uniswap-v3",
+      "capital-efficiency",
+      "liquidity"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Concentrated Liquidity: tick-based positions\nstruct Position {\n    uint128 liquidity;\n    int24 tickLower;\n    int24 tickUpper;\n}\n\nfunction mint(int24 tickLower, int24 tickUpper, uint128 amount) external {\n    require(tickLower < tickUpper);\n    // Add liquidity to specific price range\n}"
+      }
     }
   }
-}
+]

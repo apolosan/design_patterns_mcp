@@ -1,22 +1,24 @@
-{
-  "id": "money-pattern",
-  "name": "Money Pattern",
-  "category": "Enterprise",
-  "description": "Represents monetary value with amount and currency",
-  "when_to_use": "Financial calculations\nCurrency handling\nPrecision requirements",
-  "benefits": "Precision\nCurrency handling\nType safety\nDomain clarity",
-  "drawbacks": "Complex operations\nConversion complexity\nPerformance overhead",
-  "use_cases": "Financial systems\nE-commerce\nAccounting\nBanking",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "money",
-    "financial"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Money Pattern: represent monetary values safely\nclass Money {\n  constructor(\n    private readonly amount: number,\n    private readonly currency: string\n  ) {\n    if (!Number.isInteger(amount)) {\n      throw new Error('Amount must be in smallest currency unit (cents)');\n    }\n  }\n  \n  add(other: Money): Money {\n    this.assertSameCurrency(other);\n    return new Money(this.amount + other.amount, this.currency);\n  }\n  \n  subtract(other: Money): Money {\n    this.assertSameCurrency(other);\n    return new Money(this.amount - other.amount, this.currency);\n  }\n  \n  multiply(factor: number): Money {\n    return new Money(Math.round(this.amount * factor), this.currency);\n  }\n  \n  divide(divisor: number): Money {\n    return new Money(Math.round(this.amount / divisor), this.currency);\n  }\n  \n  equals(other: Money): boolean {\n    return this.amount === other.amount && this.currency === other.currency;\n  }\n  \n  isGreaterThan(other: Money): boolean {\n    this.assertSameCurrency(other);\n    return this.amount > other.amount;\n  }\n  \n  toString(): string {\n    const dollars = this.amount / 100;\n    return this.currency + ' ' + dollars.toFixed(2);\n  }\n  \n  private assertSameCurrency(other: Money): void {\n    if (this.currency !== other.currency) {\n      throw new Error('Cannot operate on different currencies');\n    }\n  }\n}\n\n// Usage: Safe monetary calculations\nconst price = new Money(2499, 'USD');  // $24.99\nconst tax = price.multiply(0.1);       // $2.50\nconst total = price.add(tax);          // $27.49\nconsole.log(total.toString());         // USD 27.49"
+[
+  {
+    "id": "money-pattern",
+    "name": "Money Pattern",
+    "category": "Enterprise",
+    "description": "Represents monetary value with amount and currency",
+    "when_to_use": "Financial calculations\nCurrency handling\nPrecision requirements",
+    "benefits": "Precision\nCurrency handling\nType safety\nDomain clarity",
+    "drawbacks": "Complex operations\nConversion complexity\nPerformance overhead",
+    "use_cases": "Financial systems\nE-commerce\nAccounting\nBanking",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "money",
+      "financial"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Money Pattern: represent monetary values safely\nclass Money {\n  constructor(\n    private readonly amount: number,\n    private readonly currency: string\n  ) {\n    if (!Number.isInteger(amount)) {\n      throw new Error('Amount must be in smallest currency unit (cents)');\n    }\n  }\n  \n  add(other: Money): Money {\n    this.assertSameCurrency(other);\n    return new Money(this.amount + other.amount, this.currency);\n  }\n  \n  subtract(other: Money): Money {\n    this.assertSameCurrency(other);\n    return new Money(this.amount - other.amount, this.currency);\n  }\n  \n  multiply(factor: number): Money {\n    return new Money(Math.round(this.amount * factor), this.currency);\n  }\n  \n  divide(divisor: number): Money {\n    return new Money(Math.round(this.amount / divisor), this.currency);\n  }\n  \n  equals(other: Money): boolean {\n    return this.amount === other.amount && this.currency === other.currency;\n  }\n  \n  isGreaterThan(other: Money): boolean {\n    this.assertSameCurrency(other);\n    return this.amount > other.amount;\n  }\n  \n  toString(): string {\n    const dollars = this.amount / 100;\n    return this.currency + ' ' + dollars.toFixed(2);\n  }\n  \n  private assertSameCurrency(other: Money): void {\n    if (this.currency !== other.currency) {\n      throw new Error('Cannot operate on different currencies');\n    }\n  }\n}\n\n// Usage: Safe monetary calculations\nconst price = new Money(2499, 'USD');  // $24.99\nconst tax = price.multiply(0.1);       // $2.50\nconst total = price.add(tax);          // $27.49\nconsole.log(total.toString());         // USD 27.49"
+      }
     }
   }
-}
+]

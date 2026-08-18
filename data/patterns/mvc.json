@@ -1,22 +1,24 @@
-{
-  "id": "mvc",
-  "name": "Model-View-Controller",
-  "category": "Architectural",
-  "description": "Separates application logic into model, view, and controller components",
-  "when_to_use": "Web applications\nUI-heavy applications\nRapid development",
-  "benefits": "Separation of concerns\nReusability\nParallel development\nFamiliar pattern",
-  "drawbacks": "Tight coupling between components\nComplex for simple apps\nState management issues",
-  "use_cases": "Web frameworks\nDesktop applications\nRESTful APIs",
-  "complexity": "Medium",
-  "tags": [
-    "presentation",
-    "web",
-    "separation"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// MVC: separates data, presentation, and control logic\n\n// Model (data + business logic)\nclass User {\n  constructor(public id: string, public name: string) {}\n  \n  validate() {\n    if (!this.name) throw new Error('Name required');\n  }\n}\n\nclass UserModel {\n  private users: User[] = [];\n  \n  create(name: string): User {\n    const user = new User(crypto.randomUUID(), name);\n    user.validate();\n    this.users.push(user);\n    return user;\n  }\n  \n  getAll(): User[] { return this.users; }\n}\n\n// View (presentation)\nclass UserView {\n  render(users: User[]) {\n    return users.map(u => `<div>${u.name}</div>`).join('');\n  }\n}\n\n// Controller (handles input, updates model, selects view)\nclass UserController {\n  constructor(\n    private model: UserModel,\n    private view: UserView\n  ) {}\n  \n  createUser(name: string) {\n    const user = this.model.create(name);\n    return user;\n  }\n  \n  displayUsers() {\n    const users = this.model.getAll();\n    return this.view.render(users);\n  }\n}\n\n// Usage\nconst controller = new UserController(new UserModel(), new UserView());\ncontroller.createUser('Alice');\nconsole.log(controller.displayUsers());"
+[
+  {
+    "id": "mvc",
+    "name": "Model-View-Controller",
+    "category": "Architectural",
+    "description": "Separates application logic into model, view, and controller components",
+    "when_to_use": "Web applications\nUI-heavy applications\nRapid development",
+    "benefits": "Separation of concerns\nReusability\nParallel development\nFamiliar pattern",
+    "drawbacks": "Tight coupling between components\nComplex for simple apps\nState management issues",
+    "use_cases": "Web frameworks\nDesktop applications\nRESTful APIs",
+    "complexity": "Medium",
+    "tags": [
+      "presentation",
+      "web",
+      "separation"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// MVC: separates data, presentation, and control logic\n\n// Model (data + business logic)\nclass User {\n  constructor(public id: string, public name: string) {}\n  \n  validate() {\n    if (!this.name) throw new Error('Name required');\n  }\n}\n\nclass UserModel {\n  private users: User[] = [];\n  \n  create(name: string): User {\n    const user = new User(crypto.randomUUID(), name);\n    user.validate();\n    this.users.push(user);\n    return user;\n  }\n  \n  getAll(): User[] { return this.users; }\n}\n\n// View (presentation)\nclass UserView {\n  render(users: User[]) {\n    return users.map(u => `<div>${u.name}</div>`).join('');\n  }\n}\n\n// Controller (handles input, updates model, selects view)\nclass UserController {\n  constructor(\n    private model: UserModel,\n    private view: UserView\n  ) {}\n  \n  createUser(name: string) {\n    const user = this.model.create(name);\n    return user;\n  }\n  \n  displayUsers() {\n    const users = this.model.getAll();\n    return this.view.render(users);\n  }\n}\n\n// Usage\nconst controller = new UserController(new UserModel(), new UserView());\ncontroller.createUser('Alice');\nconsole.log(controller.displayUsers());"
+      }
     }
   }
-}
+]

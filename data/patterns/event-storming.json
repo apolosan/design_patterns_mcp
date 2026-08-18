@@ -1,16 +1,18 @@
-{
-  "id": "event-storming",
-  "name": "Event Storming",
-  "category": "Domain-Driven Design",
-  "description": "Workshop technique for exploring complex business domains",
-  "when_to_use": "Domain exploration\nTeam collaboration\nProcess understanding",
-  "benefits": "Shared understanding\nProcess clarity\nTeam alignment",
-  "drawbacks": "Time intensive\nFacilitation skills required\nFollow-up needed",
-  "use_cases": "Domain modeling\nProcess mapping\nTeam workshops",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "tactical",
-    "workshop"
-  ]
-}
+[
+  {
+    "id": "event-storming",
+    "name": "Event Storming",
+    "category": "Domain-Driven Design",
+    "description": "Workshop technique for exploring complex business domains",
+    "when_to_use": "Domain exploration\nTeam collaboration\nProcess understanding",
+    "benefits": "Shared understanding\nProcess clarity\nTeam alignment",
+    "drawbacks": "Time intensive\nFacilitation skills required\nFollow-up needed",
+    "use_cases": "Domain modeling\nProcess mapping\nTeam workshops",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "tactical",
+      "workshop"
+    ]
+  }
+]

@@ -1,16 +1,18 @@
-{
-  "id": "static-content-hosting",
-  "name": "Static Content Hosting",
-  "category": "Cloud-Native",
-  "description": "Serves static content from optimized global distribution networks",
-  "when_to_use": "Static assets\nGlobal distribution\nPerformance optimization",
-  "benefits": "Global distribution\nHigh performance\nCost efficiency\nScalability",
-  "drawbacks": "Cache invalidation\nDynamic content limitations\nVendor dependency",
-  "use_cases": "Web assets\nDownloads\nMedia files\nDocumentation",
-  "complexity": "Low",
-  "tags": [
-    "cdn",
-    "static-content",
-    "performance"
-  ]
-}
+[
+  {
+    "id": "static-content-hosting",
+    "name": "Static Content Hosting",
+    "category": "Cloud-Native",
+    "description": "Serves static content from optimized global distribution networks",
+    "when_to_use": "Static assets\nGlobal distribution\nPerformance optimization",
+    "benefits": "Global distribution\nHigh performance\nCost efficiency\nScalability",
+    "drawbacks": "Cache invalidation\nDynamic content limitations\nVendor dependency",
+    "use_cases": "Web assets\nDownloads\nMedia files\nDocumentation",
+    "complexity": "Low",
+    "tags": [
+      "cdn",
+      "static-content",
+      "performance"
+    ]
+  }
+]

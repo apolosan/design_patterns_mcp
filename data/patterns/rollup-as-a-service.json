@@ -1,24 +1,26 @@
-{
-  "id": "rollup-as-a-service",
-  "name": "Rollup-as-a-Service Pattern",
-  "category": "Modular Blockchain",
-  "description": "Deploy custom rollups easily via managed platforms. App-specific chains with Ethereum security.",
-  "when_to_use": "App-specific chains, custom L2s, blockchain customization",
-  "benefits": "Easy deployment, customizable, base layer security, no devops",
-  "drawbacks": "Vendor dependency, fragmentation, DA solution needed",
-  "use_cases": "Gaming chains, DeFi-specific rollups, high-throughput apps",
-  "complexity": "Medium",
-  "tags": [
-    "layer2",
-    "rollup",
-    "raas",
-    "modular",
-    "app-chain"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Caldera, Conduit, AltLayer provide RaaS\n// Example config for custom rollup:\n\nconst rollupConfig = {\n  name: 'MyGameRollup',\n  type: 'optimistic', // or 'zk'\n  dataAvailability: 'ethereum', // or 'celestia'\n  executionEnvironment: 'EVM',\n  sequencer: 'centralized', // or 'decentralized'\n  settlement: 'ethereum',\n  gasToken: 'ETH', // or custom token\n  precompiles: ['secp256r1', 'bls12-381'],\n  blockTime: 1, // seconds\n  batchSubmissionInterval: 300 // 5 minutes\n};\n\n// Platform handles: deployment, sequencer, provers, bridges, explorers"
+[
+  {
+    "id": "rollup-as-a-service",
+    "name": "Rollup-as-a-Service Pattern",
+    "category": "Modular Blockchain",
+    "description": "Deploy custom rollups easily via managed platforms. App-specific chains with Ethereum security.",
+    "when_to_use": "App-specific chains, custom L2s, blockchain customization",
+    "benefits": "Easy deployment, customizable, base layer security, no devops",
+    "drawbacks": "Vendor dependency, fragmentation, DA solution needed",
+    "use_cases": "Gaming chains, DeFi-specific rollups, high-throughput apps",
+    "complexity": "Medium",
+    "tags": [
+      "layer2",
+      "rollup",
+      "raas",
+      "modular",
+      "app-chain"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Caldera, Conduit, AltLayer provide RaaS\n// Example config for custom rollup:\n\nconst rollupConfig = {\n  name: 'MyGameRollup',\n  type: 'optimistic', // or 'zk'\n  dataAvailability: 'ethereum', // or 'celestia'\n  executionEnvironment: 'EVM',\n  sequencer: 'centralized', // or 'decentralized'\n  settlement: 'ethereum',\n  gasToken: 'ETH', // or custom token\n  precompiles: ['secp256r1', 'bls12-381'],\n  blockTime: 1, // seconds\n  batchSubmissionInterval: 300 // 5 minutes\n};\n\n// Platform handles: deployment, sequencer, provers, bridges, explorers"
+      }
     }
   }
-}
+]

@@ -1,24 +1,26 @@
-{
-  "id": "ipfs-storage",
-  "name": "IPFS Storage Pattern",
-  "category": "Storage",
-  "description": "Content-addressed storage for NFT metadata and large files. Store hash on-chain, content on IPFS.",
-  "when_to_use": "NFT metadata, documents, media files, immutable content",
-  "benefits": "Immutable, decentralized, cost-efficient vs on-chain",
-  "drawbacks": "Requires pinning service, potential unavailability, not queryable",
-  "use_cases": "NFT marketplaces, DAOs, decentralized content",
-  "complexity": "Low",
-  "tags": [
-    "storage",
-    "ipfs",
-    "nft",
-    "metadata",
-    "content-addressing"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// IPFS hash stored on-chain\ncontract NFTWithIPFS {\n    mapping(uint256 => string) public tokenURIs; // ipfs://Qm...\n    \n    function mint(address to, string memory ipfsHash) external {\n        uint256 tokenId = _nextTokenId++;\n        _mint(to, tokenId);\n        tokenURIs[tokenId] = string(abi.encodePacked(\"ipfs://\", ipfsHash));\n    }\n}"
+[
+  {
+    "id": "ipfs-storage",
+    "name": "IPFS Storage Pattern",
+    "category": "Storage",
+    "description": "Content-addressed storage for NFT metadata and large files. Store hash on-chain, content on IPFS.",
+    "when_to_use": "NFT metadata, documents, media files, immutable content",
+    "benefits": "Immutable, decentralized, cost-efficient vs on-chain",
+    "drawbacks": "Requires pinning service, potential unavailability, not queryable",
+    "use_cases": "NFT marketplaces, DAOs, decentralized content",
+    "complexity": "Low",
+    "tags": [
+      "storage",
+      "ipfs",
+      "nft",
+      "metadata",
+      "content-addressing"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// IPFS hash stored on-chain\ncontract NFTWithIPFS {\n    mapping(uint256 => string) public tokenURIs; // ipfs://Qm...\n    \n    function mint(address to, string memory ipfsHash) external {\n        uint256 tokenId = _nextTokenId++;\n        _mint(to, tokenId);\n        tokenURIs[tokenId] = string(abi.encodePacked(\"ipfs://\", ipfsHash));\n    }\n}"
+      }
     }
   }
-}
+]

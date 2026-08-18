@@ -1,316 +1,846 @@
-{
-  "patterns": [
-    {
-      "id": "circuit-breaker",
-      "name": "Circuit Breaker",
-      "category": "Cloud-Native",
-      "description": "Prevents cascading failures by failing fast when service is unavailable",
-      "when_to_use": ["Distributed systems", "External service calls", "Fault tolerance"],
-      "benefits": ["Fail fast", "System stability", "Resource protection", "Graceful degradation"],
-      "drawbacks": ["Additional complexity", "Configuration tuning", "False positives"],
-      "use_cases": ["Microservices", "API gateways", "External integrations"],
-      "complexity": "Medium",
-      "tags": ["fault-tolerance", "resilience", "microservices"]
-    },
-    {
-      "id": "bulkhead",
-      "name": "Bulkhead Pattern",
-      "category": "Cloud-Native",
-      "description": "Isolates critical resources to prevent total system failure",
-      "when_to_use": ["Resource isolation", "Fault containment", "Critical systems"],
-      "benefits": ["Fault isolation", "Resource protection", "Improved reliability", "Graceful degradation"],
-      "drawbacks": ["Resource overhead", "Complexity", "Management overhead"],
-      "use_cases": ["Thread pools", "Connection pools", "Service isolation"],
-      "complexity": "Medium",
-      "tags": ["isolation", "resilience", "resource-management"]
-    },
-    {
-      "id": "retry-pattern",
-      "name": "Retry Pattern",
-      "category": "Cloud-Native",
-      "description": "Automatically retries failed operations with backoff strategies",
-      "when_to_use": ["Transient failures", "Network unreliability", "External services"],
-      "benefits": ["Improved reliability", "Handles transient errors", "Better user experience"],
-      "drawbacks": ["Increased latency", "Resource consumption", "Cascading delays"],
-      "use_cases": ["API calls", "Database operations", "Message processing"],
-      "complexity": "Low",
-      "tags": ["resilience", "error-handling", "reliability"]
-    },
-    {
-      "id": "timeout-pattern",
-      "name": "Timeout Pattern",
-      "category": "Cloud-Native",
-      "description": "Sets maximum wait time for operations to prevent resource blocking",
-      "when_to_use": ["External service calls", "Resource protection", "Responsive systems"],
-      "benefits": ["Resource protection", "System responsiveness", "Prevents blocking"],
-      "drawbacks": ["Premature timeouts", "Configuration complexity", "False failures"],
-      "use_cases": ["HTTP requests", "Database queries", "Remote procedure calls"],
-      "complexity": "Low",
-      "tags": ["timeout", "resource-protection", "performance"]
-    },
-    {
-      "id": "health-check",
-      "name": "Health Check Pattern",
-      "category": "Cloud-Native",
-      "description": "Provides endpoints to monitor service health and availability",
-      "when_to_use": ["Service monitoring", "Load balancer integration", "Deployment validation"],
-      "benefits": ["Service visibility", "Automated recovery", "Load balancer integration"],
-      "drawbacks": ["Additional endpoints", "Health check overhead", "False positives"],
-      "use_cases": ["Kubernetes probes", "Load balancers", "Service discovery"],
-      "complexity": "Low",
-      "tags": ["monitoring", "health", "observability"]
-    },
-    {
-      "id": "function-as-a-service",
-      "name": "Function as a Service (FaaS)",
-      "category": "Serverless",
-      "description": "Event-driven, stateless compute functions that auto-scale",
-      "when_to_use": ["Event processing", "Stateless operations", "Variable workloads"],
-      "benefits": ["No server management", "Auto-scaling", "Pay-per-execution", "Event-driven"],
-      "drawbacks": ["Cold starts", "Vendor lock-in", "Limited execution time", "Stateless constraints"],
-      "use_cases": ["API backends", "Data processing", "File uploads", "Scheduled tasks"],
-      "complexity": "Low",
-      "tags": ["serverless", "event-driven", "auto-scaling"]
-    },
-    {
-      "id": "claim-check",
-      "name": "Claim Check Pattern",
-      "category": "Cloud-Native",
-      "description": "Stores large message payloads separately and passes only references",
-      "when_to_use": ["Large message payloads", "Message size limits", "Cost optimization"],
-      "benefits": ["Reduced message size", "Lower messaging costs", "Better performance"],
-      "drawbacks": ["Additional storage", "Complexity", "Reference management"],
-      "use_cases": ["File processing workflows", "Large data transfers", "Message queues"],
-      "complexity": "Medium",
-      "tags": ["messaging", "storage", "optimization"]
-    },
-    {
-      "id": "valet-key",
-      "name": "Valet Key Pattern",
-      "category": "Cloud-Native",
-      "description": "Provides clients with restricted direct access to specific resources",
-      "when_to_use": ["Direct resource access", "Reduced server load", "Temporary access"],
-      "benefits": ["Reduced server load", "Direct access", "Scalability", "Cost effective"],
-      "drawbacks": ["Security complexity", "Token management", "Limited control"],
-      "use_cases": ["File uploads", "Direct storage access", "CDN integration"],
-      "complexity": "Medium",
-      "tags": ["security", "access-control", "scalability"]
-    },
-    {
-      "id": "gatekeeper",
-      "name": "Gatekeeper Pattern",
-      "category": "Cloud-Native",
-      "description": "Dedicated host acts as broker between clients and services",
-      "when_to_use": ["Security layer", "Protocol translation", "Validation"],
-      "benefits": ["Security enforcement", "Protocol flexibility", "Centralized validation"],
-      "drawbacks": ["Single point of failure", "Performance bottleneck", "Additional complexity"],
-      "use_cases": ["API gateways", "Legacy integration", "Security enforcement"],
-      "complexity": "High",
-      "tags": ["security", "gateway", "validation"]
-    },
-    {
-      "id": "federated-identity",
-      "name": "Federated Identity Pattern",
-      "category": "Cloud-Native",
-      "description": "Delegates authentication to external identity providers",
-      "when_to_use": ["Multi-organization access", "Single sign-on", "Identity management"],
-      "benefits": ["Simplified authentication", "User convenience", "Centralized identity"],
-      "drawbacks": ["External dependencies", "Complexity", "Trust relationships"],
-      "use_cases": ["Enterprise applications", "SaaS platforms", "Partner integration"],
-      "complexity": "High",
-      "tags": ["authentication", "identity", "sso"]
-    },
-    {
-      "id": "external-configuration-store",
-      "name": "External Configuration Store",
-      "category": "Cloud-Native",
-      "description": "Centralizes configuration information outside application deployment",
-      "when_to_use": ["Dynamic configuration", "Multiple environments", "Centralized management"],
-      "benefits": ["Dynamic updates", "Environment consistency", "Centralized management"],
-      "drawbacks": ["External dependency", "Network calls", "Security concerns"],
-      "use_cases": ["Feature flags", "Environment settings", "Application parameters"],
-      "complexity": "Medium",
-      "tags": ["configuration", "management", "deployment"]
-    },
-    {
-      "id": "cache-aside",
-      "name": "Cache-Aside Pattern",
-      "category": "Caching",
-      "description": "Application manages cache directly alongside data store",
-      "when_to_use": ["Read-heavy workloads", "Cache control needed", "Simple caching"],
-      "benefits": ["Simple implementation", "Cache control", "Failure handling"],
-      "drawbacks": ["Cache management overhead", "Potential inconsistency", "Application complexity"],
-      "use_cases": ["Database caching", "API response caching", "Computed results"],
-      "complexity": "Medium",
-      "tags": ["caching", "performance", "data-access"]
-    },
-    {
-      "id": "write-through-cache",
-      "name": "Write-Through Cache",
-      "category": "Caching",
-      "description": "Writes go through cache to underlying data store synchronously",
-      "when_to_use": ["Write consistency required", "Read-heavy workloads", "Simple consistency"],
-      "benefits": ["Data consistency", "Simple implementation", "Cache warming"],
-      "drawbacks": ["Write latency", "Cache complexity", "Storage overhead"],
-      "use_cases": ["Financial transactions", "User profiles", "Configuration data"],
-      "complexity": "Medium",
-      "tags": ["caching", "consistency", "performance"]
-    },
-    {
-      "id": "write-behind-cache",
-      "name": "Write-Behind Cache",
-      "category": "Caching",
-      "description": "Writes to cache immediately, persists to store asynchronously",
-      "when_to_use": ["High write performance", "Acceptable eventual consistency", "Batch processing"],
-      "benefits": ["High write performance", "Reduced database load", "Batching opportunities"],
-      "drawbacks": ["Data loss risk", "Complexity", "Eventual consistency"],
-      "use_cases": ["Analytics data", "Logging systems", "Gaming leaderboards"],
-      "complexity": "High",
-      "tags": ["caching", "performance", "async"]
-    },
-    {
-      "id": "read-through-cache",
-      "name": "Read-Through Cache",
-      "category": "Caching",
-      "description": "Cache automatically loads data from store on cache miss",
-      "when_to_use": ["Transparent caching", "Read optimization", "Cache warming"],
-      "benefits": ["Transparent caching", "Automatic loading", "Simplified application"],
-      "drawbacks": ["Initial load latency", "Cache complexity", "Error handling"],
-      "use_cases": ["Reference data", "Product catalogs", "User sessions"],
-      "complexity": "Medium",
-      "tags": ["caching", "transparency", "loading"]
-    },
-    {
-      "id": "sharding",
-      "name": "Sharding Pattern",
-      "category": "Data Management",
-      "description": "Horizontally partitions data across multiple databases",
-      "when_to_use": ["Large datasets", "Horizontal scaling", "Performance optimization"],
-      "benefits": ["Improved performance", "Horizontal scaling", "Fault isolation"],
-      "drawbacks": ["Complexity", "Cross-shard queries", "Rebalancing challenges"],
-      "use_cases": ["User data", "Time-series data", "Geographic distribution"],
-      "complexity": "High",
-      "tags": ["data-management", "scaling", "partitioning"]
-    },
-    {
-      "id": "index-table",
-      "name": "Index Table Pattern",
-      "category": "Data Management",
-      "description": "Creates secondary indexes for efficient querying",
-      "when_to_use": ["Multiple query patterns", "NoSQL databases", "Query optimization"],
-      "benefits": ["Query flexibility", "Performance optimization", "Multiple access patterns"],
-      "drawbacks": ["Storage overhead", "Consistency challenges", "Maintenance complexity"],
-      "use_cases": ["Product searches", "User lookups", "Analytics queries"],
-      "complexity": "Medium",
-      "tags": ["data-management", "indexing", "querying"]
-    },
-    {
-      "id": "materialized-view",
-      "name": "Materialized View Pattern",
-      "category": "Data Management",
-      "description": "Pre-computes and stores query results for fast access",
-      "when_to_use": ["Complex queries", "Reporting needs", "Performance optimization"],
-      "benefits": ["Fast query performance", "Reduced computation", "Consistent results"],
-      "drawbacks": ["Storage overhead", "Refresh complexity", "Staleness issues"],
-      "use_cases": ["Dashboards", "Reports", "Analytics", "Search results"],
-      "complexity": "Medium",
-      "tags": ["data-management", "performance", "querying"]
-    },
-    {
-      "id": "event-streaming",
-      "name": "Event Streaming Pattern",
-      "category": "Data Management",
-      "description": "Continuously processes streams of events in real-time",
-      "when_to_use": ["Real-time processing", "Event-driven architecture", "Data pipelines"],
-      "benefits": ["Real-time processing", "Scalability", "Decoupling", "Replay capability"],
-      "drawbacks": ["Complexity", "Ordering challenges", "Error handling"],
-      "use_cases": ["User activity tracking", "IoT data processing", "Financial transactions"],
-      "complexity": "High",
-      "tags": ["data-management", "streaming", "real-time"]
-    },
-    {
-      "id": "queue-based-load-leveling",
-      "name": "Queue-Based Load Leveling",
-      "category": "Messaging",
-      "description": "Uses queue to buffer between services for load management",
-      "when_to_use": ["Variable workloads", "Load spikes", "Service decoupling"],
-      "benefits": ["Load smoothing", "Service isolation", "Scalability", "Reliability"],
-      "drawbacks": ["Increased latency", "Queue management", "Complexity"],
-      "use_cases": ["Order processing", "Image processing", "Batch jobs"],
-      "complexity": "Medium",
-      "tags": ["messaging", "load-balancing", "queuing"]
-    },
-    {
-      "id": "competing-consumers",
-      "name": "Competing Consumers Pattern",
-      "category": "Messaging",
-      "description": "Multiple consumers process messages from same queue concurrently",
-      "when_to_use": ["High throughput", "Parallel processing", "Scalability"],
-      "benefits": ["High throughput", "Automatic scaling", "Fault tolerance"],
-      "drawbacks": ["Message ordering", "Load balancing", "Error handling"],
-      "use_cases": ["Order processing", "Email sending", "Data transformation"],
-      "complexity": "Medium",
-      "tags": ["messaging", "concurrency", "scalability"]
-    },
-    {
-      "id": "priority-queue",
-      "name": "Priority Queue Pattern",
-      "category": "Messaging",
-      "description": "Processes messages based on priority rather than arrival order",
-      "when_to_use": ["Prioritized processing", "SLA requirements", "Critical tasks"],
-      "benefits": ["Priority handling", "SLA compliance", "Resource optimization"],
-      "drawbacks": ["Starvation risk", "Complexity", "Queue management"],
-      "use_cases": ["Critical alerts", "VIP customers", "System maintenance"],
-      "complexity": "Medium",
-      "tags": ["messaging", "priority", "queuing"]
-    },
-    {
-      "id": "throttling",
-      "name": "Throttling Pattern",
-      "category": "Cloud-Native",
-      "description": "Controls resource consumption by limiting request rates",
-      "when_to_use": ["Rate limiting", "Resource protection", "Fair usage"],
-      "benefits": ["Resource protection", "Fair usage", "Cost control", "Stability"],
-      "drawbacks": ["User experience impact", "Configuration complexity", "Bypass attempts"],
-      "use_cases": ["API rate limiting", "Resource quotas", "Cost control"],
-      "complexity": "Medium",
-      "tags": ["rate-limiting", "resource-protection", "control"]
-    },
-    {
-      "id": "static-content-hosting",
-      "name": "Static Content Hosting",
-      "category": "Cloud-Native",
-      "description": "Serves static content from optimized global distribution networks",
-      "when_to_use": ["Static assets", "Global distribution", "Performance optimization"],
-      "benefits": ["Global distribution", "High performance", "Cost efficiency", "Scalability"],
-      "drawbacks": ["Cache invalidation", "Dynamic content limitations", "Vendor dependency"],
-      "use_cases": ["Web assets", "Downloads", "Media files", "Documentation"],
-      "complexity": "Low",
-      "tags": ["cdn", "static-content", "performance"]
-    },
-    {
-      "id": "anti-corruption-layer",
-      "name": "Anti-Corruption Layer",
-      "category": "Cloud-Native",
-      "description": "Isolates different subsystems by translating between their models",
-      "when_to_use": ["Legacy integration", "Different models", "System isolation"],
-      "benefits": ["System isolation", "Model protection", "Integration flexibility"],
-      "drawbacks": ["Additional complexity", "Performance overhead", "Maintenance"],
-      "use_cases": ["Legacy system integration", "Third-party APIs", "System modernization"],
-      "complexity": "High",
-      "tags": ["integration", "isolation", "translation"]
-    },
-    {
-      "id": "backends-for-frontends",
-      "name": "Backends for Frontends (BFF)",
-      "category": "Cloud-Native",
-      "description": "Creates separate backend services for different frontend experiences",
-      "when_to_use": ["Multiple client types", "Different data needs", "Client optimization"],
-      "benefits": ["Client optimization", "Team autonomy", "Flexible APIs"],
-      "drawbacks": ["Code duplication", "Multiple services", "Coordination complexity"],
-      "use_cases": ["Mobile vs web apps", "Partner APIs", "Device-specific backends"],
-      "complexity": "Medium",
-      "tags": ["api-design", "client-optimization", "separation"]
-    }
-  ]
-}
+[
+  {
+    "id": "circuit-breaker",
+    "name": "Circuit Breaker",
+    "category": "Cloud-Native",
+    "description": "Prevents cascading failures by failing fast when service is unavailable",
+    "when_to_use": [
+      "Distributed systems",
+      "External service calls",
+      "Fault tolerance"
+    ],
+    "benefits": [
+      "Fail fast",
+      "System stability",
+      "Resource protection",
+      "Graceful degradation"
+    ],
+    "drawbacks": [
+      "Additional complexity",
+      "Configuration tuning",
+      "False positives"
+    ],
+    "use_cases": [
+      "Microservices",
+      "API gateways",
+      "External integrations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "fault-tolerance",
+      "resilience",
+      "microservices"
+    ]
+  },
+  {
+    "id": "bulkhead",
+    "name": "Bulkhead Pattern",
+    "category": "Cloud-Native",
+    "description": "Isolates critical resources to prevent total system failure",
+    "when_to_use": [
+      "Resource isolation",
+      "Fault containment",
+      "Critical systems"
+    ],
+    "benefits": [
+      "Fault isolation",
+      "Resource protection",
+      "Improved reliability",
+      "Graceful degradation"
+    ],
+    "drawbacks": [
+      "Resource overhead",
+      "Complexity",
+      "Management overhead"
+    ],
+    "use_cases": [
+      "Thread pools",
+      "Connection pools",
+      "Service isolation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "isolation",
+      "resilience",
+      "resource-management"
+    ]
+  },
+  {
+    "id": "retry-pattern",
+    "name": "Retry Pattern",
+    "category": "Cloud-Native",
+    "description": "Automatically retries failed operations with backoff strategies",
+    "when_to_use": [
+      "Transient failures",
+      "Network unreliability",
+      "External services"
+    ],
+    "benefits": [
+      "Improved reliability",
+      "Handles transient errors",
+      "Better user experience"
+    ],
+    "drawbacks": [
+      "Increased latency",
+      "Resource consumption",
+      "Cascading delays"
+    ],
+    "use_cases": [
+      "API calls",
+      "Database operations",
+      "Message processing"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "resilience",
+      "error-handling",
+      "reliability"
+    ]
+  },
+  {
+    "id": "timeout-pattern",
+    "name": "Timeout Pattern",
+    "category": "Cloud-Native",
+    "description": "Sets maximum wait time for operations to prevent resource blocking",
+    "when_to_use": [
+      "External service calls",
+      "Resource protection",
+      "Responsive systems"
+    ],
+    "benefits": [
+      "Resource protection",
+      "System responsiveness",
+      "Prevents blocking"
+    ],
+    "drawbacks": [
+      "Premature timeouts",
+      "Configuration complexity",
+      "False failures"
+    ],
+    "use_cases": [
+      "HTTP requests",
+      "Database queries",
+      "Remote procedure calls"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "timeout",
+      "resource-protection",
+      "performance"
+    ]
+  },
+  {
+    "id": "health-check",
+    "name": "Health Check Pattern",
+    "category": "Cloud-Native",
+    "description": "Provides endpoints to monitor service health and availability",
+    "when_to_use": [
+      "Service monitoring",
+      "Load balancer integration",
+      "Deployment validation"
+    ],
+    "benefits": [
+      "Service visibility",
+      "Automated recovery",
+      "Load balancer integration"
+    ],
+    "drawbacks": [
+      "Additional endpoints",
+      "Health check overhead",
+      "False positives"
+    ],
+    "use_cases": [
+      "Kubernetes probes",
+      "Load balancers",
+      "Service discovery"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "monitoring",
+      "health",
+      "observability"
+    ]
+  },
+  {
+    "id": "function-as-a-service",
+    "name": "Function as a Service (FaaS)",
+    "category": "Serverless",
+    "description": "Event-driven, stateless compute functions that auto-scale",
+    "when_to_use": [
+      "Event processing",
+      "Stateless operations",
+      "Variable workloads"
+    ],
+    "benefits": [
+      "No server management",
+      "Auto-scaling",
+      "Pay-per-execution",
+      "Event-driven"
+    ],
+    "drawbacks": [
+      "Cold starts",
+      "Vendor lock-in",
+      "Limited execution time",
+      "Stateless constraints"
+    ],
+    "use_cases": [
+      "API backends",
+      "Data processing",
+      "File uploads",
+      "Scheduled tasks"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "serverless",
+      "event-driven",
+      "auto-scaling"
+    ]
+  },
+  {
+    "id": "claim-check",
+    "name": "Claim Check Pattern",
+    "category": "Cloud-Native",
+    "description": "Stores large message payloads separately and passes only references",
+    "when_to_use": [
+      "Large message payloads",
+      "Message size limits",
+      "Cost optimization"
+    ],
+    "benefits": [
+      "Reduced message size",
+      "Lower messaging costs",
+      "Better performance"
+    ],
+    "drawbacks": [
+      "Additional storage",
+      "Complexity",
+      "Reference management"
+    ],
+    "use_cases": [
+      "File processing workflows",
+      "Large data transfers",
+      "Message queues"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "messaging",
+      "storage",
+      "optimization"
+    ]
+  },
+  {
+    "id": "valet-key",
+    "name": "Valet Key Pattern",
+    "category": "Cloud-Native",
+    "description": "Provides clients with restricted direct access to specific resources",
+    "when_to_use": [
+      "Direct resource access",
+      "Reduced server load",
+      "Temporary access"
+    ],
+    "benefits": [
+      "Reduced server load",
+      "Direct access",
+      "Scalability",
+      "Cost effective"
+    ],
+    "drawbacks": [
+      "Security complexity",
+      "Token management",
+      "Limited control"
+    ],
+    "use_cases": [
+      "File uploads",
+      "Direct storage access",
+      "CDN integration"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "access-control",
+      "scalability"
+    ]
+  },
+  {
+    "id": "gatekeeper",
+    "name": "Gatekeeper Pattern",
+    "category": "Cloud-Native",
+    "description": "Dedicated host acts as broker between clients and services",
+    "when_to_use": [
+      "Security layer",
+      "Protocol translation",
+      "Validation"
+    ],
+    "benefits": [
+      "Security enforcement",
+      "Protocol flexibility",
+      "Centralized validation"
+    ],
+    "drawbacks": [
+      "Single point of failure",
+      "Performance bottleneck",
+      "Additional complexity"
+    ],
+    "use_cases": [
+      "API gateways",
+      "Legacy integration",
+      "Security enforcement"
+    ],
+    "complexity": "High",
+    "tags": [
+      "security",
+      "gateway",
+      "validation"
+    ]
+  },
+  {
+    "id": "federated-identity",
+    "name": "Federated Identity Pattern",
+    "category": "Cloud-Native",
+    "description": "Delegates authentication to external identity providers",
+    "when_to_use": [
+      "Multi-organization access",
+      "Single sign-on",
+      "Identity management"
+    ],
+    "benefits": [
+      "Simplified authentication",
+      "User convenience",
+      "Centralized identity"
+    ],
+    "drawbacks": [
+      "External dependencies",
+      "Complexity",
+      "Trust relationships"
+    ],
+    "use_cases": [
+      "Enterprise applications",
+      "SaaS platforms",
+      "Partner integration"
+    ],
+    "complexity": "High",
+    "tags": [
+      "authentication",
+      "identity",
+      "sso"
+    ]
+  },
+  {
+    "id": "external-configuration-store",
+    "name": "External Configuration Store",
+    "category": "Cloud-Native",
+    "description": "Centralizes configuration information outside application deployment",
+    "when_to_use": [
+      "Dynamic configuration",
+      "Multiple environments",
+      "Centralized management"
+    ],
+    "benefits": [
+      "Dynamic updates",
+      "Environment consistency",
+      "Centralized management"
+    ],
+    "drawbacks": [
+      "External dependency",
+      "Network calls",
+      "Security concerns"
+    ],
+    "use_cases": [
+      "Feature flags",
+      "Environment settings",
+      "Application parameters"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "configuration",
+      "management",
+      "deployment"
+    ]
+  },
+  {
+    "id": "cache-aside",
+    "name": "Cache-Aside Pattern",
+    "category": "Caching",
+    "description": "Application manages cache directly alongside data store",
+    "when_to_use": [
+      "Read-heavy workloads",
+      "Cache control needed",
+      "Simple caching"
+    ],
+    "benefits": [
+      "Simple implementation",
+      "Cache control",
+      "Failure handling"
+    ],
+    "drawbacks": [
+      "Cache management overhead",
+      "Potential inconsistency",
+      "Application complexity"
+    ],
+    "use_cases": [
+      "Database caching",
+      "API response caching",
+      "Computed results"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "caching",
+      "performance",
+      "data-access"
+    ]
+  },
+  {
+    "id": "write-through-cache",
+    "name": "Write-Through Cache",
+    "category": "Caching",
+    "description": "Writes go through cache to underlying data store synchronously",
+    "when_to_use": [
+      "Write consistency required",
+      "Read-heavy workloads",
+      "Simple consistency"
+    ],
+    "benefits": [
+      "Data consistency",
+      "Simple implementation",
+      "Cache warming"
+    ],
+    "drawbacks": [
+      "Write latency",
+      "Cache complexity",
+      "Storage overhead"
+    ],
+    "use_cases": [
+      "Financial transactions",
+      "User profiles",
+      "Configuration data"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "caching",
+      "consistency",
+      "performance"
+    ]
+  },
+  {
+    "id": "write-behind-cache",
+    "name": "Write-Behind Cache",
+    "category": "Caching",
+    "description": "Writes to cache immediately, persists to store asynchronously",
+    "when_to_use": [
+      "High write performance",
+      "Acceptable eventual consistency",
+      "Batch processing"
+    ],
+    "benefits": [
+      "High write performance",
+      "Reduced database load",
+      "Batching opportunities"
+    ],
+    "drawbacks": [
+      "Data loss risk",
+      "Complexity",
+      "Eventual consistency"
+    ],
+    "use_cases": [
+      "Analytics data",
+      "Logging systems",
+      "Gaming leaderboards"
+    ],
+    "complexity": "High",
+    "tags": [
+      "caching",
+      "performance",
+      "async"
+    ]
+  },
+  {
+    "id": "read-through-cache",
+    "name": "Read-Through Cache",
+    "category": "Caching",
+    "description": "Cache automatically loads data from store on cache miss",
+    "when_to_use": [
+      "Transparent caching",
+      "Read optimization",
+      "Cache warming"
+    ],
+    "benefits": [
+      "Transparent caching",
+      "Automatic loading",
+      "Simplified application"
+    ],
+    "drawbacks": [
+      "Initial load latency",
+      "Cache complexity",
+      "Error handling"
+    ],
+    "use_cases": [
+      "Reference data",
+      "Product catalogs",
+      "User sessions"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "caching",
+      "transparency",
+      "loading"
+    ]
+  },
+  {
+    "id": "sharding",
+    "name": "Sharding Pattern",
+    "category": "Data Management",
+    "description": "Horizontally partitions data across multiple databases",
+    "when_to_use": [
+      "Large datasets",
+      "Horizontal scaling",
+      "Performance optimization"
+    ],
+    "benefits": [
+      "Improved performance",
+      "Horizontal scaling",
+      "Fault isolation"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Cross-shard queries",
+      "Rebalancing challenges"
+    ],
+    "use_cases": [
+      "User data",
+      "Time-series data",
+      "Geographic distribution"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-management",
+      "scaling",
+      "partitioning"
+    ]
+  },
+  {
+    "id": "index-table",
+    "name": "Index Table Pattern",
+    "category": "Data Management",
+    "description": "Creates secondary indexes for efficient querying",
+    "when_to_use": [
+      "Multiple query patterns",
+      "NoSQL databases",
+      "Query optimization"
+    ],
+    "benefits": [
+      "Query flexibility",
+      "Performance optimization",
+      "Multiple access patterns"
+    ],
+    "drawbacks": [
+      "Storage overhead",
+      "Consistency challenges",
+      "Maintenance complexity"
+    ],
+    "use_cases": [
+      "Product searches",
+      "User lookups",
+      "Analytics queries"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-management",
+      "indexing",
+      "querying"
+    ]
+  },
+  {
+    "id": "materialized-view",
+    "name": "Materialized View Pattern",
+    "category": "Data Management",
+    "description": "Pre-computes and stores query results for fast access",
+    "when_to_use": [
+      "Complex queries",
+      "Reporting needs",
+      "Performance optimization"
+    ],
+    "benefits": [
+      "Fast query performance",
+      "Reduced computation",
+      "Consistent results"
+    ],
+    "drawbacks": [
+      "Storage overhead",
+      "Refresh complexity",
+      "Staleness issues"
+    ],
+    "use_cases": [
+      "Dashboards",
+      "Reports",
+      "Analytics",
+      "Search results"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-management",
+      "performance",
+      "querying"
+    ]
+  },
+  {
+    "id": "event-streaming",
+    "name": "Event Streaming Pattern",
+    "category": "Data Management",
+    "description": "Continuously processes streams of events in real-time",
+    "when_to_use": [
+      "Real-time processing",
+      "Event-driven architecture",
+      "Data pipelines"
+    ],
+    "benefits": [
+      "Real-time processing",
+      "Scalability",
+      "Decoupling",
+      "Replay capability"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Ordering challenges",
+      "Error handling"
+    ],
+    "use_cases": [
+      "User activity tracking",
+      "IoT data processing",
+      "Financial transactions"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-management",
+      "streaming",
+      "real-time"
+    ]
+  },
+  {
+    "id": "queue-based-load-leveling",
+    "name": "Queue-Based Load Leveling",
+    "category": "Messaging",
+    "description": "Uses queue to buffer between services for load management",
+    "when_to_use": [
+      "Variable workloads",
+      "Load spikes",
+      "Service decoupling"
+    ],
+    "benefits": [
+      "Load smoothing",
+      "Service isolation",
+      "Scalability",
+      "Reliability"
+    ],
+    "drawbacks": [
+      "Increased latency",
+      "Queue management",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Order processing",
+      "Image processing",
+      "Batch jobs"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "messaging",
+      "load-balancing",
+      "queuing"
+    ]
+  },
+  {
+    "id": "competing-consumers",
+    "name": "Competing Consumers Pattern",
+    "category": "Messaging",
+    "description": "Multiple consumers process messages from same queue concurrently",
+    "when_to_use": [
+      "High throughput",
+      "Parallel processing",
+      "Scalability"
+    ],
+    "benefits": [
+      "High throughput",
+      "Automatic scaling",
+      "Fault tolerance"
+    ],
+    "drawbacks": [
+      "Message ordering",
+      "Load balancing",
+      "Error handling"
+    ],
+    "use_cases": [
+      "Order processing",
+      "Email sending",
+      "Data transformation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "messaging",
+      "concurrency",
+      "scalability"
+    ]
+  },
+  {
+    "id": "priority-queue",
+    "name": "Priority Queue Pattern",
+    "category": "Messaging",
+    "description": "Processes messages based on priority rather than arrival order",
+    "when_to_use": [
+      "Prioritized processing",
+      "SLA requirements",
+      "Critical tasks"
+    ],
+    "benefits": [
+      "Priority handling",
+      "SLA compliance",
+      "Resource optimization"
+    ],
+    "drawbacks": [
+      "Starvation risk",
+      "Complexity",
+      "Queue management"
+    ],
+    "use_cases": [
+      "Critical alerts",
+      "VIP customers",
+      "System maintenance"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "messaging",
+      "priority",
+      "queuing"
+    ]
+  },
+  {
+    "id": "throttling",
+    "name": "Throttling Pattern",
+    "category": "Cloud-Native",
+    "description": "Controls resource consumption by limiting request rates",
+    "when_to_use": [
+      "Rate limiting",
+      "Resource protection",
+      "Fair usage"
+    ],
+    "benefits": [
+      "Resource protection",
+      "Fair usage",
+      "Cost control",
+      "Stability"
+    ],
+    "drawbacks": [
+      "User experience impact",
+      "Configuration complexity",
+      "Bypass attempts"
+    ],
+    "use_cases": [
+      "API rate limiting",
+      "Resource quotas",
+      "Cost control"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "rate-limiting",
+      "resource-protection",
+      "control"
+    ]
+  },
+  {
+    "id": "static-content-hosting",
+    "name": "Static Content Hosting",
+    "category": "Cloud-Native",
+    "description": "Serves static content from optimized global distribution networks",
+    "when_to_use": [
+      "Static assets",
+      "Global distribution",
+      "Performance optimization"
+    ],
+    "benefits": [
+      "Global distribution",
+      "High performance",
+      "Cost efficiency",
+      "Scalability"
+    ],
+    "drawbacks": [
+      "Cache invalidation",
+      "Dynamic content limitations",
+      "Vendor dependency"
+    ],
+    "use_cases": [
+      "Web assets",
+      "Downloads",
+      "Media files",
+      "Documentation"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "cdn",
+      "static-content",
+      "performance"
+    ]
+  },
+  {
+    "id": "anti-corruption-layer",
+    "name": "Anti-Corruption Layer",
+    "category": "Cloud-Native",
+    "description": "Isolates different subsystems by translating between their models",
+    "when_to_use": [
+      "Legacy integration",
+      "Different models",
+      "System isolation"
+    ],
+    "benefits": [
+      "System isolation",
+      "Model protection",
+      "Integration flexibility"
+    ],
+    "drawbacks": [
+      "Additional complexity",
+      "Performance overhead",
+      "Maintenance"
+    ],
+    "use_cases": [
+      "Legacy system integration",
+      "Third-party APIs",
+      "System modernization"
+    ],
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "isolation",
+      "translation"
+    ]
+  },
+  {
+    "id": "backends-for-frontends",
+    "name": "Backends for Frontends (BFF)",
+    "category": "Cloud-Native",
+    "description": "Creates separate backend services for different frontend experiences",
+    "when_to_use": [
+      "Multiple client types",
+      "Different data needs",
+      "Client optimization"
+    ],
+    "benefits": [
+      "Client optimization",
+      "Team autonomy",
+      "Flexible APIs"
+    ],
+    "drawbacks": [
+      "Code duplication",
+      "Multiple services",
+      "Coordination complexity"
+    ],
+    "use_cases": [
+      "Mobile vs web apps",
+      "Partner APIs",
+      "Device-specific backends"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "api-design",
+      "client-optimization",
+      "separation"
+    ]
+  }
+]

@@ -1,23 +1,25 @@
-{
-  "id": "storage-packing",
-  "name": "Storage Packing",
-  "category": "Gas Optimization",
-  "description": "Pack variables into 256-bit storage slots Problem: Storage operations are expensive (20,000 gas per slot)",
-  "when_to_use": "Order variables by size to minimize slots used",
-  "benefits": "Significant gas savings (2,100-20,000 per slot), efficient",
-  "drawbacks": "Reduced readability, planning required, type constraints",
-  "use_cases": "All contracts with state variables, gas-sensitive apps",
-  "complexity": "Low",
-  "tags": [
-    "gas-optimization",
-    "storage",
-    "packing",
-    "solidity"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "struct Packed {\n    uint128 value1;  // 128 bits\n    uint64 timestamp; // 64 bits\n    uint32 count;     // 32 bits\n    uint16 flags;     // 16 bits\n    uint8 status;     // 8 bits\n    uint8 level;      // 8 bits\n    // Total: 256 bits = 1 slot instead of 6\n}"
+[
+  {
+    "id": "storage-packing",
+    "name": "Storage Packing",
+    "category": "Gas Optimization",
+    "description": "Pack variables into 256-bit storage slots Problem: Storage operations are expensive (20,000 gas per slot)",
+    "when_to_use": "Order variables by size to minimize slots used",
+    "benefits": "Significant gas savings (2,100-20,000 per slot), efficient",
+    "drawbacks": "Reduced readability, planning required, type constraints",
+    "use_cases": "All contracts with state variables, gas-sensitive apps",
+    "complexity": "Low",
+    "tags": [
+      "gas-optimization",
+      "storage",
+      "packing",
+      "solidity"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "struct Packed {\n    uint128 value1;  // 128 bits\n    uint64 timestamp; // 64 bits\n    uint32 count;     // 32 bits\n    uint16 flags;     // 16 bits\n    uint8 status;     // 8 bits\n    uint8 level;      // 8 bits\n    // Total: 256 bits = 1 slot instead of 6\n}"
+      }
     }
   }
-}
+]

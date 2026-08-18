@@ -1,16 +1,18 @@
-{
-  "id": "subclass-sandbox",
-  "name": "Subclass Sandbox",
-  "category": "Game Development",
-  "description": "Provides set of operations that subclass can combine to define behavior",
-  "when_to_use": "Power-up systems\nSpell systems\nAbility frameworks",
-  "benefits": "Code reuse\nFlexible combinations\nSafe operations",
-  "drawbacks": "Limited flexibility\nBase class complexity\nTight coupling",
-  "use_cases": "Power-ups\nSpells\nCharacter abilities",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "inheritance",
-    "framework"
-  ]
-}
+[
+  {
+    "id": "subclass-sandbox",
+    "name": "Subclass Sandbox",
+    "category": "Game Development",
+    "description": "Provides set of operations that subclass can combine to define behavior",
+    "when_to_use": "Power-up systems\nSpell systems\nAbility frameworks",
+    "benefits": "Code reuse\nFlexible combinations\nSafe operations",
+    "drawbacks": "Limited flexibility\nBase class complexity\nTight coupling",
+    "use_cases": "Power-ups\nSpells\nCharacter abilities",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "inheritance",
+      "framework"
+    ]
+  }
+]

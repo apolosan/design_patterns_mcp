@@ -1,16 +1,18 @@
-{
-  "id": "reflection-pattern",
-  "name": "Reflection Pattern",
-  "category": "AI/ML",
-  "description": "AI agent reflects on its own outputs to improve reasoning and catch errors",
-  "when_to_use": "Complex reasoning tasks\nError detection needed\nMulti-step problems",
-  "benefits": "Self-correction\nImproved accuracy\nBetter reasoning\nError detection",
-  "drawbacks": "Increased compute cost\nHigher latency\nComplexity",
-  "use_cases": "Code generation\nMathematical reasoning\nComplex analysis",
-  "complexity": "High",
-  "tags": [
-    "reflection",
-    "self-correction",
-    "reasoning"
-  ]
-}
+[
+  {
+    "id": "reflection-pattern",
+    "name": "Reflection Pattern",
+    "category": "AI/ML",
+    "description": "AI agent reflects on its own outputs to improve reasoning and catch errors",
+    "when_to_use": "Complex reasoning tasks\nError detection needed\nMulti-step problems",
+    "benefits": "Self-correction\nImproved accuracy\nBetter reasoning\nError detection",
+    "drawbacks": "Increased compute cost\nHigher latency\nComplexity",
+    "use_cases": "Code generation\nMathematical reasoning\nComplex analysis",
+    "complexity": "High",
+    "tags": [
+      "reflection",
+      "self-correction",
+      "reasoning"
+    ]
+  }
+]

@@ -1,24 +1,26 @@
-{
-  "id": "auto-compounding",
-  "name": "Auto-Compounding",
-  "category": "DeFi Yield",
-  "description": "Automated harvest and reinvestment of yields",
-  "when_to_use": "Yield aggregators, vault strategies, gas optimization",
-  "benefits": "Gas-efficient, higher APY, automated",
-  "drawbacks": "Smart contract risk, keeper dependency, fees",
-  "use_cases": "Yearn auto-compound, Beefy vaults, yield optimization",
-  "complexity": "Medium",
-  "tags": [
-    "defi",
-    "yield",
-    "auto-compound",
-    "vault",
-    "harvest"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Auto-Compound: harvest + reinvest\nfunction harvest() external {\n    uint256 rewards = rewardToken.balanceOf(address(this));\n    rewardToken.approve(dex, rewards);\n    uint256 newAssets = dex.swap(rewardToken, asset, rewards);\n    _deposit(newAssets); // Reinvest\n    emit Harvested(rewards, newAssets);\n}"
+[
+  {
+    "id": "auto-compounding",
+    "name": "Auto-Compounding",
+    "category": "DeFi Yield",
+    "description": "Automated harvest and reinvestment of yields",
+    "when_to_use": "Yield aggregators, vault strategies, gas optimization",
+    "benefits": "Gas-efficient, higher APY, automated",
+    "drawbacks": "Smart contract risk, keeper dependency, fees",
+    "use_cases": "Yearn auto-compound, Beefy vaults, yield optimization",
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "yield",
+      "auto-compound",
+      "vault",
+      "harvest"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Auto-Compound: harvest + reinvest\nfunction harvest() external {\n    uint256 rewards = rewardToken.balanceOf(address(this));\n    rewardToken.approve(dex, rewards);\n    uint256 newAssets = dex.swap(rewardToken, asset, rewards);\n    _deposit(newAssets); // Reinvest\n    emit Harvested(rewards, newAssets);\n}"
+      }
     }
   }
-}
+]

@@ -1,24 +1,26 @@
-{
-  "id": "react-elements-pattern",
-  "name": "React Elements Pattern",
-  "category": "React Fundamentals",
-  "description": "Lightweight objects representing DOM nodes. React elements are immutable and describe what you see on screen.",
-  "when_to_use": "Understanding React rendering, custom createElement usage, JSX transpilation",
-  "benefits": "Performance (lightweight objects), immutability, efficient diffing",
-  "drawbacks": "Immutable (must create new elements for updates), indirect DOM access",
-  "use_cases": "Component rendering, Virtual DOM, reconciliation process",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "elements",
-    "virtual-dom",
-    "jsx",
-    "reconciliation"
-  ],
-  "examples": {
-    "jsx": {
-      "language": "jsx",
-      "code": "// JSX is syntactic sugar for React.createElement\nconst elementJSX = <h1 className=\"title\">Hello</h1>;\n\n// Transpiles to:\nconst elementJS = React.createElement(\n  'h1',\n  { className: 'title' },\n  'Hello'\n);\n\n// Element structure (simplified):\nconst element = {\n  type: 'h1',\n  props: {\n    className: 'title',\n    children: 'Hello'\n  }\n};\n\n// Component element\nconst ComponentElement = () => {\n  return React.createElement(\n    'div',\n    null,\n    React.createElement('h1', null, 'Title'),\n    React.createElement('p', null, 'Paragraph')\n  );\n};"
+[
+  {
+    "id": "react-elements-pattern",
+    "name": "React Elements Pattern",
+    "category": "React Fundamentals",
+    "description": "Lightweight objects representing DOM nodes. React elements are immutable and describe what you see on screen.",
+    "when_to_use": "Understanding React rendering, custom createElement usage, JSX transpilation",
+    "benefits": "Performance (lightweight objects), immutability, efficient diffing",
+    "drawbacks": "Immutable (must create new elements for updates), indirect DOM access",
+    "use_cases": "Component rendering, Virtual DOM, reconciliation process",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "elements",
+      "virtual-dom",
+      "jsx",
+      "reconciliation"
+    ],
+    "examples": {
+      "jsx": {
+        "language": "jsx",
+        "code": "// JSX is syntactic sugar for React.createElement\nconst elementJSX = <h1 className=\"title\">Hello</h1>;\n\n// Transpiles to:\nconst elementJS = React.createElement(\n  'h1',\n  { className: 'title' },\n  'Hello'\n);\n\n// Element structure (simplified):\nconst element = {\n  type: 'h1',\n  props: {\n    className: 'title',\n    children: 'Hello'\n  }\n};\n\n// Component element\nconst ComponentElement = () => {\n  return React.createElement(\n    'div',\n    null,\n    React.createElement('h1', null, 'Title'),\n    React.createElement('p', null, 'Paragraph')\n  );\n};"
+      }
     }
   }
-}
+]

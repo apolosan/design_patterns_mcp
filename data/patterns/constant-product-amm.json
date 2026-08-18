@@ -1,24 +1,26 @@
-{
-  "id": "constant-product-amm",
-  "name": "Constant Product AMM",
-  "category": "DeFi AMM",
-  "description": "Uniswap V2 x * y = k formula for DEX Problem: Decentralized exchange without order books",
-  "when_to_use": "Constant product maintains liquidity invariant",
-  "benefits": "Simple, always liquid, permissionless, proven",
-  "drawbacks": "Impermanent loss, slippage, capital inefficiency",
-  "use_cases": "Token swaps, price discovery, DEX, liquidity pools",
-  "complexity": "Medium",
-  "tags": [
-    "defi",
-    "amm",
-    "dex",
-    "uniswap",
-    "liquidity"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "function swap(uint256 amountIn) external {\n    uint256 amountInWithFee = amountIn * 997; // 0.3% fee\n    uint256 numerator = amountInWithFee * reserveOut;\n    uint256 denominator = (reserveIn * 1000) + amountInWithFee;\n    uint256 amountOut = numerator / denominator;\n}"
+[
+  {
+    "id": "constant-product-amm",
+    "name": "Constant Product AMM",
+    "category": "DeFi AMM",
+    "description": "Uniswap V2 x * y = k formula for DEX Problem: Decentralized exchange without order books",
+    "when_to_use": "Constant product maintains liquidity invariant",
+    "benefits": "Simple, always liquid, permissionless, proven",
+    "drawbacks": "Impermanent loss, slippage, capital inefficiency",
+    "use_cases": "Token swaps, price discovery, DEX, liquidity pools",
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "amm",
+      "dex",
+      "uniswap",
+      "liquidity"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "function swap(uint256 amountIn) external {\n    uint256 amountInWithFee = amountIn * 997; // 0.3% fee\n    uint256 numerator = amountInWithFee * reserveOut;\n    uint256 denominator = (reserveIn * 1000) + amountInWithFee;\n    uint256 amountOut = numerator / denominator;\n}"
+      }
     }
   }
-}
+]

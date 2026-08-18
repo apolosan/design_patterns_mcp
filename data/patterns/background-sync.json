@@ -1,16 +1,18 @@
-{
-  "id": "background-sync",
-  "name": "Background Sync Pattern",
-  "category": "Mobile",
-  "description": "Synchronizes data in background to keep app updated without user intervention",
-  "when_to_use": "Data synchronization\nReal-time updates\nBackground processing",
-  "benefits": "Up-to-date data\nAutomatic synchronization\nBetter user experience",
-  "drawbacks": "Battery consumption\nBackground processing limits\nComplex implementation",
-  "use_cases": "Social apps\nMessaging\nContent updates",
-  "complexity": "High",
-  "tags": [
-    "mobile",
-    "sync",
-    "background"
-  ]
-}
+[
+  {
+    "id": "background-sync",
+    "name": "Background Sync Pattern",
+    "category": "Mobile",
+    "description": "Synchronizes data in background to keep app updated without user intervention",
+    "when_to_use": "Data synchronization\nReal-time updates\nBackground processing",
+    "benefits": "Up-to-date data\nAutomatic synchronization\nBetter user experience",
+    "drawbacks": "Battery consumption\nBackground processing limits\nComplex implementation",
+    "use_cases": "Social apps\nMessaging\nContent updates",
+    "complexity": "High",
+    "tags": [
+      "mobile",
+      "sync",
+      "background"
+    ]
+  }
+]

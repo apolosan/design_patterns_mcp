@@ -1,17 +1,19 @@
-{
-  "id": "static-joiner",
-  "name": "Static Joiner",
-  "category": "Data Value",
-  "description": "The Static Joiner performs joins with static reference data.",
-  "when_to_use": "[\"Static enrichment data\",\"Reference data joins\"]",
-  "benefits": "[\"Simple implementation\",\"Efficient for static data\"]",
-  "drawbacks": "[\"Not suitable for dynamic data\",\"Data freshness issues\"]",
-  "use_cases": "[\"Reference data enrichment\",\"Static lookups\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"data-value\"",
-    "\"joiner\"",
-    "\"static\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "static-joiner",
+    "name": "Static Joiner",
+    "category": "Data Value",
+    "description": "The Static Joiner performs joins with static reference data.",
+    "when_to_use": "[\"Static enrichment data\",\"Reference data joins\"]",
+    "benefits": "[\"Simple implementation\",\"Efficient for static data\"]",
+    "drawbacks": "[\"Not suitable for dynamic data\",\"Data freshness issues\"]",
+    "use_cases": "[\"Reference data enrichment\",\"Static lookups\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"data-value\"",
+      "\"joiner\"",
+      "\"static\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

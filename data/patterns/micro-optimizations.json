@@ -1,22 +1,24 @@
-{
-  "id": "micro-optimizations",
-  "name": "Micro-Optimization Pattern",
-  "category": "Performance",
-  "description": "Small code optimizations that improve performance in critical paths",
-  "when_to_use": "Performance-critical code\nHot paths\nOptimization targets",
-  "benefits": "Improved performance\nReduced overhead\nBetter efficiency",
-  "drawbacks": "Code complexity\nMaintainability\nPlatform dependency",
-  "use_cases": "Inner loops\nFrequently called functions\nCritical algorithms",
-  "complexity": "High",
-  "tags": [
-    "performance",
-    "optimization",
-    "efficiency"
-  ],
-  "examples": {
-    "note": {
-      "language": "note",
-      "code": "⚠️ Advanced: Low-level optimizations (cache-friendly code, SIMD, loop unrolling). Highly platform and compiler-specific."
+[
+  {
+    "id": "micro-optimizations",
+    "name": "Micro-Optimization Pattern",
+    "category": "Performance",
+    "description": "Small code optimizations that improve performance in critical paths",
+    "when_to_use": "Performance-critical code\nHot paths\nOptimization targets",
+    "benefits": "Improved performance\nReduced overhead\nBetter efficiency",
+    "drawbacks": "Code complexity\nMaintainability\nPlatform dependency",
+    "use_cases": "Inner loops\nFrequently called functions\nCritical algorithms",
+    "complexity": "High",
+    "tags": [
+      "performance",
+      "optimization",
+      "efficiency"
+    ],
+    "examples": {
+      "note": {
+        "language": "note",
+        "code": "⚠️ Advanced: Low-level optimizations (cache-friendly code, SIMD, loop unrolling). Highly platform and compiler-specific."
+      }
     }
   }
-}
+]

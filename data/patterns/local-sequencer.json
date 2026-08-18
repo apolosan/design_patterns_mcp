@@ -1,17 +1,19 @@
-{
-  "id": "local-sequencer",
-  "name": "Local Sequencer",
-  "category": "Data Flow",
-  "description": "The Local Sequencer manages task sequences within a single job.",
-  "when_to_use": "[\"Single job orchestration\",\"Local task dependencies\"]",
-  "benefits": "[\"Simple orchestration\",\"Local control\"]",
-  "drawbacks": "[\"Limited to single job\",\"No distributed coordination\"]",
-  "use_cases": "[\"ETL pipelines\",\"Single-job workflows\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"data-flow\"",
-    "\"sequencer\"",
-    "\"local\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "local-sequencer",
+    "name": "Local Sequencer",
+    "category": "Data Flow",
+    "description": "The Local Sequencer manages task sequences within a single job.",
+    "when_to_use": "[\"Single job orchestration\",\"Local task dependencies\"]",
+    "benefits": "[\"Simple orchestration\",\"Local control\"]",
+    "drawbacks": "[\"Limited to single job\",\"No distributed coordination\"]",
+    "use_cases": "[\"ETL pipelines\",\"Single-job workflows\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"data-flow\"",
+      "\"sequencer\"",
+      "\"local\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

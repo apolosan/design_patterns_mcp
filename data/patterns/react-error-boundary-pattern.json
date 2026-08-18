@@ -1,25 +1,27 @@
-{
-  "id": "react-error-boundary-pattern",
-  "name": "Error Boundary Pattern",
-  "category": "React Error Handling",
-  "description": "Catch and handle React component errors gracefully with error boundaries.",
-  "when_to_use": "Production apps, error handling, fallback UI, error logging",
-  "benefits": "Prevents app crashes, better UX, error tracking integration",
-  "drawbacks": "Class component required (until React 19), does not catch event handler errors",
-  "use_cases": "Component errors, async errors, API failures, graceful degradation",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "error-handling",
-    "error-boundary",
-    "resilience",
-    "production",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { Component, ReactNode } from 'react';\n\ninterface Props {\n  children: ReactNode;\n  fallback?: ReactNode;\n  onError?: (error: Error, errorInfo: ErrorInfo) => void;\n}\n\ninterface State {\n  hasError: boolean;\n  error: Error | null;\n}\n\nclass ErrorBoundary extends Component<Props, State> {\n  constructor(props: Props) {\n    super(props);\n    this.state = { hasError: false, error: null };\n  }\n  \n  static getDerivedStateFromError(error: Error): State {\n    return { hasError: true, error };\n  }\n  \n  componentDidCatch(error: Error, errorInfo: ErrorInfo) {\n    console.error('Error caught by boundary:', error, errorInfo);\n    this.props.onError?.(error, errorInfo);\n  }\n  \n  render() {\n    if (this.state.hasError) {\n      return this.props.fallback || (\n        <div>\n          <h2>Something went wrong</h2>\n          <details>\n            <summary>Error details</summary>\n            <pre>{this.state.error?.message}</pre>\n          </details>\n        </div>\n      );\n    }\n    \n    return this.props.children;\n  }\n}\n\nfunction App() {\n  return (\n    <ErrorBoundary \n      fallback={<ErrorFallback />}\n      onError={(error) => {\n        sendToErrorTracking(error);\n      }}\n    >\n      <Dashboard />\n    </ErrorBoundary>\n  );\n}\n\nfunction Dashboard() {\n  return (\n    <div>\n      <ErrorBoundary fallback={<div>Widget failed</div>}>\n        <Widget />\n      </ErrorBoundary>\n      \n      <ErrorBoundary fallback={<div>Chart failed</div>}>\n        <Chart />\n      </ErrorBoundary>\n    </div>\n  );\n}\n\nfunction BuggyComponent() {\n  const [count, setCount] = useState(0);\n  \n  if (count === 5) {\n    throw new Error('I crashed!');\n  }\n  \n  return <button onClick={() => setCount(c => c + 1)}>{count}</button>;\n}"
+[
+  {
+    "id": "react-error-boundary-pattern",
+    "name": "Error Boundary Pattern",
+    "category": "React Error Handling",
+    "description": "Catch and handle React component errors gracefully with error boundaries.",
+    "when_to_use": "Production apps, error handling, fallback UI, error logging",
+    "benefits": "Prevents app crashes, better UX, error tracking integration",
+    "drawbacks": "Class component required (until React 19), does not catch event handler errors",
+    "use_cases": "Component errors, async errors, API failures, graceful degradation",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "error-handling",
+      "error-boundary",
+      "resilience",
+      "production",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { Component, ReactNode } from 'react';\n\ninterface Props {\n  children: ReactNode;\n  fallback?: ReactNode;\n  onError?: (error: Error, errorInfo: ErrorInfo) => void;\n}\n\ninterface State {\n  hasError: boolean;\n  error: Error | null;\n}\n\nclass ErrorBoundary extends Component<Props, State> {\n  constructor(props: Props) {\n    super(props);\n    this.state = { hasError: false, error: null };\n  }\n  \n  static getDerivedStateFromError(error: Error): State {\n    return { hasError: true, error };\n  }\n  \n  componentDidCatch(error: Error, errorInfo: ErrorInfo) {\n    console.error('Error caught by boundary:', error, errorInfo);\n    this.props.onError?.(error, errorInfo);\n  }\n  \n  render() {\n    if (this.state.hasError) {\n      return this.props.fallback || (\n        <div>\n          <h2>Something went wrong</h2>\n          <details>\n            <summary>Error details</summary>\n            <pre>{this.state.error?.message}</pre>\n          </details>\n        </div>\n      );\n    }\n    \n    return this.props.children;\n  }\n}\n\nfunction App() {\n  return (\n    <ErrorBoundary \n      fallback={<ErrorFallback />}\n      onError={(error) => {\n        sendToErrorTracking(error);\n      }}\n    >\n      <Dashboard />\n    </ErrorBoundary>\n  );\n}\n\nfunction Dashboard() {\n  return (\n    <div>\n      <ErrorBoundary fallback={<div>Widget failed</div>}>\n        <Widget />\n      </ErrorBoundary>\n      \n      <ErrorBoundary fallback={<div>Chart failed</div>}>\n        <Chart />\n      </ErrorBoundary>\n    </div>\n  );\n}\n\nfunction BuggyComponent() {\n  const [count, setCount] = useState(0);\n  \n  if (count === 5) {\n    throw new Error('I crashed!');\n  }\n  \n  return <button onClick={() => setCount(c => c + 1)}>{count}</button>;\n}"
+      }
     }
   }
-}
+]

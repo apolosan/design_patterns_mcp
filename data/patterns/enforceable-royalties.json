@@ -1,24 +1,26 @@
-{
-  "id": "enforceable-royalties",
-  "name": "On-Chain Enforceable Royalties",
-  "category": "NFT Royalty",
-  "description": "Restrict transfers to approved marketplaces that honor royalties. Cannot be bypassed.",
-  "when_to_use": "Creator-focused projects prioritizing royalty enforcement over liquidity",
-  "benefits": "Cannot be bypassed, guaranteed creator revenue",
-  "drawbacks": "Restricts transferability, reduces liquidity, marketplace whitelist required",
-  "use_cases": "Creator-first platforms, art with mandatory royalties",
-  "complexity": "Medium",
-  "tags": [
-    "nft",
-    "royalty",
-    "enforceable",
-    "creator-economy",
-    "restriction"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract EnforceableRoyaltyNFT is ERC721 {\n    mapping(address => bool) public approvedMarketplaces;\n    \n    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override {\n        if (from != address(0) && to != address(0)) { // Not mint/burn\n            require(\n                approvedMarketplaces[msg.sender] || \n                msg.sender == from, \n                \"Must use approved marketplace\"\n            );\n        }\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
+[
+  {
+    "id": "enforceable-royalties",
+    "name": "On-Chain Enforceable Royalties",
+    "category": "NFT Royalty",
+    "description": "Restrict transfers to approved marketplaces that honor royalties. Cannot be bypassed.",
+    "when_to_use": "Creator-focused projects prioritizing royalty enforcement over liquidity",
+    "benefits": "Cannot be bypassed, guaranteed creator revenue",
+    "drawbacks": "Restricts transferability, reduces liquidity, marketplace whitelist required",
+    "use_cases": "Creator-first platforms, art with mandatory royalties",
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "royalty",
+      "enforceable",
+      "creator-economy",
+      "restriction"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract EnforceableRoyaltyNFT is ERC721 {\n    mapping(address => bool) public approvedMarketplaces;\n    \n    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override {\n        if (from != address(0) && to != address(0)) { // Not mint/burn\n            require(\n                approvedMarketplaces[msg.sender] || \n                msg.sender == from, \n                \"Must use approved marketplace\"\n            );\n        }\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
+      }
     }
   }
-}
+]

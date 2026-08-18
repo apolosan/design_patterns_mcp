@@ -1,16 +1,18 @@
-{
-  "id": "progressive-web-app",
-  "name": "Progressive Web App (PWA)",
-  "category": "Mobile",
-  "description": "Web application that uses modern web capabilities to provide app-like experience",
-  "when_to_use": "Cross-platform deployment\nApp store alternatives\nWeb-first approach",
-  "benefits": "Cross-platform\nNo app store dependency\nEasy updates",
-  "drawbacks": "Limited native features\nBrowser dependency\nPerformance limitations",
-  "use_cases": "Cross-platform apps\nContent-heavy apps\nBusiness applications",
-  "complexity": "Medium",
-  "tags": [
-    "mobile",
-    "pwa",
-    "web"
-  ]
-}
+[
+  {
+    "id": "progressive-web-app",
+    "name": "Progressive Web App (PWA)",
+    "category": "Mobile",
+    "description": "Web application that uses modern web capabilities to provide app-like experience",
+    "when_to_use": "Cross-platform deployment\nApp store alternatives\nWeb-first approach",
+    "benefits": "Cross-platform\nNo app store dependency\nEasy updates",
+    "drawbacks": "Limited native features\nBrowser dependency\nPerformance limitations",
+    "use_cases": "Cross-platform apps\nContent-heavy apps\nBusiness applications",
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "pwa",
+      "web"
+    ]
+  }
+]

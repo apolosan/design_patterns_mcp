@@ -1,26 +1,28 @@
-{
-  "id": "react-performance-patterns",
-  "name": "React Performance Optimization Patterns",
-  "category": "React Performance",
-  "description": "Techniques for optimizing React performance: React.memo, lazy loading, code splitting.",
-  "when_to_use": "Performance issues, large lists, heavy components, bundle size",
-  "benefits": "Better performance, smaller bundles, faster initial load",
-  "drawbacks": "Complexity, premature optimization risks",
-  "use_cases": "Component memoization, route-based splitting, dynamic imports, virtual scrolling",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "performance",
-    "optimization",
-    "memo",
-    "lazy",
-    "code-splitting",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { memo, lazy, Suspense } from 'react';\nimport { useVirtualizer } from '@tanstack/react-virtual';\n\nconst HeavyComponent = lazy(() => import('./HeavyComponent'));\n\nconst ExpensiveItem = memo(({ item, onClick }: ItemProps) => {\n  console.log('ExpensiveItem rendered:', item.id);\n  return (\n    <div onClick={() => onClick(item.id)}>\n      {item.name} - {item.price}\n    </div>\n  );\n});\n\nfunction ProductList({ products }: Props) {\n  const handleClick = useCallback((id: string) => {\n    console.log('Clicked:', id);\n  }, []);\n  \n  return (\n    <div>\n      {products.map(product => (\n        <ExpensiveItem \n          key={product.id} \n          item={product} \n          onClick={handleClick} \n        />\n      ))}\n    </div>\n  );\n}\n\nfunction App() {\n  return (\n    <div>\n      <Suspense fallback={<div>Loading...</div>}>\n        <HeavyComponent />\n      </Suspense>\n    </div>\n  );\n}\n\nfunction VirtualList({ items }: { items: Item[] }) {\n  const parentRef = useRef<HTMLDivElement>(null);\n  \n  const virtualizer = useVirtualizer({\n    count: items.length,\n    getScrollElement: () => parentRef.current,\n    estimateSize: () => 50,\n    overscan: 5\n  });\n  \n  return (\n    <div ref={parentRef} style={{ height: '400px', overflow: 'auto' }}>\n      <div style={{ height: virtualizer.getTotalSize() }}>\n        {virtualizer.getVirtualItems().map(virtualItem => (\n          <div\n            key={virtualItem.key}\n            style={{\n              position: 'absolute',\n              top: 0,\n              left: 0,\n              width: '100%',\n              height: virtualItem.size,\n              transform: `translateY(${virtualItem.start}px)`\n            }}\n          >\n            {items[virtualItem.index].name}\n          </div>\n        ))}\n      </div>\n    </div>\n  );\n}"
+[
+  {
+    "id": "react-performance-patterns",
+    "name": "React Performance Optimization Patterns",
+    "category": "React Performance",
+    "description": "Techniques for optimizing React performance: React.memo, lazy loading, code splitting.",
+    "when_to_use": "Performance issues, large lists, heavy components, bundle size",
+    "benefits": "Better performance, smaller bundles, faster initial load",
+    "drawbacks": "Complexity, premature optimization risks",
+    "use_cases": "Component memoization, route-based splitting, dynamic imports, virtual scrolling",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "performance",
+      "optimization",
+      "memo",
+      "lazy",
+      "code-splitting",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { memo, lazy, Suspense } from 'react';\nimport { useVirtualizer } from '@tanstack/react-virtual';\n\nconst HeavyComponent = lazy(() => import('./HeavyComponent'));\n\nconst ExpensiveItem = memo(({ item, onClick }: ItemProps) => {\n  console.log('ExpensiveItem rendered:', item.id);\n  return (\n    <div onClick={() => onClick(item.id)}>\n      {item.name} - {item.price}\n    </div>\n  );\n});\n\nfunction ProductList({ products }: Props) {\n  const handleClick = useCallback((id: string) => {\n    console.log('Clicked:', id);\n  }, []);\n  \n  return (\n    <div>\n      {products.map(product => (\n        <ExpensiveItem \n          key={product.id} \n          item={product} \n          onClick={handleClick} \n        />\n      ))}\n    </div>\n  );\n}\n\nfunction App() {\n  return (\n    <div>\n      <Suspense fallback={<div>Loading...</div>}>\n        <HeavyComponent />\n      </Suspense>\n    </div>\n  );\n}\n\nfunction VirtualList({ items }: { items: Item[] }) {\n  const parentRef = useRef<HTMLDivElement>(null);\n  \n  const virtualizer = useVirtualizer({\n    count: items.length,\n    getScrollElement: () => parentRef.current,\n    estimateSize: () => 50,\n    overscan: 5\n  });\n  \n  return (\n    <div ref={parentRef} style={{ height: '400px', overflow: 'auto' }}>\n      <div style={{ height: virtualizer.getTotalSize() }}>\n        {virtualizer.getVirtualItems().map(virtualItem => (\n          <div\n            key={virtualItem.key}\n            style={{\n              position: 'absolute',\n              top: 0,\n              left: 0,\n              width: '100%',\n              height: virtualItem.size,\n              transform: `translateY(${virtualItem.start}px)`\n            }}\n          >\n            {items[virtualItem.index].name}\n          </div>\n        ))}\n      </div>\n    </div>\n  );\n}"
+      }
     }
   }
-}
+]

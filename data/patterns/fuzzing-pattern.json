@@ -1,25 +1,27 @@
-{
-  "id": "fuzzing-pattern",
-  "name": "Fuzzing Pattern",
-  "category": "Development & Testing",
-  "description": "Property-based testing with random inputs. Discovers edge cases automatically.",
-  "when_to_use": "Security testing, input validation, edge case discovery",
-  "benefits": "Finds unexpected bugs, automated, comprehensive coverage",
-  "drawbacks": "Requires good invariants, slow, needs interpretation",
-  "use_cases": "DeFi invariant testing, overflow detection, edge cases",
-  "complexity": "High",
-  "tags": [
-    "testing",
-    "fuzzing",
-    "foundry",
-    "echidna",
-    "security",
-    "property-based"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Foundry fuzzing\ncontract TokenFuzzTest is Test {\n    Token token;\n    \n    function setUp() public {\n        token = new Token();\n    }\n    \n    // Foundry automatically generates random values\n    function testFuzz_TransferDoesNotChangeSupply(\n        address from,\n        address to,\n        uint256 amount\n    ) public {\n        vm.assume(from != to);\n        vm.assume(amount <= token.balanceOf(from));\n        \n        uint256 supplyBefore = token.totalSupply();\n        vm.prank(from);\n        token.transfer(to, amount);\n        assertEq(token.totalSupply(), supplyBefore);\n    }\n}"
+[
+  {
+    "id": "fuzzing-pattern",
+    "name": "Fuzzing Pattern",
+    "category": "Development & Testing",
+    "description": "Property-based testing with random inputs. Discovers edge cases automatically.",
+    "when_to_use": "Security testing, input validation, edge case discovery",
+    "benefits": "Finds unexpected bugs, automated, comprehensive coverage",
+    "drawbacks": "Requires good invariants, slow, needs interpretation",
+    "use_cases": "DeFi invariant testing, overflow detection, edge cases",
+    "complexity": "High",
+    "tags": [
+      "testing",
+      "fuzzing",
+      "foundry",
+      "echidna",
+      "security",
+      "property-based"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Foundry fuzzing\ncontract TokenFuzzTest is Test {\n    Token token;\n    \n    function setUp() public {\n        token = new Token();\n    }\n    \n    // Foundry automatically generates random values\n    function testFuzz_TransferDoesNotChangeSupply(\n        address from,\n        address to,\n        uint256 amount\n    ) public {\n        vm.assume(from != to);\n        vm.assume(amount <= token.balanceOf(from));\n        \n        uint256 supplyBefore = token.totalSupply();\n        vm.prank(from);\n        token.transfer(to, amount);\n        assertEq(token.totalSupply(), supplyBefore);\n    }\n}"
+      }
     }
   }
-}
+]

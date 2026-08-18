@@ -1,16 +1,18 @@
-{
-  "id": "zipper-pattern",
-  "name": "Zipper Pattern",
-  "category": "Functional",
-  "description": "Data structure for efficient navigation and updating of immutable structures",
-  "when_to_use": "Tree navigation\nImmutable updates\nUndo/redo operations",
-  "benefits": "Efficient navigation\nImmutable updates\nHistory tracking",
-  "drawbacks": "Complex implementation\nMemory overhead\nLearning curve",
-  "use_cases": "Text editors\nFile system navigation\nTree manipulation",
-  "complexity": "High",
-  "tags": [
-    "functional",
-    "navigation",
-    "immutable"
-  ]
-}
+[
+  {
+    "id": "zipper-pattern",
+    "name": "Zipper Pattern",
+    "category": "Functional",
+    "description": "Data structure for efficient navigation and updating of immutable structures",
+    "when_to_use": "Tree navigation\nImmutable updates\nUndo/redo operations",
+    "benefits": "Efficient navigation\nImmutable updates\nHistory tracking",
+    "drawbacks": "Complex implementation\nMemory overhead\nLearning curve",
+    "use_cases": "Text editors\nFile system navigation\nTree manipulation",
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "navigation",
+      "immutable"
+    ]
+  }
+]

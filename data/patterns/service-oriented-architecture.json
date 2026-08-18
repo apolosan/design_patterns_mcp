@@ -1,22 +1,24 @@
-{
-  "id": "service-oriented-architecture",
-  "name": "Service-Oriented Architecture",
-  "category": "Architectural",
-  "description": "Structures application as a collection of loosely coupled services",
-  "when_to_use": "Enterprise integration\nLegacy system integration\nService reusability",
-  "benefits": "Reusability\nInteroperability\nFlexibility\nService governance",
-  "drawbacks": "Performance overhead\nComplexity\nService management",
-  "use_cases": "Enterprise systems\nB2B integration\nLegacy modernization",
-  "complexity": "High",
-  "tags": [
-    "services",
-    "enterprise",
-    "integration"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// SOA: reusable business services via standard protocols\n\n// Service Interface (WSDL-like contract)\ninterface IUserService {\n  createUser(request: CreateUserRequest): Promise<CreateUserResponse>;\n  getUser(request: GetUserRequest): Promise<GetUserResponse>;\n}\n\n// DTOs (Data Transfer Objects)\ninterface CreateUserRequest {\n  email: string;\n  name: string;\n}\n\ninterface CreateUserResponse {\n  userId: string;\n  success: boolean;\n}\n\ninterface GetUserRequest {\n  userId: string;\n}\n\ninterface GetUserResponse {\n  userId: string;\n  email: string;\n  name: string;\n}\n\n// Service Implementation\nclass UserService implements IUserService {\n  async createUser(request: CreateUserRequest): Promise<CreateUserResponse> {\n    // Validate using business rules\n    if (!request.email.includes('@')) {\n      throw new Error('Invalid email');\n    }\n    \n    const userId = crypto.randomUUID();\n    // Save to database\n    await db.save({ id: userId, ...request });\n    \n    return { userId, success: true };\n  }\n  \n  async getUser(request: GetUserRequest): Promise<GetUserResponse> {\n    const user = await db.findById(request.userId);\n    if (!user) throw new Error('User not found');\n    \n    return {\n      userId: user.id,\n      email: user.email,\n      name: user.name\n    };\n  }\n}\n\n// Service Registry (discovery)\nclass ServiceRegistry {\n  private services = new Map<string, any>();\n  \n  register(name: string, service: any) {\n    this.services.set(name, service);\n  }\n  \n  getService(name: string) {\n    return this.services.get(name);\n  }\n}\n\n// ESB (Enterprise Service Bus) for orchestration\nclass ServiceBus {\n  constructor(private registry: ServiceRegistry) {}\n  \n  async invoke(serviceName: string, operation: string, request: any) {\n    const service = this.registry.getService(serviceName);\n    return service[operation](request);\n  }\n}\n\n// Usage: services communicate through standard contracts\nconst registry = new ServiceRegistry();\nregistry.register('UserService', new UserService());\n\nconst bus = new ServiceBus(registry);\nconst response = await bus.invoke('UserService', 'createUser', {\n  email: 'user@example.com',\n  name: 'John'\n});"
+[
+  {
+    "id": "service-oriented-architecture",
+    "name": "Service-Oriented Architecture",
+    "category": "Architectural",
+    "description": "Structures application as a collection of loosely coupled services",
+    "when_to_use": "Enterprise integration\nLegacy system integration\nService reusability",
+    "benefits": "Reusability\nInteroperability\nFlexibility\nService governance",
+    "drawbacks": "Performance overhead\nComplexity\nService management",
+    "use_cases": "Enterprise systems\nB2B integration\nLegacy modernization",
+    "complexity": "High",
+    "tags": [
+      "services",
+      "enterprise",
+      "integration"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// SOA: reusable business services via standard protocols\n\n// Service Interface (WSDL-like contract)\ninterface IUserService {\n  createUser(request: CreateUserRequest): Promise<CreateUserResponse>;\n  getUser(request: GetUserRequest): Promise<GetUserResponse>;\n}\n\n// DTOs (Data Transfer Objects)\ninterface CreateUserRequest {\n  email: string;\n  name: string;\n}\n\ninterface CreateUserResponse {\n  userId: string;\n  success: boolean;\n}\n\ninterface GetUserRequest {\n  userId: string;\n}\n\ninterface GetUserResponse {\n  userId: string;\n  email: string;\n  name: string;\n}\n\n// Service Implementation\nclass UserService implements IUserService {\n  async createUser(request: CreateUserRequest): Promise<CreateUserResponse> {\n    // Validate using business rules\n    if (!request.email.includes('@')) {\n      throw new Error('Invalid email');\n    }\n    \n    const userId = crypto.randomUUID();\n    // Save to database\n    await db.save({ id: userId, ...request });\n    \n    return { userId, success: true };\n  }\n  \n  async getUser(request: GetUserRequest): Promise<GetUserResponse> {\n    const user = await db.findById(request.userId);\n    if (!user) throw new Error('User not found');\n    \n    return {\n      userId: user.id,\n      email: user.email,\n      name: user.name\n    };\n  }\n}\n\n// Service Registry (discovery)\nclass ServiceRegistry {\n  private services = new Map<string, any>();\n  \n  register(name: string, service: any) {\n    this.services.set(name, service);\n  }\n  \n  getService(name: string) {\n    return this.services.get(name);\n  }\n}\n\n// ESB (Enterprise Service Bus) for orchestration\nclass ServiceBus {\n  constructor(private registry: ServiceRegistry) {}\n  \n  async invoke(serviceName: string, operation: string, request: any) {\n    const service = this.registry.getService(serviceName);\n    return service[operation](request);\n  }\n}\n\n// Usage: services communicate through standard contracts\nconst registry = new ServiceRegistry();\nregistry.register('UserService', new UserService());\n\nconst bus = new ServiceBus(registry);\nconst response = await bus.invoke('UserService', 'createUser', {\n  email: 'user@example.com',\n  name: 'John'\n});"
+      }
     }
   }
-}
+]

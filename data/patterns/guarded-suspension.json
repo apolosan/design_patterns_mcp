@@ -1,22 +1,24 @@
-{
-  "id": "guarded-suspension",
-  "name": "Guarded Suspension",
-  "category": "Concurrency",
-  "description": "Suspends threads until condition becomes true",
-  "when_to_use": "Condition waiting\nResource availability\nState changes",
-  "benefits": "Condition waiting\nResource efficiency\nState synchronization",
-  "drawbacks": "Blocking behavior\nComplex conditions\nPerformance impact",
-  "use_cases": "Resource pools\nCondition variables\nState machines",
-  "complexity": "Medium",
-  "tags": [
-    "concurrency",
-    "waiting",
-    "suspension"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Guarded Suspension: wait until condition is met\nclass GuardedQueue<T> {\n  private queue: T[] = [];\n  private waiters: Array<() => void> = [];\n  \n  put(item: T): void {\n    this.queue.push(item);\n    if (this.waiters.length > 0) {\n      const waiter = this.waiters.shift()!;\n      waiter();\n    }\n  }\n  \n  async take(predicate: (item: T) => boolean): Promise<T> {\n    while (true) {\n      const index = this.queue.findIndex(predicate);\n      \n      if (index !== -1) {\n        return this.queue.splice(index, 1)[0];\n      }\n      \n      await new Promise<void>(resolve => this.waiters.push(resolve));\n    }\n  }\n}\n\n// Usage\nconst queue = new GuardedQueue<{ id: number; priority: number }>();\n\nqueue.put({ id: 1, priority: 5 });\nqueue.put({ id: 2, priority: 10 });\n\n// Wait for high priority item\nconst highPriority = await queue.take(item => item.priority > 8);\nconsole.log(highPriority); // { id: 2, priority: 10 }"
+[
+  {
+    "id": "guarded-suspension",
+    "name": "Guarded Suspension",
+    "category": "Concurrency",
+    "description": "Suspends threads until condition becomes true",
+    "when_to_use": "Condition waiting\nResource availability\nState changes",
+    "benefits": "Condition waiting\nResource efficiency\nState synchronization",
+    "drawbacks": "Blocking behavior\nComplex conditions\nPerformance impact",
+    "use_cases": "Resource pools\nCondition variables\nState machines",
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "waiting",
+      "suspension"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Guarded Suspension: wait until condition is met\nclass GuardedQueue<T> {\n  private queue: T[] = [];\n  private waiters: Array<() => void> = [];\n  \n  put(item: T): void {\n    this.queue.push(item);\n    if (this.waiters.length > 0) {\n      const waiter = this.waiters.shift()!;\n      waiter();\n    }\n  }\n  \n  async take(predicate: (item: T) => boolean): Promise<T> {\n    while (true) {\n      const index = this.queue.findIndex(predicate);\n      \n      if (index !== -1) {\n        return this.queue.splice(index, 1)[0];\n      }\n      \n      await new Promise<void>(resolve => this.waiters.push(resolve));\n    }\n  }\n}\n\n// Usage\nconst queue = new GuardedQueue<{ id: number; priority: number }>();\n\nqueue.put({ id: 1, priority: 5 });\nqueue.put({ id: 2, priority: 10 });\n\n// Wait for high priority item\nconst highPriority = await queue.take(item => item.priority > 8);\nconsole.log(highPriority); // { id: 2, priority: 10 }"
+      }
     }
   }
-}
+]

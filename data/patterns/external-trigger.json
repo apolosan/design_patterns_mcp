@@ -1,18 +1,20 @@
-{
-  "id": "external-trigger",
-  "name": "External Trigger",
-  "category": "Data Ingestion",
-  "description": "The External Trigger pattern addresses event-driven data availability by allowing external events to trigger the ingestion process. This can be implemented through webhooks, message queues, or other event-driven mechanisms, favoring push semantics over pull semantics.",
-  "when_to_use": "[\"Event-driven data availability\",\"Need push-based notifications\"]",
-  "benefits": "[\"Reduces polling overhead\",\"Real-time responsiveness\"]",
-  "drawbacks": "[\"Increased complexity\",\"Dependency on external systems\"]",
-  "use_cases": "[\"Real-time data pipelines\",\"Event-driven architectures\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"trigger\"",
-    "\"data-ingestion\"",
-    "\"event-driven\"",
-    "\"push-semantics\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "external-trigger",
+    "name": "External Trigger",
+    "category": "Data Ingestion",
+    "description": "The External Trigger pattern addresses event-driven data availability by allowing external events to trigger the ingestion process. This can be implemented through webhooks, message queues, or other event-driven mechanisms, favoring push semantics over pull semantics.",
+    "when_to_use": "[\"Event-driven data availability\",\"Need push-based notifications\"]",
+    "benefits": "[\"Reduces polling overhead\",\"Real-time responsiveness\"]",
+    "drawbacks": "[\"Increased complexity\",\"Dependency on external systems\"]",
+    "use_cases": "[\"Real-time data pipelines\",\"Event-driven architectures\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"trigger\"",
+      "\"data-ingestion\"",
+      "\"event-driven\"",
+      "\"push-semantics\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

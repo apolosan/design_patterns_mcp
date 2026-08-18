@@ -1,24 +1,26 @@
-{
-  "id": "ipfs-gateway-fallback",
-  "name": "IPFS Gateway Fallback Pattern",
-  "category": "Web3 Frontend",
-  "description": "Multiple IPFS gateways with automatic fallback. Ensures content availability despite gateway downtime.",
-  "when_to_use": "All IPFS integrations, NFT metadata, decentralized storage",
-  "benefits": "Resilience, no single point of failure, improved uptime",
-  "drawbacks": "Slower on fallback, multiple requests, complexity",
-  "use_cases": "NFT marketplaces, dApp assets, metadata retrieval",
-  "complexity": "Low",
-  "tags": [
-    "web3",
-    "ipfs",
-    "gateway",
-    "fallback",
-    "resilience"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "const GATEWAYS = [\n  'https://ipfs.io/ipfs/',\n  'https://cloudflare-ipfs.com/ipfs/',\n  'https://gateway.pinata.cloud/ipfs/'\n];\n\nasync function fetchFromIPFS(cid: string): Promise<any> {\n  for (const gateway of GATEWAYS) {\n    try {\n      const response = await fetch(gateway + cid, { timeout: 5000 });\n      if (response.ok) return response.json();\n    } catch (err) {\n      console.warn(`Gateway ${gateway} failed, trying next...`);\n    }\n  }\n  throw new Error('All IPFS gateways failed');\n}"
+[
+  {
+    "id": "ipfs-gateway-fallback",
+    "name": "IPFS Gateway Fallback Pattern",
+    "category": "Web3 Frontend",
+    "description": "Multiple IPFS gateways with automatic fallback. Ensures content availability despite gateway downtime.",
+    "when_to_use": "All IPFS integrations, NFT metadata, decentralized storage",
+    "benefits": "Resilience, no single point of failure, improved uptime",
+    "drawbacks": "Slower on fallback, multiple requests, complexity",
+    "use_cases": "NFT marketplaces, dApp assets, metadata retrieval",
+    "complexity": "Low",
+    "tags": [
+      "web3",
+      "ipfs",
+      "gateway",
+      "fallback",
+      "resilience"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "const GATEWAYS = [\n  'https://ipfs.io/ipfs/',\n  'https://cloudflare-ipfs.com/ipfs/',\n  'https://gateway.pinata.cloud/ipfs/'\n];\n\nasync function fetchFromIPFS(cid: string): Promise<any> {\n  for (const gateway of GATEWAYS) {\n    try {\n      const response = await fetch(gateway + cid, { timeout: 5000 });\n      if (response.ok) return response.json();\n    } catch (err) {\n      console.warn(`Gateway ${gateway} failed, trying next...`);\n    }\n  }\n  throw new Error('All IPFS gateways failed');\n}"
+      }
     }
   }
-}
+]

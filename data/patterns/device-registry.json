@@ -1,16 +1,18 @@
-{
-  "id": "device-registry",
-  "name": "Device Registry Pattern",
-  "category": "IoT",
-  "description": "Maintains inventory of all devices with their metadata and capabilities",
-  "when_to_use": "Device management\nAsset tracking\nConfiguration management",
-  "benefits": "Centralized inventory\nDevice discovery\nMetadata management",
-  "drawbacks": "Registry maintenance\nSynchronization\nScale challenges",
-  "use_cases": "Fleet management\nAsset tracking\nDevice provisioning",
-  "complexity": "Medium",
-  "tags": [
-    "iot",
-    "registry",
-    "management"
-  ]
-}
+[
+  {
+    "id": "device-registry",
+    "name": "Device Registry Pattern",
+    "category": "IoT",
+    "description": "Maintains inventory of all devices with their metadata and capabilities",
+    "when_to_use": "Device management\nAsset tracking\nConfiguration management",
+    "benefits": "Centralized inventory\nDevice discovery\nMetadata management",
+    "drawbacks": "Registry maintenance\nSynchronization\nScale challenges",
+    "use_cases": "Fleet management\nAsset tracking\nDevice provisioning",
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "registry",
+      "management"
+    ]
+  }
+]

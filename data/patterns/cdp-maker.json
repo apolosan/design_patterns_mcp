@@ -1,24 +1,26 @@
-{
-  "id": "cdp-maker",
-  "name": "Collateralized Debt Position (CDP)",
-  "category": "DeFi Stablecoin",
-  "description": "Lock collateral to mint stablecoin (MakerDAO model)",
-  "when_to_use": "Decentralized stablecoin creation, DAI minting",
-  "benefits": "Decentralized, over-collateralized secure",
-  "drawbacks": "Capital inefficient, liquidation risk, complex governance",
-  "use_cases": "DAI generation, stablecoin protocols, collateralized debt",
-  "complexity": "High",
-  "tags": [
-    "defi",
-    "stablecoin",
-    "makerdao",
-    "cdp",
-    "dai"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// CDP: lock collateral, mint DAI\nfunction openVault(uint256 ethAmount) external payable {\n    require(msg.value == ethAmount);\n    vaults[msg.sender].collateral += ethAmount;\n}\n\nfunction mintDAI(uint256 amount) external {\n    uint256 maxDebt = vaults[msg.sender].collateral * RATIO / 100;\n    require(vaults[msg.sender].debt + amount <= maxDebt);\n    dai.mint(msg.sender, amount);\n}"
+[
+  {
+    "id": "cdp-maker",
+    "name": "Collateralized Debt Position (CDP)",
+    "category": "DeFi Stablecoin",
+    "description": "Lock collateral to mint stablecoin (MakerDAO model)",
+    "when_to_use": "Decentralized stablecoin creation, DAI minting",
+    "benefits": "Decentralized, over-collateralized secure",
+    "drawbacks": "Capital inefficient, liquidation risk, complex governance",
+    "use_cases": "DAI generation, stablecoin protocols, collateralized debt",
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "stablecoin",
+      "makerdao",
+      "cdp",
+      "dai"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// CDP: lock collateral, mint DAI\nfunction openVault(uint256 ethAmount) external payable {\n    require(msg.value == ethAmount);\n    vaults[msg.sender].collateral += ethAmount;\n}\n\nfunction mintDAI(uint256 amount) external {\n    uint256 maxDebt = vaults[msg.sender].collateral * RATIO / 100;\n    require(vaults[msg.sender].debt + amount <= maxDebt);\n    dai.mint(msg.sender, amount);\n}"
+      }
     }
   }
-}
+]

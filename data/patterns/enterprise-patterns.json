@@ -1,292 +1,789 @@
-{
-  "patterns": [
-    {
-      "id": "transaction-script",
-      "name": "Transaction Script",
-      "category": "Enterprise",
-      "description": "Organizes business logic by procedures where each procedure handles a single request",
-      "when_to_use": ["Simple business logic", "Procedural approach", "Rapid development"],
-      "benefits": ["Simple to understand", "Easy to implement", "Fast development"],
-      "drawbacks": ["Code duplication", "Hard to maintain", "No object modeling"],
-      "use_cases": ["Simple CRUD operations", "Data processing scripts", "Quick prototypes"],
-      "complexity": "Low",
-      "tags": ["enterprise", "domain-logic", "procedural"]
-    },
-    {
-      "id": "domain-model",
-      "name": "Domain Model",
-      "category": "Enterprise",
-      "description": "Object model of the domain that incorporates both behavior and data",
-      "when_to_use": ["Complex business logic", "Rich domain models", "Object-oriented design"],
-      "benefits": ["Rich behavior", "Encapsulation", "Maintainability", "Testability"],
-      "drawbacks": ["Complex setup", "Learning curve", "Over-engineering risk"],
-      "use_cases": ["Complex business rules", "Financial systems", "Enterprise applications"],
-      "complexity": "High",
-      "tags": ["enterprise", "domain-logic", "object-oriented"]
-    },
-    {
-      "id": "table-module",
-      "name": "Table Module",
-      "category": "Enterprise",
-      "description": "Single instance that handles business logic for all rows in a database table",
-      "when_to_use": ["Record-based processing", "Database-centric design", "Simple logic"],
-      "benefits": ["Simple organization", "Database alignment", "Easy to understand"],
-      "drawbacks": ["Tight coupling", "Limited reusability", "Scaling issues"],
-      "use_cases": ["Report generation", "Data processing", "Administrative interfaces"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "domain-logic", "table-oriented"]
-    },
-    {
-      "id": "service-layer",
-      "name": "Service Layer",
-      "category": "Enterprise",
-      "description": "Defines application's boundary with layer of services that establishes a set of available operations",
-      "when_to_use": ["Remote interface", "Transaction control", "Security boundaries"],
-      "benefits": ["Clear boundaries", "Transaction control", "Security enforcement", "Remote access"],
-      "drawbacks": ["Additional complexity", "Performance overhead", "Interface proliferation"],
-      "use_cases": ["Web services", "API endpoints", "Business facades"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "service", "boundary"]
-    },
-    {
-      "id": "repository",
-      "name": "Repository Pattern",
-      "category": "Enterprise",
-      "description": "Encapsulates logic needed to access data sources with more object-oriented view of persistence layer",
-      "when_to_use": ["Data access abstraction", "Testing", "Multiple data sources"],
-      "benefits": ["Data access abstraction", "Testability", "Centralized logic", "Flexibility"],
-      "drawbacks": ["Additional complexity", "Performance overhead", "Over-abstraction"],
-      "use_cases": ["Data access layers", "Testing scenarios", "Multiple databases"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "data-access", "abstraction"]
-    },
-    {
-      "id": "unit-of-work",
-      "name": "Unit of Work",
-      "category": "Enterprise",
-      "description": "Maintains list of objects affected by business transaction and coordinates changes",
-      "when_to_use": ["Transaction management", "Change tracking", "Batch operations"],
-      "benefits": ["Transaction control", "Change tracking", "Performance optimization", "Consistency"],
-      "drawbacks": ["Complex implementation", "Memory overhead", "Concurrency issues"],
-      "use_cases": ["ORM frameworks", "Transaction management", "Batch processing"],
-      "complexity": "High",
-      "tags": ["enterprise", "transaction", "tracking"]
-    },
-    {
-      "id": "data-mapper",
-      "name": "Data Mapper",
-      "category": "Enterprise",
-      "description": "Layer that moves data between objects and database while keeping them independent",
-      "when_to_use": ["Domain model independence", "Complex mappings", "Legacy databases"],
-      "benefits": ["Independence", "Flexibility", "Testing", "Domain focus"],
-      "drawbacks": ["Complex implementation", "Performance overhead", "Learning curve"],
-      "use_cases": ["ORM layers", "Legacy integration", "Domain-driven design"],
-      "complexity": "High",
-      "tags": ["enterprise", "mapping", "independence"]
-    },
-    {
-      "id": "active-record",
-      "name": "Active Record",
-      "category": "Enterprise",
-      "description": "Object that wraps a row in database table, encapsulates database access and adds domain logic",
-      "when_to_use": ["Simple domain logic", "Database-driven design", "Rapid development"],
-      "benefits": ["Simple implementation", "Direct mapping", "Easy to understand"],
-      "drawbacks": ["Tight coupling", "Testing difficulties", "Limited flexibility"],
-      "use_cases": ["Simple CRUD applications", "Prototyping", "Database-centric apps"],
-      "complexity": "Low",
-      "tags": ["enterprise", "data-source", "coupling"]
-    },
-    {
-      "id": "row-data-gateway",
-      "name": "Row Data Gateway",
-      "category": "Enterprise",
-      "description": "Object that acts as gateway to single record in data source",
-      "when_to_use": ["Simple data access", "Record-based operations", "Direct mapping"],
-      "benefits": ["Simple implementation", "Direct control", "Clear mapping"],
-      "drawbacks": ["Limited abstraction", "Repetitive code", "Tight coupling"],
-      "use_cases": ["Simple data access", "Legacy systems", "Direct database operations"],
-      "complexity": "Low",
-      "tags": ["enterprise", "data-source", "gateway"]
-    },
-    {
-      "id": "table-data-gateway",
-      "name": "Table Data Gateway",
-      "category": "Enterprise",
-      "description": "Object that acts as gateway to database table with one instance handling all rows",
-      "when_to_use": ["Table-based operations", "Centralized access", "Simple queries"],
-      "benefits": ["Centralized access", "Simple implementation", "Clear responsibility"],
-      "drawbacks": ["Limited flexibility", "Scaling issues", "Tight coupling"],
-      "use_cases": ["Table operations", "Data access objects", "Simple databases"],
-      "complexity": "Low",
-      "tags": ["enterprise", "data-source", "table"]
-    },
-    {
-      "id": "identity-map",
-      "name": "Identity Map",
-      "category": "Enterprise",
-      "description": "Ensures that each object gets loaded only once by keeping every loaded object in a map",
-      "when_to_use": ["Object identity", "Performance optimization", "Memory management"],
-      "benefits": ["Object identity", "Performance", "Memory efficiency", "Consistency"],
-      "drawbacks": ["Memory overhead", "Complex cleanup", "Concurrency issues"],
-      "use_cases": ["ORM systems", "Caching layers", "Session management"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "identity", "caching"]
-    },
-    {
-      "id": "lazy-load",
-      "name": "Lazy Load",
-      "category": "Enterprise",
-      "description": "Object that doesn't contain all data you need but knows how to get it",
-      "when_to_use": ["Performance optimization", "Large datasets", "On-demand loading"],
-      "benefits": ["Performance optimization", "Memory efficiency", "On-demand loading"],
-      "drawbacks": ["Complex implementation", "N+1 query problem", "Delayed loading"],
-      "use_cases": ["Large object graphs", "Related data", "Performance optimization"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "optimization", "loading"]
-    },
-    {
-      "id": "query-object",
-      "name": "Query Object",
-      "category": "Enterprise",
-      "description": "Object that represents database query in an object-oriented way",
-      "when_to_use": ["Complex queries", "Dynamic queries", "Query reuse"],
-      "benefits": ["Query reuse", "Type safety", "Dynamic building", "Testability"],
-      "drawbacks": ["Complex implementation", "Learning curve", "Performance overhead"],
-      "use_cases": ["Complex searches", "Dynamic filters", "Query builders"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "query", "object-oriented"]
-    },
-    {
-      "id": "front-controller",
-      "name": "Front Controller",
-      "category": "Enterprise",
-      "description": "Controller that handles all requests for a web site coming through a single handler object",
-      "when_to_use": ["Web applications", "Centralized control", "Security enforcement"],
-      "benefits": ["Centralized control", "Common behavior", "Security", "Routing"],
-      "drawbacks": ["Single point of failure", "Performance bottleneck", "Complexity"],
-      "use_cases": ["Web frameworks", "Security enforcement", "Request routing"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "web", "controller"]
-    },
-    {
-      "id": "page-controller",
-      "name": "Page Controller",
-      "category": "Enterprise",
-      "description": "Object that acts as an interface to page system for specific page or action",
-      "when_to_use": ["Simple web applications", "Page-specific logic", "Direct mapping"],
-      "benefits": ["Simple implementation", "Direct mapping", "Easy to understand"],
-      "drawbacks": ["Code duplication", "Limited reuse", "Maintenance overhead"],
-      "use_cases": ["Simple web pages", "Form handling", "Page-specific operations"],
-      "complexity": "Low",
-      "tags": ["enterprise", "web", "page"]
-    },
-    {
-      "id": "application-controller",
-      "name": "Application Controller",
-      "category": "Enterprise",
-      "description": "Centralized point for handling screen navigation and flow of application",
-      "when_to_use": ["Complex navigation", "Workflow management", "Centralized control"],
-      "benefits": ["Centralized navigation", "Flow control", "State management", "Reusability"],
-      "drawbacks": ["Complex implementation", "Single point of failure", "Performance overhead"],
-      "use_cases": ["Wizards", "Complex workflows", "Navigation systems"],
-      "complexity": "High",
-      "tags": ["enterprise", "navigation", "workflow"]
-    },
-    {
-      "id": "value-object",
-      "name": "Value Object",
-      "category": "Enterprise",
-      "description": "Small simple object like money or date range whose equality isn't based on identity",
-      "when_to_use": ["Small immutable objects", "Equality by value", "Domain concepts"],
-      "benefits": ["Immutability", "Value equality", "Type safety", "Domain clarity"],
-      "drawbacks": ["Proliferation", "Memory overhead", "Complex equality"],
-      "use_cases": ["Money", "Dates", "Coordinates", "Measurements"],
-      "complexity": "Low",
-      "tags": ["enterprise", "value", "immutable"]
-    },
-    {
-      "id": "money-pattern",
-      "name": "Money Pattern",
-      "category": "Enterprise",
-      "description": "Represents monetary value with amount and currency",
-      "when_to_use": ["Financial calculations", "Currency handling", "Precision requirements"],
-      "benefits": ["Precision", "Currency handling", "Type safety", "Domain clarity"],
-      "drawbacks": ["Complex operations", "Conversion complexity", "Performance overhead"],
-      "use_cases": ["Financial systems", "E-commerce", "Accounting", "Banking"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "money", "financial"]
-    },
-    {
-      "id": "special-case",
-      "name": "Special Case",
-      "category": "Enterprise",
-      "description": "Subclass that provides special behavior for particular cases",
-      "when_to_use": ["Null object pattern", "Default behaviors", "Special conditions"],
-      "benefits": ["Eliminates conditionals", "Polymorphism", "Default behavior", "Clean code"],
-      "drawbacks": ["Class proliferation", "Complex hierarchies", "Discovery issues"],
-      "use_cases": ["Null objects", "Default customers", "Unknown users"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "special-case", "polymorphism"]
-    },
-    {
-      "id": "plugin",
-      "name": "Plugin Pattern",
-      "category": "Enterprise",
-      "description": "Links classes during configuration rather than compilation",
-      "when_to_use": ["Extensibility", "Runtime configuration", "Third-party integration"],
-      "benefits": ["Extensibility", "Runtime configuration", "Modularity", "Third-party support"],
-      "drawbacks": ["Complex configuration", "Runtime errors", "Performance overhead"],
-      "use_cases": ["Extension systems", "Third-party integrations", "Configurable applications"],
-      "complexity": "High",
-      "tags": ["enterprise", "plugin", "extensibility"]
-    },
-    {
-      "id": "registry",
-      "name": "Registry Pattern",
-      "category": "Enterprise",
-      "description": "Well-known object that other objects can use to find common objects and services",
-      "when_to_use": ["Global access", "Service location", "Configuration"],
-      "benefits": ["Global access", "Decoupling", "Service location", "Configuration"],
-      "drawbacks": ["Global state", "Testing difficulties", "Hidden dependencies"],
-      "use_cases": ["Service locators", "Configuration", "Global objects"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "registry", "global"]
-    },
-    {
-      "id": "gateway",
-      "name": "Gateway Pattern",
-      "category": "Enterprise",
-      "description": "Object that encapsulates access to external system or resource",
-      "when_to_use": ["External system access", "API wrapping", "Protocol translation"],
-      "benefits": ["Encapsulation", "Protocol abstraction", "Error handling", "Testing"],
-      "drawbacks": ["Additional layer", "Performance overhead", "Maintenance"],
-      "use_cases": ["External APIs", "Database access", "File systems"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "gateway", "external"]
-    },
-    {
-      "id": "mapper",
-      "name": "Mapper Pattern",
-      "category": "Enterprise",
-      "description": "Object that sets up communication between two independent objects",
-      "when_to_use": ["Object transformation", "Data conversion", "Interface adaptation"],
-      "benefits": ["Separation of concerns", "Reusability", "Flexibility", "Testing"],
-      "drawbacks": ["Additional complexity", "Performance overhead", "Maintenance"],
-      "use_cases": ["DTO mapping", "API transformation", "Data conversion"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "mapping", "transformation"]
-    },
-    {
-      "id": "layer-supertype",
-      "name": "Layer Supertype",
-      "category": "Enterprise",
-      "description": "Type that acts as supertype for all types in its layer",
-      "when_to_use": ["Common layer behavior", "Code reuse", "Consistent interfaces"],
-      "benefits": ["Code reuse", "Consistent interfaces", "Common behavior", "Maintenance"],
-      "drawbacks": ["Inheritance coupling", "Complex hierarchies", "Over-generalization"],
-      "use_cases": ["Domain objects", "Data access objects", "Service classes"],
-      "complexity": "Medium",
-      "tags": ["enterprise", "supertype", "inheritance"]
-    }
-  ]
-}
+[
+  {
+    "id": "transaction-script",
+    "name": "Transaction Script",
+    "category": "Enterprise",
+    "description": "Organizes business logic by procedures where each procedure handles a single request",
+    "when_to_use": [
+      "Simple business logic",
+      "Procedural approach",
+      "Rapid development"
+    ],
+    "benefits": [
+      "Simple to understand",
+      "Easy to implement",
+      "Fast development"
+    ],
+    "drawbacks": [
+      "Code duplication",
+      "Hard to maintain",
+      "No object modeling"
+    ],
+    "use_cases": [
+      "Simple CRUD operations",
+      "Data processing scripts",
+      "Quick prototypes"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "domain-logic",
+      "procedural"
+    ]
+  },
+  {
+    "id": "domain-model",
+    "name": "Domain Model",
+    "category": "Enterprise",
+    "description": "Object model of the domain that incorporates both behavior and data",
+    "when_to_use": [
+      "Complex business logic",
+      "Rich domain models",
+      "Object-oriented design"
+    ],
+    "benefits": [
+      "Rich behavior",
+      "Encapsulation",
+      "Maintainability",
+      "Testability"
+    ],
+    "drawbacks": [
+      "Complex setup",
+      "Learning curve",
+      "Over-engineering risk"
+    ],
+    "use_cases": [
+      "Complex business rules",
+      "Financial systems",
+      "Enterprise applications"
+    ],
+    "complexity": "High",
+    "tags": [
+      "enterprise",
+      "domain-logic",
+      "object-oriented"
+    ]
+  },
+  {
+    "id": "table-module",
+    "name": "Table Module",
+    "category": "Enterprise",
+    "description": "Single instance that handles business logic for all rows in a database table",
+    "when_to_use": [
+      "Record-based processing",
+      "Database-centric design",
+      "Simple logic"
+    ],
+    "benefits": [
+      "Simple organization",
+      "Database alignment",
+      "Easy to understand"
+    ],
+    "drawbacks": [
+      "Tight coupling",
+      "Limited reusability",
+      "Scaling issues"
+    ],
+    "use_cases": [
+      "Report generation",
+      "Data processing",
+      "Administrative interfaces"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "domain-logic",
+      "table-oriented"
+    ]
+  },
+  {
+    "id": "service-layer",
+    "name": "Service Layer",
+    "category": "Enterprise",
+    "description": "Defines application's boundary with layer of services that establishes a set of available operations",
+    "when_to_use": [
+      "Remote interface",
+      "Transaction control",
+      "Security boundaries"
+    ],
+    "benefits": [
+      "Clear boundaries",
+      "Transaction control",
+      "Security enforcement",
+      "Remote access"
+    ],
+    "drawbacks": [
+      "Additional complexity",
+      "Performance overhead",
+      "Interface proliferation"
+    ],
+    "use_cases": [
+      "Web services",
+      "API endpoints",
+      "Business facades"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "service",
+      "boundary"
+    ]
+  },
+  {
+    "id": "repository",
+    "name": "Repository Pattern",
+    "category": "Enterprise",
+    "description": "Encapsulates logic needed to access data sources with more object-oriented view of persistence layer",
+    "when_to_use": [
+      "Data access abstraction",
+      "Testing",
+      "Multiple data sources"
+    ],
+    "benefits": [
+      "Data access abstraction",
+      "Testability",
+      "Centralized logic",
+      "Flexibility"
+    ],
+    "drawbacks": [
+      "Additional complexity",
+      "Performance overhead",
+      "Over-abstraction"
+    ],
+    "use_cases": [
+      "Data access layers",
+      "Testing scenarios",
+      "Multiple databases"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "data-access",
+      "abstraction"
+    ]
+  },
+  {
+    "id": "unit-of-work",
+    "name": "Unit of Work",
+    "category": "Enterprise",
+    "description": "Maintains list of objects affected by business transaction and coordinates changes",
+    "when_to_use": [
+      "Transaction management",
+      "Change tracking",
+      "Batch operations"
+    ],
+    "benefits": [
+      "Transaction control",
+      "Change tracking",
+      "Performance optimization",
+      "Consistency"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Memory overhead",
+      "Concurrency issues"
+    ],
+    "use_cases": [
+      "ORM frameworks",
+      "Transaction management",
+      "Batch processing"
+    ],
+    "complexity": "High",
+    "tags": [
+      "enterprise",
+      "transaction",
+      "tracking"
+    ]
+  },
+  {
+    "id": "data-mapper",
+    "name": "Data Mapper",
+    "category": "Enterprise",
+    "description": "Layer that moves data between objects and database while keeping them independent",
+    "when_to_use": [
+      "Domain model independence",
+      "Complex mappings",
+      "Legacy databases"
+    ],
+    "benefits": [
+      "Independence",
+      "Flexibility",
+      "Testing",
+      "Domain focus"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Performance overhead",
+      "Learning curve"
+    ],
+    "use_cases": [
+      "ORM layers",
+      "Legacy integration",
+      "Domain-driven design"
+    ],
+    "complexity": "High",
+    "tags": [
+      "enterprise",
+      "mapping",
+      "independence"
+    ]
+  },
+  {
+    "id": "active-record",
+    "name": "Active Record",
+    "category": "Enterprise",
+    "description": "Object that wraps a row in database table, encapsulates database access and adds domain logic",
+    "when_to_use": [
+      "Simple domain logic",
+      "Database-driven design",
+      "Rapid development"
+    ],
+    "benefits": [
+      "Simple implementation",
+      "Direct mapping",
+      "Easy to understand"
+    ],
+    "drawbacks": [
+      "Tight coupling",
+      "Testing difficulties",
+      "Limited flexibility"
+    ],
+    "use_cases": [
+      "Simple CRUD applications",
+      "Prototyping",
+      "Database-centric apps"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "data-source",
+      "coupling"
+    ]
+  },
+  {
+    "id": "row-data-gateway",
+    "name": "Row Data Gateway",
+    "category": "Enterprise",
+    "description": "Object that acts as gateway to single record in data source",
+    "when_to_use": [
+      "Simple data access",
+      "Record-based operations",
+      "Direct mapping"
+    ],
+    "benefits": [
+      "Simple implementation",
+      "Direct control",
+      "Clear mapping"
+    ],
+    "drawbacks": [
+      "Limited abstraction",
+      "Repetitive code",
+      "Tight coupling"
+    ],
+    "use_cases": [
+      "Simple data access",
+      "Legacy systems",
+      "Direct database operations"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "data-source",
+      "gateway"
+    ]
+  },
+  {
+    "id": "table-data-gateway",
+    "name": "Table Data Gateway",
+    "category": "Enterprise",
+    "description": "Object that acts as gateway to database table with one instance handling all rows",
+    "when_to_use": [
+      "Table-based operations",
+      "Centralized access",
+      "Simple queries"
+    ],
+    "benefits": [
+      "Centralized access",
+      "Simple implementation",
+      "Clear responsibility"
+    ],
+    "drawbacks": [
+      "Limited flexibility",
+      "Scaling issues",
+      "Tight coupling"
+    ],
+    "use_cases": [
+      "Table operations",
+      "Data access objects",
+      "Simple databases"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "data-source",
+      "table"
+    ]
+  },
+  {
+    "id": "identity-map",
+    "name": "Identity Map",
+    "category": "Enterprise",
+    "description": "Ensures that each object gets loaded only once by keeping every loaded object in a map",
+    "when_to_use": [
+      "Object identity",
+      "Performance optimization",
+      "Memory management"
+    ],
+    "benefits": [
+      "Object identity",
+      "Performance",
+      "Memory efficiency",
+      "Consistency"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "Complex cleanup",
+      "Concurrency issues"
+    ],
+    "use_cases": [
+      "ORM systems",
+      "Caching layers",
+      "Session management"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "identity",
+      "caching"
+    ]
+  },
+  {
+    "id": "lazy-load",
+    "name": "Lazy Load",
+    "category": "Enterprise",
+    "description": "Object that doesn't contain all data you need but knows how to get it",
+    "when_to_use": [
+      "Performance optimization",
+      "Large datasets",
+      "On-demand loading"
+    ],
+    "benefits": [
+      "Performance optimization",
+      "Memory efficiency",
+      "On-demand loading"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "N+1 query problem",
+      "Delayed loading"
+    ],
+    "use_cases": [
+      "Large object graphs",
+      "Related data",
+      "Performance optimization"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "optimization",
+      "loading"
+    ]
+  },
+  {
+    "id": "query-object",
+    "name": "Query Object",
+    "category": "Enterprise",
+    "description": "Object that represents database query in an object-oriented way",
+    "when_to_use": [
+      "Complex queries",
+      "Dynamic queries",
+      "Query reuse"
+    ],
+    "benefits": [
+      "Query reuse",
+      "Type safety",
+      "Dynamic building",
+      "Testability"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Learning curve",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "Complex searches",
+      "Dynamic filters",
+      "Query builders"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "query",
+      "object-oriented"
+    ]
+  },
+  {
+    "id": "front-controller",
+    "name": "Front Controller",
+    "category": "Enterprise",
+    "description": "Controller that handles all requests for a web site coming through a single handler object",
+    "when_to_use": [
+      "Web applications",
+      "Centralized control",
+      "Security enforcement"
+    ],
+    "benefits": [
+      "Centralized control",
+      "Common behavior",
+      "Security",
+      "Routing"
+    ],
+    "drawbacks": [
+      "Single point of failure",
+      "Performance bottleneck",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Web frameworks",
+      "Security enforcement",
+      "Request routing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "web",
+      "controller"
+    ]
+  },
+  {
+    "id": "page-controller",
+    "name": "Page Controller",
+    "category": "Enterprise",
+    "description": "Object that acts as an interface to page system for specific page or action",
+    "when_to_use": [
+      "Simple web applications",
+      "Page-specific logic",
+      "Direct mapping"
+    ],
+    "benefits": [
+      "Simple implementation",
+      "Direct mapping",
+      "Easy to understand"
+    ],
+    "drawbacks": [
+      "Code duplication",
+      "Limited reuse",
+      "Maintenance overhead"
+    ],
+    "use_cases": [
+      "Simple web pages",
+      "Form handling",
+      "Page-specific operations"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "web",
+      "page"
+    ]
+  },
+  {
+    "id": "application-controller",
+    "name": "Application Controller",
+    "category": "Enterprise",
+    "description": "Centralized point for handling screen navigation and flow of application",
+    "when_to_use": [
+      "Complex navigation",
+      "Workflow management",
+      "Centralized control"
+    ],
+    "benefits": [
+      "Centralized navigation",
+      "Flow control",
+      "State management",
+      "Reusability"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Single point of failure",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "Wizards",
+      "Complex workflows",
+      "Navigation systems"
+    ],
+    "complexity": "High",
+    "tags": [
+      "enterprise",
+      "navigation",
+      "workflow"
+    ]
+  },
+  {
+    "id": "value-object",
+    "name": "Value Object",
+    "category": "Enterprise",
+    "description": "Small simple object like money or date range whose equality isn't based on identity",
+    "when_to_use": [
+      "Small immutable objects",
+      "Equality by value",
+      "Domain concepts"
+    ],
+    "benefits": [
+      "Immutability",
+      "Value equality",
+      "Type safety",
+      "Domain clarity"
+    ],
+    "drawbacks": [
+      "Proliferation",
+      "Memory overhead",
+      "Complex equality"
+    ],
+    "use_cases": [
+      "Money",
+      "Dates",
+      "Coordinates",
+      "Measurements"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "value",
+      "immutable"
+    ]
+  },
+  {
+    "id": "money-pattern",
+    "name": "Money Pattern",
+    "category": "Enterprise",
+    "description": "Represents monetary value with amount and currency",
+    "when_to_use": [
+      "Financial calculations",
+      "Currency handling",
+      "Precision requirements"
+    ],
+    "benefits": [
+      "Precision",
+      "Currency handling",
+      "Type safety",
+      "Domain clarity"
+    ],
+    "drawbacks": [
+      "Complex operations",
+      "Conversion complexity",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "Financial systems",
+      "E-commerce",
+      "Accounting",
+      "Banking"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "money",
+      "financial"
+    ]
+  },
+  {
+    "id": "special-case",
+    "name": "Special Case",
+    "category": "Enterprise",
+    "description": "Subclass that provides special behavior for particular cases",
+    "when_to_use": [
+      "Null object pattern",
+      "Default behaviors",
+      "Special conditions"
+    ],
+    "benefits": [
+      "Eliminates conditionals",
+      "Polymorphism",
+      "Default behavior",
+      "Clean code"
+    ],
+    "drawbacks": [
+      "Class proliferation",
+      "Complex hierarchies",
+      "Discovery issues"
+    ],
+    "use_cases": [
+      "Null objects",
+      "Default customers",
+      "Unknown users"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "special-case",
+      "polymorphism"
+    ]
+  },
+  {
+    "id": "plugin",
+    "name": "Plugin Pattern",
+    "category": "Enterprise",
+    "description": "Links classes during configuration rather than compilation",
+    "when_to_use": [
+      "Extensibility",
+      "Runtime configuration",
+      "Third-party integration"
+    ],
+    "benefits": [
+      "Extensibility",
+      "Runtime configuration",
+      "Modularity",
+      "Third-party support"
+    ],
+    "drawbacks": [
+      "Complex configuration",
+      "Runtime errors",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "Extension systems",
+      "Third-party integrations",
+      "Configurable applications"
+    ],
+    "complexity": "High",
+    "tags": [
+      "enterprise",
+      "plugin",
+      "extensibility"
+    ]
+  },
+  {
+    "id": "registry",
+    "name": "Registry Pattern",
+    "category": "Enterprise",
+    "description": "Well-known object that other objects can use to find common objects and services",
+    "when_to_use": [
+      "Global access",
+      "Service location",
+      "Configuration"
+    ],
+    "benefits": [
+      "Global access",
+      "Decoupling",
+      "Service location",
+      "Configuration"
+    ],
+    "drawbacks": [
+      "Global state",
+      "Testing difficulties",
+      "Hidden dependencies"
+    ],
+    "use_cases": [
+      "Service locators",
+      "Configuration",
+      "Global objects"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "registry",
+      "global"
+    ]
+  },
+  {
+    "id": "gateway",
+    "name": "Gateway Pattern",
+    "category": "Enterprise",
+    "description": "Object that encapsulates access to external system or resource",
+    "when_to_use": [
+      "External system access",
+      "API wrapping",
+      "Protocol translation"
+    ],
+    "benefits": [
+      "Encapsulation",
+      "Protocol abstraction",
+      "Error handling",
+      "Testing"
+    ],
+    "drawbacks": [
+      "Additional layer",
+      "Performance overhead",
+      "Maintenance"
+    ],
+    "use_cases": [
+      "External APIs",
+      "Database access",
+      "File systems"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "gateway",
+      "external"
+    ]
+  },
+  {
+    "id": "mapper",
+    "name": "Mapper Pattern",
+    "category": "Enterprise",
+    "description": "Object that sets up communication between two independent objects",
+    "when_to_use": [
+      "Object transformation",
+      "Data conversion",
+      "Interface adaptation"
+    ],
+    "benefits": [
+      "Separation of concerns",
+      "Reusability",
+      "Flexibility",
+      "Testing"
+    ],
+    "drawbacks": [
+      "Additional complexity",
+      "Performance overhead",
+      "Maintenance"
+    ],
+    "use_cases": [
+      "DTO mapping",
+      "API transformation",
+      "Data conversion"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "mapping",
+      "transformation"
+    ]
+  },
+  {
+    "id": "layer-supertype",
+    "name": "Layer Supertype",
+    "category": "Enterprise",
+    "description": "Type that acts as supertype for all types in its layer",
+    "when_to_use": [
+      "Common layer behavior",
+      "Code reuse",
+      "Consistent interfaces"
+    ],
+    "benefits": [
+      "Code reuse",
+      "Consistent interfaces",
+      "Common behavior",
+      "Maintenance"
+    ],
+    "drawbacks": [
+      "Inheritance coupling",
+      "Complex hierarchies",
+      "Over-generalization"
+    ],
+    "use_cases": [
+      "Domain objects",
+      "Data access objects",
+      "Service classes"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "supertype",
+      "inheritance"
+    ]
+  }
+]

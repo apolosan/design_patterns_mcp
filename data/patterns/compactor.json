@@ -1,18 +1,20 @@
-{
-  "id": "compactor",
-  "name": "Compactor",
-  "category": "Data Ingestion",
-  "description": "The Compactor pattern helps reduce the storage footprint of growing datasets by combining multiple smaller files into bigger ones, thus reducing the overall I/O overhead on reading. Storing many small files involves longer listing operations and heavier I/O for opening and closing files.",
-  "when_to_use": "[\"Growing datasets with many small files\",\"Metadata overhead impacting performance\"]",
-  "benefits": "[\"Reduces I/O overhead\",\"Improves read performance\",\"Optimizes storage\"]",
-  "drawbacks": "[\"Cost vs performance trade-offs\",\"Consistency issues\",\"Requires cleaning operations\"]",
-  "use_cases": "[\"Data lake optimization\",\"Batch job performance improvement\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"compaction\"",
-    "\"data-ingestion\"",
-    "\"file-optimization\"",
-    "\"storage\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "compactor",
+    "name": "Compactor",
+    "category": "Data Ingestion",
+    "description": "The Compactor pattern helps reduce the storage footprint of growing datasets by combining multiple smaller files into bigger ones, thus reducing the overall I/O overhead on reading. Storing many small files involves longer listing operations and heavier I/O for opening and closing files.",
+    "when_to_use": "[\"Growing datasets with many small files\",\"Metadata overhead impacting performance\"]",
+    "benefits": "[\"Reduces I/O overhead\",\"Improves read performance\",\"Optimizes storage\"]",
+    "drawbacks": "[\"Cost vs performance trade-offs\",\"Consistency issues\",\"Requires cleaning operations\"]",
+    "use_cases": "[\"Data lake optimization\",\"Batch job performance improvement\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"compaction\"",
+      "\"data-ingestion\"",
+      "\"file-optimization\"",
+      "\"storage\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

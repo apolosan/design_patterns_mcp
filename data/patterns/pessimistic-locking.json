@@ -1,22 +1,24 @@
-{
-  "id": "pessimistic-locking",
-  "name": "Pessimistic Locking",
-  "category": "Data Access",
-  "description": "Locks resources immediately when accessed to prevent conflicts",
-  "when_to_use": "High conflict scenarios\nCritical data\nStrong consistency",
-  "benefits": "Prevents conflicts\nData consistency\nSimple conflict resolution",
-  "drawbacks": "Reduced performance\nDeadlock risk\nLimited scalability",
-  "use_cases": "Financial systems\nInventory management\nCritical updates",
-  "complexity": "Medium",
-  "tags": [
-    "data-access",
-    "concurrency",
-    "locking"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Pessimistic Locking: lock rows during transaction\nclass AccountRepository {\n  async transfer(fromId: string, toId: string, amount: number) {\n    await db.transaction(async (tx) => {\n      const from = await tx.query(\n        'SELECT * FROM accounts WHERE id = $1 FOR UPDATE',\n        [fromId]\n      );\n      \n      const to = await tx.query(\n        'SELECT * FROM accounts WHERE id = $1 FOR UPDATE',\n        [toId]\n      );\n      \n      if (from.balance < amount) {\n        throw new Error('Insufficient funds');\n      }\n      \n      await tx.query(\n        'UPDATE accounts SET balance = balance - $1 WHERE id = $2',\n        [amount, fromId]\n      );\n      \n      await tx.query(\n        'UPDATE accounts SET balance = balance + $1 WHERE id = $2',\n        [amount, toId]\n      );\n    });\n  }\n}\n\n// Rows are locked until transaction commits\nawait accountRepo.transfer('account1', 'account2', 100);"
+[
+  {
+    "id": "pessimistic-locking",
+    "name": "Pessimistic Locking",
+    "category": "Data Access",
+    "description": "Locks resources immediately when accessed to prevent conflicts",
+    "when_to_use": "High conflict scenarios\nCritical data\nStrong consistency",
+    "benefits": "Prevents conflicts\nData consistency\nSimple conflict resolution",
+    "drawbacks": "Reduced performance\nDeadlock risk\nLimited scalability",
+    "use_cases": "Financial systems\nInventory management\nCritical updates",
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "concurrency",
+      "locking"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Pessimistic Locking: lock rows during transaction\nclass AccountRepository {\n  async transfer(fromId: string, toId: string, amount: number) {\n    await db.transaction(async (tx) => {\n      const from = await tx.query(\n        'SELECT * FROM accounts WHERE id = $1 FOR UPDATE',\n        [fromId]\n      );\n      \n      const to = await tx.query(\n        'SELECT * FROM accounts WHERE id = $1 FOR UPDATE',\n        [toId]\n      );\n      \n      if (from.balance < amount) {\n        throw new Error('Insufficient funds');\n      }\n      \n      await tx.query(\n        'UPDATE accounts SET balance = balance - $1 WHERE id = $2',\n        [amount, fromId]\n      );\n      \n      await tx.query(\n        'UPDATE accounts SET balance = balance + $1 WHERE id = $2',\n        [amount, toId]\n      );\n    });\n  }\n}\n\n// Rows are locked until transaction commits\nawait accountRepo.transfer('account1', 'account2', 100);"
+      }
     }
   }
-}
+]

@@ -1,16 +1,18 @@
-{
-  "id": "command-game",
-  "name": "Command Pattern (Game)",
-  "category": "Game Development",
-  "description": "Encapsulates game actions as objects for input handling and undo systems",
-  "when_to_use": "Input handling\nUndo systems\nReplay functionality",
-  "benefits": "Flexible input\nUndo/redo support\nAction queuing\nReplay systems",
-  "drawbacks": "Object proliferation\nMemory overhead\nComplex command chains",
-  "use_cases": "Input systems\nTurn-based games\nAction replay",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "command",
-    "input"
-  ]
-}
+[
+  {
+    "id": "command-game",
+    "name": "Command Pattern (Game)",
+    "category": "Game Development",
+    "description": "Encapsulates game actions as objects for input handling and undo systems",
+    "when_to_use": "Input handling\nUndo systems\nReplay functionality",
+    "benefits": "Flexible input\nUndo/redo support\nAction queuing\nReplay systems",
+    "drawbacks": "Object proliferation\nMemory overhead\nComplex command chains",
+    "use_cases": "Input systems\nTurn-based games\nAction replay",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "command",
+      "input"
+    ]
+  }
+]

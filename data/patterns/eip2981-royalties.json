@@ -1,24 +1,26 @@
-{
-  "id": "eip2981-royalties",
-  "name": "EIP-2981 Standard Royalties",
-  "category": "NFT Royalty",
-  "description": "Standard interface for NFT royalty information. Marketplaces can query royalty receiver and amount.",
-  "when_to_use": "All NFTs wanting creator royalties with marketplace support",
-  "benefits": "Standard interface, transparent, marketplace compatible",
-  "drawbacks": "Not enforceable (voluntary compliance), marketplaces can ignore",
-  "use_cases": "NFT collections with creator royalties, artist platforms",
-  "complexity": "Low",
-  "tags": [
-    "nft",
-    "royalty",
-    "eip-2981",
-    "standard",
-    "creator"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/token/common/ERC2981.sol\";\n\ncontract RoyaltyNFT is ERC721, ERC2981 {\n    constructor() {\n        _setDefaultRoyalty(creator, 500); // 5% royalty\n    }\n    \n    function royaltyInfo(uint256 tokenId, uint256 salePrice)\n        public view override returns (address, uint256)\n    {\n        return super.royaltyInfo(tokenId, salePrice);\n    }\n}"
+[
+  {
+    "id": "eip2981-royalties",
+    "name": "EIP-2981 Standard Royalties",
+    "category": "NFT Royalty",
+    "description": "Standard interface for NFT royalty information. Marketplaces can query royalty receiver and amount.",
+    "when_to_use": "All NFTs wanting creator royalties with marketplace support",
+    "benefits": "Standard interface, transparent, marketplace compatible",
+    "drawbacks": "Not enforceable (voluntary compliance), marketplaces can ignore",
+    "use_cases": "NFT collections with creator royalties, artist platforms",
+    "complexity": "Low",
+    "tags": [
+      "nft",
+      "royalty",
+      "eip-2981",
+      "standard",
+      "creator"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/common/ERC2981.sol\";\n\ncontract RoyaltyNFT is ERC721, ERC2981 {\n    constructor() {\n        _setDefaultRoyalty(creator, 500); // 5% royalty\n    }\n    \n    function royaltyInfo(uint256 tokenId, uint256 salePrice)\n        public view override returns (address, uint256)\n    {\n        return super.royaltyInfo(tokenId, salePrice);\n    }\n}"
+      }
     }
   }
-}
+]

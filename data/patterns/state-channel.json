@@ -1,23 +1,25 @@
-{
-  "id": "state-channel",
-  "name": "State Channel",
-  "category": "Layer 2 Scaling",
-  "description": "Off-chain state updates with on-chain settlement. Lock funds, transact off-chain, settle final state.",
-  "when_to_use": "High-frequency interactions, known participants, payment channels",
-  "benefits": "Instant finality, zero gas costs for updates, privacy",
-  "drawbacks": "Capital lockup, liveness requirements, limited to participants",
-  "use_cases": "Lightning Network, Raiden, gaming state",
-  "complexity": "Medium",
-  "tags": [
-    "layer2",
-    "state-channel",
-    "payment-channel",
-    "off-chain"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// State channel with dispute period\nfunction openChannel(address participant) external payable {\n    channels[channelId] = Channel({\n        participants: [msg.sender, participant],\n        balance: msg.value,\n        nonce: 0\n    });\n}\n\nfunction closeChannel(uint256 nonce, bytes memory signature) external {\n    require(nonce > channels[channelId].nonce);\n    require(verifySignature(signature));\n    // Settle final state\n}"
+[
+  {
+    "id": "state-channel",
+    "name": "State Channel",
+    "category": "Layer 2 Scaling",
+    "description": "Off-chain state updates with on-chain settlement. Lock funds, transact off-chain, settle final state.",
+    "when_to_use": "High-frequency interactions, known participants, payment channels",
+    "benefits": "Instant finality, zero gas costs for updates, privacy",
+    "drawbacks": "Capital lockup, liveness requirements, limited to participants",
+    "use_cases": "Lightning Network, Raiden, gaming state",
+    "complexity": "Medium",
+    "tags": [
+      "layer2",
+      "state-channel",
+      "payment-channel",
+      "off-chain"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// State channel with dispute period\nfunction openChannel(address participant) external payable {\n    channels[channelId] = Channel({\n        participants: [msg.sender, participant],\n        balance: msg.value,\n        nonce: 0\n    });\n}\n\nfunction closeChannel(uint256 nonce, bytes memory signature) external {\n    require(nonce > channels[channelId].nonce);\n    require(verifySignature(signature));\n    // Settle final state\n}"
+      }
     }
   }
-}
+]

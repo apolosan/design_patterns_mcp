@@ -1,24 +1,26 @@
-{
-  "id": "erc721-burnable",
-  "name": "ERC-721 Burnable",
-  "category": "NFT",
-  "description": "NFTs that can be permanently destroyed. Reduces supply, enables deflationary mechanics.",
-  "when_to_use": "Deflationary NFTs, redemption mechanisms, gamification",
-  "benefits": "Reduces supply, creates scarcity, enables redemption mechanics",
-  "drawbacks": "Irreversible, requires access control, potential loss",
-  "use_cases": "Burn-to-redeem, deflationary collections, game item consumption",
-  "complexity": "Low",
-  "tags": [
-    "nft",
-    "erc721",
-    "burnable",
-    "deflationary",
-    "redemption"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol\";\n\ncontract BurnableNFT is ERC721Burnable {\n    function burn(uint256 tokenId) public override {\n        require(_isApprovedOrOwner(msg.sender, tokenId));\n        _burn(tokenId);\n        emit NFTBurned(tokenId, msg.sender);\n    }\n    \n    function burnToRedeem(uint256 tokenId) external {\n        burn(tokenId);\n        // Mint new item, grant access, etc.\n    }\n}"
+[
+  {
+    "id": "erc721-burnable",
+    "name": "ERC-721 Burnable",
+    "category": "NFT",
+    "description": "NFTs that can be permanently destroyed. Reduces supply, enables deflationary mechanics.",
+    "when_to_use": "Deflationary NFTs, redemption mechanisms, gamification",
+    "benefits": "Reduces supply, creates scarcity, enables redemption mechanics",
+    "drawbacks": "Irreversible, requires access control, potential loss",
+    "use_cases": "Burn-to-redeem, deflationary collections, game item consumption",
+    "complexity": "Low",
+    "tags": [
+      "nft",
+      "erc721",
+      "burnable",
+      "deflationary",
+      "redemption"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol\";\n\ncontract BurnableNFT is ERC721Burnable {\n    function burn(uint256 tokenId) public override {\n        require(_isApprovedOrOwner(msg.sender, tokenId));\n        _burn(tokenId);\n        emit NFTBurned(tokenId, msg.sender);\n    }\n    \n    function burnToRedeem(uint256 tokenId) external {\n        burn(tokenId);\n        // Mint new item, grant access, etc.\n    }\n}"
+      }
     }
   }
-}
+]

@@ -1,24 +1,26 @@
-{
-  "id": "uniswapx-pattern",
-  "name": "UniswapX Pattern",
-  "category": "Intent-Based Architecture",
-  "description": "Intent-based DEX with Dutch auctions. Fillers compete to fill swaps, no gas for swappers.",
-  "when_to_use": "Gas-free swaps, cross-chain trading, MEV protection",
-  "benefits": "No gas for swappers, MEV protection, cross-chain capable",
-  "drawbacks": "Newer ecosystem, filler dependency, price discovery period",
-  "use_cases": "DEX trading, cross-chain swaps, gasless UX",
-  "complexity": "Very High",
-  "tags": [
-    "intent",
-    "uniswapx",
-    "dutch-auction",
-    "gasless",
-    "cross-chain"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// UniswapX: Dutch auction for best price\nstruct DutchOrder {\n    address tokenIn;\n    address tokenOut;\n    uint256 amountIn;\n    uint256 startPrice;  // Start high\n    uint256 endPrice;    // Decay to low\n    uint256 deadline;\n    address swapper;\n}\n\n// Price decays over time, fillers compete\nfunction getCurrentPrice(DutchOrder memory order) public view returns (uint256) {\n    uint256 elapsed = block.timestamp - order.startTime;\n    uint256 duration = order.deadline - order.startTime;\n    \n    // Linear price decay\n    uint256 priceDecay = (order.startPrice - order.endPrice) * elapsed / duration;\n    return order.startPrice - priceDecay;\n}"
+[
+  {
+    "id": "uniswapx-pattern",
+    "name": "UniswapX Pattern",
+    "category": "Intent-Based Architecture",
+    "description": "Intent-based DEX with Dutch auctions. Fillers compete to fill swaps, no gas for swappers.",
+    "when_to_use": "Gas-free swaps, cross-chain trading, MEV protection",
+    "benefits": "No gas for swappers, MEV protection, cross-chain capable",
+    "drawbacks": "Newer ecosystem, filler dependency, price discovery period",
+    "use_cases": "DEX trading, cross-chain swaps, gasless UX",
+    "complexity": "Very High",
+    "tags": [
+      "intent",
+      "uniswapx",
+      "dutch-auction",
+      "gasless",
+      "cross-chain"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// UniswapX: Dutch auction for best price\nstruct DutchOrder {\n    address tokenIn;\n    address tokenOut;\n    uint256 amountIn;\n    uint256 startPrice;  // Start high\n    uint256 endPrice;    // Decay to low\n    uint256 deadline;\n    address swapper;\n}\n\n// Price decays over time, fillers compete\nfunction getCurrentPrice(DutchOrder memory order) public view returns (uint256) {\n    uint256 elapsed = block.timestamp - order.startTime;\n    uint256 duration = order.deadline - order.startTime;\n    \n    // Linear price decay\n    uint256 priceDecay = (order.startPrice - order.endPrice) * elapsed / duration;\n    return order.startPrice - priceDecay;\n}"
+      }
     }
   }
-}
+]

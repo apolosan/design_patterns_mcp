@@ -1,16 +1,18 @@
-{
-  "id": "mock-object",
-  "name": "Mock Object",
-  "category": "Testing",
-  "description": "Simulates behavior of real objects in controlled ways for testing",
-  "when_to_use": "Behavior verification\nExternal dependencies\nInteraction testing",
-  "benefits": "Behavior verification\nDependency isolation\nFast execution",
-  "drawbacks": "Over-mocking\nBrittle tests\nImplementation coupling",
-  "use_cases": "Service interactions\nAPI calls\nDatabase operations",
-  "complexity": "Medium",
-  "tags": [
-    "testing",
-    "mock",
-    "behavior"
-  ]
-}
+[
+  {
+    "id": "mock-object",
+    "name": "Mock Object",
+    "category": "Testing",
+    "description": "Simulates behavior of real objects in controlled ways for testing",
+    "when_to_use": "Behavior verification\nExternal dependencies\nInteraction testing",
+    "benefits": "Behavior verification\nDependency isolation\nFast execution",
+    "drawbacks": "Over-mocking\nBrittle tests\nImplementation coupling",
+    "use_cases": "Service interactions\nAPI calls\nDatabase operations",
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "mock",
+      "behavior"
+    ]
+  }
+]

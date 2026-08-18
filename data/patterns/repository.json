@@ -1,16 +1,18 @@
-{
-  "id": "repository",
-  "name": "Repository Pattern",
-  "category": "Enterprise",
-  "description": "Encapsulates logic needed to access data sources with more object-oriented view of persistence layer",
-  "when_to_use": "Data access abstraction\nTesting\nMultiple data sources",
-  "benefits": "Data access abstraction\nTestability\nCentralized logic\nFlexibility",
-  "drawbacks": "Additional complexity\nPerformance overhead\nOver-abstraction",
-  "use_cases": "Data access layers\nTesting scenarios\nMultiple databases",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "data-access",
-    "abstraction"
-  ]
-}
+[
+  {
+    "id": "repository",
+    "name": "Repository Pattern",
+    "category": "Enterprise",
+    "description": "Encapsulates logic needed to access data sources with more object-oriented view of persistence layer",
+    "when_to_use": "Data access abstraction\nTesting\nMultiple data sources",
+    "benefits": "Data access abstraction\nTestability\nCentralized logic\nFlexibility",
+    "drawbacks": "Additional complexity\nPerformance overhead\nOver-abstraction",
+    "use_cases": "Data access layers\nTesting scenarios\nMultiple databases",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "data-access",
+      "abstraction"
+    ]
+  }
+]

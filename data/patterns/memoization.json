@@ -1,16 +1,18 @@
-{
-  "id": "memoization",
-  "name": "Memoization Pattern",
-  "category": "Functional",
-  "description": "Caches function results to avoid repeated calculations",
-  "when_to_use": "Expensive computations\nPure functions\nRecursive algorithms",
-  "benefits": "Performance improvement\nTime complexity reduction\nAutomatic caching",
-  "drawbacks": "Memory usage\nCache invalidation\nNot suitable for impure functions",
-  "use_cases": "Fibonacci calculation\nAPI responses\nComplex calculations",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "optimization",
-    "caching"
-  ]
-}
+[
+  {
+    "id": "memoization",
+    "name": "Memoization Pattern",
+    "category": "Functional",
+    "description": "Caches function results to avoid repeated calculations",
+    "when_to_use": "Expensive computations\nPure functions\nRecursive algorithms",
+    "benefits": "Performance improvement\nTime complexity reduction\nAutomatic caching",
+    "drawbacks": "Memory usage\nCache invalidation\nNot suitable for impure functions",
+    "use_cases": "Fibonacci calculation\nAPI responses\nComplex calculations",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "optimization",
+      "caching"
+    ]
+  }
+]

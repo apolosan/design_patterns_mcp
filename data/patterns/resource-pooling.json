@@ -1,22 +1,24 @@
-{
-  "id": "resource-pooling",
-  "name": "Resource Pooling",
-  "category": "Performance",
-  "description": "Maintains pool of reusable resources to reduce allocation and initialization overhead",
-  "when_to_use": "Expensive resource creation\nResource reuse\nPerformance optimization",
-  "benefits": "Reduced overhead\nResource reuse\nPredictable performance",
-  "drawbacks": "Pool management\nResource leaks\nMemory overhead",
-  "use_cases": "Thread pools\nMemory pools\nSocket pools",
-  "complexity": "Medium",
-  "tags": [
-    "performance",
-    "pooling",
-    "resources"
-  ],
-  "examples": {
-    "cross-reference": {
-      "language": "cross-reference",
-      "code": "// See Object Pool pattern for implementation example\n// Reference pattern: object-pool-performance"
+[
+  {
+    "id": "resource-pooling",
+    "name": "Resource Pooling",
+    "category": "Performance",
+    "description": "Maintains pool of reusable resources to reduce allocation and initialization overhead",
+    "when_to_use": "Expensive resource creation\nResource reuse\nPerformance optimization",
+    "benefits": "Reduced overhead\nResource reuse\nPredictable performance",
+    "drawbacks": "Pool management\nResource leaks\nMemory overhead",
+    "use_cases": "Thread pools\nMemory pools\nSocket pools",
+    "complexity": "Medium",
+    "tags": [
+      "performance",
+      "pooling",
+      "resources"
+    ],
+    "examples": {
+      "cross-reference": {
+        "language": "cross-reference",
+        "code": "// See Object Pool pattern for implementation example\n// Reference pattern: object-pool-performance"
+      }
     }
   }
-}
+]

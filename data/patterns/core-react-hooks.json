@@ -1,27 +1,29 @@
-{
-  "id": "core-react-hooks",
-  "name": "Core React Hooks (useState, useEffect, useContext)",
-  "category": "React Hooks",
-  "description": "Essential hooks for state, side effects, and context. Foundation of modern React.",
-  "when_to_use": "All functional components, state management, side effects, global state",
-  "benefits": "Simpler than class components, composable, reusable, better code organization",
-  "drawbacks": "Rules of hooks must be followed, learning curve for beginners",
-  "use_cases": "Component state, API calls, subscriptions, DOM manipulation, theme/auth context",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "hooks",
-    "useState",
-    "useEffect",
-    "useContext",
-    "state",
-    "side-effects",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { useState, useEffect, useContext, createContext } from 'react';\n\n// 1. useState - State management\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  const [text, setText] = useState('');\n  \n  return (\n    <div>\n      <button onClick={() => setCount(c => c + 1)}>\n        Count: {count}\n      </button>\n      <input value={text} onChange={(e) => setText(e.target.value)} />\n    </div>\n  );\n}\n\n// 2. useEffect - Side effects\nfunction UserProfile({ userId }: { userId: string }) {\n  const [user, setUser] = useState(null);\n  const [loading, setLoading] = useState(true);\n  \n  useEffect(() => {\n    let cancelled = false;\n    \n    async function fetchUser() {\n      setLoading(true);\n      const data = await fetch(`/api/users/${userId}`).then(r => r.json());\n      if (!cancelled) {\n        setUser(data);\n        setLoading(false);\n      }\n    }\n    \n    fetchUser();\n    \n    return () => { cancelled = true; };\n  }, [userId]);\n  \n  if (loading) return <div>Loading...</div>;\n  return <div>{user?.name}</div>;\n}\n\n// 3. useContext - Global state\nconst ThemeContext = createContext({ theme: 'light', toggle: () => {} });\n\nfunction ThemeProvider({ children }: { children: ReactNode }) {\n  const [theme, setTheme] = useState('light');\n  \n  const toggle = () => setTheme(t => t === 'light' ? 'dark' : 'light');\n  \n  return (\n    <ThemeContext.Provider value={{ theme, toggle }}>\n      {children}\n    </ThemeContext.Provider>\n  );\n}\n\nfunction ThemedButton() {\n  const { theme, toggle } = useContext(ThemeContext);\n  \n  return (\n    <button \n      onClick={toggle}\n      style={{ background: theme === 'light' ? '#fff' : '#333' }}\n    >\n      Toggle Theme\n    </button>\n  );\n}"
+[
+  {
+    "id": "core-react-hooks",
+    "name": "Core React Hooks (useState, useEffect, useContext)",
+    "category": "React Hooks",
+    "description": "Essential hooks for state, side effects, and context. Foundation of modern React.",
+    "when_to_use": "All functional components, state management, side effects, global state",
+    "benefits": "Simpler than class components, composable, reusable, better code organization",
+    "drawbacks": "Rules of hooks must be followed, learning curve for beginners",
+    "use_cases": "Component state, API calls, subscriptions, DOM manipulation, theme/auth context",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "hooks",
+      "useState",
+      "useEffect",
+      "useContext",
+      "state",
+      "side-effects",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { useState, useEffect, useContext, createContext } from 'react';\n\n// 1. useState - State management\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  const [text, setText] = useState('');\n  \n  return (\n    <div>\n      <button onClick={() => setCount(c => c + 1)}>\n        Count: {count}\n      </button>\n      <input value={text} onChange={(e) => setText(e.target.value)} />\n    </div>\n  );\n}\n\n// 2. useEffect - Side effects\nfunction UserProfile({ userId }: { userId: string }) {\n  const [user, setUser] = useState(null);\n  const [loading, setLoading] = useState(true);\n  \n  useEffect(() => {\n    let cancelled = false;\n    \n    async function fetchUser() {\n      setLoading(true);\n      const data = await fetch(`/api/users/${userId}`).then(r => r.json());\n      if (!cancelled) {\n        setUser(data);\n        setLoading(false);\n      }\n    }\n    \n    fetchUser();\n    \n    return () => { cancelled = true; };\n  }, [userId]);\n  \n  if (loading) return <div>Loading...</div>;\n  return <div>{user?.name}</div>;\n}\n\n// 3. useContext - Global state\nconst ThemeContext = createContext({ theme: 'light', toggle: () => {} });\n\nfunction ThemeProvider({ children }: { children: ReactNode }) {\n  const [theme, setTheme] = useState('light');\n  \n  const toggle = () => setTheme(t => t === 'light' ? 'dark' : 'light');\n  \n  return (\n    <ThemeContext.Provider value={{ theme, toggle }}>\n      {children}\n    </ThemeContext.Provider>\n  );\n}\n\nfunction ThemedButton() {\n  const { theme, toggle } = useContext(ThemeContext);\n  \n  return (\n    <button \n      onClick={toggle}\n      style={{ background: theme === 'light' ? '#fff' : '#333' }}\n    >\n      Toggle Theme\n    </button>\n  );\n}"
+      }
     }
   }
-}
+]

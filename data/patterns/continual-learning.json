@@ -1,16 +1,18 @@
-{
-  "id": "continual-learning",
-  "name": "Continual Learning",
-  "category": "AI/ML",
-  "description": "Learns new tasks while retaining knowledge of previous tasks",
-  "when_to_use": "Sequential tasks\nLifelong learning\nDynamic environments",
-  "benefits": "Knowledge retention\nContinuous adaptation\nNo catastrophic forgetting\nEfficiency",
-  "drawbacks": "Complex algorithms\nMemory requirements\nStability-plasticity dilemma",
-  "use_cases": "Personalization\nAdaptive systems\nLifelong AI",
-  "complexity": "Very High",
-  "tags": [
-    "continual",
-    "lifelong",
-    "adaptation"
-  ]
-}
+[
+  {
+    "id": "continual-learning",
+    "name": "Continual Learning",
+    "category": "AI/ML",
+    "description": "Learns new tasks while retaining knowledge of previous tasks",
+    "when_to_use": "Sequential tasks\nLifelong learning\nDynamic environments",
+    "benefits": "Knowledge retention\nContinuous adaptation\nNo catastrophic forgetting\nEfficiency",
+    "drawbacks": "Complex algorithms\nMemory requirements\nStability-plasticity dilemma",
+    "use_cases": "Personalization\nAdaptive systems\nLifelong AI",
+    "complexity": "Very High",
+    "tags": [
+      "continual",
+      "lifelong",
+      "adaptation"
+    ]
+  }
+]

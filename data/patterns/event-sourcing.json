@@ -1,22 +1,24 @@
-{
-  "id": "event-sourcing",
-  "name": "Event Sourcing",
-  "category": "Architectural",
-  "description": "Stores all changes as a sequence of events instead of current state",
-  "when_to_use": "Audit requirements\nComplex business logic\nTime-travel debugging",
-  "benefits": "Complete audit trail\nTemporal queries\nDebugging\nScalability",
-  "drawbacks": "Storage overhead\nQuery complexity\nEvent versioning",
-  "use_cases": "Financial systems\nVersion control\nAudit-critical applications",
-  "complexity": "High",
-  "tags": [
-    "events",
-    "audit",
-    "temporal"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Event Sourcing: store events, not current state\n\ninterface Event {\n  type: string;\n  data: any;\n  timestamp: Date;\n}\n\n// Aggregate that generates events\nclass BankAccount {\n  private balance = 0;\n  private events: Event[] = [];\n  \n  constructor(private id: string) {}\n  \n  deposit(amount: number) {\n    this.events.push({\n      type: 'MoneyDeposited',\n      data: { accountId: this.id, amount },\n      timestamp: new Date()\n    });\n    this.balance += amount;\n  }\n  \n  withdraw(amount: number) {\n    if (amount > this.balance) throw new Error('Insufficient funds');\n    this.events.push({\n      type: 'MoneyWithdrawn',\n      data: { accountId: this.id, amount },\n      timestamp: new Date()\n    });\n    this.balance -= amount;\n  }\n  \n  getUncommittedEvents() { return this.events; }\n  getBalance() { return this.balance; }\n  \n  // Rebuild state from events\n  static fromEvents(id: string, events: Event[]): BankAccount {\n    const account = new BankAccount(id);\n    events.forEach(event => {\n      if (event.type === 'MoneyDeposited') {\n        account.balance += event.data.amount;\n      } else if (event.type === 'MoneyWithdrawn') {\n        account.balance -= event.data.amount;\n      }\n    });\n    return account;\n  }\n}\n\n// Usage: store events, rebuild state\nconst account = new BankAccount('acc-1');\naccount.deposit(100);\naccount.withdraw(30);\n\n// Save events\nconst events = account.getUncommittedEvents();\n// Later: rebuild from events\nconst restored = BankAccount.fromEvents('acc-1', events);\nconsole.log(restored.getBalance()); // 70"
+[
+  {
+    "id": "event-sourcing",
+    "name": "Event Sourcing",
+    "category": "Architectural",
+    "description": "Stores all changes as a sequence of events instead of current state",
+    "when_to_use": "Audit requirements\nComplex business logic\nTime-travel debugging",
+    "benefits": "Complete audit trail\nTemporal queries\nDebugging\nScalability",
+    "drawbacks": "Storage overhead\nQuery complexity\nEvent versioning",
+    "use_cases": "Financial systems\nVersion control\nAudit-critical applications",
+    "complexity": "High",
+    "tags": [
+      "events",
+      "audit",
+      "temporal"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Event Sourcing: store events, not current state\n\ninterface Event {\n  type: string;\n  data: any;\n  timestamp: Date;\n}\n\n// Aggregate that generates events\nclass BankAccount {\n  private balance = 0;\n  private events: Event[] = [];\n  \n  constructor(private id: string) {}\n  \n  deposit(amount: number) {\n    this.events.push({\n      type: 'MoneyDeposited',\n      data: { accountId: this.id, amount },\n      timestamp: new Date()\n    });\n    this.balance += amount;\n  }\n  \n  withdraw(amount: number) {\n    if (amount > this.balance) throw new Error('Insufficient funds');\n    this.events.push({\n      type: 'MoneyWithdrawn',\n      data: { accountId: this.id, amount },\n      timestamp: new Date()\n    });\n    this.balance -= amount;\n  }\n  \n  getUncommittedEvents() { return this.events; }\n  getBalance() { return this.balance; }\n  \n  // Rebuild state from events\n  static fromEvents(id: string, events: Event[]): BankAccount {\n    const account = new BankAccount(id);\n    events.forEach(event => {\n      if (event.type === 'MoneyDeposited') {\n        account.balance += event.data.amount;\n      } else if (event.type === 'MoneyWithdrawn') {\n        account.balance -= event.data.amount;\n      }\n    });\n    return account;\n  }\n}\n\n// Usage: store events, rebuild state\nconst account = new BankAccount('acc-1');\naccount.deposit(100);\naccount.withdraw(30);\n\n// Save events\nconst events = account.getUncommittedEvents();\n// Later: rebuild from events\nconst restored = BankAccount.fromEvents('acc-1', events);\nconsole.log(restored.getBalance()); // 70"
+      }
     }
   }
-}
+]

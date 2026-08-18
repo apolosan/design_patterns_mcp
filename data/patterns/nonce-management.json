@@ -1,24 +1,26 @@
-{
-  "id": "nonce-management",
-  "name": "Nonce Management Pattern",
-  "category": "Web3 Frontend",
-  "description": "Track and manage transaction nonces for concurrent transactions. Prevents stuck transactions.",
-  "when_to_use": "High-frequency trading, multiple simultaneous transactions, MEV bots",
-  "benefits": "Prevents stuck transactions, enables concurrency, better UX",
-  "drawbacks": "Complex edge cases, race conditions, provider dependencies",
-  "use_cases": "Trading bots, batch operations, concurrent transaction submission",
-  "complexity": "High",
-  "tags": [
-    "web3",
-    "nonce",
-    "transaction",
-    "concurrency",
-    "frontend"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "class NonceManager {\n  private pending = new Map<string, number>();\n  \n  async getNextNonce(address: string): Promise<number> {\n    const txCount = await provider.getTransactionCount(address, 'pending');\n    const pendingNonce = this.pending.get(address) ?? txCount;\n    const nextNonce = Math.max(txCount, pendingNonce);\n    \n    this.pending.set(address, nextNonce + 1);\n    return nextNonce;\n  }\n  \n  async sendTransaction(tx: Transaction) {\n    tx.nonce = await this.getNextNonce(tx.from);\n    return provider.sendTransaction(tx);\n  }\n}"
+[
+  {
+    "id": "nonce-management",
+    "name": "Nonce Management Pattern",
+    "category": "Web3 Frontend",
+    "description": "Track and manage transaction nonces for concurrent transactions. Prevents stuck transactions.",
+    "when_to_use": "High-frequency trading, multiple simultaneous transactions, MEV bots",
+    "benefits": "Prevents stuck transactions, enables concurrency, better UX",
+    "drawbacks": "Complex edge cases, race conditions, provider dependencies",
+    "use_cases": "Trading bots, batch operations, concurrent transaction submission",
+    "complexity": "High",
+    "tags": [
+      "web3",
+      "nonce",
+      "transaction",
+      "concurrency",
+      "frontend"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "class NonceManager {\n  private pending = new Map<string, number>();\n  \n  async getNextNonce(address: string): Promise<number> {\n    const txCount = await provider.getTransactionCount(address, 'pending');\n    const pendingNonce = this.pending.get(address) ?? txCount;\n    const nextNonce = Math.max(txCount, pendingNonce);\n    \n    this.pending.set(address, nextNonce + 1);\n    return nextNonce;\n  }\n  \n  async sendTransaction(tx: Transaction) {\n    tx.nonce = await this.getNextNonce(tx.from);\n    return provider.sendTransaction(tx);\n  }\n}"
+      }
     }
   }
-}
+]

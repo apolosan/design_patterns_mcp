@@ -1,24 +1,26 @@
-{
-  "id": "uups",
-  "name": "UUPS Proxy",
-  "category": "Smart Contract Upgradeability",
-  "description": "Gas-efficient proxy with upgrade logic in implementation Problem: More gas-efficient upgradeability needed",
-  "when_to_use": "Put upgrade function in implementation, not proxy",
-  "benefits": "Lower deployment cost, simpler proxy, upgrade in logic",
-  "drawbacks": "Risk of bricking, careful implementation required",
-  "use_cases": "Gas-optimized upgradeable contracts, modern protocols",
-  "complexity": "High",
-  "tags": [
-    "upgradeability",
-    "proxy",
-    "uups",
-    "eip-1822",
-    "gas-optimization"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol\";\n\ncontract MyContract is UUPSUpgradeable {\n    function _authorizeUpgrade(address) internal override onlyOwner {}\n}"
+[
+  {
+    "id": "uups",
+    "name": "UUPS Proxy",
+    "category": "Smart Contract Upgradeability",
+    "description": "Gas-efficient proxy with upgrade logic in implementation Problem: More gas-efficient upgradeability needed",
+    "when_to_use": "Put upgrade function in implementation, not proxy",
+    "benefits": "Lower deployment cost, simpler proxy, upgrade in logic",
+    "drawbacks": "Risk of bricking, careful implementation required",
+    "use_cases": "Gas-optimized upgradeable contracts, modern protocols",
+    "complexity": "High",
+    "tags": [
+      "upgradeability",
+      "proxy",
+      "uups",
+      "eip-1822",
+      "gas-optimization"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol\";\n\ncontract MyContract is UUPSUpgradeable {\n    function _authorizeUpgrade(address) internal override onlyOwner {}\n}"
+      }
     }
   }
-}
+]

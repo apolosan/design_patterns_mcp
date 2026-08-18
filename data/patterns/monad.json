@@ -1,16 +1,18 @@
-{
-  "id": "monad",
-  "name": "Monad Pattern",
-  "category": "Functional",
-  "description": "Provides a way to wrap values and chain operations while handling context",
-  "when_to_use": "Error handling\nNull safety\nAsync operations",
-  "benefits": "Composable\nType safety\nError handling\nImmutable",
-  "drawbacks": "Learning curve\nAbstraction overhead\nDebugging complexity",
-  "use_cases": "Maybe/Option types\nEither types\nIO operations",
-  "complexity": "High",
-  "tags": [
-    "functional",
-    "composition",
-    "type-safety"
-  ]
-}
+[
+  {
+    "id": "monad",
+    "name": "Monad Pattern",
+    "category": "Functional",
+    "description": "Provides a way to wrap values and chain operations while handling context",
+    "when_to_use": "Error handling\nNull safety\nAsync operations",
+    "benefits": "Composable\nType safety\nError handling\nImmutable",
+    "drawbacks": "Learning curve\nAbstraction overhead\nDebugging complexity",
+    "use_cases": "Maybe/Option types\nEither types\nIO operations",
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "composition",
+      "type-safety"
+    ]
+  }
+]

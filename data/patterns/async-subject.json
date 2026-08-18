@@ -1,22 +1,24 @@
-{
-  "id": "async-subject",
-  "name": "AsyncSubject Pattern",
-  "category": "Reactive",
-  "description": "Subject that only emits the last value when the sequence completes",
-  "when_to_use": "Single final result\nAsync operations\nPromise-like behavior",
-  "benefits": "Single value emission\nCompletion-based\nPromise compatibility",
-  "drawbacks": "No intermediate values\nCompletion dependency\nLimited use cases",
-  "use_cases": "Single API calls\nFinal calculations\nPromise conversions",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "async",
-    "completion"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// AsyncSubject: emit only last value on complete\nclass AsyncSubject<T> {\n  private observers: Observer<T>[] = [];\n  private value?: T;\n  private hasValue = false;\n  private completed = false;\n  \n  subscribe(observer: Observer<T>): Subscription {\n    if (this.completed && this.hasValue) {\n      observer.next(this.value!);\n      observer.complete();\n    } else if (this.completed) {\n      observer.complete();\n    } else {\n      this.observers.push(observer);\n    }\n    \n    return {\n      unsubscribe: () => {\n        const index = this.observers.indexOf(observer);\n        if (index > -1) this.observers.splice(index, 1);\n      }\n    };\n  }\n  \n  next(value: T): void {\n    if (!this.completed) {\n      this.value = value;\n      this.hasValue = true;\n    }\n  }\n  \n  complete(): void {\n    if (!this.completed) {\n      this.completed = true;\n      if (this.hasValue) {\n        this.observers.forEach(obs => obs.next(this.value!));\n      }\n      this.observers.forEach(obs => obs.complete());\n    }\n  }\n}\n\n// Usage: Promise-like behavior\nconst result = new AsyncSubject<number>();\n\nresult.subscribe({ \n  next: x => console.log('Result:', x),  // Only called on complete\n  error: () => {},\n  complete: () => {} \n});\n\nresult.next(1);\nresult.next(2);\nresult.next(3);\nresult.complete();  // Emits 3 to all subscribers"
+[
+  {
+    "id": "async-subject",
+    "name": "AsyncSubject Pattern",
+    "category": "Reactive",
+    "description": "Subject that only emits the last value when the sequence completes",
+    "when_to_use": "Single final result\nAsync operations\nPromise-like behavior",
+    "benefits": "Single value emission\nCompletion-based\nPromise compatibility",
+    "drawbacks": "No intermediate values\nCompletion dependency\nLimited use cases",
+    "use_cases": "Single API calls\nFinal calculations\nPromise conversions",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "async",
+      "completion"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// AsyncSubject: emit only last value on complete\nclass AsyncSubject<T> {\n  private observers: Observer<T>[] = [];\n  private value?: T;\n  private hasValue = false;\n  private completed = false;\n  \n  subscribe(observer: Observer<T>): Subscription {\n    if (this.completed && this.hasValue) {\n      observer.next(this.value!);\n      observer.complete();\n    } else if (this.completed) {\n      observer.complete();\n    } else {\n      this.observers.push(observer);\n    }\n    \n    return {\n      unsubscribe: () => {\n        const index = this.observers.indexOf(observer);\n        if (index > -1) this.observers.splice(index, 1);\n      }\n    };\n  }\n  \n  next(value: T): void {\n    if (!this.completed) {\n      this.value = value;\n      this.hasValue = true;\n    }\n  }\n  \n  complete(): void {\n    if (!this.completed) {\n      this.completed = true;\n      if (this.hasValue) {\n        this.observers.forEach(obs => obs.next(this.value!));\n      }\n      this.observers.forEach(obs => obs.complete());\n    }\n  }\n}\n\n// Usage: Promise-like behavior\nconst result = new AsyncSubject<number>();\n\nresult.subscribe({ \n  next: x => console.log('Result:', x),  // Only called on complete\n  error: () => {},\n  complete: () => {} \n});\n\nresult.next(1);\nresult.next(2);\nresult.next(3);\nresult.complete();  // Emits 3 to all subscribers"
+      }
     }
   }
-}
+]

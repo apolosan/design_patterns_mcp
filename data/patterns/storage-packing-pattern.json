@@ -1,24 +1,26 @@
-{
-  "id": "storage-packing-pattern",
-  "name": "Storage Packing Pattern",
-  "category": "Smart Contract Gas Optimization",
-  "description": "Pack multiple variables into single storage slots to minimize expensive storage operations. Each slot is 256 bits.",
-  "when_to_use": "All contracts with multiple state variables, especially when variables are smaller than 256 bits",
-  "benefits": "Saves 2,100 - 20,000 gas per storage slot avoided, reduces contract storage footprint",
-  "drawbacks": "Reduced code readability, requires careful planning, type size limitations",
-  "use_cases": "Token contracts, registries, any contract with multiple small state variables",
-  "complexity": "Medium",
-  "tags": [
-    "gas-optimization",
-    "storage",
-    "solidity",
-    "evm",
-    "packing"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Packed into single 256-bit slot\nstruct PackedData {\n    uint128 value1;      // 128 bits\n    uint64 timestamp;    // 64 bits  \n    uint32 counter;      // 32 bits\n    uint16 id;           // 16 bits\n    uint8 status;        // 8 bits\n    uint8 flags;         // 8 bits\n    // Total: 256 bits = 1 storage slot\n}"
+[
+  {
+    "id": "storage-packing-pattern",
+    "name": "Storage Packing Pattern",
+    "category": "Smart Contract Gas Optimization",
+    "description": "Pack multiple variables into single storage slots to minimize expensive storage operations. Each slot is 256 bits.",
+    "when_to_use": "All contracts with multiple state variables, especially when variables are smaller than 256 bits",
+    "benefits": "Saves 2,100 - 20,000 gas per storage slot avoided, reduces contract storage footprint",
+    "drawbacks": "Reduced code readability, requires careful planning, type size limitations",
+    "use_cases": "Token contracts, registries, any contract with multiple small state variables",
+    "complexity": "Medium",
+    "tags": [
+      "gas-optimization",
+      "storage",
+      "solidity",
+      "evm",
+      "packing"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Packed into single 256-bit slot\nstruct PackedData {\n    uint128 value1;      // 128 bits\n    uint64 timestamp;    // 64 bits  \n    uint32 counter;      // 32 bits\n    uint16 id;           // 16 bits\n    uint8 status;        // 8 bits\n    uint8 flags;         // 8 bits\n    // Total: 256 bits = 1 storage slot\n}"
+      }
     }
   }
-}
+]

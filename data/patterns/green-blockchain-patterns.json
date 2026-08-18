@@ -1,24 +1,26 @@
-{
-  "id": "green-blockchain-patterns",
-  "name": "Green Blockchain Patterns",
-  "category": "Sustainable Blockchain",
-  "description": "Carbon-neutral or carbon-negative blockchain operations. Built-in offset mechanisms.",
-  "when_to_use": "Sustainable crypto, green NFTs, climate-positive protocols",
-  "benefits": "Net zero or negative emissions, positive branding, sustainable",
-  "drawbacks": "Ongoing offset costs, verification overhead",
-  "use_cases": "Algorand (carbon negative), Tezos (green), Celo",
-  "complexity": "Medium",
-  "tags": [
-    "sustainable",
-    "green",
-    "carbon-negative",
-    "climate",
-    "offset"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Green NFT with built-in carbon offset\ncontract GreenNFT is ERC721 {\n    uint256 public constant OFFSET_PER_MINT = 0.01 ether; // KlimaDAO tokens\n    IKlimaRetire public klimaRetire;\n    \n    function mint(address to, uint256 tokenId) external payable {\n        require(msg.value >= MINT_PRICE + OFFSET_PER_MINT);\n        \n        // Mint NFT\n        _mint(to, tokenId);\n        \n        // Retire carbon credits automatically\n        klimaRetire.retireCarbon{value: OFFSET_PER_MINT}(\n            beneficiary: to,\n            amount: calculateFootprint(tokenId) // Based on estimated NFT footprint\n        );\n        \n        emit CarbonNeutralMint(tokenId, to);\n    }\n}"
+[
+  {
+    "id": "green-blockchain-patterns",
+    "name": "Green Blockchain Patterns",
+    "category": "Sustainable Blockchain",
+    "description": "Carbon-neutral or carbon-negative blockchain operations. Built-in offset mechanisms.",
+    "when_to_use": "Sustainable crypto, green NFTs, climate-positive protocols",
+    "benefits": "Net zero or negative emissions, positive branding, sustainable",
+    "drawbacks": "Ongoing offset costs, verification overhead",
+    "use_cases": "Algorand (carbon negative), Tezos (green), Celo",
+    "complexity": "Medium",
+    "tags": [
+      "sustainable",
+      "green",
+      "carbon-negative",
+      "climate",
+      "offset"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Green NFT with built-in carbon offset\ncontract GreenNFT is ERC721 {\n    uint256 public constant OFFSET_PER_MINT = 0.01 ether; // KlimaDAO tokens\n    IKlimaRetire public klimaRetire;\n    \n    function mint(address to, uint256 tokenId) external payable {\n        require(msg.value >= MINT_PRICE + OFFSET_PER_MINT);\n        \n        // Mint NFT\n        _mint(to, tokenId);\n        \n        // Retire carbon credits automatically\n        klimaRetire.retireCarbon{value: OFFSET_PER_MINT}(\n            beneficiary: to,\n            amount: calculateFootprint(tokenId) // Based on estimated NFT footprint\n        );\n        \n        emit CarbonNeutralMint(tokenId, to);\n    }\n}"
+      }
     }
   }
-}
+]

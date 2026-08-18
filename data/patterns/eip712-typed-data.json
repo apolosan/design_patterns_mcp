@@ -1,24 +1,26 @@
-{
-  "id": "eip712-typed-data",
-  "name": "EIP-712 Typed Structured Data",
-  "category": "Security",
-  "description": "Secure off-chain signing with human-readable structured data. Domain separation, wallet display.",
-  "when_to_use": "Meta-transactions, permits, DAO voting, off-chain signatures",
-  "benefits": "Human-readable, domain separation, wallet support, security",
-  "drawbacks": "Implementation complexity, requires wallet support",
-  "use_cases": "ERC-20 Permit, gasless approvals, Snapshot voting, NFT minting",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "eip-712",
-    "signature",
-    "meta-transaction",
-    "permit"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/utils/cryptography/EIP712.sol\";\n\ncontract EIP712Example is EIP712 {\n    bytes32 public constant PERMIT_TYPEHASH = keccak256(\n        \"Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)\"\n    );\n    \n    constructor() EIP712(\"MyToken\", \"1\") {}\n    \n    function permit(\n        address owner, address spender, uint256 value,\n        uint256 deadline, uint8 v, bytes32 r, bytes32 s\n    ) external {\n        bytes32 structHash = keccak256(abi.encode(\n            PERMIT_TYPEHASH, owner, spender, value, nonces[owner]++, deadline\n        ));\n        bytes32 hash = _hashTypedDataV4(structHash);\n        address signer = ECDSA.recover(hash, v, r, s);\n        \n        require(signer == owner && block.timestamp <= deadline);\n        _approve(owner, spender, value);\n    }\n}"
+[
+  {
+    "id": "eip712-typed-data",
+    "name": "EIP-712 Typed Structured Data",
+    "category": "Security",
+    "description": "Secure off-chain signing with human-readable structured data. Domain separation, wallet display.",
+    "when_to_use": "Meta-transactions, permits, DAO voting, off-chain signatures",
+    "benefits": "Human-readable, domain separation, wallet support, security",
+    "drawbacks": "Implementation complexity, requires wallet support",
+    "use_cases": "ERC-20 Permit, gasless approvals, Snapshot voting, NFT minting",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "eip-712",
+      "signature",
+      "meta-transaction",
+      "permit"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/utils/cryptography/EIP712.sol\";\n\ncontract EIP712Example is EIP712 {\n    bytes32 public constant PERMIT_TYPEHASH = keccak256(\n        \"Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)\"\n    );\n    \n    constructor() EIP712(\"MyToken\", \"1\") {}\n    \n    function permit(\n        address owner, address spender, uint256 value,\n        uint256 deadline, uint8 v, bytes32 r, bytes32 s\n    ) external {\n        bytes32 structHash = keccak256(abi.encode(\n            PERMIT_TYPEHASH, owner, spender, value, nonces[owner]++, deadline\n        ));\n        bytes32 hash = _hashTypedDataV4(structHash);\n        address signer = ECDSA.recover(hash, v, r, s);\n        \n        require(signer == owner && block.timestamp <= deadline);\n        _approve(owner, spender, value);\n    }\n}"
+      }
     }
   }
-}
+]

@@ -1,24 +1,26 @@
-{
-  "id": "layerzero-omnichain",
-  "name": "LayerZero Omnichain",
-  "category": "Cross-Chain",
-  "description": "Ultra-light node protocol for omnichain applications. Uses oracles + relayers for verification.",
-  "when_to_use": "Native omnichain tokens, cross-chain dApps, unified liquidity",
-  "benefits": "True omnichain apps, low latency, flexible security",
-  "drawbacks": "Oracle + relayer trust, fees, potential congestion",
-  "use_cases": "Stargate Finance, omnichain NFTs, unified DEXs",
-  "complexity": "Medium",
-  "tags": [
-    "cross-chain",
-    "layerzero",
-    "omnichain",
-    "oracles",
-    "relayers"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// LayerZero omnichain contract\nimport \"@layerzerolabs/solidity-examples/contracts/lzApp/NonblockingLzApp.sol\";\n\ncontract OmniCounter is NonblockingLzApp {\n    function incrementCounter(uint16 _dstChainId) external payable {\n        _lzSend(_dstChainId, abi.encode(INCREMENT_TYPE), payable(msg.sender), address(0), bytes(\"\"), msg.value);\n    }\n    \n    function _nonblockingLzReceive(uint16, bytes memory, uint64, bytes memory _payload) internal override {\n        counter++;\n    }\n}"
+[
+  {
+    "id": "layerzero-omnichain",
+    "name": "LayerZero Omnichain",
+    "category": "Cross-Chain",
+    "description": "Ultra-light node protocol for omnichain applications. Uses oracles + relayers for verification.",
+    "when_to_use": "Native omnichain tokens, cross-chain dApps, unified liquidity",
+    "benefits": "True omnichain apps, low latency, flexible security",
+    "drawbacks": "Oracle + relayer trust, fees, potential congestion",
+    "use_cases": "Stargate Finance, omnichain NFTs, unified DEXs",
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "layerzero",
+      "omnichain",
+      "oracles",
+      "relayers"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// LayerZero omnichain contract\nimport \"@layerzerolabs/solidity-examples/contracts/lzApp/NonblockingLzApp.sol\";\n\ncontract OmniCounter is NonblockingLzApp {\n    function incrementCounter(uint16 _dstChainId) external payable {\n        _lzSend(_dstChainId, abi.encode(INCREMENT_TYPE), payable(msg.sender), address(0), bytes(\"\"), msg.value);\n    }\n    \n    function _nonblockingLzReceive(uint16, bytes memory, uint64, bytes memory _payload) internal override {\n        counter++;\n    }\n}"
+      }
     }
   }
-}
+]

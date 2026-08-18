@@ -1,24 +1,26 @@
-{
-  "id": "zk-rollup",
-  "name": "ZK-Rollup",
-  "category": "Layer 2 Scaling",
-  "description": "Layer 2 scaling using zero-knowledge proofs for state transitions. Validates off-chain computation with succinct on-chain proofs.",
-  "when_to_use": "High throughput with instant finality, privacy-preserving transactions, Ethereum security guarantees",
-  "benefits": "Instant L1 finality, higher TPS than optimistic rollups, no fraud proof delay",
-  "drawbacks": "Complex prover circuits, high proving costs, limited EVM compatibility",
-  "use_cases": "zkSync, StarkNet, Polygon zkEVM, payment networks",
-  "complexity": "Very High",
-  "tags": [
-    "layer2",
-    "zk-rollup",
-    "scaling",
-    "zero-knowledge",
-    "privacy"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// ZK-Rollup verifier contract\ncontract ZKRollup {\n    function verifyProof(\n        uint256[] memory proof,\n        uint256[] memory pubInputs\n    ) public view returns (bool) {\n        return Verifier.verify(proof, pubInputs);\n    }\n    \n    function commitBatch(bytes32 newStateRoot, uint256[] calldata proof) external {\n        require(verifyProof(proof, [uint256(prevStateRoot), uint256(newStateRoot)]));\n        stateRoot = newStateRoot;\n    }\n}"
+[
+  {
+    "id": "zk-rollup",
+    "name": "ZK-Rollup",
+    "category": "Layer 2 Scaling",
+    "description": "Layer 2 scaling using zero-knowledge proofs for state transitions. Validates off-chain computation with succinct on-chain proofs.",
+    "when_to_use": "High throughput with instant finality, privacy-preserving transactions, Ethereum security guarantees",
+    "benefits": "Instant L1 finality, higher TPS than optimistic rollups, no fraud proof delay",
+    "drawbacks": "Complex prover circuits, high proving costs, limited EVM compatibility",
+    "use_cases": "zkSync, StarkNet, Polygon zkEVM, payment networks",
+    "complexity": "Very High",
+    "tags": [
+      "layer2",
+      "zk-rollup",
+      "scaling",
+      "zero-knowledge",
+      "privacy"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ZK-Rollup verifier contract\ncontract ZKRollup {\n    function verifyProof(\n        uint256[] memory proof,\n        uint256[] memory pubInputs\n    ) public view returns (bool) {\n        return Verifier.verify(proof, pubInputs);\n    }\n    \n    function commitBatch(bytes32 newStateRoot, uint256[] calldata proof) external {\n        require(verifyProof(proof, [uint256(prevStateRoot), uint256(newStateRoot)]));\n        stateRoot = newStateRoot;\n    }\n}"
+      }
     }
   }
-}
+]

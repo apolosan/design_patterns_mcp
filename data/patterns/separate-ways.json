@@ -1,16 +1,18 @@
-{
-  "id": "separate-ways",
-  "name": "Separate Ways",
-  "category": "Domain-Driven Design",
-  "description": "Bounded contexts with no connection between them",
-  "when_to_use": "No integration needed\nIndependent development\nCost considerations",
-  "benefits": "Independence\nNo integration cost\nTeam autonomy",
-  "drawbacks": "Data duplication\nNo shared functionality\nPotential inconsistency",
-  "use_cases": "Independent modules\nLegacy isolation\nPrototype development",
-  "complexity": "Low",
-  "tags": [
-    "ddd",
-    "strategic",
-    "independence"
-  ]
-}
+[
+  {
+    "id": "separate-ways",
+    "name": "Separate Ways",
+    "category": "Domain-Driven Design",
+    "description": "Bounded contexts with no connection between them",
+    "when_to_use": "No integration needed\nIndependent development\nCost considerations",
+    "benefits": "Independence\nNo integration cost\nTeam autonomy",
+    "drawbacks": "Data duplication\nNo shared functionality\nPotential inconsistency",
+    "use_cases": "Independent modules\nLegacy isolation\nPrototype development",
+    "complexity": "Low",
+    "tags": [
+      "ddd",
+      "strategic",
+      "independence"
+    ]
+  }
+]

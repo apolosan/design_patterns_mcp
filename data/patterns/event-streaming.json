@@ -1,22 +1,24 @@
-{
-  "id": "event-streaming",
-  "name": "Event Streaming Pattern",
-  "category": "Data Management",
-  "description": "Continuously processes streams of events in real-time",
-  "when_to_use": "Real-time processing\nEvent-driven architecture\nData pipelines",
-  "benefits": "Real-time processing\nScalability\nDecoupling\nReplay capability",
-  "drawbacks": "Complexity\nOrdering challenges\nError handling",
-  "use_cases": "User activity tracking\nIoT data processing\nFinancial transactions",
-  "complexity": "High",
-  "tags": [
-    "data-management",
-    "streaming",
-    "real-time"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Event Streaming: continuous data flow\ninterface Event {\n  id: string;\n  type: string;\n  data: any;\n  timestamp: number;\n}\n\nclass EventStream {\n  private consumers: Array<(event: Event) => Promise<void>> = [];\n  \n  subscribe(consumer: (event: Event) => Promise<void>) {\n    this.consumers.push(consumer);\n  }\n  \n  async publish(event: Event) {\n    console.log('Publishing event:', event.type);\n    for (const consumer of this.consumers) {\n      await consumer(event);\n    }\n  }\n}\n\nclass EventStore {\n  async append(event: Event) {\n    await db.query(\n      'INSERT INTO events (id, type, data, timestamp) VALUES ($1, $2, $3, $4)',\n      [event.id, event.type, JSON.stringify(event.data), event.timestamp]\n    );\n    await eventStream.publish(event);\n  }\n  \n  async replay(fromTimestamp: number): Promise<Event[]> {\n    const rows = await db.query(\n      'SELECT * FROM events WHERE timestamp >= $1 ORDER BY timestamp',\n      [fromTimestamp]\n    );\n    return rows.map(r => ({ ...r, data: JSON.parse(r.data) }));\n  }\n}\n\nconst eventStream = new EventStream();\neventStream.subscribe(async (event) => {\n  console.log('Processing:', event.type);\n});\n\nconst store = new EventStore();\nawait store.append({\n  id: '1',\n  type: 'user.created',\n  data: { email: 'user@example.com' },\n  timestamp: Date.now()\n});"
+[
+  {
+    "id": "event-streaming",
+    "name": "Event Streaming Pattern",
+    "category": "Data Management",
+    "description": "Continuously processes streams of events in real-time",
+    "when_to_use": "Real-time processing\nEvent-driven architecture\nData pipelines",
+    "benefits": "Real-time processing\nScalability\nDecoupling\nReplay capability",
+    "drawbacks": "Complexity\nOrdering challenges\nError handling",
+    "use_cases": "User activity tracking\nIoT data processing\nFinancial transactions",
+    "complexity": "High",
+    "tags": [
+      "data-management",
+      "streaming",
+      "real-time"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Event Streaming: continuous data flow\ninterface Event {\n  id: string;\n  type: string;\n  data: any;\n  timestamp: number;\n}\n\nclass EventStream {\n  private consumers: Array<(event: Event) => Promise<void>> = [];\n  \n  subscribe(consumer: (event: Event) => Promise<void>) {\n    this.consumers.push(consumer);\n  }\n  \n  async publish(event: Event) {\n    console.log('Publishing event:', event.type);\n    for (const consumer of this.consumers) {\n      await consumer(event);\n    }\n  }\n}\n\nclass EventStore {\n  async append(event: Event) {\n    await db.query(\n      'INSERT INTO events (id, type, data, timestamp) VALUES ($1, $2, $3, $4)',\n      [event.id, event.type, JSON.stringify(event.data), event.timestamp]\n    );\n    await eventStream.publish(event);\n  }\n  \n  async replay(fromTimestamp: number): Promise<Event[]> {\n    const rows = await db.query(\n      'SELECT * FROM events WHERE timestamp >= $1 ORDER BY timestamp',\n      [fromTimestamp]\n    );\n    return rows.map(r => ({ ...r, data: JSON.parse(r.data) }));\n  }\n}\n\nconst eventStream = new EventStream();\neventStream.subscribe(async (event) => {\n  console.log('Processing:', event.type);\n});\n\nconst store = new EventStore();\nawait store.append({\n  id: '1',\n  type: 'user.created',\n  data: { email: 'user@example.com' },\n  timestamp: Date.now()\n});"
+      }
     }
   }
-}
+]

@@ -1,19 +1,21 @@
-{
-  "id": "learning-adaptation-pattern",
-  "name": "Learning and Adaptation Pattern",
-  "category": "AI/ML",
-  "description": "Allows agents to learn from interactions, adapt behavior, and improve performance over time through feedback and experience.",
-  "when_to_use": "[\"Continuous improvement needed\",\"Dynamic tasks\",\"Personalization\"]",
-  "benefits": "[\"Self-improvement\",\"Adaptation to new scenarios\",\"Personalized responses\"]",
-  "drawbacks": "[\"Requires feedback mechanisms\",\"Potential overfitting\",\"Resource intensive\"]",
-  "use_cases": "[\"Personalization systems\",\"Adaptive assistants\",\"Evolving workflows\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"learning\"",
-    "\"adaptation\"",
-    "\"feedback\"",
-    "\"improvement\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "learning-adaptation-pattern",
+    "name": "Learning and Adaptation Pattern",
+    "category": "AI/ML",
+    "description": "Allows agents to learn from interactions, adapt behavior, and improve performance over time through feedback and experience.",
+    "when_to_use": "[\"Continuous improvement needed\",\"Dynamic tasks\",\"Personalization\"]",
+    "benefits": "[\"Self-improvement\",\"Adaptation to new scenarios\",\"Personalized responses\"]",
+    "drawbacks": "[\"Requires feedback mechanisms\",\"Potential overfitting\",\"Resource intensive\"]",
+    "use_cases": "[\"Personalization systems\",\"Adaptive assistants\",\"Evolving workflows\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"learning\"",
+      "\"adaptation\"",
+      "\"feedback\"",
+      "\"improvement\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

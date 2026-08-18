@@ -1,24 +1,26 @@
-{
-  "id": "royalty-enforcement",
-  "name": "On-Chain Royalty Enforcement",
-  "category": "NFT",
-  "description": "Enforceable royalties via transfer restrictions",
-  "when_to_use": "Creator-focused projects, marketplace control",
-  "benefits": "Cannot be bypassed, guaranteed creator revenue",
-  "drawbacks": "Restricts transferability, reduces liquidity, centralization",
-  "use_cases": "Royalty guarantees, approved marketplaces only",
-  "complexity": "Medium",
-  "tags": [
-    "nft",
-    "royalty",
-    "eip2981",
-    "creator-earnings",
-    "enforcement"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Royalty Enforcement: whitelist marketplaces\ncontract EnforcedRoyaltyNFT is ERC721 {\n    mapping(address => bool) public approvedMarketplaces;\n    \n    function _beforeTokenTransfer(address from, address to, uint256 tokenId)\n        internal override {\n        if (from != address(0) && to != address(0)) {\n            require(approvedMarketplaces[msg.sender], \"Marketplace not approved\");\n        }\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
+[
+  {
+    "id": "royalty-enforcement",
+    "name": "On-Chain Royalty Enforcement",
+    "category": "NFT",
+    "description": "Enforceable royalties via transfer restrictions",
+    "when_to_use": "Creator-focused projects, marketplace control",
+    "benefits": "Cannot be bypassed, guaranteed creator revenue",
+    "drawbacks": "Restricts transferability, reduces liquidity, centralization",
+    "use_cases": "Royalty guarantees, approved marketplaces only",
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "royalty",
+      "eip2981",
+      "creator-earnings",
+      "enforcement"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Royalty Enforcement: whitelist marketplaces\ncontract EnforcedRoyaltyNFT is ERC721 {\n    mapping(address => bool) public approvedMarketplaces;\n    \n    function _beforeTokenTransfer(address from, address to, uint256 tokenId)\n        internal override {\n        if (from != address(0) && to != address(0)) {\n            require(approvedMarketplaces[msg.sender], \"Marketplace not approved\");\n        }\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
+      }
     }
   }
-}
+]

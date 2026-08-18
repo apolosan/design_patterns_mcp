@@ -1,22 +1,24 @@
-{
-  "id": "future-promise",
-  "name": "Future/Promise",
-  "category": "Concurrency",
-  "description": "Represents result of asynchronous computation that may not be available yet",
-  "when_to_use": "Asynchronous operations\nNon-blocking calls\nParallel execution",
-  "benefits": "Non-blocking\nComposable\nError handling\nParallel execution",
-  "drawbacks": "Complex error handling\nMemory overhead\nCallback complexity",
-  "use_cases": "Async APIs\nParallel computation\nI/O operations",
-  "complexity": "Medium",
-  "tags": [
-    "concurrency",
-    "asynchronous",
-    "futures"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Future/Promise: represent async computation result\nclass Future<T> {\n  private promise: Promise<T>;\n  \n  constructor(executor: () => Promise<T>) {\n    this.promise = executor();\n  }\n  \n  async get(): Promise<T> {\n    return this.promise;\n  }\n  \n  then<U>(onFulfilled: (value: T) => U): Future<U> {\n    return new Future(() => this.promise.then(onFulfilled));\n  }\n  \n  catch(onRejected: (error: any) => T): Future<T> {\n    return new Future(() => this.promise.catch(onRejected));\n  }\n}\n\n// Usage\nconst future = new Future(async () => {\n  const response = await fetch('https://api.example.com/data');\n  return response.json();\n});\n\nconst data = await future.get();\nconsole.log(data);\n\n// Promise composition\nconst processedFuture = future\n  .then(data => data.items)\n  .then(items => items.filter(i => i.active));\n\nconst result = await processedFuture.get();"
+[
+  {
+    "id": "future-promise",
+    "name": "Future/Promise",
+    "category": "Concurrency",
+    "description": "Represents result of asynchronous computation that may not be available yet",
+    "when_to_use": "Asynchronous operations\nNon-blocking calls\nParallel execution",
+    "benefits": "Non-blocking\nComposable\nError handling\nParallel execution",
+    "drawbacks": "Complex error handling\nMemory overhead\nCallback complexity",
+    "use_cases": "Async APIs\nParallel computation\nI/O operations",
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "asynchronous",
+      "futures"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Future/Promise: represent async computation result\nclass Future<T> {\n  private promise: Promise<T>;\n  \n  constructor(executor: () => Promise<T>) {\n    this.promise = executor();\n  }\n  \n  async get(): Promise<T> {\n    return this.promise;\n  }\n  \n  then<U>(onFulfilled: (value: T) => U): Future<U> {\n    return new Future(() => this.promise.then(onFulfilled));\n  }\n  \n  catch(onRejected: (error: any) => T): Future<T> {\n    return new Future(() => this.promise.catch(onRejected));\n  }\n}\n\n// Usage\nconst future = new Future(async () => {\n  const response = await fetch('https://api.example.com/data');\n  return response.json();\n});\n\nconst data = await future.get();\nconsole.log(data);\n\n// Promise composition\nconst processedFuture = future\n  .then(data => data.items)\n  .then(items => items.filter(i => i.active));\n\nconst result = await processedFuture.get();"
+      }
     }
   }
-}
+]

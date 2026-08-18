@@ -1,16 +1,18 @@
-{
-  "id": "entity-component-system",
-  "name": "Entity-Component-System (ECS)",
-  "category": "Game Development",
-  "description": "Architectural pattern that favors composition over inheritance for game entities",
-  "when_to_use": "Complex game entities\nPerformance optimization\nFlexible systems",
-  "benefits": "Performance\nFlexibility\nComposition over inheritance\nData-driven",
-  "drawbacks": "Complex architecture\nLearning curve\nMemory management",
-  "use_cases": "Game engines\nLarge-scale games\nPerformance-critical applications",
-  "complexity": "High",
-  "tags": [
-    "game",
-    "ecs",
-    "architecture"
-  ]
-}
+[
+  {
+    "id": "entity-component-system",
+    "name": "Entity-Component-System (ECS)",
+    "category": "Game Development",
+    "description": "Architectural pattern that favors composition over inheritance for game entities",
+    "when_to_use": "Complex game entities\nPerformance optimization\nFlexible systems",
+    "benefits": "Performance\nFlexibility\nComposition over inheritance\nData-driven",
+    "drawbacks": "Complex architecture\nLearning curve\nMemory management",
+    "use_cases": "Game engines\nLarge-scale games\nPerformance-critical applications",
+    "complexity": "High",
+    "tags": [
+      "game",
+      "ecs",
+      "architecture"
+    ]
+  }
+]

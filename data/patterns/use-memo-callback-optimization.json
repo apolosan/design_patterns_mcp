@@ -1,27 +1,29 @@
-{
-  "id": "use-memo-callback-optimization",
-  "name": "useMemo and useCallback Optimization Pattern",
-  "category": "React Hooks",
-  "description": "Memoization hooks to prevent unnecessary re-renders and expensive recalculations.",
-  "when_to_use": "Performance optimization, expensive calculations, callback stability, React.memo",
-  "benefits": "Better performance, prevents unnecessary renders, stable references",
-  "drawbacks": "Premature optimization risk, memory overhead, complexity",
-  "use_cases": "Heavy computations, large lists, callback props, derived state, object/array deps",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "hooks",
-    "useMemo",
-    "useCallback",
-    "optimization",
-    "performance",
-    "memoization",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { useMemo, useCallback, useState, memo } from 'react';\n\n// 1. useMemo - Memoize expensive calculations\nfunction ProductList({ products, filter }: Props) {\n  const [sortBy, setSortBy] = useState('name');\n  \n  const filteredAndSorted = useMemo(() => {\n    console.log('Filtering and sorting...');\n    return products\n      .filter(p => p.name.includes(filter))\n      .sort((a, b) => a[sortBy].localeCompare(b[sortBy]));\n  }, [products, filter, sortBy]);\n  \n  return (\n    <div>\n      <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>\n        <option value=\"name\">Name</option>\n        <option value=\"price\">Price</option>\n      </select>\n      {filteredAndSorted.map(p => <div key={p.id}>{p.name}</div>)}\n    </div>\n  );\n}\n\n// Without useMemo: recalculates on every render\n// With useMemo: only recalculates when dependencies change\n\n// 2. useCallback - Memoize callback functions\nconst Button = memo(({ onClick, children }: ButtonProps) => {\n  console.log('Button rendered');\n  return <button onClick={onClick}>{children}</button>;\n});\n\nfunction Parent() {\n  const [count, setCount] = useState(0);\n  const [text, setText] = useState('');\n  \n  const handleClick = useCallback(() => {\n    setCount(c => c + 1);\n  }, []);\n  \n  return (\n    <div>\n      <input value={text} onChange={(e) => setText(e.target.value)} />\n      <Button onClick={handleClick}>Count: {count}</Button>\n    </div>\n  );\n}\n\n// 3. Combined example: Data table with actions\ninterface Row {\n  id: string;\n  name: string;\n  value: number;\n}\n\nconst TableRow = memo(({ row, onEdit, onDelete }: RowProps) => {\n  console.log('Row rendered:', row.id);\n  return (\n    <tr>\n      <td>{row.name}</td>\n      <td>{row.value}</td>\n      <td>\n        <button onClick={() => onEdit(row.id)}>Edit</button>\n        <button onClick={() => onDelete(row.id)}>Delete</button>\n      </td>\n    </tr>\n  );\n});\n\nfunction DataTable({ data }: { data: Row[] }) {\n  const [filter, setFilter] = useState('');\n  \n  const filteredData = useMemo(() => {\n    return data.filter(row => row.name.includes(filter));\n  }, [data, filter]);\n  \n  const handleEdit = useCallback((id: string) => {\n    console.log('Edit', id);\n  }, []);\n  \n  const handleDelete = useCallback((id: string) => {\n    console.log('Delete', id);\n  }, []);\n  \n  return (\n    <div>\n      <input value={filter} onChange={(e) => setFilter(e.target.value)} />\n      <table>\n        <tbody>\n          {filteredData.map(row => (\n            <TableRow \n              key={row.id} \n              row={row} \n              onEdit={handleEdit} \n              onDelete={handleDelete} \n            />\n          ))}\n        </tbody>\n      </table>\n    </div>\n  );\n}\n\n// When NOT to use\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  \n  const doubled = count * 2;\n  \n  return <div>{doubled}</div>;\n}"
+[
+  {
+    "id": "use-memo-callback-optimization",
+    "name": "useMemo and useCallback Optimization Pattern",
+    "category": "React Hooks",
+    "description": "Memoization hooks to prevent unnecessary re-renders and expensive recalculations.",
+    "when_to_use": "Performance optimization, expensive calculations, callback stability, React.memo",
+    "benefits": "Better performance, prevents unnecessary renders, stable references",
+    "drawbacks": "Premature optimization risk, memory overhead, complexity",
+    "use_cases": "Heavy computations, large lists, callback props, derived state, object/array deps",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "hooks",
+      "useMemo",
+      "useCallback",
+      "optimization",
+      "performance",
+      "memoization",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { useMemo, useCallback, useState, memo } from 'react';\n\n// 1. useMemo - Memoize expensive calculations\nfunction ProductList({ products, filter }: Props) {\n  const [sortBy, setSortBy] = useState('name');\n  \n  const filteredAndSorted = useMemo(() => {\n    console.log('Filtering and sorting...');\n    return products\n      .filter(p => p.name.includes(filter))\n      .sort((a, b) => a[sortBy].localeCompare(b[sortBy]));\n  }, [products, filter, sortBy]);\n  \n  return (\n    <div>\n      <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>\n        <option value=\"name\">Name</option>\n        <option value=\"price\">Price</option>\n      </select>\n      {filteredAndSorted.map(p => <div key={p.id}>{p.name}</div>)}\n    </div>\n  );\n}\n\n// Without useMemo: recalculates on every render\n// With useMemo: only recalculates when dependencies change\n\n// 2. useCallback - Memoize callback functions\nconst Button = memo(({ onClick, children }: ButtonProps) => {\n  console.log('Button rendered');\n  return <button onClick={onClick}>{children}</button>;\n});\n\nfunction Parent() {\n  const [count, setCount] = useState(0);\n  const [text, setText] = useState('');\n  \n  const handleClick = useCallback(() => {\n    setCount(c => c + 1);\n  }, []);\n  \n  return (\n    <div>\n      <input value={text} onChange={(e) => setText(e.target.value)} />\n      <Button onClick={handleClick}>Count: {count}</Button>\n    </div>\n  );\n}\n\n// 3. Combined example: Data table with actions\ninterface Row {\n  id: string;\n  name: string;\n  value: number;\n}\n\nconst TableRow = memo(({ row, onEdit, onDelete }: RowProps) => {\n  console.log('Row rendered:', row.id);\n  return (\n    <tr>\n      <td>{row.name}</td>\n      <td>{row.value}</td>\n      <td>\n        <button onClick={() => onEdit(row.id)}>Edit</button>\n        <button onClick={() => onDelete(row.id)}>Delete</button>\n      </td>\n    </tr>\n  );\n});\n\nfunction DataTable({ data }: { data: Row[] }) {\n  const [filter, setFilter] = useState('');\n  \n  const filteredData = useMemo(() => {\n    return data.filter(row => row.name.includes(filter));\n  }, [data, filter]);\n  \n  const handleEdit = useCallback((id: string) => {\n    console.log('Edit', id);\n  }, []);\n  \n  const handleDelete = useCallback((id: string) => {\n    console.log('Delete', id);\n  }, []);\n  \n  return (\n    <div>\n      <input value={filter} onChange={(e) => setFilter(e.target.value)} />\n      <table>\n        <tbody>\n          {filteredData.map(row => (\n            <TableRow \n              key={row.id} \n              row={row} \n              onEdit={handleEdit} \n              onDelete={handleDelete} \n            />\n          ))}\n        </tbody>\n      </table>\n    </div>\n  );\n}\n\n// When NOT to use\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  \n  const doubled = count * 2;\n  \n  return <div>{doubled}</div>;\n}"
+      }
     }
   }
-}
+]

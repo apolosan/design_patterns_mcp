@@ -1,17 +1,19 @@
-{
-  "id": "stateful-merger",
-  "name": "Stateful Merger",
-  "category": "Idempotency",
-  "description": "The Stateful Merger maintains state to ensure consistent merging operations, providing better consistency during backfills compared to the basic Merger pattern.",
-  "when_to_use": "[\"Need consistency during backfills\",\"Stateful operations required\"]",
-  "benefits": "[\"Ensures consistency\",\"Handles backfills better\"]",
-  "drawbacks": "[\"Increased complexity\",\"State management overhead\"]",
-  "use_cases": "[\"Consistent data merging\",\"Backfill operations\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"idempotency\"",
-    "\"stateful\"",
-    "\"merger\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "stateful-merger",
+    "name": "Stateful Merger",
+    "category": "Idempotency",
+    "description": "The Stateful Merger maintains state to ensure consistent merging operations, providing better consistency during backfills compared to the basic Merger pattern.",
+    "when_to_use": "[\"Need consistency during backfills\",\"Stateful operations required\"]",
+    "benefits": "[\"Ensures consistency\",\"Handles backfills better\"]",
+    "drawbacks": "[\"Increased complexity\",\"State management overhead\"]",
+    "use_cases": "[\"Consistent data merging\",\"Backfill operations\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"idempotency\"",
+      "\"stateful\"",
+      "\"merger\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

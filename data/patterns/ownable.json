@@ -1,23 +1,25 @@
-{
-  "id": "ownable",
-  "name": "Ownable",
-  "category": "Smart Contract Access Control",
-  "description": "Single owner with admin privileges Problem: Need restricted access to admin functions",
-  "when_to_use": "Owner address with onlyOwner modifier",
-  "benefits": "Simple, gas-efficient, standard, wide support",
-  "drawbacks": "Single point of failure, centralization, key loss risk",
-  "use_cases": "Contract administration, upgrades, emergency functions",
-  "complexity": "Low",
-  "tags": [
-    "access-control",
-    "admin",
-    "ownership",
-    "openzeppelin"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/access/Ownable.sol\";\n\ncontract MyContract is Ownable {\n    function setFee(uint256 newFee) external onlyOwner {\n        fee = newFee;\n    }\n}"
+[
+  {
+    "id": "ownable",
+    "name": "Ownable",
+    "category": "Smart Contract Access Control",
+    "description": "Single owner with admin privileges Problem: Need restricted access to admin functions",
+    "when_to_use": "Owner address with onlyOwner modifier",
+    "benefits": "Simple, gas-efficient, standard, wide support",
+    "drawbacks": "Single point of failure, centralization, key loss risk",
+    "use_cases": "Contract administration, upgrades, emergency functions",
+    "complexity": "Low",
+    "tags": [
+      "access-control",
+      "admin",
+      "ownership",
+      "openzeppelin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/access/Ownable.sol\";\n\ncontract MyContract is Ownable {\n    function setFee(uint256 newFee) external onlyOwner {\n        fee = newFee;\n    }\n}"
+      }
     }
   }
-}
+]

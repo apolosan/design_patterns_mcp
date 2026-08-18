@@ -1,22 +1,24 @@
-{
-  "id": "prefetching",
-  "name": "Prefetching Pattern",
-  "category": "Performance",
-  "description": "Loads data in advance based on predicted access patterns",
-  "when_to_use": "Predictable access patterns\nLatency reduction\nUser experience",
-  "benefits": "Reduced latency\nBetter user experience\nProactive loading",
-  "drawbacks": "Wasted resources\nComplex prediction\nCache pollution",
-  "use_cases": "Web page resources\nDatabase records\nContent delivery",
-  "complexity": "High",
-  "tags": [
-    "performance",
-    "prefetch",
-    "prediction"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Prefetching: load data before it's needed\nclass Prefetcher<T> {\n  private cache = new Map<string, Promise<T>>();\n  \n  constructor(\n    private loader: (id: string) => Promise<T>,\n    private predictor: (id: string) => string[]\n  ) {}\n  \n  async get(id: string): Promise<T> {\n    if (this.cache.has(id)) {\n      return this.cache.get(id)!;\n    }\n    \n    const promise = this.loader(id);\n    this.cache.set(id, promise);\n    \n    const result = await promise;\n    \n    // Prefetch related items\n    const relatedIds = this.predictor(id);\n    for (const relatedId of relatedIds) {\n      if (!this.cache.has(relatedId)) {\n        this.cache.set(relatedId, this.loader(relatedId));\n      }\n    }\n    \n    return result;\n  }\n}\n\n// Example: Prefetch related products\nconst productPrefetcher = new Prefetcher(\n  async (id) => await fetchProduct(id),\n  (id) => {\n    // Predict next products user might view\n    const current = parseInt(id);\n    return [String(current + 1), String(current + 2)];\n  }\n);\n\nconst product = await productPrefetcher.get('100');\n// Products 101 and 102 are now loading in background"
+[
+  {
+    "id": "prefetching",
+    "name": "Prefetching Pattern",
+    "category": "Performance",
+    "description": "Loads data in advance based on predicted access patterns",
+    "when_to_use": "Predictable access patterns\nLatency reduction\nUser experience",
+    "benefits": "Reduced latency\nBetter user experience\nProactive loading",
+    "drawbacks": "Wasted resources\nComplex prediction\nCache pollution",
+    "use_cases": "Web page resources\nDatabase records\nContent delivery",
+    "complexity": "High",
+    "tags": [
+      "performance",
+      "prefetch",
+      "prediction"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Prefetching: load data before it's needed\nclass Prefetcher<T> {\n  private cache = new Map<string, Promise<T>>();\n  \n  constructor(\n    private loader: (id: string) => Promise<T>,\n    private predictor: (id: string) => string[]\n  ) {}\n  \n  async get(id: string): Promise<T> {\n    if (this.cache.has(id)) {\n      return this.cache.get(id)!;\n    }\n    \n    const promise = this.loader(id);\n    this.cache.set(id, promise);\n    \n    const result = await promise;\n    \n    // Prefetch related items\n    const relatedIds = this.predictor(id);\n    for (const relatedId of relatedIds) {\n      if (!this.cache.has(relatedId)) {\n        this.cache.set(relatedId, this.loader(relatedId));\n      }\n    }\n    \n    return result;\n  }\n}\n\n// Example: Prefetch related products\nconst productPrefetcher = new Prefetcher(\n  async (id) => await fetchProduct(id),\n  (id) => {\n    // Predict next products user might view\n    const current = parseInt(id);\n    return [String(current + 1), String(current + 2)];\n  }\n);\n\nconst product = await productPrefetcher.get('100');\n// Products 101 and 102 are now loading in background"
+      }
     }
   }
-}
+]

@@ -1,22 +1,24 @@
-{
-  "id": "mediator",
-  "name": "Mediator",
-  "category": "Behavioral",
-  "description": "Defines how a set of objects interact through a central mediator",
-  "when_to_use": "Complex communication\nReusable components\nDecoupling",
-  "benefits": "Reduced dependencies\nReusability\nSimplified maintenance",
-  "drawbacks": "God object risk\nComplexity",
-  "use_cases": "Chat rooms\nAir traffic control\nUI component communication",
-  "complexity": "Medium",
-  "tags": [
-    "behavioral",
-    "communication",
-    "decoupling"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Mediator {\n  notify(sender: any, event: string): void;\n}\n\nclass Component {\n  constructor(protected mediator: Mediator) {}\n}\n\nclass Button extends Component {\n  click() {\n    this.mediator.notify(this, 'click');\n  }\n}\n\nclass Dialog implements Mediator {\n  notify(sender: any, event: string) {\n    if (event === 'click') {\n      console.log('Dialog reacts to button');\n    }\n  }\n}\n\n// Usage: reduce coupling between components\nconst dialog = new Dialog();\nconst button = new Button(dialog);\nbutton.click();"
+[
+  {
+    "id": "mediator",
+    "name": "Mediator",
+    "category": "Behavioral",
+    "description": "Defines how a set of objects interact through a central mediator",
+    "when_to_use": "Complex communication\nReusable components\nDecoupling",
+    "benefits": "Reduced dependencies\nReusability\nSimplified maintenance",
+    "drawbacks": "God object risk\nComplexity",
+    "use_cases": "Chat rooms\nAir traffic control\nUI component communication",
+    "complexity": "Medium",
+    "tags": [
+      "behavioral",
+      "communication",
+      "decoupling"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Mediator {\n  notify(sender: any, event: string): void;\n}\n\nclass Component {\n  constructor(protected mediator: Mediator) {}\n}\n\nclass Button extends Component {\n  click() {\n    this.mediator.notify(this, 'click');\n  }\n}\n\nclass Dialog implements Mediator {\n  notify(sender: any, event: string) {\n    if (event === 'click') {\n      console.log('Dialog reacts to button');\n    }\n  }\n}\n\n// Usage: reduce coupling between components\nconst dialog = new Dialog();\nconst button = new Button(dialog);\nbutton.click();"
+      }
     }
   }
-}
+]

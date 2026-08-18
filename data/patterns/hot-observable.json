@@ -1,22 +1,24 @@
-{
-  "id": "hot-observable",
-  "name": "Hot Observable Pattern",
-  "category": "Reactive",
-  "description": "Observable that emits values regardless of whether anyone is subscribing",
-  "when_to_use": "Real-time data\nShared streams\nExternal events",
-  "benefits": "Shared data\nReal-time updates\nResource efficiency",
-  "drawbacks": "Missed emissions\nSubscription timing\nMemory management",
-  "use_cases": "Stock prices\nLive data feeds\nSystem events",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "hot",
-    "real-time"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Hot Observable: shared execution\nclass HotObservable<T> {\n  private observers: Observer<T>[] = [];\n  private started = false;\n  \n  constructor(private producer: (emit: (value: T) => void) => void) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    this.observers.push(observer);\n    \n    if (!this.started) {\n      this.started = true;\n      this.producer(value => {\n        this.observers.forEach(obs => obs.next(value));\n      });\n    }\n    \n    return {\n      unsubscribe: () => {\n        const index = this.observers.indexOf(observer);\n        if (index > -1) this.observers.splice(index, 1);\n      }\n    };\n  }\n}\n\n// Usage: Shared WebSocket connection\nconst wsData = new HotObservable<string>(emit => {\n  const ws = new WebSocket('ws://example.com');\n  ws.onmessage = event => emit(event.data);\n});\n\n// Both subscribers share same WebSocket\nwsData.subscribe({ next: data => console.log('Sub 1:', data), error: () => {}, complete: () => {} });\nwsData.subscribe({ next: data => console.log('Sub 2:', data), error: () => {}, complete: () => {} });"
+[
+  {
+    "id": "hot-observable",
+    "name": "Hot Observable Pattern",
+    "category": "Reactive",
+    "description": "Observable that emits values regardless of whether anyone is subscribing",
+    "when_to_use": "Real-time data\nShared streams\nExternal events",
+    "benefits": "Shared data\nReal-time updates\nResource efficiency",
+    "drawbacks": "Missed emissions\nSubscription timing\nMemory management",
+    "use_cases": "Stock prices\nLive data feeds\nSystem events",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "hot",
+      "real-time"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Hot Observable: shared execution\nclass HotObservable<T> {\n  private observers: Observer<T>[] = [];\n  private started = false;\n  \n  constructor(private producer: (emit: (value: T) => void) => void) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    this.observers.push(observer);\n    \n    if (!this.started) {\n      this.started = true;\n      this.producer(value => {\n        this.observers.forEach(obs => obs.next(value));\n      });\n    }\n    \n    return {\n      unsubscribe: () => {\n        const index = this.observers.indexOf(observer);\n        if (index > -1) this.observers.splice(index, 1);\n      }\n    };\n  }\n}\n\n// Usage: Shared WebSocket connection\nconst wsData = new HotObservable<string>(emit => {\n  const ws = new WebSocket('ws://example.com');\n  ws.onmessage = event => emit(event.data);\n});\n\n// Both subscribers share same WebSocket\nwsData.subscribe({ next: data => console.log('Sub 1:', data), error: () => {}, complete: () => {} });\nwsData.subscribe({ next: data => console.log('Sub 2:', data), error: () => {}, complete: () => {} });"
+      }
     }
   }
-}
+]

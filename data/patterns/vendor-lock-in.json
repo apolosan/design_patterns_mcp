@@ -1,15 +1,17 @@
-{
-  "id": "vendor-lock-in",
-  "name": "Vendor Lock-in Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Over-dependence on specific vendor products making migration difficult or impossible",
-  "when_to_use": "Heavy reliance on proprietary features\nVendor-specific implementations throughout code\nLack of abstraction layers",
-  "drawbacks": "Migration difficulty\nReduced negotiating power\nTechnology lock-in\nInnovation constraints",
-  "use_cases": "Direct database vendor API usage\nCloud provider specific services\nProprietary framework dependencies",
-  "complexity": "High",
-  "tags": [
-    "anti-pattern",
-    "architecture",
-    "vendor-dependency"
-  ]
-}
+[
+  {
+    "id": "vendor-lock-in",
+    "name": "Vendor Lock-in Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Over-dependence on specific vendor products making migration difficult or impossible",
+    "when_to_use": "Heavy reliance on proprietary features\nVendor-specific implementations throughout code\nLack of abstraction layers",
+    "drawbacks": "Migration difficulty\nReduced negotiating power\nTechnology lock-in\nInnovation constraints",
+    "use_cases": "Direct database vendor API usage\nCloud provider specific services\nProprietary framework dependencies",
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "architecture",
+      "vendor-dependency"
+    ]
+  }
+]

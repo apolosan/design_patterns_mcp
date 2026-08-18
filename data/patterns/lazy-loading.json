@@ -1,22 +1,24 @@
-{
-  "id": "lazy-loading",
-  "name": "Lazy Loading",
-  "category": "Data Access",
-  "description": "Defers loading of data until it is actually needed",
-  "when_to_use": "Large object graphs\nPerformance optimization\nMemory constraints",
-  "benefits": "Performance optimization\nMemory efficiency\nOn-demand loading",
-  "drawbacks": "N+1 query problem\nComplex implementation\nDelayed loading",
-  "use_cases": "ORM frameworks\nLarge datasets\nPerformance-critical applications",
-  "complexity": "Medium",
-  "tags": [
-    "data-access",
-    "optimization",
-    "loading"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Lazy Loading: load data on demand\nclass User {\n  private _posts?: Post[];\n  \n  constructor(\n    public id: string,\n    public email: string,\n    private postLoader: () => Promise<Post[]>\n  ) {}\n  \n  async getPosts(): Promise<Post[]> {\n    if (!this._posts) {\n      console.log('Loading posts...');\n      this._posts = await this.postLoader();\n    }\n    return this._posts;\n  }\n}\n\nclass UserRepository {\n  async findById(id: string): Promise<User> {\n    const row = await db.query('SELECT * FROM users WHERE id = $1', [id]);\n    return new User(\n      row.id,\n      row.email,\n      async () => {\n        const posts = await db.query('SELECT * FROM posts WHERE user_id = $1', [row.id]);\n        return posts;\n      }\n    );\n  }\n}\n\nconst user = await userRepo.findById('123');\n// Posts not loaded yet\nconst posts = await user.getPosts();\n// Posts loaded on first access"
+[
+  {
+    "id": "lazy-loading",
+    "name": "Lazy Loading",
+    "category": "Data Access",
+    "description": "Defers loading of data until it is actually needed",
+    "when_to_use": "Large object graphs\nPerformance optimization\nMemory constraints",
+    "benefits": "Performance optimization\nMemory efficiency\nOn-demand loading",
+    "drawbacks": "N+1 query problem\nComplex implementation\nDelayed loading",
+    "use_cases": "ORM frameworks\nLarge datasets\nPerformance-critical applications",
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "optimization",
+      "loading"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Lazy Loading: load data on demand\nclass User {\n  private _posts?: Post[];\n  \n  constructor(\n    public id: string,\n    public email: string,\n    private postLoader: () => Promise<Post[]>\n  ) {}\n  \n  async getPosts(): Promise<Post[]> {\n    if (!this._posts) {\n      console.log('Loading posts...');\n      this._posts = await this.postLoader();\n    }\n    return this._posts;\n  }\n}\n\nclass UserRepository {\n  async findById(id: string): Promise<User> {\n    const row = await db.query('SELECT * FROM users WHERE id = $1', [id]);\n    return new User(\n      row.id,\n      row.email,\n      async () => {\n        const posts = await db.query('SELECT * FROM posts WHERE user_id = $1', [row.id]);\n        return posts;\n      }\n    );\n  }\n}\n\nconst user = await userRepo.findById('123');\n// Posts not loaded yet\nconst posts = await user.getPosts();\n// Posts loaded on first access"
+      }
     }
   }
-}
+]

@@ -1,22 +1,24 @@
-{
-  "id": "circuit-breaker-ms",
-  "name": "Circuit Breaker (Microservices)",
-  "category": "Microservices",
-  "description": "Prevents cascading failures in distributed systems",
-  "when_to_use": "Service dependencies\nFault tolerance\nResilience",
-  "benefits": "Failure isolation\nFast failure\nSystem stability\nResource protection",
-  "drawbacks": "False positives\nConfiguration complexity\nMonitoring overhead",
-  "use_cases": "External service calls\nDatabase connections\nInter-service communication",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "resilience",
-    "fault-tolerance"
-  ],
-  "examples": {
-    "cross-reference": {
-      "language": "cross-reference",
-      "code": "// See Circuit Breaker pattern for implementation example (applies to microservices)\n// Reference pattern: circuit-breaker"
+[
+  {
+    "id": "circuit-breaker-ms",
+    "name": "Circuit Breaker (Microservices)",
+    "category": "Microservices",
+    "description": "Prevents cascading failures in distributed systems",
+    "when_to_use": "Service dependencies\nFault tolerance\nResilience",
+    "benefits": "Failure isolation\nFast failure\nSystem stability\nResource protection",
+    "drawbacks": "False positives\nConfiguration complexity\nMonitoring overhead",
+    "use_cases": "External service calls\nDatabase connections\nInter-service communication",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "resilience",
+      "fault-tolerance"
+    ],
+    "examples": {
+      "cross-reference": {
+        "language": "cross-reference",
+        "code": "// See Circuit Breaker pattern for implementation example (applies to microservices)\n// Reference pattern: circuit-breaker"
+      }
     }
   }
-}
+]

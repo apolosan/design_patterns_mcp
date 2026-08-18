@@ -1,22 +1,24 @@
-{
-  "id": "serverless-architecture",
-  "name": "Serverless Architecture",
-  "category": "Architectural",
-  "description": "Executes code in stateless compute containers managed by cloud providers",
-  "when_to_use": "Event-driven applications\nVariable workloads\nRapid scaling",
-  "benefits": "No server management\nAuto-scaling\nPay-per-use\nFast deployment",
-  "drawbacks": "Vendor lock-in\nCold start latency\nLimited control",
-  "use_cases": "API backends\nData processing\nWeb applications",
-  "complexity": "Medium",
-  "tags": [
-    "serverless",
-    "cloud",
-    "functions"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Serverless: event-driven, stateless functions\n\n// Lambda Function 1: HTTP Trigger\nexport async function createUser(event: APIGatewayEvent) {\n  const { email, name } = JSON.parse(event.body);\n  \n  // Store in DynamoDB\n  await dynamoDB.put({\n    TableName: 'Users',\n    Item: {\n      id: crypto.randomUUID(),\n      email,\n      name,\n      createdAt: new Date().toISOString()\n    }\n  });\n  \n  return {\n    statusCode: 201,\n    body: JSON.stringify({ message: 'User created' })\n  };\n}\n\n// Lambda Function 2: Queue Trigger\nexport async function processOrder(event: SQSEvent) {\n  for (const record of event.Records) {\n    const order = JSON.parse(record.body);\n    \n    // Process order\n    await processPayment(order.total);\n    await updateInventory(order.items);\n    \n    // Publish completion event\n    await sns.publish({\n      TopicArn: 'arn:aws:sns:region:account:OrderCompleted',\n      Message: JSON.stringify(order)\n    });\n  }\n}\n\n// Lambda Function 3: Schedule Trigger\nexport async function dailyReport(event: ScheduledEvent) {\n  const orders = await dynamoDB.scan({ TableName: 'Orders' });\n  const report = generateReport(orders.Items);\n  \n  await s3.putObject({\n    Bucket: 'reports',\n    Key: `report-${new Date().toISOString()}.pdf`,\n    Body: report\n  });\n}\n\n// Characteristics:\n// - No server management\n// - Auto-scaling\n// - Pay per execution\n// - Event-driven triggers\n// - Stateless functions"
+[
+  {
+    "id": "serverless-architecture",
+    "name": "Serverless Architecture",
+    "category": "Architectural",
+    "description": "Executes code in stateless compute containers managed by cloud providers",
+    "when_to_use": "Event-driven applications\nVariable workloads\nRapid scaling",
+    "benefits": "No server management\nAuto-scaling\nPay-per-use\nFast deployment",
+    "drawbacks": "Vendor lock-in\nCold start latency\nLimited control",
+    "use_cases": "API backends\nData processing\nWeb applications",
+    "complexity": "Medium",
+    "tags": [
+      "serverless",
+      "cloud",
+      "functions"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Serverless: event-driven, stateless functions\n\n// Lambda Function 1: HTTP Trigger\nexport async function createUser(event: APIGatewayEvent) {\n  const { email, name } = JSON.parse(event.body);\n  \n  // Store in DynamoDB\n  await dynamoDB.put({\n    TableName: 'Users',\n    Item: {\n      id: crypto.randomUUID(),\n      email,\n      name,\n      createdAt: new Date().toISOString()\n    }\n  });\n  \n  return {\n    statusCode: 201,\n    body: JSON.stringify({ message: 'User created' })\n  };\n}\n\n// Lambda Function 2: Queue Trigger\nexport async function processOrder(event: SQSEvent) {\n  for (const record of event.Records) {\n    const order = JSON.parse(record.body);\n    \n    // Process order\n    await processPayment(order.total);\n    await updateInventory(order.items);\n    \n    // Publish completion event\n    await sns.publish({\n      TopicArn: 'arn:aws:sns:region:account:OrderCompleted',\n      Message: JSON.stringify(order)\n    });\n  }\n}\n\n// Lambda Function 3: Schedule Trigger\nexport async function dailyReport(event: ScheduledEvent) {\n  const orders = await dynamoDB.scan({ TableName: 'Orders' });\n  const report = generateReport(orders.Items);\n  \n  await s3.putObject({\n    Bucket: 'reports',\n    Key: `report-${new Date().toISOString()}.pdf`,\n    Body: report\n  });\n}\n\n// Characteristics:\n// - No server management\n// - Auto-scaling\n// - Pay per execution\n// - Event-driven triggers\n// - Stateless functions"
+      }
     }
   }
-}
+]

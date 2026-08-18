@@ -1,22 +1,24 @@
-{
-  "id": "microservices",
-  "name": "Microservices Architecture",
-  "category": "Architectural",
-  "description": "Decomposes application into small, independently deployable services",
-  "when_to_use": "Large teams\nIndependent deployments\nTechnology diversity",
-  "benefits": "Technology freedom\nIndependent scaling\nTeam autonomy\nFault isolation",
-  "drawbacks": "Distributed complexity\nNetwork overhead\nData consistency",
-  "use_cases": "Large-scale applications\nCloud-native systems\nDevOps environments",
-  "complexity": "High",
-  "tags": [
-    "distributed",
-    "services",
-    "independence"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Microservices: independent deployable services\n\n// User Service (separate microservice)\nclass UserService {\n  private users = new Map();\n  \n  async createUser(id: string, email: string) {\n    this.users.set(id, { id, email });\n    // Publish event to message bus\n    await messageBus.publish('UserCreated', { id, email });\n    return this.users.get(id);\n  }\n  \n  async getUser(id: string) {\n    return this.users.get(id);\n  }\n}\n\n// Order Service (separate microservice)\nclass OrderService {\n  private orders = new Map();\n  \n  async createOrder(userId: string, total: number) {\n    // Call User Service via HTTP/gRPC\n    const user = await fetch(`http://user-service/users/${userId}`)\n      .then(r => r.json());\n    \n    if (!user) throw new Error('User not found');\n    \n    const order = {\n      id: crypto.randomUUID(),\n      userId,\n      total,\n      status: 'pending'\n    };\n    \n    this.orders.set(order.id, order);\n    return order;\n  }\n}\n\n// API Gateway (single entry point)\nclass APIGateway {\n  constructor(\n    private userService: UserService,\n    private orderService: OrderService\n  ) {}\n  \n  async handleRequest(req: any) {\n    if (req.path.startsWith('/users')) {\n      return this.userService.getUser(req.params.id);\n    }\n    if (req.path.startsWith('/orders')) {\n      return this.orderService.createOrder(req.body.userId, req.body.total);\n    }\n  }\n}\n\n// Each service can be deployed independently\n// Scale services independently based on load\n// Use different databases per service"
+[
+  {
+    "id": "microservices",
+    "name": "Microservices Architecture",
+    "category": "Architectural",
+    "description": "Decomposes application into small, independently deployable services",
+    "when_to_use": "Large teams\nIndependent deployments\nTechnology diversity",
+    "benefits": "Technology freedom\nIndependent scaling\nTeam autonomy\nFault isolation",
+    "drawbacks": "Distributed complexity\nNetwork overhead\nData consistency",
+    "use_cases": "Large-scale applications\nCloud-native systems\nDevOps environments",
+    "complexity": "High",
+    "tags": [
+      "distributed",
+      "services",
+      "independence"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Microservices: independent deployable services\n\n// User Service (separate microservice)\nclass UserService {\n  private users = new Map();\n  \n  async createUser(id: string, email: string) {\n    this.users.set(id, { id, email });\n    // Publish event to message bus\n    await messageBus.publish('UserCreated', { id, email });\n    return this.users.get(id);\n  }\n  \n  async getUser(id: string) {\n    return this.users.get(id);\n  }\n}\n\n// Order Service (separate microservice)\nclass OrderService {\n  private orders = new Map();\n  \n  async createOrder(userId: string, total: number) {\n    // Call User Service via HTTP/gRPC\n    const user = await fetch(`http://user-service/users/${userId}`)\n      .then(r => r.json());\n    \n    if (!user) throw new Error('User not found');\n    \n    const order = {\n      id: crypto.randomUUID(),\n      userId,\n      total,\n      status: 'pending'\n    };\n    \n    this.orders.set(order.id, order);\n    return order;\n  }\n}\n\n// API Gateway (single entry point)\nclass APIGateway {\n  constructor(\n    private userService: UserService,\n    private orderService: OrderService\n  ) {}\n  \n  async handleRequest(req: any) {\n    if (req.path.startsWith('/users')) {\n      return this.userService.getUser(req.params.id);\n    }\n    if (req.path.startsWith('/orders')) {\n      return this.orderService.createOrder(req.body.userId, req.body.total);\n    }\n  }\n}\n\n// Each service can be deployed independently\n// Scale services independently based on load\n// Use different databases per service"
+      }
     }
   }
-}
+]

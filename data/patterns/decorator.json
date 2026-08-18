@@ -1,22 +1,24 @@
-{
-  "id": "decorator",
-  "name": "Decorator",
-  "category": "Structural",
-  "description": "Adds new functionality to objects dynamically without altering their structure",
-  "when_to_use": "Add responsibilities dynamically\nAvoid subclass explosion\nFlexible alternative to inheritance",
-  "benefits": "Single Responsibility\nOpen/Closed principle\nRuntime decoration",
-  "drawbacks": "Many small objects\nDebugging difficulty",
-  "use_cases": "Stream processing\nUI component enhancement\nMiddleware pipelines",
-  "complexity": "Medium",
-  "tags": [
-    "structural",
-    "wrapper",
-    "enhancement"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Coffee {\n  cost(): number;\n}\n\nclass SimpleCoffee implements Coffee {\n  cost() { return 5; }\n}\n\nclass MilkDecorator implements Coffee {\n  constructor(private coffee: Coffee) {}\n  cost() { return this.coffee.cost() + 2; }\n}\n\n// Usage: add responsibilities dynamically\nlet coffee: Coffee = new SimpleCoffee();\ncoffee = new MilkDecorator(coffee);\nconsole.log(coffee.cost()); // 7"
+[
+  {
+    "id": "decorator",
+    "name": "Decorator",
+    "category": "Structural",
+    "description": "Adds new functionality to objects dynamically without altering their structure",
+    "when_to_use": "Add responsibilities dynamically\nAvoid subclass explosion\nFlexible alternative to inheritance",
+    "benefits": "Single Responsibility\nOpen/Closed principle\nRuntime decoration",
+    "drawbacks": "Many small objects\nDebugging difficulty",
+    "use_cases": "Stream processing\nUI component enhancement\nMiddleware pipelines",
+    "complexity": "Medium",
+    "tags": [
+      "structural",
+      "wrapper",
+      "enhancement"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Coffee {\n  cost(): number;\n}\n\nclass SimpleCoffee implements Coffee {\n  cost() { return 5; }\n}\n\nclass MilkDecorator implements Coffee {\n  constructor(private coffee: Coffee) {}\n  cost() { return this.coffee.cost() + 2; }\n}\n\n// Usage: add responsibilities dynamically\nlet coffee: Coffee = new SimpleCoffee();\ncoffee = new MilkDecorator(coffee);\nconsole.log(coffee.cost()); // 7"
+      }
     }
   }
-}
+]

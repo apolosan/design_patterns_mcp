@@ -1,19 +1,21 @@
-{
-  "id": "memory-management-pattern",
-  "name": "Memory Management Pattern",
-  "category": "AI/ML",
-  "description": "Manages state and memory across interactions, allowing agents to retain information, maintain context, and learn from past experiences.",
-  "when_to_use": "[\"Conversational continuity needed\",\"State persistence required\",\"Learning from interactions\"]",
-  "benefits": "[\"Context retention\",\"Improved user experience\",\"Knowledge accumulation\"]",
-  "drawbacks": "[\"Storage requirements\",\"Privacy concerns\",\"Complexity in implementation\"]",
-  "use_cases": "[\"Chatbots\",\"Personal assistants\",\"Long-term agent interactions\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"memory\"",
-    "\"state\"",
-    "\"persistence\"",
-    "\"context\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "memory-management-pattern",
+    "name": "Memory Management Pattern",
+    "category": "AI/ML",
+    "description": "Manages state and memory across interactions, allowing agents to retain information, maintain context, and learn from past experiences.",
+    "when_to_use": "[\"Conversational continuity needed\",\"State persistence required\",\"Learning from interactions\"]",
+    "benefits": "[\"Context retention\",\"Improved user experience\",\"Knowledge accumulation\"]",
+    "drawbacks": "[\"Storage requirements\",\"Privacy concerns\",\"Complexity in implementation\"]",
+    "use_cases": "[\"Chatbots\",\"Personal assistants\",\"Long-term agent interactions\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"memory\"",
+      "\"state\"",
+      "\"persistence\"",
+      "\"context\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

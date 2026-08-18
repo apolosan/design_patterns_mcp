@@ -1,22 +1,24 @@
-{
-  "id": "service-mesh",
-  "name": "Service Mesh",
-  "category": "Microservices",
-  "description": "Infrastructure layer for handling service-to-service communication",
-  "when_to_use": "Complex service communication\nSecurity requirements\nObservability",
-  "benefits": "Traffic management\nSecurity\nObservability\nPolicy enforcement",
-  "drawbacks": "Complexity\nPerformance overhead\nLearning curve",
-  "use_cases": "Large microservice deployments\nSecurity compliance\nTraffic control",
-  "complexity": "High",
-  "tags": [
-    "microservices",
-    "infrastructure",
-    "communication"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Service Mesh: infrastructure layer for service communication\ninterface MeshConfig {\n  retries: number;\n  timeout: number;\n}\n\nclass ServiceMesh {\n  private services = new Map<string, MeshConfig>();\n  \n  register(name: string, config: MeshConfig) {\n    this.services.set(name, config);\n  }\n  \n  async call(serviceName: string, request: Request): Promise<Response> {\n    const config = this.services.get(serviceName);\n    if (!config) throw new Error('Service not registered');\n    \n    const instance = this.discoverService(serviceName);\n    let response = await this.withTimeout(\n      () => fetch(instance.url, request),\n      config.timeout\n    );\n    \n    return response;\n  }\n  \n  private async withTimeout<T>(fn: () => Promise<T>, ms: number): Promise<T> {\n    return Promise.race([\n      fn(),\n      new Promise<T>((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))\n    ]);\n  }\n  \n  private discoverService(name: string) {\n    return { url: 'http://' + name + ':3000' };\n  }\n}"
+[
+  {
+    "id": "service-mesh",
+    "name": "Service Mesh",
+    "category": "Microservices",
+    "description": "Infrastructure layer for handling service-to-service communication",
+    "when_to_use": "Complex service communication\nSecurity requirements\nObservability",
+    "benefits": "Traffic management\nSecurity\nObservability\nPolicy enforcement",
+    "drawbacks": "Complexity\nPerformance overhead\nLearning curve",
+    "use_cases": "Large microservice deployments\nSecurity compliance\nTraffic control",
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "infrastructure",
+      "communication"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Service Mesh: infrastructure layer for service communication\ninterface MeshConfig {\n  retries: number;\n  timeout: number;\n}\n\nclass ServiceMesh {\n  private services = new Map<string, MeshConfig>();\n  \n  register(name: string, config: MeshConfig) {\n    this.services.set(name, config);\n  }\n  \n  async call(serviceName: string, request: Request): Promise<Response> {\n    const config = this.services.get(serviceName);\n    if (!config) throw new Error('Service not registered');\n    \n    const instance = this.discoverService(serviceName);\n    let response = await this.withTimeout(\n      () => fetch(instance.url, request),\n      config.timeout\n    );\n    \n    return response;\n  }\n  \n  private async withTimeout<T>(fn: () => Promise<T>, ms: number): Promise<T> {\n    return Promise.race([\n      fn(),\n      new Promise<T>((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))\n    ]);\n  }\n  \n  private discoverService(name: string) {\n    return { url: 'http://' + name + ':3000' };\n  }\n}"
+      }
     }
   }
-}
+]

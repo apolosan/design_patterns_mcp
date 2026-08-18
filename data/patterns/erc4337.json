@@ -1,23 +1,25 @@
-{
-  "id": "erc4337",
-  "name": "ERC-4337 Account Abstraction",
-  "category": "Account Abstraction",
-  "description": "Smart wallets with gasless transactions Problem: EOAs lack programmability and require ETH for gas",
-  "when_to_use": "UserOperations via bundlers, custom validation",
-  "benefits": "Programmable wallets, better UX, no protocol changes",
-  "drawbacks": "Higher gas, alt-mempool, infrastructure complexity",
-  "use_cases": "Gasless UX, social recovery, session keys, sponsored gas",
-  "complexity": "High",
-  "tags": [
-    "account-abstraction",
-    "erc4337",
-    "smart-wallet",
-    "gasless"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract SmartAccount is IAccount {\n    function validateUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 missingAccountFunds\n    ) external override returns (uint256) {\n        _validateSignature(userOp, userOpHash);\n        return 0;\n    }\n}"
+[
+  {
+    "id": "erc4337",
+    "name": "ERC-4337 Account Abstraction",
+    "category": "Account Abstraction",
+    "description": "Smart wallets with gasless transactions Problem: EOAs lack programmability and require ETH for gas",
+    "when_to_use": "UserOperations via bundlers, custom validation",
+    "benefits": "Programmable wallets, better UX, no protocol changes",
+    "drawbacks": "Higher gas, alt-mempool, infrastructure complexity",
+    "use_cases": "Gasless UX, social recovery, session keys, sponsored gas",
+    "complexity": "High",
+    "tags": [
+      "account-abstraction",
+      "erc4337",
+      "smart-wallet",
+      "gasless"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract SmartAccount is IAccount {\n    function validateUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 missingAccountFunds\n    ) external override returns (uint256) {\n        _validateSignature(userOp, userOpHash);\n        return 0;\n    }\n}"
+      }
     }
   }
-}
+]

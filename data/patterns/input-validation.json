@@ -1,16 +1,18 @@
-{
-  "id": "input-validation",
-  "name": "Input Validation Pattern",
-  "category": "Security",
-  "description": "Validates all input data to prevent injection attacks and data corruption",
-  "when_to_use": "User input\nExternal data\nAPI parameters",
-  "benefits": "Injection prevention\nData integrity\nSystem protection",
-  "drawbacks": "Performance overhead\nUser experience impact\nValidation complexity",
-  "use_cases": "Form validation\nAPI inputs\nFile uploads",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "validation",
-    "input"
-  ]
-}
+[
+  {
+    "id": "input-validation",
+    "name": "Input Validation Pattern",
+    "category": "Security",
+    "description": "Validates all input data to prevent injection attacks and data corruption",
+    "when_to_use": "User input\nExternal data\nAPI parameters",
+    "benefits": "Injection prevention\nData integrity\nSystem protection",
+    "drawbacks": "Performance overhead\nUser experience impact\nValidation complexity",
+    "use_cases": "Form validation\nAPI inputs\nFile uploads",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "validation",
+      "input"
+    ]
+  }
+]

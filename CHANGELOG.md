@@ -5,6 +5,23 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.2] - 2026-08-16
+
+### Changed — Version Canonicalisation Patch
+
+- Bumped canonical project version from `0.7.1` → `0.7.2` across all active source and documentation files.
+- Files updated:
+  - `package.json` — `"version": "0.7.2"` (canonical build identity).
+  - `src/mcp-server.ts` — Server registration and runtime `/info` payload now advertise `0.7.2` to MCP clients.
+  - `AGENTS.md`, `CLAUDE.md` — canonical-identity header `version` field corrected from stale `0.6.0` to current `0.7.2`.
+  - `README.md` — version badge, Release-Notes section (new `### v0.7.2` block above existing `v0.7.1`), version footer.
+  - `docs/IMPROVEMENTS_03.md` — `Resolved in v0.7.1` audit markers preserved untouched (per state #45 audit-evidence policy). No edits to historical audit tables.
+  - `QUICKSTART.md` — release-status references aligned with new baseline.
+- No code-level behavioural change: pure release / version-canonicalisation patch.
+- No test files modified.
+- Build verification: typecheck and lint baseline preserved (no `src/` or `tests/` code touched).
+- Historical release-note sections (`v0.7.1`, `v0.7.0`, ...) preserved as audit evidence per state #45.
+
 ## [0.7.1] - 2026-08-16
 
 ### Fixed — Test stabilisation + lint baseline restoration

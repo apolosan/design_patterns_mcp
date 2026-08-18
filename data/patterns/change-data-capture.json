@@ -1,18 +1,20 @@
-{
-  "id": "change-data-capture",
-  "name": "Change Data Capture",
-  "category": "Data Ingestion",
-  "description": "The Change Data Capture (CDC) pattern continuously ingests all modified rows directly from the internal database commit log. It allows lower-level and faster access to the records compared to any high-level query or processing task. The CDC consumer streams those changes and sends them to the streaming broker or any other configured output.",
-  "when_to_use": "[\"Need lower ingestion latency\",\"Built-in support for physical deletes\",\"Real-time data changes\",\"Database replication requirements\"]",
-  "benefits": "[\"Lower latency\",\"Captures all data changes including deletes\",\"Real-time ingestion\",\"Minimal impact on source database\"]",
-  "drawbacks": "[\"Complexity in setup\",\"Data scope limitations\",\"Payload includes extra metadata\",\"Database-specific implementations\"]",
-  "use_cases": "[\"Real-time data synchronization\",\"Database change streaming\",\"Event sourcing\",\"Audit logging\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"cdc\"",
-    "\"data-ingestion\"",
-    "\"commit-log\"",
-    "\"real-time\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "change-data-capture",
+    "name": "Change Data Capture",
+    "category": "Data Ingestion",
+    "description": "The Change Data Capture (CDC) pattern continuously ingests all modified rows directly from the internal database commit log. It allows lower-level and faster access to the records compared to any high-level query or processing task. The CDC consumer streams those changes and sends them to the streaming broker or any other configured output.",
+    "when_to_use": "[\"Need lower ingestion latency\",\"Built-in support for physical deletes\",\"Real-time data changes\",\"Database replication requirements\"]",
+    "benefits": "[\"Lower latency\",\"Captures all data changes including deletes\",\"Real-time ingestion\",\"Minimal impact on source database\"]",
+    "drawbacks": "[\"Complexity in setup\",\"Data scope limitations\",\"Payload includes extra metadata\",\"Database-specific implementations\"]",
+    "use_cases": "[\"Real-time data synchronization\",\"Database change streaming\",\"Event sourcing\",\"Audit logging\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"cdc\"",
+      "\"data-ingestion\"",
+      "\"commit-log\"",
+      "\"real-time\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

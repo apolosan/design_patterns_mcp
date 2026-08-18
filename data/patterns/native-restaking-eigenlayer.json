@@ -1,24 +1,26 @@
-{
-  "id": "native-restaking-eigenlayer",
-  "name": "Native Restaking (EigenLayer)",
-  "category": "Restaking",
-  "description": "Reuse staked ETH to secure additional protocols (AVS). Earn additional yields, share security.",
-  "when_to_use": "Capital efficiency, securing AVSs, increased ETH yields",
-  "benefits": "Capital efficient, shared security, $20B+ TVL, additional yields",
-  "drawbacks": "Increased slashing risk, complexity, protocol dependencies",
-  "use_cases": "EigenLayer AVS, additional protocol security, yield enhancement",
-  "complexity": "Very High",
-  "tags": [
-    "restaking",
-    "eigenlayer",
-    "eth",
-    "avs",
-    "capital-efficiency"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// EigenLayer restaking\ncontract EigenPodManager {\n    mapping(address => IEigenPod) public pods;\n    \n    function createPod() external returns (address) {\n        IEigenPod pod = IEigenPod(Create2.deploy(podImplementation));\n        pods[msg.sender] = pod;\n        return address(pod);\n    }\n    \n    function verifyWithdrawalCredentials(...) external {\n        // Verify ETH is staked and withdrawal creds point to EigenPod\n        // Now ETH is restakable to secure AVSs\n    }\n}\n\n// Opt into AVS (Actively Validated Service)\nfunction optIntoAVS(address avs) external {\n    require(hasMinimumStake(msg.sender));\n    avsDirectory.registerOperator(msg.sender, avs);\n    // Now securing AVS, earning additional rewards, subject to AVS slashing\n}"
+[
+  {
+    "id": "native-restaking-eigenlayer",
+    "name": "Native Restaking (EigenLayer)",
+    "category": "Restaking",
+    "description": "Reuse staked ETH to secure additional protocols (AVS). Earn additional yields, share security.",
+    "when_to_use": "Capital efficiency, securing AVSs, increased ETH yields",
+    "benefits": "Capital efficient, shared security, $20B+ TVL, additional yields",
+    "drawbacks": "Increased slashing risk, complexity, protocol dependencies",
+    "use_cases": "EigenLayer AVS, additional protocol security, yield enhancement",
+    "complexity": "Very High",
+    "tags": [
+      "restaking",
+      "eigenlayer",
+      "eth",
+      "avs",
+      "capital-efficiency"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// EigenLayer restaking\ncontract EigenPodManager {\n    mapping(address => IEigenPod) public pods;\n    \n    function createPod() external returns (address) {\n        IEigenPod pod = IEigenPod(Create2.deploy(podImplementation));\n        pods[msg.sender] = pod;\n        return address(pod);\n    }\n    \n    function verifyWithdrawalCredentials(...) external {\n        // Verify ETH is staked and withdrawal creds point to EigenPod\n        // Now ETH is restakable to secure AVSs\n    }\n}\n\n// Opt into AVS (Actively Validated Service)\nfunction optIntoAVS(address avs) external {\n    require(hasMinimumStake(msg.sender));\n    avsDirectory.registerOperator(msg.sender, avs);\n    // Now securing AVS, earning additional rewards, subject to AVS slashing\n}"
+      }
     }
   }
-}
+]

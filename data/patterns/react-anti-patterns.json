@@ -1,25 +1,27 @@
-{
-  "id": "react-anti-patterns",
-  "name": "React Anti-Patterns",
-  "category": "React Best Practices",
-  "description": "Common mistakes and anti-patterns to avoid in React development.",
-  "when_to_use": "Code reviews, learning, refactoring, preventing bugs",
-  "benefits": "Better code quality, fewer bugs, better performance, maintainability",
-  "drawbacks": "None - avoiding anti-patterns is always beneficial",
-  "use_cases": "Key prop issues, state mutations, effect dependencies, prop drilling",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "anti-patterns",
-    "best-practices",
-    "mistakes",
-    "code-quality",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "// ❌ ANTI-PATTERN 1: Index as key\nfunction BadList({ items }: { items: string[] }) {\n  return (\n    <ul>\n      {items.map((item, index) => (\n        <li key={index}>{item}</li>\n      ))}\n    </ul>\n  );\n}\n\n// ✅ CORRECT: Stable unique key\nfunction GoodList({ items }: { items: Item[] }) {\n  return (\n    <ul>\n      {items.map(item => (\n        <li key={item.id}>{item.name}</li>\n      ))}\n    </ul>\n  );\n}\n\n// ❌ ANTI-PATTERN 2: Mutating state\nfunction BadCounter() {\n  const [state, setState] = useState({ count: 0, items: [] });\n  \n  const increment = () => {\n    state.count++;\n    setState(state);\n  };\n  \n  return <button onClick={increment}>{state.count}</button>;\n}\n\n// ✅ CORRECT: Immutable updates\nfunction GoodCounter() {\n  const [state, setState] = useState({ count: 0, items: [] });\n  \n  const increment = () => {\n    setState(prev => ({ ...prev, count: prev.count + 1 }));\n  };\n  \n  return <button onClick={increment}>{state.count}</button>;\n}\n\n// ❌ ANTI-PATTERN 3: Missing effect dependencies\nfunction BadEffect({ userId }: { userId: string }) {\n  const [user, setUser] = useState(null);\n  \n  useEffect(() => {\n    fetchUser(userId).then(setUser);\n  }, []);\n  \n  return <div>{user?.name}</div>;\n}\n\n// ✅ CORRECT: All dependencies included\nfunction GoodEffect({ userId }: { userId: string }) {\n  const [user, setUser] = useState(null);\n  \n  useEffect(() => {\n    let cancelled = false;\n    \n    fetchUser(userId).then(data => {\n      if (!cancelled) setUser(data);\n    });\n    \n    return () => { cancelled = true; };\n  }, [userId]);\n  \n  return <div>{user?.name}</div>;\n}\n\n// ❌ ANTI-PATTERN 4: Derived state\nfunction BadDerived({ items }: { items: Item[] }) {\n  const [total, setTotal] = useState(0);\n  \n  useEffect(() => {\n    setTotal(items.reduce((sum, item) => sum + item.price, 0));\n  }, [items]);\n  \n  return <div>Total: {total}</div>;\n}\n\n// ✅ CORRECT: Calculate during render\nfunction GoodDerived({ items }: { items: Item[] }) {\n  const total = items.reduce((sum, item) => sum + item.price, 0);\n  \n  return <div>Total: {total}</div>;\n}\n\n// ❌ ANTI-PATTERN 5: Prop drilling hell\nfunction App() {\n  const [user, setUser] = useState(null);\n  return <Layout user={user} setUser={setUser} />;\n}\n\nfunction Layout({ user, setUser }) {\n  return <Header user={user} setUser={setUser} />;\n}\n\n// ✅ CORRECT: Context for global state\nconst UserContext = createContext(null);\n\nfunction App() {\n  const [user, setUser] = useState(null);\n  return (\n    <UserContext.Provider value={{ user, setUser }}>\n      <Layout />\n    </UserContext.Provider>\n  );\n}\n\nfunction Header() {\n  const { user, setUser } = useContext(UserContext);\n  return <div>{user?.name}</div>;\n}"
+[
+  {
+    "id": "react-anti-patterns",
+    "name": "React Anti-Patterns",
+    "category": "React Best Practices",
+    "description": "Common mistakes and anti-patterns to avoid in React development.",
+    "when_to_use": "Code reviews, learning, refactoring, preventing bugs",
+    "benefits": "Better code quality, fewer bugs, better performance, maintainability",
+    "drawbacks": "None - avoiding anti-patterns is always beneficial",
+    "use_cases": "Key prop issues, state mutations, effect dependencies, prop drilling",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "anti-patterns",
+      "best-practices",
+      "mistakes",
+      "code-quality",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "// ❌ ANTI-PATTERN 1: Index as key\nfunction BadList({ items }: { items: string[] }) {\n  return (\n    <ul>\n      {items.map((item, index) => (\n        <li key={index}>{item}</li>\n      ))}\n    </ul>\n  );\n}\n\n// ✅ CORRECT: Stable unique key\nfunction GoodList({ items }: { items: Item[] }) {\n  return (\n    <ul>\n      {items.map(item => (\n        <li key={item.id}>{item.name}</li>\n      ))}\n    </ul>\n  );\n}\n\n// ❌ ANTI-PATTERN 2: Mutating state\nfunction BadCounter() {\n  const [state, setState] = useState({ count: 0, items: [] });\n  \n  const increment = () => {\n    state.count++;\n    setState(state);\n  };\n  \n  return <button onClick={increment}>{state.count}</button>;\n}\n\n// ✅ CORRECT: Immutable updates\nfunction GoodCounter() {\n  const [state, setState] = useState({ count: 0, items: [] });\n  \n  const increment = () => {\n    setState(prev => ({ ...prev, count: prev.count + 1 }));\n  };\n  \n  return <button onClick={increment}>{state.count}</button>;\n}\n\n// ❌ ANTI-PATTERN 3: Missing effect dependencies\nfunction BadEffect({ userId }: { userId: string }) {\n  const [user, setUser] = useState(null);\n  \n  useEffect(() => {\n    fetchUser(userId).then(setUser);\n  }, []);\n  \n  return <div>{user?.name}</div>;\n}\n\n// ✅ CORRECT: All dependencies included\nfunction GoodEffect({ userId }: { userId: string }) {\n  const [user, setUser] = useState(null);\n  \n  useEffect(() => {\n    let cancelled = false;\n    \n    fetchUser(userId).then(data => {\n      if (!cancelled) setUser(data);\n    });\n    \n    return () => { cancelled = true; };\n  }, [userId]);\n  \n  return <div>{user?.name}</div>;\n}\n\n// ❌ ANTI-PATTERN 4: Derived state\nfunction BadDerived({ items }: { items: Item[] }) {\n  const [total, setTotal] = useState(0);\n  \n  useEffect(() => {\n    setTotal(items.reduce((sum, item) => sum + item.price, 0));\n  }, [items]);\n  \n  return <div>Total: {total}</div>;\n}\n\n// ✅ CORRECT: Calculate during render\nfunction GoodDerived({ items }: { items: Item[] }) {\n  const total = items.reduce((sum, item) => sum + item.price, 0);\n  \n  return <div>Total: {total}</div>;\n}\n\n// ❌ ANTI-PATTERN 5: Prop drilling hell\nfunction App() {\n  const [user, setUser] = useState(null);\n  return <Layout user={user} setUser={setUser} />;\n}\n\nfunction Layout({ user, setUser }) {\n  return <Header user={user} setUser={setUser} />;\n}\n\n// ✅ CORRECT: Context for global state\nconst UserContext = createContext(null);\n\nfunction App() {\n  const [user, setUser] = useState(null);\n  return (\n    <UserContext.Provider value={{ user, setUser }}>\n      <Layout />\n    </UserContext.Provider>\n  );\n}\n\nfunction Header() {\n  const { user, setUser } = useContext(UserContext);\n  return <div>{user?.name}</div>;\n}"
+      }
     }
   }
-}
+]

@@ -1,24 +1,26 @@
-{
-  "id": "react-code-quality-patterns",
-  "name": "Code Quality Patterns",
-  "category": "React Fundamentals",
-  "description": "Tools and practices for clean React code: Prettier, ESLint, functional programming principles.",
-  "when_to_use": "All React projects, team development, code consistency",
-  "benefits": "Consistent code style, catch errors early, better maintainability",
-  "drawbacks": "Initial setup time, potential conflicts between tools",
-  "use_cases": "Code formatting, linting, immutability, pure functions",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "code-quality",
-    "eslint",
-    "prettier",
-    "functional-programming"
-  ],
-  "examples": {
-    "jsx": {
-      "language": "jsx",
-      "code": "// ✅ GOOD: Pure function, immutability\nconst TodoList = ({ todos }) => {\n  // Pure function - same input = same output\n  const activeTodos = todos.filter(todo => !todo.completed);\n  \n  return (\n    <ul>\n      {activeTodos.map(todo => (\n        <li key={todo.id}>{todo.text}</li>\n      ))}\n    </ul>\n  );\n};\n\n// ✅ GOOD: Immutable state updates\nfunction Counter() {\n  const [state, setState] = useState({ count: 0, name: 'Counter' });\n  \n  const increment = () => {\n    // Create new object (immutable)\n    setState(prev => ({ ...prev, count: prev.count + 1 }));\n  };\n  \n  return <button onClick={increment}>{state.count}</button>;\n}\n\n// ❌ BAD: Mutating state directly\nfunction BadCounter() {\n  const [state, setState] = useState({ count: 0 });\n  \n  const increment = () => {\n    state.count++; // ❌ Direct mutation\n    setState(state); // ❌ Same reference\n  };\n  \n  return <button onClick={increment}>{state.count}</button>;\n}\n\n// ESLint config (.eslintrc.js)\nmodule.exports = {\n  extends: ['react-app', 'react-app/jest'],\n  rules: {\n    'react/jsx-uses-react': 'off', // React 17+\n    'react/react-in-jsx-scope': 'off',\n    'react-hooks/rules-of-hooks': 'error',\n    'react-hooks/exhaustive-deps': 'warn'\n  }\n};"
+[
+  {
+    "id": "react-code-quality-patterns",
+    "name": "Code Quality Patterns",
+    "category": "React Fundamentals",
+    "description": "Tools and practices for clean React code: Prettier, ESLint, functional programming principles.",
+    "when_to_use": "All React projects, team development, code consistency",
+    "benefits": "Consistent code style, catch errors early, better maintainability",
+    "drawbacks": "Initial setup time, potential conflicts between tools",
+    "use_cases": "Code formatting, linting, immutability, pure functions",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "code-quality",
+      "eslint",
+      "prettier",
+      "functional-programming"
+    ],
+    "examples": {
+      "jsx": {
+        "language": "jsx",
+        "code": "// ✅ GOOD: Pure function, immutability\nconst TodoList = ({ todos }) => {\n  // Pure function - same input = same output\n  const activeTodos = todos.filter(todo => !todo.completed);\n  \n  return (\n    <ul>\n      {activeTodos.map(todo => (\n        <li key={todo.id}>{todo.text}</li>\n      ))}\n    </ul>\n  );\n};\n\n// ✅ GOOD: Immutable state updates\nfunction Counter() {\n  const [state, setState] = useState({ count: 0, name: 'Counter' });\n  \n  const increment = () => {\n    // Create new object (immutable)\n    setState(prev => ({ ...prev, count: prev.count + 1 }));\n  };\n  \n  return <button onClick={increment}>{state.count}</button>;\n}\n\n// ❌ BAD: Mutating state directly\nfunction BadCounter() {\n  const [state, setState] = useState({ count: 0 });\n  \n  const increment = () => {\n    state.count++; // ❌ Direct mutation\n    setState(state); // ❌ Same reference\n  };\n  \n  return <button onClick={increment}>{state.count}</button>;\n}\n\n// ESLint config (.eslintrc.js)\nmodule.exports = {\n  extends: ['react-app', 'react-app/jest'],\n  rules: {\n    'react/jsx-uses-react': 'off', // React 17+\n    'react/react-in-jsx-scope': 'off',\n    'react-hooks/rules-of-hooks': 'error',\n    'react-hooks/exhaustive-deps': 'warn'\n  }\n};"
+      }
     }
   }
-}
+]

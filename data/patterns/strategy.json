@@ -1,22 +1,24 @@
-{
-  "id": "strategy",
-  "name": "Strategy",
-  "category": "Behavioral",
-  "description": "Defines family of algorithms and makes them interchangeable",
-  "when_to_use": "Multiple algorithms\nRuntime selection\nAvoid conditionals",
-  "benefits": "Algorithm families\nRuntime switching\nOpen/Closed",
-  "drawbacks": "Client awareness\nIncreased objects",
-  "use_cases": "Sorting algorithms\nPayment processing\nCompression strategies",
-  "complexity": "Low",
-  "tags": [
-    "behavioral",
-    "algorithm",
-    "encapsulation"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Strategy {\n  execute(a: number, b: number): number;\n}\n\nclass AddStrategy implements Strategy {\n  execute(a: number, b: number) { return a + b; }\n}\n\nclass MultiplyStrategy implements Strategy {\n  execute(a: number, b: number) { return a * b; }\n}\n\nclass Calculator {\n  constructor(private strategy: Strategy) {}\n  setStrategy(s: Strategy) { this.strategy = s; }\n  calculate(a: number, b: number) { return this.strategy.execute(a, b); }\n}\n\n// Usage: select algorithm at runtime\nconst calc = new Calculator(new AddStrategy());\nconsole.log(calc.calculate(5, 3)); // 8\ncalc.setStrategy(new MultiplyStrategy());\nconsole.log(calc.calculate(5, 3)); // 15"
+[
+  {
+    "id": "strategy",
+    "name": "Strategy",
+    "category": "Behavioral",
+    "description": "Defines family of algorithms and makes them interchangeable",
+    "when_to_use": "Multiple algorithms\nRuntime selection\nAvoid conditionals",
+    "benefits": "Algorithm families\nRuntime switching\nOpen/Closed",
+    "drawbacks": "Client awareness\nIncreased objects",
+    "use_cases": "Sorting algorithms\nPayment processing\nCompression strategies",
+    "complexity": "Low",
+    "tags": [
+      "behavioral",
+      "algorithm",
+      "encapsulation"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Strategy {\n  execute(a: number, b: number): number;\n}\n\nclass AddStrategy implements Strategy {\n  execute(a: number, b: number) { return a + b; }\n}\n\nclass MultiplyStrategy implements Strategy {\n  execute(a: number, b: number) { return a * b; }\n}\n\nclass Calculator {\n  constructor(private strategy: Strategy) {}\n  setStrategy(s: Strategy) { this.strategy = s; }\n  calculate(a: number, b: number) { return this.strategy.execute(a, b); }\n}\n\n// Usage: select algorithm at runtime\nconst calc = new Calculator(new AddStrategy());\nconsole.log(calc.calculate(5, 3)); // 8\ncalc.setStrategy(new MultiplyStrategy());\nconsole.log(calc.calculate(5, 3)); // 15"
+      }
     }
   }
-}
+]

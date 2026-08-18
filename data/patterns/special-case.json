@@ -1,22 +1,24 @@
-{
-  "id": "special-case",
-  "name": "Special Case",
-  "category": "Enterprise",
-  "description": "Subclass that provides special behavior for particular cases",
-  "when_to_use": "Null object pattern\nDefault behaviors\nSpecial conditions",
-  "benefits": "Eliminates conditionals\nPolymorphism\nDefault behavior\nClean code",
-  "drawbacks": "Class proliferation\nComplex hierarchies\nDiscovery issues",
-  "use_cases": "Null objects\nDefault customers\nUnknown users",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "special-case",
-    "polymorphism"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Special Case: null object pattern\ninterface Customer {\n  getName(): string;\n  getDiscount(): number;\n  sendEmail(message: string): void;\n}\n\nclass RealCustomer implements Customer {\n  constructor(private name: string, private email: string) {}\n  \n  getName(): string {\n    return this.name;\n  }\n  \n  getDiscount(): number {\n    return 0.1; // 10% discount\n  }\n  \n  sendEmail(message: string): void {\n    console.log('Sending email to ' + this.email + ': ' + message);\n  }\n}\n\nclass GuestCustomer implements Customer {\n  getName(): string {\n    return 'Guest';\n  }\n  \n  getDiscount(): number {\n    return 0; // No discount\n  }\n  \n  sendEmail(message: string): void {\n    // Do nothing for guest\n  }\n}\n\nclass CustomerRepository {\n  findById(id: string): Customer {\n    const row = db.queryOne('SELECT * FROM customers WHERE id = ?', [id]);\n    \n    if (!row) {\n      return new GuestCustomer(); // Special case instead of null\n    }\n    \n    return new RealCustomer(row.name, row.email);\n  }\n}\n\n// Usage: No null checks needed\nconst customer = customerRepo.findById('123');\nconsole.log(customer.getName());           // Works for both\nconst discount = customer.getDiscount();   // 0 for guest\ncustomer.sendEmail('Welcome!');            // Noop for guest"
+[
+  {
+    "id": "special-case",
+    "name": "Special Case",
+    "category": "Enterprise",
+    "description": "Subclass that provides special behavior for particular cases",
+    "when_to_use": "Null object pattern\nDefault behaviors\nSpecial conditions",
+    "benefits": "Eliminates conditionals\nPolymorphism\nDefault behavior\nClean code",
+    "drawbacks": "Class proliferation\nComplex hierarchies\nDiscovery issues",
+    "use_cases": "Null objects\nDefault customers\nUnknown users",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "special-case",
+      "polymorphism"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Special Case: null object pattern\ninterface Customer {\n  getName(): string;\n  getDiscount(): number;\n  sendEmail(message: string): void;\n}\n\nclass RealCustomer implements Customer {\n  constructor(private name: string, private email: string) {}\n  \n  getName(): string {\n    return this.name;\n  }\n  \n  getDiscount(): number {\n    return 0.1; // 10% discount\n  }\n  \n  sendEmail(message: string): void {\n    console.log('Sending email to ' + this.email + ': ' + message);\n  }\n}\n\nclass GuestCustomer implements Customer {\n  getName(): string {\n    return 'Guest';\n  }\n  \n  getDiscount(): number {\n    return 0; // No discount\n  }\n  \n  sendEmail(message: string): void {\n    // Do nothing for guest\n  }\n}\n\nclass CustomerRepository {\n  findById(id: string): Customer {\n    const row = db.queryOne('SELECT * FROM customers WHERE id = ?', [id]);\n    \n    if (!row) {\n      return new GuestCustomer(); // Special case instead of null\n    }\n    \n    return new RealCustomer(row.name, row.email);\n  }\n}\n\n// Usage: No null checks needed\nconst customer = customerRepo.findById('123');\nconsole.log(customer.getName());           // Works for both\nconst discount = customer.getDiscount();   // 0 for guest\ncustomer.sendEmail('Welcome!');            // Noop for guest"
+      }
     }
   }
-}
+]

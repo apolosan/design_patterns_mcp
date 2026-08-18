@@ -1,15 +1,17 @@
-{
-  "id": "golden-hammer",
-  "name": "Golden Hammer Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Using a familiar tool or pattern for every problem, regardless of appropriateness",
-  "when_to_use": "Same solution applied to different problems\nForcing unfamiliar problems into familiar solutions\nResistance to learning new approaches",
-  "drawbacks": "Inappropriate solutions\nMissed opportunities\nSystem complexity\nPoor performance",
-  "use_cases": "Using databases for all storage needs\nApplying OOP to functional problems\nUsing same framework for all project types",
-  "complexity": "Medium",
-  "tags": [
-    "anti-pattern",
-    "tool-selection",
-    "problem-solving"
-  ]
-}
+[
+  {
+    "id": "golden-hammer",
+    "name": "Golden Hammer Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Using a familiar tool or pattern for every problem, regardless of appropriateness",
+    "when_to_use": "Same solution applied to different problems\nForcing unfamiliar problems into familiar solutions\nResistance to learning new approaches",
+    "drawbacks": "Inappropriate solutions\nMissed opportunities\nSystem complexity\nPoor performance",
+    "use_cases": "Using databases for all storage needs\nApplying OOP to functional problems\nUsing same framework for all project types",
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "tool-selection",
+      "problem-solving"
+    ]
+  }
+]

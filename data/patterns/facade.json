@@ -1,22 +1,24 @@
-{
-  "id": "facade",
-  "name": "Facade",
-  "category": "Structural",
-  "description": "Provides a simplified interface to a complex subsystem",
-  "when_to_use": "Complex subsystems\nDecoupling\nAPI simplification",
-  "benefits": "Simplified interface\nReduced dependencies\nLayering",
-  "drawbacks": "Can become god object\nLimits functionality",
-  "use_cases": "API gateways\nService layers\nLibrary wrappers",
-  "complexity": "Low",
-  "tags": [
-    "structural",
-    "simplification",
-    "interface"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "class CPU {\n  freeze() { console.log('CPU freeze'); }\n  execute() { console.log('CPU execute'); }\n}\n\nclass Memory {\n  load(data: string) { console.log(`Load ${data}`); }\n}\n\nclass HardDrive {\n  read() { return 'boot data'; }\n}\n\nclass ComputerFacade {\n  private cpu = new CPU();\n  private memory = new Memory();\n  private hd = new HardDrive();\n  \n  start() {\n    this.cpu.freeze();\n    this.memory.load(this.hd.read());\n    this.cpu.execute();\n  }\n}\n\n// Usage: simple interface to complex system\nnew ComputerFacade().start();"
+[
+  {
+    "id": "facade",
+    "name": "Facade",
+    "category": "Structural",
+    "description": "Provides a simplified interface to a complex subsystem",
+    "when_to_use": "Complex subsystems\nDecoupling\nAPI simplification",
+    "benefits": "Simplified interface\nReduced dependencies\nLayering",
+    "drawbacks": "Can become god object\nLimits functionality",
+    "use_cases": "API gateways\nService layers\nLibrary wrappers",
+    "complexity": "Low",
+    "tags": [
+      "structural",
+      "simplification",
+      "interface"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "class CPU {\n  freeze() { console.log('CPU freeze'); }\n  execute() { console.log('CPU execute'); }\n}\n\nclass Memory {\n  load(data: string) { console.log(`Load ${data}`); }\n}\n\nclass HardDrive {\n  read() { return 'boot data'; }\n}\n\nclass ComputerFacade {\n  private cpu = new CPU();\n  private memory = new Memory();\n  private hd = new HardDrive();\n  \n  start() {\n    this.cpu.freeze();\n    this.memory.load(this.hd.read());\n    this.cpu.execute();\n  }\n}\n\n// Usage: simple interface to complex system\nnew ComputerFacade().start();"
+      }
     }
   }
-}
+]

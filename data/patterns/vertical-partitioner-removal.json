@@ -1,17 +1,19 @@
-{
-  "id": "vertical-partitioner-removal",
-  "name": "Vertical Partitioner (Data Removal)",
-  "category": "Data Security",
-  "description": "The Vertical Partitioner organizes data to facilitate secure removal for compliance requirements.",
-  "when_to_use": "[\"Data removal requirements\",\"PII handling\"]",
-  "benefits": "[\"Facilitates removal\",\"Organized data\"]",
-  "drawbacks": "[\"Query complexity\",\"Polyglot challenges\"]",
-  "use_cases": "[\"GDPR compliance\",\"Data deletion\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-security\"",
-    "\"partitioner\"",
-    "\"removal\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "vertical-partitioner-removal",
+    "name": "Vertical Partitioner (Data Removal)",
+    "category": "Data Security",
+    "description": "The Vertical Partitioner organizes data to facilitate secure removal for compliance requirements.",
+    "when_to_use": "[\"Data removal requirements\",\"PII handling\"]",
+    "benefits": "[\"Facilitates removal\",\"Organized data\"]",
+    "drawbacks": "[\"Query complexity\",\"Polyglot challenges\"]",
+    "use_cases": "[\"GDPR compliance\",\"Data deletion\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-security\"",
+      "\"partitioner\"",
+      "\"removal\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

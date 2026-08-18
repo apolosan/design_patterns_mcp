@@ -1,24 +1,26 @@
-{
-  "id": "stable-swap-curve",
-  "name": "Stable Swap (Curve)",
-  "category": "DeFi AMM",
-  "description": "Low-slippage AMM for pegged assets using hybrid formula",
-  "when_to_use": "Stablecoin swaps, wrapped asset exchanges, correlated pairs",
-  "benefits": "Minimal slippage, efficient for pegged assets, low IL",
-  "drawbacks": "Only for correlated assets, complex math",
-  "use_cases": "USDC/USDT, wBTC/renBTC, stablecoin pools",
-  "complexity": "High",
-  "tags": [
-    "defi",
-    "amm",
-    "curve",
-    "stableswap",
-    "stablecoin"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Stable Swap: hybrid constant product + sum\nfunction get_dy(uint256 i, uint256 j, uint256 dx) external view returns (uint256) {\n    // Hybrid formula: efficient near peg\n    uint256 amp = A * n**(n-1);\n    return calculateSwap(balances, amp, i, j, dx);\n}"
+[
+  {
+    "id": "stable-swap-curve",
+    "name": "Stable Swap (Curve)",
+    "category": "DeFi AMM",
+    "description": "Low-slippage AMM for pegged assets using hybrid formula",
+    "when_to_use": "Stablecoin swaps, wrapped asset exchanges, correlated pairs",
+    "benefits": "Minimal slippage, efficient for pegged assets, low IL",
+    "drawbacks": "Only for correlated assets, complex math",
+    "use_cases": "USDC/USDT, wBTC/renBTC, stablecoin pools",
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "amm",
+      "curve",
+      "stableswap",
+      "stablecoin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Stable Swap: hybrid constant product + sum\nfunction get_dy(uint256 i, uint256 j, uint256 dx) external view returns (uint256) {\n    // Hybrid formula: efficient near peg\n    uint256 amp = A * n**(n-1);\n    return calculateSwap(balances, amp, i, j, dx);\n}"
+      }
     }
   }
-}
+]

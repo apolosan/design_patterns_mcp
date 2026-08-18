@@ -1,24 +1,26 @@
-{
-  "id": "algorithmic-stablecoin",
-  "name": "Algorithmic Stablecoin Pattern",
-  "category": "DeFi Stablecoin",
-  "description": "Capital-efficient stablecoins using algorithmic supply adjustments. Dual token model (stable + volatile).",
-  "when_to_use": "Experimental stablecoins, capital efficiency prioritized over safety",
-  "benefits": "Capital efficient, no collateral needed, scalable",
-  "drawbacks": "Death spiral risk (UST/LUNA), complex mechanisms, stability challenges",
-  "use_cases": "Seigniorage shares, rebase tokens (high risk - see UST collapse)",
-  "complexity": "Very High",
-  "tags": [
-    "defi",
-    "stablecoin",
-    "algorithmic",
-    "rebase",
-    "high-risk"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Dual token: stable (UST) + volatile (LUNA)\nfunction expandSupply(uint256 amount) external {\n    if (price > 1.01e18) { // Above peg\n        stableToken.mint(msg.sender, amount);\n        volatileToken.burn(msg.sender, getVolatileAmount(amount));\n    }\n}\n\nfunction contractSupply(uint256 amount) external {\n    if (price < 0.99e18) { // Below peg\n        stableToken.burn(msg.sender, amount);\n        volatileToken.mint(msg.sender, getVolatileAmount(amount));\n    }\n}"
+[
+  {
+    "id": "algorithmic-stablecoin",
+    "name": "Algorithmic Stablecoin Pattern",
+    "category": "DeFi Stablecoin",
+    "description": "Capital-efficient stablecoins using algorithmic supply adjustments. Dual token model (stable + volatile).",
+    "when_to_use": "Experimental stablecoins, capital efficiency prioritized over safety",
+    "benefits": "Capital efficient, no collateral needed, scalable",
+    "drawbacks": "Death spiral risk (UST/LUNA), complex mechanisms, stability challenges",
+    "use_cases": "Seigniorage shares, rebase tokens (high risk - see UST collapse)",
+    "complexity": "Very High",
+    "tags": [
+      "defi",
+      "stablecoin",
+      "algorithmic",
+      "rebase",
+      "high-risk"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Dual token: stable (UST) + volatile (LUNA)\nfunction expandSupply(uint256 amount) external {\n    if (price > 1.01e18) { // Above peg\n        stableToken.mint(msg.sender, amount);\n        volatileToken.burn(msg.sender, getVolatileAmount(amount));\n    }\n}\n\nfunction contractSupply(uint256 amount) external {\n    if (price < 0.99e18) { // Below peg\n        stableToken.burn(msg.sender, amount);\n        volatileToken.mint(msg.sender, getVolatileAmount(amount));\n    }\n}"
+      }
     }
   }
-}
+]

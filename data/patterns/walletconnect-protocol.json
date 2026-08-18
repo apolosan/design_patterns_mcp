@@ -1,24 +1,26 @@
-{
-  "id": "walletconnect-protocol",
-  "name": "WalletConnect Protocol",
-  "category": "Web3 Frontend",
-  "description": "Connect mobile wallets to dApps via QR code or deep link. Industry standard for mobile wallet connections.",
-  "when_to_use": "dApp mobile support, mobile wallet integration",
-  "benefits": "Industry standard, 170+ wallet support, QR code + deep link, secure",
-  "drawbacks": "Requires relay server, session management complexity",
-  "use_cases": "All dApps supporting mobile, cross-platform wallet connections",
-  "complexity": "Medium",
-  "tags": [
-    "web3",
-    "wallet",
-    "walletconnect",
-    "mobile",
-    "qr-code"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi';\n\nconst projectId = 'YOUR_PROJECT_ID';\nconst chains = [mainnet, polygon, arbitrum];\n\nconst wagmiConfig = defaultWagmiConfig({ chains, projectId });\n\ncreateWeb3Modal({ wagmiConfig, projectId, chains });\n\n// User scans QR or clicks deep link → wallet connects"
+[
+  {
+    "id": "walletconnect-protocol",
+    "name": "WalletConnect Protocol",
+    "category": "Web3 Frontend",
+    "description": "Connect mobile wallets to dApps via QR code or deep link. Industry standard for mobile wallet connections.",
+    "when_to_use": "dApp mobile support, mobile wallet integration",
+    "benefits": "Industry standard, 170+ wallet support, QR code + deep link, secure",
+    "drawbacks": "Requires relay server, session management complexity",
+    "use_cases": "All dApps supporting mobile, cross-platform wallet connections",
+    "complexity": "Medium",
+    "tags": [
+      "web3",
+      "wallet",
+      "walletconnect",
+      "mobile",
+      "qr-code"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi';\n\nconst projectId = 'YOUR_PROJECT_ID';\nconst chains = [mainnet, polygon, arbitrum];\n\nconst wagmiConfig = defaultWagmiConfig({ chains, projectId });\n\ncreateWeb3Modal({ wagmiConfig, projectId, chains });\n\n// User scans QR or clicks deep link → wallet connects"
+      }
     }
   }
-}
+]

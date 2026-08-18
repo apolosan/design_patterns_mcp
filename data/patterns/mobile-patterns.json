@@ -1,124 +1,322 @@
-{
-  "patterns": [
-    {
-      "id": "offline-first",
-      "name": "Offline-First Pattern",
-      "category": "Mobile",
-      "description": "Design app to work offline by default and sync when connection is available",
-      "when_to_use": ["Unreliable connectivity", "Mobile applications", "Data persistence"],
-      "benefits": ["Better user experience", "Network independence", "Performance improvement"],
-      "drawbacks": ["Complex synchronization", "Storage management", "Conflict resolution"],
-      "use_cases": ["Mobile apps", "Field applications", "Travel apps"],
-      "complexity": "High",
-      "tags": ["mobile", "offline", "synchronization"]
-    },
-    {
-      "id": "lazy-loading-mobile",
-      "name": "Lazy Loading (Mobile)",
-      "category": "Mobile",
-      "description": "Load content only when needed to optimize mobile performance and data usage",
-      "when_to_use": ["Large datasets", "Limited bandwidth", "Performance optimization"],
-      "benefits": ["Reduced data usage", "Faster initial load", "Better performance"],
-      "drawbacks": ["Loading delays", "Complex implementation", "User experience impact"],
-      "use_cases": ["Image galleries", "Social feeds", "Large lists"],
-      "complexity": "Medium",
-      "tags": ["mobile", "performance", "loading"]
-    },
-    {
-      "id": "responsive-design",
-      "name": "Responsive Design Pattern",
-      "category": "Mobile",
-      "description": "Adapts user interface to different screen sizes and orientations",
-      "when_to_use": ["Multi-device support", "Different screen sizes", "Universal apps"],
-      "benefits": ["Device flexibility", "Consistent experience", "Single codebase"],
-      "drawbacks": ["Design complexity", "Performance considerations", "Testing overhead"],
-      "use_cases": ["Cross-platform apps", "Web applications", "Universal interfaces"],
-      "complexity": "Medium",
-      "tags": ["mobile", "responsive", "ui"]
-    },
-    {
-      "id": "progressive-web-app",
-      "name": "Progressive Web App (PWA)",
-      "category": "Mobile",
-      "description": "Web application that uses modern web capabilities to provide app-like experience",
-      "when_to_use": ["Cross-platform deployment", "App store alternatives", "Web-first approach"],
-      "benefits": ["Cross-platform", "No app store dependency", "Easy updates"],
-      "drawbacks": ["Limited native features", "Browser dependency", "Performance limitations"],
-      "use_cases": ["Cross-platform apps", "Content-heavy apps", "Business applications"],
-      "complexity": "Medium",
-      "tags": ["mobile", "pwa", "web"]
-    },
-    {
-      "id": "mobile-navigation",
-      "name": "Mobile Navigation Pattern",
-      "category": "Mobile",
-      "description": "Navigation patterns optimized for touch interfaces and small screens",
-      "when_to_use": ["Mobile applications", "Touch interfaces", "Limited screen space"],
-      "benefits": ["Touch-friendly", "Space efficient", "Intuitive navigation"],
-      "drawbacks": ["Design constraints", "Limited visibility", "Gesture complexity"],
-      "use_cases": ["Mobile apps", "Tab bars", "Drawer navigation"],
-      "complexity": "Medium",
-      "tags": ["mobile", "navigation", "ux"]
-    },
-    {
-      "id": "background-sync",
-      "name": "Background Sync Pattern",
-      "category": "Mobile",
-      "description": "Synchronizes data in background to keep app updated without user intervention",
-      "when_to_use": ["Data synchronization", "Real-time updates", "Background processing"],
-      "benefits": ["Up-to-date data", "Automatic synchronization", "Better user experience"],
-      "drawbacks": ["Battery consumption", "Background processing limits", "Complex implementation"],
-      "use_cases": ["Social apps", "Messaging", "Content updates"],
-      "complexity": "High",
-      "tags": ["mobile", "sync", "background"]
-    },
-    {
-      "id": "mobile-caching",
-      "name": "Mobile Caching Pattern",
-      "category": "Mobile",
-      "description": "Caching strategies optimized for mobile constraints like storage and memory",
-      "when_to_use": ["Performance optimization", "Offline capability", "Data usage reduction"],
-      "benefits": ["Improved performance", "Reduced data usage", "Offline access"],
-      "drawbacks": ["Storage limitations", "Cache invalidation", "Memory management"],
-      "use_cases": ["Image caching", "API responses", "Static content"],
-      "complexity": "Medium",
-      "tags": ["mobile", "caching", "performance"]
-    },
-    {
-      "id": "gesture-based-interaction",
-      "name": "Gesture-Based Interaction",
-      "category": "Mobile",
-      "description": "User interface patterns based on touch gestures for mobile interaction",
-      "when_to_use": ["Touch interfaces", "Intuitive interactions", "Mobile-first design"],
-      "benefits": ["Intuitive interaction", "Space efficiency", "Modern user experience"],
-      "drawbacks": ["Discoverability issues", "Accessibility concerns", "Learning curve"],
-      "use_cases": ["Swipe actions", "Pinch to zoom", "Pull to refresh"],
-      "complexity": "Medium",
-      "tags": ["mobile", "gestures", "interaction"]
-    },
-    {
-      "id": "battery-optimization",
-      "name": "Battery Optimization Pattern",
-      "category": "Mobile",
-      "description": "Optimizes app behavior to minimize battery consumption on mobile devices",
-      "when_to_use": ["Mobile applications", "Battery-sensitive operations", "Background processing"],
-      "benefits": ["Extended battery life", "Better user experience", "System optimization"],
-      "drawbacks": ["Feature limitations", "Complex optimization", "Platform-specific"],
-      "use_cases": ["Location services", "Background tasks", "Real-time features"],
-      "complexity": "High",
-      "tags": ["mobile", "battery", "optimization"]
-    },
-    {
-      "id": "push-notification-pattern",
-      "name": "Push Notification Pattern",
-      "category": "Mobile",
-      "description": "Delivers messages to mobile devices even when app is not actively running",
-      "when_to_use": ["User engagement", "Real-time updates", "App retention"],
-      "benefits": ["User engagement", "Real-time communication", "App retention"],
-      "drawbacks": ["User privacy concerns", "Notification fatigue", "Platform complexity"],
-      "use_cases": ["Messaging apps", "News updates", "E-commerce"],
-      "complexity": "High",
-      "tags": ["mobile", "notifications", "engagement"]
-    }
-  ]
-}
+[
+  {
+    "id": "offline-first",
+    "name": "Offline-First Pattern",
+    "category": "Mobile",
+    "description": "Design app to work offline by default and sync when connection is available",
+    "when_to_use": [
+      "Unreliable connectivity",
+      "Mobile applications",
+      "Data persistence"
+    ],
+    "benefits": [
+      "Better user experience",
+      "Network independence",
+      "Performance improvement"
+    ],
+    "drawbacks": [
+      "Complex synchronization",
+      "Storage management",
+      "Conflict resolution"
+    ],
+    "use_cases": [
+      "Mobile apps",
+      "Field applications",
+      "Travel apps"
+    ],
+    "complexity": "High",
+    "tags": [
+      "mobile",
+      "offline",
+      "synchronization"
+    ]
+  },
+  {
+    "id": "lazy-loading-mobile",
+    "name": "Lazy Loading (Mobile)",
+    "category": "Mobile",
+    "description": "Load content only when needed to optimize mobile performance and data usage",
+    "when_to_use": [
+      "Large datasets",
+      "Limited bandwidth",
+      "Performance optimization"
+    ],
+    "benefits": [
+      "Reduced data usage",
+      "Faster initial load",
+      "Better performance"
+    ],
+    "drawbacks": [
+      "Loading delays",
+      "Complex implementation",
+      "User experience impact"
+    ],
+    "use_cases": [
+      "Image galleries",
+      "Social feeds",
+      "Large lists"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "performance",
+      "loading"
+    ]
+  },
+  {
+    "id": "responsive-design",
+    "name": "Responsive Design Pattern",
+    "category": "Mobile",
+    "description": "Adapts user interface to different screen sizes and orientations",
+    "when_to_use": [
+      "Multi-device support",
+      "Different screen sizes",
+      "Universal apps"
+    ],
+    "benefits": [
+      "Device flexibility",
+      "Consistent experience",
+      "Single codebase"
+    ],
+    "drawbacks": [
+      "Design complexity",
+      "Performance considerations",
+      "Testing overhead"
+    ],
+    "use_cases": [
+      "Cross-platform apps",
+      "Web applications",
+      "Universal interfaces"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "responsive",
+      "ui"
+    ]
+  },
+  {
+    "id": "progressive-web-app",
+    "name": "Progressive Web App (PWA)",
+    "category": "Mobile",
+    "description": "Web application that uses modern web capabilities to provide app-like experience",
+    "when_to_use": [
+      "Cross-platform deployment",
+      "App store alternatives",
+      "Web-first approach"
+    ],
+    "benefits": [
+      "Cross-platform",
+      "No app store dependency",
+      "Easy updates"
+    ],
+    "drawbacks": [
+      "Limited native features",
+      "Browser dependency",
+      "Performance limitations"
+    ],
+    "use_cases": [
+      "Cross-platform apps",
+      "Content-heavy apps",
+      "Business applications"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "pwa",
+      "web"
+    ]
+  },
+  {
+    "id": "mobile-navigation",
+    "name": "Mobile Navigation Pattern",
+    "category": "Mobile",
+    "description": "Navigation patterns optimized for touch interfaces and small screens",
+    "when_to_use": [
+      "Mobile applications",
+      "Touch interfaces",
+      "Limited screen space"
+    ],
+    "benefits": [
+      "Touch-friendly",
+      "Space efficient",
+      "Intuitive navigation"
+    ],
+    "drawbacks": [
+      "Design constraints",
+      "Limited visibility",
+      "Gesture complexity"
+    ],
+    "use_cases": [
+      "Mobile apps",
+      "Tab bars",
+      "Drawer navigation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "navigation",
+      "ux"
+    ]
+  },
+  {
+    "id": "background-sync",
+    "name": "Background Sync Pattern",
+    "category": "Mobile",
+    "description": "Synchronizes data in background to keep app updated without user intervention",
+    "when_to_use": [
+      "Data synchronization",
+      "Real-time updates",
+      "Background processing"
+    ],
+    "benefits": [
+      "Up-to-date data",
+      "Automatic synchronization",
+      "Better user experience"
+    ],
+    "drawbacks": [
+      "Battery consumption",
+      "Background processing limits",
+      "Complex implementation"
+    ],
+    "use_cases": [
+      "Social apps",
+      "Messaging",
+      "Content updates"
+    ],
+    "complexity": "High",
+    "tags": [
+      "mobile",
+      "sync",
+      "background"
+    ]
+  },
+  {
+    "id": "mobile-caching",
+    "name": "Mobile Caching Pattern",
+    "category": "Mobile",
+    "description": "Caching strategies optimized for mobile constraints like storage and memory",
+    "when_to_use": [
+      "Performance optimization",
+      "Offline capability",
+      "Data usage reduction"
+    ],
+    "benefits": [
+      "Improved performance",
+      "Reduced data usage",
+      "Offline access"
+    ],
+    "drawbacks": [
+      "Storage limitations",
+      "Cache invalidation",
+      "Memory management"
+    ],
+    "use_cases": [
+      "Image caching",
+      "API responses",
+      "Static content"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "caching",
+      "performance"
+    ]
+  },
+  {
+    "id": "gesture-based-interaction",
+    "name": "Gesture-Based Interaction",
+    "category": "Mobile",
+    "description": "User interface patterns based on touch gestures for mobile interaction",
+    "when_to_use": [
+      "Touch interfaces",
+      "Intuitive interactions",
+      "Mobile-first design"
+    ],
+    "benefits": [
+      "Intuitive interaction",
+      "Space efficiency",
+      "Modern user experience"
+    ],
+    "drawbacks": [
+      "Discoverability issues",
+      "Accessibility concerns",
+      "Learning curve"
+    ],
+    "use_cases": [
+      "Swipe actions",
+      "Pinch to zoom",
+      "Pull to refresh"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "gestures",
+      "interaction"
+    ]
+  },
+  {
+    "id": "battery-optimization",
+    "name": "Battery Optimization Pattern",
+    "category": "Mobile",
+    "description": "Optimizes app behavior to minimize battery consumption on mobile devices",
+    "when_to_use": [
+      "Mobile applications",
+      "Battery-sensitive operations",
+      "Background processing"
+    ],
+    "benefits": [
+      "Extended battery life",
+      "Better user experience",
+      "System optimization"
+    ],
+    "drawbacks": [
+      "Feature limitations",
+      "Complex optimization",
+      "Platform-specific"
+    ],
+    "use_cases": [
+      "Location services",
+      "Background tasks",
+      "Real-time features"
+    ],
+    "complexity": "High",
+    "tags": [
+      "mobile",
+      "battery",
+      "optimization"
+    ]
+  },
+  {
+    "id": "push-notification-pattern",
+    "name": "Push Notification Pattern",
+    "category": "Mobile",
+    "description": "Delivers messages to mobile devices even when app is not actively running",
+    "when_to_use": [
+      "User engagement",
+      "Real-time updates",
+      "App retention"
+    ],
+    "benefits": [
+      "User engagement",
+      "Real-time communication",
+      "App retention"
+    ],
+    "drawbacks": [
+      "User privacy concerns",
+      "Notification fatigue",
+      "Platform complexity"
+    ],
+    "use_cases": [
+      "Messaging apps",
+      "News updates",
+      "E-commerce"
+    ],
+    "complexity": "High",
+    "tags": [
+      "mobile",
+      "notifications",
+      "engagement"
+    ]
+  }
+]

@@ -1,15 +1,17 @@
-{
-  "id": "feature-envy",
-  "name": "Feature Envy Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "A class that uses methods of another class excessively, suggesting misplaced responsibility",
-  "when_to_use": "Method uses more features of another class than its own\nExcessive delegation to other objects\nMethods that seem to belong elsewhere",
-  "drawbacks": "Poor encapsulation\nIncreased coupling\nConfusing object responsibilities\nMaintenance difficulties",
-  "use_cases": "Data manipulation methods in wrong classes\nBusiness logic spread across objects\nHelper methods accessing too many external features",
-  "complexity": "Medium",
-  "tags": [
-    "anti-pattern",
-    "oop",
-    "encapsulation"
-  ]
-}
+[
+  {
+    "id": "feature-envy",
+    "name": "Feature Envy Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "A class that uses methods of another class excessively, suggesting misplaced responsibility",
+    "when_to_use": "Method uses more features of another class than its own\nExcessive delegation to other objects\nMethods that seem to belong elsewhere",
+    "drawbacks": "Poor encapsulation\nIncreased coupling\nConfusing object responsibilities\nMaintenance difficulties",
+    "use_cases": "Data manipulation methods in wrong classes\nBusiness logic spread across objects\nHelper methods accessing too many external features",
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "oop",
+      "encapsulation"
+    ]
+  }
+]

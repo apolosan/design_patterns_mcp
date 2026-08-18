@@ -1,22 +1,24 @@
-{
-  "id": "active-record",
-  "name": "Active Record",
-  "category": "Enterprise",
-  "description": "Object that wraps a row in database table, encapsulates database access and adds domain logic",
-  "when_to_use": "Simple domain logic\nDatabase-driven design\nRapid development",
-  "benefits": "Simple implementation\nDirect mapping\nEasy to understand",
-  "drawbacks": "Tight coupling\nTesting difficulties\nLimited flexibility",
-  "use_cases": "Simple CRUD applications\nPrototyping\nDatabase-centric apps",
-  "complexity": "Low",
-  "tags": [
-    "enterprise",
-    "data-source",
-    "coupling"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Active Record: domain object with database logic\nclass User {\n  id?: string;\n  email: string;\n  name: string;\n  \n  constructor(data: { id?: string; email: string; name: string }) {\n    this.id = data.id;\n    this.email = data.email;\n    this.name = data.name;\n  }\n  \n  async save(): Promise<void> {\n    if (this.id) {\n      await db.query(\n        'UPDATE users SET email = ?, name = ? WHERE id = ?',\n        [this.email, this.name, this.id]\n      );\n    } else {\n      const result = await db.query(\n        'INSERT INTO users (email, name) VALUES (?, ?)',\n        [this.email, this.name]\n      );\n      this.id = result.insertId;\n    }\n  }\n  \n  async delete(): Promise<void> {\n    if (this.id) {\n      await db.query('DELETE FROM users WHERE id = ?', [this.id]);\n    }\n  }\n  \n  static async find(id: string): Promise<User | null> {\n    const row = await db.query('SELECT * FROM users WHERE id = ?', [id]);\n    return row ? new User(row) : null;\n  }\n  \n  static async findByEmail(email: string): Promise<User | null> {\n    const row = await db.query('SELECT * FROM users WHERE email = ?', [email]);\n    return row ? new User(row) : null;\n  }\n}\n\n// Usage\nconst user = new User({ email: 'user@example.com', name: 'John' });\nawait user.save();\n\nconst found = await User.find(user.id!);\nfound.name = 'Jane';\nawait found.save();"
+[
+  {
+    "id": "active-record",
+    "name": "Active Record",
+    "category": "Enterprise",
+    "description": "Object that wraps a row in database table, encapsulates database access and adds domain logic",
+    "when_to_use": "Simple domain logic\nDatabase-driven design\nRapid development",
+    "benefits": "Simple implementation\nDirect mapping\nEasy to understand",
+    "drawbacks": "Tight coupling\nTesting difficulties\nLimited flexibility",
+    "use_cases": "Simple CRUD applications\nPrototyping\nDatabase-centric apps",
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "data-source",
+      "coupling"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Active Record: domain object with database logic\nclass User {\n  id?: string;\n  email: string;\n  name: string;\n  \n  constructor(data: { id?: string; email: string; name: string }) {\n    this.id = data.id;\n    this.email = data.email;\n    this.name = data.name;\n  }\n  \n  async save(): Promise<void> {\n    if (this.id) {\n      await db.query(\n        'UPDATE users SET email = ?, name = ? WHERE id = ?',\n        [this.email, this.name, this.id]\n      );\n    } else {\n      const result = await db.query(\n        'INSERT INTO users (email, name) VALUES (?, ?)',\n        [this.email, this.name]\n      );\n      this.id = result.insertId;\n    }\n  }\n  \n  async delete(): Promise<void> {\n    if (this.id) {\n      await db.query('DELETE FROM users WHERE id = ?', [this.id]);\n    }\n  }\n  \n  static async find(id: string): Promise<User | null> {\n    const row = await db.query('SELECT * FROM users WHERE id = ?', [id]);\n    return row ? new User(row) : null;\n  }\n  \n  static async findByEmail(email: string): Promise<User | null> {\n    const row = await db.query('SELECT * FROM users WHERE email = ?', [email]);\n    return row ? new User(row) : null;\n  }\n}\n\n// Usage\nconst user = new User({ email: 'user@example.com', name: 'John' });\nawait user.save();\n\nconst found = await User.find(user.id!);\nfound.name = 'Jane';\nawait found.save();"
+      }
     }
   }
-}
+]

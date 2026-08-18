@@ -1,44 +1,67 @@
-{
-  "id": "goal-setting-and-monitoring",
-  "name": "Goal Setting and Monitoring",
-  "category": "Agentic AI",
-  "description": "Agent explicitly formulates measurable goals, tracks progress against those goals, and adapts its plan when deviation or new information is detected. Separates the what (goal) from the how (plan) and provides an evaluation loop for autonomous behavior.",
-  "when_to_use": [
-    "Long-horizon tasks where intermediate feedback is sparse",
-    "Autonomous agents operating without human steering",
-    "Scenarios requiring self-correction when plans fail",
-    "Tasks where success criteria are explicit and measurable"
-  ],
-  "benefits": [
-    "Improved alignment with user intent",
-    "Detects drift before catastrophic failure",
-    "Enables self-correction without external intervention",
-    "Supports explainable decision audit"
-  ],
-  "drawbacks": [
-    "Goal specification is brittle for ambiguous tasks",
-    "Monitoring adds overhead per step",
-    "Risk of reward hacking on poorly specified goals",
-    "Requires reliable progress signals"
-  ],
-  "use_cases": [
-    "Deep research agents checking sub-question coverage",
-    "Autonomous coding agents tracking test-pass counts",
-    "Robotics and embodied agents monitoring mission completion",
-    "Multi-day enterprise workflows with milestone checkpoints"
-  ],
-  "complexity": "Medium",
-  "tags": ["agentic", "goal", "monitoring", "self-correction", "ai-ml"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Goal {\n  id: string;\n  metric: () => Promise<number>;\n  target: number;\n}\n\nclass GoalMonitor {\n  private goals: Goal[];\n  async tick(state: WorldState) {\n    for (const g of this.goals) {\n      const v = await g.metric();\n      if (v >= g.target) state.completed.push(g.id);\n      else if (v < state.last.get(g.id)! * 0.5) state.replan.add(g.id);\n      state.last.set(g.id, v);\n    }\n  }\n}",
-      "description": "Goal monitor triggers replan when metrics regress."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "planning-pattern", "type": "complements", "strength": 0.9, "description": "Plan serves the goal; goal informs plan revision"},
-    {"target_pattern_id": "reflection-pattern", "type": "uses", "strength": 0.7, "description": "Reflection evaluates progress against goals"},
-    {"target_pattern_id": "exception-handling-and-recovery", "type": "complements", "strength": 0.6, "description": "Goal deviations trigger recovery flows"}
-  ]
-}
+[
+  {
+    "id": "goal-setting-and-monitoring",
+    "name": "Goal Setting and Monitoring",
+    "category": "Agentic AI",
+    "description": "Agent explicitly formulates measurable goals, tracks progress against those goals, and adapts its plan when deviation or new information is detected. Separates the what (goal) from the how (plan) and provides an evaluation loop for autonomous behavior.",
+    "when_to_use": [
+      "Long-horizon tasks where intermediate feedback is sparse",
+      "Autonomous agents operating without human steering",
+      "Scenarios requiring self-correction when plans fail",
+      "Tasks where success criteria are explicit and measurable"
+    ],
+    "benefits": [
+      "Improved alignment with user intent",
+      "Detects drift before catastrophic failure",
+      "Enables self-correction without external intervention",
+      "Supports explainable decision audit"
+    ],
+    "drawbacks": [
+      "Goal specification is brittle for ambiguous tasks",
+      "Monitoring adds overhead per step",
+      "Risk of reward hacking on poorly specified goals",
+      "Requires reliable progress signals"
+    ],
+    "use_cases": [
+      "Deep research agents checking sub-question coverage",
+      "Autonomous coding agents tracking test-pass counts",
+      "Robotics and embodied agents monitoring mission completion",
+      "Multi-day enterprise workflows with milestone checkpoints"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "agentic",
+      "goal",
+      "monitoring",
+      "self-correction",
+      "ai-ml"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Goal {\n  id: string;\n  metric: () => Promise<number>;\n  target: number;\n}\n\nclass GoalMonitor {\n  private goals: Goal[];\n  async tick(state: WorldState) {\n    for (const g of this.goals) {\n      const v = await g.metric();\n      if (v >= g.target) state.completed.push(g.id);\n      else if (v < state.last.get(g.id)! * 0.5) state.replan.add(g.id);\n      state.last.set(g.id, v);\n    }\n  }\n}",
+        "description": "Goal monitor triggers replan when metrics regress."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "planning-pattern",
+        "type": "complements",
+        "strength": 0.9,
+        "description": "Plan serves the goal; goal informs plan revision"
+      },
+      {
+        "target_pattern_id": "reflection-pattern",
+        "type": "uses",
+        "strength": 0.7,
+        "description": "Reflection evaluates progress against goals"
+      },
+      {
+        "target_pattern_id": "exception-handling-and-recovery",
+        "type": "complements",
+        "strength": 0.6,
+        "description": "Goal deviations trigger recovery flows"
+      }
+    ]
+  }
+]

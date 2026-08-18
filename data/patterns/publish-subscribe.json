@@ -1,16 +1,18 @@
-{
-  "id": "publish-subscribe",
-  "name": "Publish-Subscribe",
-  "category": "Integration",
-  "description": "Messaging pattern where publishers send messages to subscribers through a broker",
-  "when_to_use": "Event broadcasting\nLoose coupling\nMultiple consumers",
-  "benefits": "Loose coupling\nScalability\nDynamic subscribers\nEvent-driven",
-  "drawbacks": "Delivery guarantees\nMessage ordering\nBroker dependency",
-  "use_cases": "Event systems\nNotifications\nReal-time updates",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "messaging",
-    "pubsub"
-  ]
-}
+[
+  {
+    "id": "publish-subscribe",
+    "name": "Publish-Subscribe",
+    "category": "Integration",
+    "description": "Messaging pattern where publishers send messages to subscribers through a broker",
+    "when_to_use": "Event broadcasting\nLoose coupling\nMultiple consumers",
+    "benefits": "Loose coupling\nScalability\nDynamic subscribers\nEvent-driven",
+    "drawbacks": "Delivery guarantees\nMessage ordering\nBroker dependency",
+    "use_cases": "Event systems\nNotifications\nReal-time updates",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "messaging",
+      "pubsub"
+    ]
+  }
+]

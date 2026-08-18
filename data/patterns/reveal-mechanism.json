@@ -1,24 +1,26 @@
-{
-  "id": "reveal-mechanism",
-  "name": "Delayed Reveal Mechanism",
-  "category": "NFT",
-  "description": "Mint first, reveal metadata later to prevent sniping",
-  "when_to_use": "Fair launches, prevent rarity sniping, random reveals",
-  "benefits": "Fair launch, prevents sniping, builds anticipation",
-  "drawbacks": "Two-phase process, trust in reveal",
-  "use_cases": "PFP collections, blind box mechanics, fair distribution",
-  "complexity": "Medium",
-  "tags": [
-    "nft",
-    "reveal",
-    "fairness",
-    "vrf",
-    "random"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Delayed Reveal: placeholder → real metadata\ncontract RevealableNFT is ERC721 {\n    bool public revealed;\n    string public placeholderURI;\n    string public revealedBaseURI;\n    \n    function tokenURI(uint256 tokenId) public view override returns (string memory) {\n        if (!revealed) return placeholderURI;\n        return string(abi.encodePacked(revealedBaseURI, tokenId.toString()));\n    }\n    \n    function reveal(string memory uri) external onlyOwner {\n        revealedBaseURI = uri;\n        revealed = true;\n    }\n}"
+[
+  {
+    "id": "reveal-mechanism",
+    "name": "Delayed Reveal Mechanism",
+    "category": "NFT",
+    "description": "Mint first, reveal metadata later to prevent sniping",
+    "when_to_use": "Fair launches, prevent rarity sniping, random reveals",
+    "benefits": "Fair launch, prevents sniping, builds anticipation",
+    "drawbacks": "Two-phase process, trust in reveal",
+    "use_cases": "PFP collections, blind box mechanics, fair distribution",
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "reveal",
+      "fairness",
+      "vrf",
+      "random"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Delayed Reveal: placeholder → real metadata\ncontract RevealableNFT is ERC721 {\n    bool public revealed;\n    string public placeholderURI;\n    string public revealedBaseURI;\n    \n    function tokenURI(uint256 tokenId) public view override returns (string memory) {\n        if (!revealed) return placeholderURI;\n        return string(abi.encodePacked(revealedBaseURI, tokenId.toString()));\n    }\n    \n    function reveal(string memory uri) external onlyOwner {\n        revealedBaseURI = uri;\n        revealed = true;\n    }\n}"
+      }
     }
   }
-}
+]

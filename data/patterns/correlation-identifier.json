@@ -1,16 +1,18 @@
-{
-  "id": "correlation-identifier",
-  "name": "Correlation Identifier",
-  "category": "Integration",
-  "description": "Tracks related messages across multiple processing steps",
-  "when_to_use": "Message correlation\nRequest tracking\nDistributed processing",
-  "benefits": "Message tracking\nRequest correlation\nDebugging support",
-  "drawbacks": "Identifier management\nStorage overhead\nPropagation complexity",
-  "use_cases": "Request tracking\nDistributed transactions\nAudit trails",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "correlation",
-    "tracking"
-  ]
-}
+[
+  {
+    "id": "correlation-identifier",
+    "name": "Correlation Identifier",
+    "category": "Integration",
+    "description": "Tracks related messages across multiple processing steps",
+    "when_to_use": "Message correlation\nRequest tracking\nDistributed processing",
+    "benefits": "Message tracking\nRequest correlation\nDebugging support",
+    "drawbacks": "Identifier management\nStorage overhead\nPropagation complexity",
+    "use_cases": "Request tracking\nDistributed transactions\nAudit trails",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "correlation",
+      "tracking"
+    ]
+  }
+]

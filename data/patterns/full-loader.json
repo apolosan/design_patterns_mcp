@@ -1,18 +1,20 @@
-{
-  "id": "full-loader",
-  "name": "Full Loader",
-  "category": "Data Ingestion",
-  "description": "The Full Loader implementation is one of the most straightforward patterns. It uses native data stores commands to export data from one database and import it to another using a two-step construction (extract and load). This EL approach is ideal for homogeneous data stores because it doesn't require any data transformation.",
-  "when_to_use": "[\"Setting up the Silver layer with slowly evolving datasets\",\"Database bootstrap\",\"Reference dataset generation\"]",
-  "benefits": "[\"Simple implementation\",\"Straightforward two-step process\",\"No transformation overhead\"]",
-  "drawbacks": "[\"Data volume issues for growing datasets\",\"Data consistency risks during ingestion\",\"Not suitable for heterogeneous databases without transformation\"]",
-  "use_cases": "[\"Loading reference data\",\"Initial data migration\",\"Static dataset synchronization\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"full-load\"",
-    "\"data-ingestion\"",
-    "\"el\"",
-    "\"etl\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "full-loader",
+    "name": "Full Loader",
+    "category": "Data Ingestion",
+    "description": "The Full Loader implementation is one of the most straightforward patterns. It uses native data stores commands to export data from one database and import it to another using a two-step construction (extract and load). This EL approach is ideal for homogeneous data stores because it doesn't require any data transformation.",
+    "when_to_use": "[\"Setting up the Silver layer with slowly evolving datasets\",\"Database bootstrap\",\"Reference dataset generation\"]",
+    "benefits": "[\"Simple implementation\",\"Straightforward two-step process\",\"No transformation overhead\"]",
+    "drawbacks": "[\"Data volume issues for growing datasets\",\"Data consistency risks during ingestion\",\"Not suitable for heterogeneous databases without transformation\"]",
+    "use_cases": "[\"Loading reference data\",\"Initial data migration\",\"Static dataset synchronization\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"full-load\"",
+      "\"data-ingestion\"",
+      "\"el\"",
+      "\"etl\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

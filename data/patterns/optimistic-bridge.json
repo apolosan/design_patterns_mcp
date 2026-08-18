@@ -1,23 +1,25 @@
-{
-  "id": "optimistic-bridge",
-  "name": "Optimistic Bridge",
-  "category": "Cross-Chain",
-  "description": "Assume relayer messages valid, allow fraud proof challenges. Gas-efficient but delayed finality.",
-  "when_to_use": "Cost-sensitive bridges, high-value transfers, acceptable latency",
-  "benefits": "Low gas costs, simple relayers, scales well",
-  "drawbacks": "7-day challenge period, fraud proof complexity, liveness assumptions",
-  "use_cases": "Optimism/Arbitrum native bridges, Nomad (legacy)",
-  "complexity": "High",
-  "tags": [
-    "cross-chain",
-    "optimistic",
-    "fraud-proof",
-    "challenge-period"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Optimistic relayer with challenge period\nfunction relayMessage(bytes memory message, bytes memory signature) external {\n    require(verifySignature(message, signature));\n    messages[messageId] = PendingMessage({\n        data: message,\n        timestamp: block.timestamp,\n        executed: false\n    });\n}\n\nfunction executeAfterDelay(bytes32 messageId) external {\n    require(block.timestamp >= messages[messageId].timestamp + CHALLENGE_PERIOD);\n    _execute(messages[messageId].data);\n}"
+[
+  {
+    "id": "optimistic-bridge",
+    "name": "Optimistic Bridge",
+    "category": "Cross-Chain",
+    "description": "Assume relayer messages valid, allow fraud proof challenges. Gas-efficient but delayed finality.",
+    "when_to_use": "Cost-sensitive bridges, high-value transfers, acceptable latency",
+    "benefits": "Low gas costs, simple relayers, scales well",
+    "drawbacks": "7-day challenge period, fraud proof complexity, liveness assumptions",
+    "use_cases": "Optimism/Arbitrum native bridges, Nomad (legacy)",
+    "complexity": "High",
+    "tags": [
+      "cross-chain",
+      "optimistic",
+      "fraud-proof",
+      "challenge-period"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Optimistic relayer with challenge period\nfunction relayMessage(bytes memory message, bytes memory signature) external {\n    require(verifySignature(message, signature));\n    messages[messageId] = PendingMessage({\n        data: message,\n        timestamp: block.timestamp,\n        executed: false\n    });\n}\n\nfunction executeAfterDelay(bytes32 messageId) external {\n    require(block.timestamp >= messages[messageId].timestamp + CHALLENGE_PERIOD);\n    _execute(messages[messageId].data);\n}"
+      }
     }
   }
-}
+]

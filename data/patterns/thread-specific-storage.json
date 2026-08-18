@@ -1,22 +1,24 @@
-{
-  "id": "thread-specific-storage",
-  "name": "Thread-Specific Storage",
-  "category": "Concurrency",
-  "description": "Provides separate instance of data for each thread",
-  "when_to_use": "Thread isolation\nContext preservation\nLegacy code",
-  "benefits": "Thread isolation\nNo synchronization\nContext preservation",
-  "drawbacks": "Memory overhead\nCleanup complexity\nHidden dependencies",
-  "use_cases": "User contexts\nTransaction state\nError handling",
-  "complexity": "Medium",
-  "tags": [
-    "concurrency",
-    "isolation",
-    "thread-local"
-  ],
-  "examples": {
-    "note": {
-      "language": "note",
-      "code": "⚠️ Language-specific: Thread-local storage implementation varies by language (ThreadLocal in Java, thread_local in C++, threading.local() in Python)."
+[
+  {
+    "id": "thread-specific-storage",
+    "name": "Thread-Specific Storage",
+    "category": "Concurrency",
+    "description": "Provides separate instance of data for each thread",
+    "when_to_use": "Thread isolation\nContext preservation\nLegacy code",
+    "benefits": "Thread isolation\nNo synchronization\nContext preservation",
+    "drawbacks": "Memory overhead\nCleanup complexity\nHidden dependencies",
+    "use_cases": "User contexts\nTransaction state\nError handling",
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "isolation",
+      "thread-local"
+    ],
+    "examples": {
+      "note": {
+        "language": "note",
+        "code": "⚠️ Language-specific: Thread-local storage implementation varies by language (ThreadLocal in Java, thread_local in C++, threading.local() in Python)."
+      }
     }
   }
-}
+]

@@ -1,24 +1,26 @@
-{
-  "id": "meta-transactions-erc2771",
-  "name": "Meta-Transactions (ERC-2771)",
-  "category": "Security",
-  "description": "Gasless transactions via trusted forwarder. Users sign, relayer pays gas.",
-  "when_to_use": "Gasless onboarding, UX improvement, sponsored transactions",
-  "benefits": "Users don't need ETH for gas, better UX, lower friction",
-  "drawbacks": "Relayer dependency, contracts must support ERC-2771",
-  "use_cases": "OpenGSN, Biconomy, gasless dApps, onboarding",
-  "complexity": "Medium",
-  "tags": [
-    "gasless",
-    "meta-transaction",
-    "erc-2771",
-    "relayer",
-    "ux"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/metatx/ERC2771Context.sol\";\n\ncontract MetaTxContract is ERC2771Context {\n    constructor(address trustedForwarder) ERC2771Context(trustedForwarder) {}\n    \n    function someFunction() external {\n        // Use _msgSender() instead of msg.sender\n        address realSender = _msgSender(); // Returns actual user, not relayer\n        \n        // Execute logic with real sender\n    }\n}\n\n// ERC2771Context automatically extracts real sender from calldata\n// appended by trusted forwarder"
+[
+  {
+    "id": "meta-transactions-erc2771",
+    "name": "Meta-Transactions (ERC-2771)",
+    "category": "Security",
+    "description": "Gasless transactions via trusted forwarder. Users sign, relayer pays gas.",
+    "when_to_use": "Gasless onboarding, UX improvement, sponsored transactions",
+    "benefits": "Users don't need ETH for gas, better UX, lower friction",
+    "drawbacks": "Relayer dependency, contracts must support ERC-2771",
+    "use_cases": "OpenGSN, Biconomy, gasless dApps, onboarding",
+    "complexity": "Medium",
+    "tags": [
+      "gasless",
+      "meta-transaction",
+      "erc-2771",
+      "relayer",
+      "ux"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/metatx/ERC2771Context.sol\";\n\ncontract MetaTxContract is ERC2771Context {\n    constructor(address trustedForwarder) ERC2771Context(trustedForwarder) {}\n    \n    function someFunction() external {\n        // Use _msgSender() instead of msg.sender\n        address realSender = _msgSender(); // Returns actual user, not relayer\n        \n        // Execute logic with real sender\n    }\n}\n\n// ERC2771Context automatically extracts real sender from calldata\n// appended by trusted forwarder"
+      }
     }
   }
-}
+]

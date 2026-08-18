@@ -1,16 +1,18 @@
-{
-  "id": "federated-learning",
-  "name": "Federated Learning",
-  "category": "AI/ML",
-  "description": "Trains models across distributed devices without centralizing data",
-  "when_to_use": "Privacy requirements\nDistributed data\nEdge computing",
-  "benefits": "Privacy preservation\nDistributed training\nReduced data transfer\nEdge deployment",
-  "drawbacks": "Communication overhead\nHeterogeneity challenges\nCoordination complexity",
-  "use_cases": "Mobile AI\nHealthcare\nIoT systems",
-  "complexity": "Very High",
-  "tags": [
-    "federated",
-    "distributed",
-    "privacy"
-  ]
-}
+[
+  {
+    "id": "federated-learning",
+    "name": "Federated Learning",
+    "category": "AI/ML",
+    "description": "Trains models across distributed devices without centralizing data",
+    "when_to_use": "Privacy requirements\nDistributed data\nEdge computing",
+    "benefits": "Privacy preservation\nDistributed training\nReduced data transfer\nEdge deployment",
+    "drawbacks": "Communication overhead\nHeterogeneity challenges\nCoordination complexity",
+    "use_cases": "Mobile AI\nHealthcare\nIoT systems",
+    "complexity": "Very High",
+    "tags": [
+      "federated",
+      "distributed",
+      "privacy"
+    ]
+  }
+]

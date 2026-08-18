@@ -1,19 +1,21 @@
-{
-  "id": "exception-handling-recovery-pattern",
-  "name": "Exception Handling and Recovery Pattern",
-  "category": "AI/ML",
-  "description": "Provides mechanisms for detecting, handling, and recovering from errors or unexpected situations in agent operations.",
-  "when_to_use": "[\"Unreliable environments\",\"Error-prone tasks\",\"Robustness required\"]",
-  "benefits": "[\"Improved reliability\",\"Graceful failure handling\",\"System stability\"]",
-  "drawbacks": "[\"Complexity in error detection\",\"Recovery strategy design\",\"Potential performance impact\"]",
-  "use_cases": "[\"Fault-tolerant systems\",\"Error-prone workflows\",\"Critical applications\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"exception\"",
-    "\"recovery\"",
-    "\"error-handling\"",
-    "\"robustness\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "exception-handling-recovery-pattern",
+    "name": "Exception Handling and Recovery Pattern",
+    "category": "AI/ML",
+    "description": "Provides mechanisms for detecting, handling, and recovering from errors or unexpected situations in agent operations.",
+    "when_to_use": "[\"Unreliable environments\",\"Error-prone tasks\",\"Robustness required\"]",
+    "benefits": "[\"Improved reliability\",\"Graceful failure handling\",\"System stability\"]",
+    "drawbacks": "[\"Complexity in error detection\",\"Recovery strategy design\",\"Potential performance impact\"]",
+    "use_cases": "[\"Fault-tolerant systems\",\"Error-prone workflows\",\"Critical applications\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"exception\"",
+      "\"recovery\"",
+      "\"error-handling\"",
+      "\"robustness\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

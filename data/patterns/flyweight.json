@@ -1,22 +1,24 @@
-{
-  "id": "flyweight",
-  "name": "Flyweight",
-  "category": "Structural",
-  "description": "Shares objects efficiently to support large numbers of fine-grained objects",
-  "when_to_use": "Large number of objects\nMemory constraints\nShared state",
-  "benefits": "Memory efficiency\nPerformance improvement\nShared state management",
-  "drawbacks": "Runtime costs\nComplexity",
-  "use_cases": "Text editors\nGame particle systems\nString interning",
-  "complexity": "High",
-  "tags": [
-    "structural",
-    "optimization",
-    "memory"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "class TreeType {\n  constructor(public name: string, public color: string) {}\n  draw(x: number, y: number) {\n    console.log(`Draw ${this.name} at (${x},${y})`);\n  }\n}\n\nclass TreeFactory {\n  private static types = new Map<string, TreeType>();\n  \n  static getTreeType(name: string, color: string): TreeType {\n    const key = `${name}_${color}`;\n    if (!this.types.has(key)) {\n      this.types.set(key, new TreeType(name, color));\n    }\n    return this.types.get(key)!;\n  }\n}\n\n// Usage: share state between many objects\nconst oakType = TreeFactory.getTreeType('Oak', 'green');\nconst trees = [{ x: 1, y: 1, type: oakType }, { x: 2, y: 3, type: oakType }];"
+[
+  {
+    "id": "flyweight",
+    "name": "Flyweight",
+    "category": "Structural",
+    "description": "Shares objects efficiently to support large numbers of fine-grained objects",
+    "when_to_use": "Large number of objects\nMemory constraints\nShared state",
+    "benefits": "Memory efficiency\nPerformance improvement\nShared state management",
+    "drawbacks": "Runtime costs\nComplexity",
+    "use_cases": "Text editors\nGame particle systems\nString interning",
+    "complexity": "High",
+    "tags": [
+      "structural",
+      "optimization",
+      "memory"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "class TreeType {\n  constructor(public name: string, public color: string) {}\n  draw(x: number, y: number) {\n    console.log(`Draw ${this.name} at (${x},${y})`);\n  }\n}\n\nclass TreeFactory {\n  private static types = new Map<string, TreeType>();\n  \n  static getTreeType(name: string, color: string): TreeType {\n    const key = `${name}_${color}`;\n    if (!this.types.has(key)) {\n      this.types.set(key, new TreeType(name, color));\n    }\n    return this.types.get(key)!;\n  }\n}\n\n// Usage: share state between many objects\nconst oakType = TreeFactory.getTreeType('Oak', 'green');\nconst trees = [{ x: 1, y: 1, type: oakType }, { x: 2, y: 3, type: oakType }];"
+      }
     }
   }
-}
+]

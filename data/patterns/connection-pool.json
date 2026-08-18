@@ -1,22 +1,24 @@
-{
-  "id": "connection-pool",
-  "name": "Connection Pool",
-  "category": "Data Access",
-  "description": "Maintains cache of database connections to improve performance and resource utilization",
-  "when_to_use": "High-traffic applications\nPerformance optimization\nResource management",
-  "benefits": "Performance improvement\nResource efficiency\nConnection reuse",
-  "drawbacks": "Configuration complexity\nMemory overhead\nConnection leaks",
-  "use_cases": "Web applications\nEnterprise systems\nHigh-concurrency applications",
-  "complexity": "Medium",
-  "tags": [
-    "data-access",
-    "performance",
-    "pooling"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Connection Pool: reuse database connections\nclass ConnectionPool {\n  private available: Connection[] = [];\n  private inUse: Set<Connection> = new Set();\n  \n  constructor(\n    private maxSize: number,\n    private createConnection: () => Connection\n  ) {}\n  \n  async acquire(): Promise<Connection> {\n    if (this.available.length > 0) {\n      const conn = this.available.pop()!;\n      this.inUse.add(conn);\n      return conn;\n    }\n    \n    if (this.inUse.size < this.maxSize) {\n      const conn = this.createConnection();\n      this.inUse.add(conn);\n      return conn;\n    }\n    \n    await this.waitForAvailableConnection();\n    return this.acquire();\n  }\n  \n  release(conn: Connection) {\n    this.inUse.delete(conn);\n    this.available.push(conn);\n  }\n  \n  private async waitForAvailableConnection() {\n    await new Promise(resolve => setTimeout(resolve, 100));\n  }\n}\n\nconst pool = new ConnectionPool(10, () => createDbConnection());\nconst conn = await pool.acquire();\nawait conn.query('SELECT * FROM users');\npool.release(conn);"
+[
+  {
+    "id": "connection-pool",
+    "name": "Connection Pool",
+    "category": "Data Access",
+    "description": "Maintains cache of database connections to improve performance and resource utilization",
+    "when_to_use": "High-traffic applications\nPerformance optimization\nResource management",
+    "benefits": "Performance improvement\nResource efficiency\nConnection reuse",
+    "drawbacks": "Configuration complexity\nMemory overhead\nConnection leaks",
+    "use_cases": "Web applications\nEnterprise systems\nHigh-concurrency applications",
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "performance",
+      "pooling"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Connection Pool: reuse database connections\nclass ConnectionPool {\n  private available: Connection[] = [];\n  private inUse: Set<Connection> = new Set();\n  \n  constructor(\n    private maxSize: number,\n    private createConnection: () => Connection\n  ) {}\n  \n  async acquire(): Promise<Connection> {\n    if (this.available.length > 0) {\n      const conn = this.available.pop()!;\n      this.inUse.add(conn);\n      return conn;\n    }\n    \n    if (this.inUse.size < this.maxSize) {\n      const conn = this.createConnection();\n      this.inUse.add(conn);\n      return conn;\n    }\n    \n    await this.waitForAvailableConnection();\n    return this.acquire();\n  }\n  \n  release(conn: Connection) {\n    this.inUse.delete(conn);\n    this.available.push(conn);\n  }\n  \n  private async waitForAvailableConnection() {\n    await new Promise(resolve => setTimeout(resolve, 100));\n  }\n}\n\nconst pool = new ConnectionPool(10, () => createDbConnection());\nconst conn = await pool.acquire();\nawait conn.query('SELECT * FROM users');\npool.release(conn);"
+      }
     }
   }
-}
+]

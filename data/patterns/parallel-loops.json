@@ -1,22 +1,24 @@
-{
-  "id": "parallel-loops",
-  "name": "Parallel Loops",
-  "category": "Concurrency",
-  "description": "Executes loop iterations concurrently across multiple threads",
-  "when_to_use": "Independent iterations\nCPU-intensive loops\nData parallelism",
-  "benefits": "Performance improvement\nSimple implementation\nScalability",
-  "drawbacks": "Load balancing\nOverhead for small loops\nShared data issues",
-  "use_cases": "Array processing\nMathematical computations\nImage processing",
-  "complexity": "Low",
-  "tags": [
-    "concurrency",
-    "loops",
-    "parallelism"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Parallel Loops: iterate collections concurrently\nclass ParallelLoop {\n  static async forEach<T>(\n    items: T[],\n    callback: (item: T, index: number) => Promise<void>,\n    concurrency = Infinity\n  ): Promise<void> {\n    const chunks = this.chunk(items, concurrency);\n    \n    for (const chunk of chunks) {\n      await Promise.all(\n        chunk.map((item, idx) => callback(item, idx))\n      );\n    }\n  }\n  \n  static async map<T, R>(\n    items: T[],\n    callback: (item: T, index: number) => Promise<R>,\n    concurrency = Infinity\n  ): Promise<R[]> {\n    const results: R[] = [];\n    const chunks = this.chunk(items, concurrency);\n    \n    for (const chunk of chunks) {\n      const chunkResults = await Promise.all(\n        chunk.map((item, idx) => callback(item, idx))\n      );\n      results.push(...chunkResults);\n    }\n    \n    return results;\n  }\n  \n  private static chunk<T>(array: T[], size: number): T[][] {\n    if (size === Infinity) return [array];\n    const chunks: T[][] = [];\n    for (let i = 0; i < array.length; i += size) {\n      chunks.push(array.slice(i, i + size));\n    }\n    return chunks;\n  }\n}\n\n// Usage\nconst urls = Array.from({ length: 100 }, (_, i) => \n  'https://api.example.com/item/' + i\n);\n\nconst results = await ParallelLoop.map(\n  urls,\n  async (url) => {\n    const response = await fetch(url);\n    return response.json();\n  },\n  10 // Process 10 at a time\n);"
+[
+  {
+    "id": "parallel-loops",
+    "name": "Parallel Loops",
+    "category": "Concurrency",
+    "description": "Executes loop iterations concurrently across multiple threads",
+    "when_to_use": "Independent iterations\nCPU-intensive loops\nData parallelism",
+    "benefits": "Performance improvement\nSimple implementation\nScalability",
+    "drawbacks": "Load balancing\nOverhead for small loops\nShared data issues",
+    "use_cases": "Array processing\nMathematical computations\nImage processing",
+    "complexity": "Low",
+    "tags": [
+      "concurrency",
+      "loops",
+      "parallelism"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Parallel Loops: iterate collections concurrently\nclass ParallelLoop {\n  static async forEach<T>(\n    items: T[],\n    callback: (item: T, index: number) => Promise<void>,\n    concurrency = Infinity\n  ): Promise<void> {\n    const chunks = this.chunk(items, concurrency);\n    \n    for (const chunk of chunks) {\n      await Promise.all(\n        chunk.map((item, idx) => callback(item, idx))\n      );\n    }\n  }\n  \n  static async map<T, R>(\n    items: T[],\n    callback: (item: T, index: number) => Promise<R>,\n    concurrency = Infinity\n  ): Promise<R[]> {\n    const results: R[] = [];\n    const chunks = this.chunk(items, concurrency);\n    \n    for (const chunk of chunks) {\n      const chunkResults = await Promise.all(\n        chunk.map((item, idx) => callback(item, idx))\n      );\n      results.push(...chunkResults);\n    }\n    \n    return results;\n  }\n  \n  private static chunk<T>(array: T[], size: number): T[][] {\n    if (size === Infinity) return [array];\n    const chunks: T[][] = [];\n    for (let i = 0; i < array.length; i += size) {\n      chunks.push(array.slice(i, i + size));\n    }\n    return chunks;\n  }\n}\n\n// Usage\nconst urls = Array.from({ length: 100 }, (_, i) => \n  'https://api.example.com/item/' + i\n);\n\nconst results = await ParallelLoop.map(\n  urls,\n  async (url) => {\n    const response = await fetch(url);\n    return response.json();\n  },\n  10 // Process 10 at a time\n);"
+      }
     }
   }
-}
+]

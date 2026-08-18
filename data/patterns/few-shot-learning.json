@@ -1,22 +1,24 @@
-{
-  "id": "few-shot-learning",
-  "name": "Few-Shot Learning",
-  "category": "AI/ML",
-  "description": "Provides examples in prompts to guide AI behavior and output format",
-  "when_to_use": "Specific output format\nConsistent behavior\nTask demonstration",
-  "benefits": "Consistent outputs\nQuick adaptation\nNo fine-tuning needed\nFormat control",
-  "drawbacks": "Context length limits\nExample selection critical\nToken usage",
-  "use_cases": "Data formatting\nClassification\nStyle matching",
-  "complexity": "Low",
-  "tags": [
-    "few-shot",
-    "examples",
-    "prompting"
-  ],
-  "examples": {
-    "python": {
-      "language": "python",
-      "code": "# Few-Shot Learning: learn from examples\n\nclass FewShotClassifier:\n    def __init__(self, llm):\n        self.llm = llm\n        self.examples = []\n    \n    def add_example(self, text: str, label: str):\n        self.examples.append((text, label))\n    \n    def classify(self, text: str):\n        # Build few-shot prompt with examples\n        prompt = \"Classify the following text:\\n\\n\"\n        \n        for example_text, example_label in self.examples:\n            prompt += f\"Text: {example_text}\\n\"\n            prompt += f\"Label: {example_label}\\n\\n\"\n        \n        prompt += f\"Text: {text}\\n\"\n        prompt += \"Label:\"\n        \n        return self.llm.generate(prompt).strip()\n\n# Usage: classify with minimal training data\nclassifier = FewShotClassifier(llm)\nclassifier.add_example(\"This movie was great!\", \"positive\")\nclassifier.add_example(\"Terrible experience\", \"negative\")\nclassifier.add_example(\"It was okay\", \"neutral\")\n\nresult = classifier.classify(\"I loved this product!\")\nprint(result)  # \"positive\""
+[
+  {
+    "id": "few-shot-learning",
+    "name": "Few-Shot Learning",
+    "category": "AI/ML",
+    "description": "Provides examples in prompts to guide AI behavior and output format",
+    "when_to_use": "Specific output format\nConsistent behavior\nTask demonstration",
+    "benefits": "Consistent outputs\nQuick adaptation\nNo fine-tuning needed\nFormat control",
+    "drawbacks": "Context length limits\nExample selection critical\nToken usage",
+    "use_cases": "Data formatting\nClassification\nStyle matching",
+    "complexity": "Low",
+    "tags": [
+      "few-shot",
+      "examples",
+      "prompting"
+    ],
+    "examples": {
+      "python": {
+        "language": "python",
+        "code": "# Few-Shot Learning: learn from examples\n\nclass FewShotClassifier:\n    def __init__(self, llm):\n        self.llm = llm\n        self.examples = []\n    \n    def add_example(self, text: str, label: str):\n        self.examples.append((text, label))\n    \n    def classify(self, text: str):\n        # Build few-shot prompt with examples\n        prompt = \"Classify the following text:\\n\\n\"\n        \n        for example_text, example_label in self.examples:\n            prompt += f\"Text: {example_text}\\n\"\n            prompt += f\"Label: {example_label}\\n\\n\"\n        \n        prompt += f\"Text: {text}\\n\"\n        prompt += \"Label:\"\n        \n        return self.llm.generate(prompt).strip()\n\n# Usage: classify with minimal training data\nclassifier = FewShotClassifier(llm)\nclassifier.add_example(\"This movie was great!\", \"positive\")\nclassifier.add_example(\"Terrible experience\", \"negative\")\nclassifier.add_example(\"It was okay\", \"neutral\")\n\nresult = classifier.classify(\"I loved this product!\")\nprint(result)  # \"positive\""
+      }
     }
   }
-}
+]

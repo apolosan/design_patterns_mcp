@@ -1,16 +1,18 @@
-{
-  "id": "transformer-pattern",
-  "name": "Transformer Pattern",
-  "category": "AI/ML",
-  "description": "Architecture based entirely on attention mechanisms for sequence processing",
-  "when_to_use": "Language modeling\nSequence-to-sequence tasks\nLarge-scale AI",
-  "benefits": "Parallelizable\nLong-range dependencies\nTransfer learning\nScalability",
-  "drawbacks": "Computational requirements\nMemory intensive\nTraining complexity",
-  "use_cases": "Language models\nMachine translation\nText generation",
-  "complexity": "Very High",
-  "tags": [
-    "transformer",
-    "attention",
-    "sequence"
-  ]
-}
+[
+  {
+    "id": "transformer-pattern",
+    "name": "Transformer Pattern",
+    "category": "AI/ML",
+    "description": "Architecture based entirely on attention mechanisms for sequence processing",
+    "when_to_use": "Language modeling\nSequence-to-sequence tasks\nLarge-scale AI",
+    "benefits": "Parallelizable\nLong-range dependencies\nTransfer learning\nScalability",
+    "drawbacks": "Computational requirements\nMemory intensive\nTraining complexity",
+    "use_cases": "Language models\nMachine translation\nText generation",
+    "complexity": "Very High",
+    "tags": [
+      "transformer",
+      "attention",
+      "sequence"
+    ]
+  }
+]

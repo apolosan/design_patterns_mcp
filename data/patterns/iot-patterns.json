@@ -1,160 +1,418 @@
-{
-  "patterns": [
-    {
-      "id": "device-shadow",
-      "name": "Device Shadow Pattern",
-      "category": "IoT",
-      "description": "Maintains virtual representation of device state in the cloud for offline devices",
-      "when_to_use": ["Intermittent connectivity", "Device state management", "Offline operations"],
-      "benefits": ["Offline capability", "State synchronization", "Reliable device management"],
-      "drawbacks": ["State consistency", "Storage overhead", "Synchronization complexity"],
-      "use_cases": ["Smart home devices", "Industrial sensors", "Mobile IoT devices"],
-      "complexity": "Medium",
-      "tags": ["iot", "shadow", "state"]
-    },
-    {
-      "id": "telemetry-pattern",
-      "name": "Telemetry Pattern",
-      "category": "IoT",
-      "description": "Collects and transmits device data to remote monitoring systems",
-      "when_to_use": ["Remote monitoring", "Data collection", "System diagnostics"],
-      "benefits": ["Remote monitoring", "Data analytics", "Predictive maintenance"],
-      "drawbacks": ["Bandwidth usage", "Data volume", "Privacy concerns"],
-      "use_cases": ["Sensor networks", "Vehicle tracking", "Health monitoring"],
-      "complexity": "Medium",
-      "tags": ["iot", "telemetry", "monitoring"]
-    },
-    {
-      "id": "command-control-iot",
-      "name": "Command and Control",
-      "category": "IoT",
-      "description": "Sends commands to IoT devices and receives acknowledgments for remote control",
-      "when_to_use": ["Device control", "Remote operations", "Automation systems"],
-      "benefits": ["Remote control", "Automation", "Centralized management"],
-      "drawbacks": ["Latency issues", "Command reliability", "Security risks"],
-      "use_cases": ["Smart thermostats", "Industrial automation", "Security systems"],
-      "complexity": "Medium",
-      "tags": ["iot", "command", "control"]
-    },
-    {
-      "id": "edge-processing",
-      "name": "Edge Processing Pattern",
-      "category": "IoT",
-      "description": "Processes data at edge devices to reduce latency and bandwidth usage",
-      "when_to_use": ["Real-time processing", "Bandwidth constraints", "Low latency requirements"],
-      "benefits": ["Reduced latency", "Bandwidth savings", "Local processing"],
-      "drawbacks": ["Limited processing power", "Complex deployment", "Edge management"],
-      "use_cases": ["Real-time analytics", "Video processing", "Autonomous vehicles"],
-      "complexity": "High",
-      "tags": ["iot", "edge", "processing"]
-    },
-    {
-      "id": "device-gateway",
-      "name": "Device Gateway Pattern",
-      "category": "IoT",
-      "description": "Intermediary that connects devices to cloud services and handles protocol translation",
-      "when_to_use": ["Protocol translation", "Device aggregation", "Legacy device integration"],
-      "benefits": ["Protocol abstraction", "Device aggregation", "Legacy support"],
-      "drawbacks": ["Single point of failure", "Gateway complexity", "Performance bottleneck"],
-      "use_cases": ["Smart home hubs", "Industrial gateways", "Protocol converters"],
-      "complexity": "High",
-      "tags": ["iot", "gateway", "protocol"]
-    },
-    {
-      "id": "pub-sub-iot",
-      "name": "Publish-Subscribe (IoT)",
-      "category": "IoT",
-      "description": "Message pattern for decoupled communication between IoT devices and services",
-      "when_to_use": ["Event-driven systems", "Device communication", "Scalable messaging"],
-      "benefits": ["Decoupled communication", "Scalability", "Event-driven architecture"],
-      "drawbacks": ["Message delivery", "Broker dependency", "Network overhead"],
-      "use_cases": ["Sensor networks", "Smart cities", "Industrial IoT"],
-      "complexity": "Medium",
-      "tags": ["iot", "pubsub", "messaging"]
-    },
-    {
-      "id": "device-registry",
-      "name": "Device Registry Pattern",
-      "category": "IoT",
-      "description": "Maintains inventory of all devices with their metadata and capabilities",
-      "when_to_use": ["Device management", "Asset tracking", "Configuration management"],
-      "benefits": ["Centralized inventory", "Device discovery", "Metadata management"],
-      "drawbacks": ["Registry maintenance", "Synchronization", "Scale challenges"],
-      "use_cases": ["Fleet management", "Asset tracking", "Device provisioning"],
-      "complexity": "Medium",
-      "tags": ["iot", "registry", "management"]
-    },
-    {
-      "id": "digital-twin",
-      "name": "Digital Twin Pattern",
-      "category": "IoT",
-      "description": "Digital replica of physical device that mirrors its state and behavior",
-      "when_to_use": ["Simulation", "Predictive maintenance", "System optimization"],
-      "benefits": ["Simulation capability", "Predictive analytics", "System optimization"],
-      "drawbacks": ["Model complexity", "Synchronization overhead", "Computational requirements"],
-      "use_cases": ["Manufacturing", "Smart buildings", "Predictive maintenance"],
-      "complexity": "High",
-      "tags": ["iot", "twin", "simulation"]
-    },
-    {
-      "id": "offline-first-iot",
-      "name": "Offline-First (IoT)",
-      "category": "IoT",
-      "description": "Devices operate independently when disconnected and sync when connectivity returns",
-      "when_to_use": ["Unreliable connectivity", "Remote locations", "Critical operations"],
-      "benefits": ["Connectivity independence", "Reliability", "Local operation"],
-      "drawbacks": ["Data synchronization", "Conflict resolution", "Storage requirements"],
-      "use_cases": ["Remote sensors", "Mobile devices", "Field equipment"],
-      "complexity": "High",
-      "tags": ["iot", "offline", "reliability"]
-    },
-    {
-      "id": "device-lifecycle",
-      "name": "Device Lifecycle Management",
-      "category": "IoT",
-      "description": "Manages complete lifecycle of IoT devices from provisioning to decommissioning",
-      "when_to_use": ["Device management", "Fleet operations", "Security compliance"],
-      "benefits": ["Complete lifecycle control", "Security management", "Operational efficiency"],
-      "drawbacks": ["Management complexity", "Process overhead", "Coordination challenges"],
-      "use_cases": ["Enterprise IoT", "Smart city infrastructure", "Industrial systems"],
-      "complexity": "High",
-      "tags": ["iot", "lifecycle", "management"]
-    },
-    {
-      "id": "time-series-iot",
-      "name": "Time Series Pattern (IoT)",
-      "category": "IoT",
-      "description": "Optimizes storage and querying of time-stamped IoT sensor data",
-      "when_to_use": ["Sensor data", "Historical analysis", "Time-based queries"],
-      "benefits": ["Efficient storage", "Time-based queries", "Analytics support"],
-      "drawbacks": ["Storage growth", "Query complexity", "Data retention"],
-      "use_cases": ["Environmental monitoring", "Performance metrics", "Trend analysis"],
-      "complexity": "Medium",
-      "tags": ["iot", "time-series", "data"]
-    },
-    {
-      "id": "secure-provisioning",
-      "name": "Secure Provisioning Pattern",
-      "category": "IoT",
-      "description": "Securely onboards new devices with proper authentication and authorization",
-      "when_to_use": ["Device security", "Authentication", "Trusted onboarding"],
-      "benefits": ["Security enforcement", "Trusted devices", "Authentication"],
-      "drawbacks": ["Provisioning complexity", "Certificate management", "Key distribution"],
-      "use_cases": ["Enterprise IoT", "Smart home setup", "Industrial security"],
-      "complexity": "High",
-      "tags": ["iot", "security", "provisioning"]
-    },
-    {
-      "id": "event-sourcing-iot",
-      "name": "Event Sourcing (IoT)",
-      "category": "IoT",
-      "description": "Stores all IoT device events as immutable log for replay and analysis",
-      "when_to_use": ["Audit trails", "Event replay", "Historical analysis"],
-      "benefits": ["Complete history", "Event replay", "Audit capability"],
-      "drawbacks": ["Storage requirements", "Query complexity", "Performance overhead"],
-      "use_cases": ["Compliance systems", "Forensic analysis", "System debugging"],
-      "complexity": "High",
-      "tags": ["iot", "events", "sourcing"]
-    }
-  ]
-}
+[
+  {
+    "id": "device-shadow",
+    "name": "Device Shadow Pattern",
+    "category": "IoT",
+    "description": "Maintains virtual representation of device state in the cloud for offline devices",
+    "when_to_use": [
+      "Intermittent connectivity",
+      "Device state management",
+      "Offline operations"
+    ],
+    "benefits": [
+      "Offline capability",
+      "State synchronization",
+      "Reliable device management"
+    ],
+    "drawbacks": [
+      "State consistency",
+      "Storage overhead",
+      "Synchronization complexity"
+    ],
+    "use_cases": [
+      "Smart home devices",
+      "Industrial sensors",
+      "Mobile IoT devices"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "shadow",
+      "state"
+    ]
+  },
+  {
+    "id": "telemetry-pattern",
+    "name": "Telemetry Pattern",
+    "category": "IoT",
+    "description": "Collects and transmits device data to remote monitoring systems",
+    "when_to_use": [
+      "Remote monitoring",
+      "Data collection",
+      "System diagnostics"
+    ],
+    "benefits": [
+      "Remote monitoring",
+      "Data analytics",
+      "Predictive maintenance"
+    ],
+    "drawbacks": [
+      "Bandwidth usage",
+      "Data volume",
+      "Privacy concerns"
+    ],
+    "use_cases": [
+      "Sensor networks",
+      "Vehicle tracking",
+      "Health monitoring"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "telemetry",
+      "monitoring"
+    ]
+  },
+  {
+    "id": "command-control-iot",
+    "name": "Command and Control",
+    "category": "IoT",
+    "description": "Sends commands to IoT devices and receives acknowledgments for remote control",
+    "when_to_use": [
+      "Device control",
+      "Remote operations",
+      "Automation systems"
+    ],
+    "benefits": [
+      "Remote control",
+      "Automation",
+      "Centralized management"
+    ],
+    "drawbacks": [
+      "Latency issues",
+      "Command reliability",
+      "Security risks"
+    ],
+    "use_cases": [
+      "Smart thermostats",
+      "Industrial automation",
+      "Security systems"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "command",
+      "control"
+    ]
+  },
+  {
+    "id": "edge-processing",
+    "name": "Edge Processing Pattern",
+    "category": "IoT",
+    "description": "Processes data at edge devices to reduce latency and bandwidth usage",
+    "when_to_use": [
+      "Real-time processing",
+      "Bandwidth constraints",
+      "Low latency requirements"
+    ],
+    "benefits": [
+      "Reduced latency",
+      "Bandwidth savings",
+      "Local processing"
+    ],
+    "drawbacks": [
+      "Limited processing power",
+      "Complex deployment",
+      "Edge management"
+    ],
+    "use_cases": [
+      "Real-time analytics",
+      "Video processing",
+      "Autonomous vehicles"
+    ],
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "edge",
+      "processing"
+    ]
+  },
+  {
+    "id": "device-gateway",
+    "name": "Device Gateway Pattern",
+    "category": "IoT",
+    "description": "Intermediary that connects devices to cloud services and handles protocol translation",
+    "when_to_use": [
+      "Protocol translation",
+      "Device aggregation",
+      "Legacy device integration"
+    ],
+    "benefits": [
+      "Protocol abstraction",
+      "Device aggregation",
+      "Legacy support"
+    ],
+    "drawbacks": [
+      "Single point of failure",
+      "Gateway complexity",
+      "Performance bottleneck"
+    ],
+    "use_cases": [
+      "Smart home hubs",
+      "Industrial gateways",
+      "Protocol converters"
+    ],
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "gateway",
+      "protocol"
+    ]
+  },
+  {
+    "id": "pub-sub-iot",
+    "name": "Publish-Subscribe (IoT)",
+    "category": "IoT",
+    "description": "Message pattern for decoupled communication between IoT devices and services",
+    "when_to_use": [
+      "Event-driven systems",
+      "Device communication",
+      "Scalable messaging"
+    ],
+    "benefits": [
+      "Decoupled communication",
+      "Scalability",
+      "Event-driven architecture"
+    ],
+    "drawbacks": [
+      "Message delivery",
+      "Broker dependency",
+      "Network overhead"
+    ],
+    "use_cases": [
+      "Sensor networks",
+      "Smart cities",
+      "Industrial IoT"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "pubsub",
+      "messaging"
+    ]
+  },
+  {
+    "id": "device-registry",
+    "name": "Device Registry Pattern",
+    "category": "IoT",
+    "description": "Maintains inventory of all devices with their metadata and capabilities",
+    "when_to_use": [
+      "Device management",
+      "Asset tracking",
+      "Configuration management"
+    ],
+    "benefits": [
+      "Centralized inventory",
+      "Device discovery",
+      "Metadata management"
+    ],
+    "drawbacks": [
+      "Registry maintenance",
+      "Synchronization",
+      "Scale challenges"
+    ],
+    "use_cases": [
+      "Fleet management",
+      "Asset tracking",
+      "Device provisioning"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "registry",
+      "management"
+    ]
+  },
+  {
+    "id": "digital-twin",
+    "name": "Digital Twin Pattern",
+    "category": "IoT",
+    "description": "Digital replica of physical device that mirrors its state and behavior",
+    "when_to_use": [
+      "Simulation",
+      "Predictive maintenance",
+      "System optimization"
+    ],
+    "benefits": [
+      "Simulation capability",
+      "Predictive analytics",
+      "System optimization"
+    ],
+    "drawbacks": [
+      "Model complexity",
+      "Synchronization overhead",
+      "Computational requirements"
+    ],
+    "use_cases": [
+      "Manufacturing",
+      "Smart buildings",
+      "Predictive maintenance"
+    ],
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "twin",
+      "simulation"
+    ]
+  },
+  {
+    "id": "offline-first-iot",
+    "name": "Offline-First (IoT)",
+    "category": "IoT",
+    "description": "Devices operate independently when disconnected and sync when connectivity returns",
+    "when_to_use": [
+      "Unreliable connectivity",
+      "Remote locations",
+      "Critical operations"
+    ],
+    "benefits": [
+      "Connectivity independence",
+      "Reliability",
+      "Local operation"
+    ],
+    "drawbacks": [
+      "Data synchronization",
+      "Conflict resolution",
+      "Storage requirements"
+    ],
+    "use_cases": [
+      "Remote sensors",
+      "Mobile devices",
+      "Field equipment"
+    ],
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "offline",
+      "reliability"
+    ]
+  },
+  {
+    "id": "device-lifecycle",
+    "name": "Device Lifecycle Management",
+    "category": "IoT",
+    "description": "Manages complete lifecycle of IoT devices from provisioning to decommissioning",
+    "when_to_use": [
+      "Device management",
+      "Fleet operations",
+      "Security compliance"
+    ],
+    "benefits": [
+      "Complete lifecycle control",
+      "Security management",
+      "Operational efficiency"
+    ],
+    "drawbacks": [
+      "Management complexity",
+      "Process overhead",
+      "Coordination challenges"
+    ],
+    "use_cases": [
+      "Enterprise IoT",
+      "Smart city infrastructure",
+      "Industrial systems"
+    ],
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "lifecycle",
+      "management"
+    ]
+  },
+  {
+    "id": "time-series-iot",
+    "name": "Time Series Pattern (IoT)",
+    "category": "IoT",
+    "description": "Optimizes storage and querying of time-stamped IoT sensor data",
+    "when_to_use": [
+      "Sensor data",
+      "Historical analysis",
+      "Time-based queries"
+    ],
+    "benefits": [
+      "Efficient storage",
+      "Time-based queries",
+      "Analytics support"
+    ],
+    "drawbacks": [
+      "Storage growth",
+      "Query complexity",
+      "Data retention"
+    ],
+    "use_cases": [
+      "Environmental monitoring",
+      "Performance metrics",
+      "Trend analysis"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "time-series",
+      "data"
+    ]
+  },
+  {
+    "id": "secure-provisioning",
+    "name": "Secure Provisioning Pattern",
+    "category": "IoT",
+    "description": "Securely onboards new devices with proper authentication and authorization",
+    "when_to_use": [
+      "Device security",
+      "Authentication",
+      "Trusted onboarding"
+    ],
+    "benefits": [
+      "Security enforcement",
+      "Trusted devices",
+      "Authentication"
+    ],
+    "drawbacks": [
+      "Provisioning complexity",
+      "Certificate management",
+      "Key distribution"
+    ],
+    "use_cases": [
+      "Enterprise IoT",
+      "Smart home setup",
+      "Industrial security"
+    ],
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "security",
+      "provisioning"
+    ]
+  },
+  {
+    "id": "event-sourcing-iot",
+    "name": "Event Sourcing (IoT)",
+    "category": "IoT",
+    "description": "Stores all IoT device events as immutable log for replay and analysis",
+    "when_to_use": [
+      "Audit trails",
+      "Event replay",
+      "Historical analysis"
+    ],
+    "benefits": [
+      "Complete history",
+      "Event replay",
+      "Audit capability"
+    ],
+    "drawbacks": [
+      "Storage requirements",
+      "Query complexity",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "Compliance systems",
+      "Forensic analysis",
+      "System debugging"
+    ],
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "events",
+      "sourcing"
+    ]
+  }
+]

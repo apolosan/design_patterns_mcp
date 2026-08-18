@@ -1,16 +1,18 @@
-{
-  "id": "telemetry-pattern",
-  "name": "Telemetry Pattern",
-  "category": "IoT",
-  "description": "Collects and transmits device data to remote monitoring systems",
-  "when_to_use": "Remote monitoring\nData collection\nSystem diagnostics",
-  "benefits": "Remote monitoring\nData analytics\nPredictive maintenance",
-  "drawbacks": "Bandwidth usage\nData volume\nPrivacy concerns",
-  "use_cases": "Sensor networks\nVehicle tracking\nHealth monitoring",
-  "complexity": "Medium",
-  "tags": [
-    "iot",
-    "telemetry",
-    "monitoring"
-  ]
-}
+[
+  {
+    "id": "telemetry-pattern",
+    "name": "Telemetry Pattern",
+    "category": "IoT",
+    "description": "Collects and transmits device data to remote monitoring systems",
+    "when_to_use": "Remote monitoring\nData collection\nSystem diagnostics",
+    "benefits": "Remote monitoring\nData analytics\nPredictive maintenance",
+    "drawbacks": "Bandwidth usage\nData volume\nPrivacy concerns",
+    "use_cases": "Sensor networks\nVehicle tracking\nHealth monitoring",
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "telemetry",
+      "monitoring"
+    ]
+  }
+]

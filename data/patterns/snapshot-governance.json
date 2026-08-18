@@ -1,24 +1,26 @@
-{
-  "id": "snapshot-governance",
-  "name": "Off-Chain Governance (Snapshot)",
-  "category": "DAO Governance",
-  "description": "Gas-free voting using off-chain signatures. Execution via multisig or timelock after vote passes.",
-  "when_to_use": "Large DAOs, frequent polls, gas-free participation",
-  "benefits": "Zero gas fees, faster voting, higher participation, flexible strategies",
-  "drawbacks": "Requires off-chain infrastructure, manual execution, centralization risk",
-  "use_cases": "Most major DAOs, signaling votes, community polls",
-  "complexity": "Medium",
-  "tags": [
-    "dao",
-    "governance",
-    "snapshot",
-    "off-chain",
-    "gas-free"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Snapshot is off-chain, but execution happens on-chain\ncontract SnapshotExecutor {\n    mapping(bytes32 => bool) public executed;\n    \n    function executeProposal(\n        bytes32 proposalId,\n        address[] calldata targets,\n        bytes[] calldata calldatas,\n        bytes calldata snapshotProof\n    ) external onlyMultisig {\n        require(!executed[proposalId]);\n        require(verifySnapshotResult(proposalId, snapshotProof));\n        \n        for (uint i = 0; i < targets.length; i++) {\n            targets[i].call(calldatas[i]);\n        }\n        executed[proposalId] = true;\n    }\n}"
+[
+  {
+    "id": "snapshot-governance",
+    "name": "Off-Chain Governance (Snapshot)",
+    "category": "DAO Governance",
+    "description": "Gas-free voting using off-chain signatures. Execution via multisig or timelock after vote passes.",
+    "when_to_use": "Large DAOs, frequent polls, gas-free participation",
+    "benefits": "Zero gas fees, faster voting, higher participation, flexible strategies",
+    "drawbacks": "Requires off-chain infrastructure, manual execution, centralization risk",
+    "use_cases": "Most major DAOs, signaling votes, community polls",
+    "complexity": "Medium",
+    "tags": [
+      "dao",
+      "governance",
+      "snapshot",
+      "off-chain",
+      "gas-free"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Snapshot is off-chain, but execution happens on-chain\ncontract SnapshotExecutor {\n    mapping(bytes32 => bool) public executed;\n    \n    function executeProposal(\n        bytes32 proposalId,\n        address[] calldata targets,\n        bytes[] calldata calldatas,\n        bytes calldata snapshotProof\n    ) external onlyMultisig {\n        require(!executed[proposalId]);\n        require(verifySnapshotResult(proposalId, snapshotProof));\n        \n        for (uint i = 0; i < targets.length; i++) {\n            targets[i].call(calldatas[i]);\n        }\n        executed[proposalId] = true;\n    }\n}"
+      }
     }
   }
-}
+]

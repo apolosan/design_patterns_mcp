@@ -1,184 +1,482 @@
-{
-  "patterns": [
-    {
-      "id": "authentication-pattern",
-      "name": "Authentication Pattern",
-      "category": "Security",
-      "description": "Verifies identity of users or systems before granting access",
-      "when_to_use": ["User verification", "System access control", "Identity management"],
-      "benefits": ["Identity verification", "Access control", "Security enforcement"],
-      "drawbacks": ["User experience impact", "Implementation complexity", "Credential management"],
-      "use_cases": ["User login systems", "API authentication", "System access"],
-      "complexity": "Medium",
-      "tags": ["security", "authentication", "identity"]
-    },
-    {
-      "id": "authorization-pattern",
-      "name": "Authorization Pattern",
-      "category": "Security",
-      "description": "Controls what authenticated users can access and what actions they can perform",
-      "when_to_use": ["Access control", "Permission management", "Resource protection"],
-      "benefits": ["Access control", "Permission granularity", "Resource protection"],
-      "drawbacks": ["Complex permission models", "Performance overhead", "Management complexity"],
-      "use_cases": ["Role-based access", "Resource permissions", "Action authorization"],
-      "complexity": "High",
-      "tags": ["security", "authorization", "access-control"]
-    },
-    {
-      "id": "secure-session-management",
-      "name": "Secure Session Management",
-      "category": "Security",
-      "description": "Manages user sessions securely with proper lifecycle and protection",
-      "when_to_use": ["Web applications", "Stateful interactions", "User context"],
-      "benefits": ["Session security", "State management", "User experience"],
-      "drawbacks": ["Memory overhead", "Scalability challenges", "Session hijacking risk"],
-      "use_cases": ["Web applications", "Shopping carts", "User preferences"],
-      "complexity": "Medium",
-      "tags": ["security", "session", "state"]
-    },
-    {
-      "id": "input-validation",
-      "name": "Input Validation Pattern",
-      "category": "Security",
-      "description": "Validates all input data to prevent injection attacks and data corruption",
-      "when_to_use": ["User input", "External data", "API parameters"],
-      "benefits": ["Injection prevention", "Data integrity", "System protection"],
-      "drawbacks": ["Performance overhead", "User experience impact", "Validation complexity"],
-      "use_cases": ["Form validation", "API inputs", "File uploads"],
-      "complexity": "Medium",
-      "tags": ["security", "validation", "input"]
-    },
-    {
-      "id": "output-encoding",
-      "name": "Output Encoding Pattern",
-      "category": "Security",
-      "description": "Encodes output data to prevent XSS and other output-based attacks",
-      "when_to_use": ["Web output", "Dynamic content", "User-generated content"],
-      "benefits": ["XSS prevention", "Output safety", "Content protection"],
-      "drawbacks": ["Performance overhead", "Encoding complexity", "Content formatting"],
-      "use_cases": ["Web pages", "API responses", "Email content"],
-      "complexity": "Medium",
-      "tags": ["security", "encoding", "output"]
-    },
-    {
-      "id": "secure-communication",
-      "name": "Secure Communication Pattern",
-      "category": "Security",
-      "description": "Encrypts data in transit to protect against eavesdropping and tampering",
-      "when_to_use": ["Network communication", "API calls", "Sensitive data"],
-      "benefits": ["Data protection", "Privacy", "Integrity"],
-      "drawbacks": ["Performance overhead", "Certificate management", "Configuration complexity"],
-      "use_cases": ["HTTPS connections", "API security", "Database connections"],
-      "complexity": "Medium",
-      "tags": ["security", "encryption", "communication"]
-    },
-    {
-      "id": "data-encryption",
-      "name": "Data Encryption Pattern",
-      "category": "Security",
-      "description": "Encrypts sensitive data at rest to protect against unauthorized access",
-      "when_to_use": ["Sensitive data storage", "Compliance requirements", "Data protection"],
-      "benefits": ["Data protection", "Compliance", "Privacy"],
-      "drawbacks": ["Performance overhead", "Key management", "Complexity"],
-      "use_cases": ["Database encryption", "File storage", "Backup protection"],
-      "complexity": "High",
-      "tags": ["security", "encryption", "storage"]
-    },
-    {
-      "id": "access-control-list",
-      "name": "Access Control List (ACL)",
-      "category": "Security",
-      "description": "Maintains list of permissions attached to objects specifying which users can access them",
-      "when_to_use": ["Fine-grained access control", "Resource protection", "Permission management"],
-      "benefits": ["Fine-grained control", "Flexible permissions", "Resource-specific access"],
-      "drawbacks": ["Management complexity", "Performance overhead", "Scale limitations"],
-      "use_cases": ["File systems", "Database rows", "API resources"],
-      "complexity": "High",
-      "tags": ["security", "acl", "permissions"]
-    },
-    {
-      "id": "role-based-access-control",
-      "name": "Role-Based Access Control (RBAC)",
-      "category": "Security",
-      "description": "Assigns permissions to roles and roles to users for simplified access management",
-      "when_to_use": ["User role management", "Permission simplification", "Enterprise systems"],
-      "benefits": ["Simplified management", "Role-based permissions", "Scalable access control"],
-      "drawbacks": ["Role proliferation", "Complexity in hierarchies", "Role conflicts"],
-      "use_cases": ["Enterprise applications", "User management", "System administration"],
-      "complexity": "Medium",
-      "tags": ["security", "rbac", "roles"]
-    },
-    {
-      "id": "security-token",
-      "name": "Security Token Pattern",
-      "category": "Security",
-      "description": "Uses tokens for secure authentication and authorization without exposing credentials",
-      "when_to_use": ["Stateless authentication", "API security", "Distributed systems"],
-      "benefits": ["Stateless authentication", "Token-based security", "Distributed access"],
-      "drawbacks": ["Token management", "Expiration handling", "Storage security"],
-      "use_cases": ["JWT tokens", "OAuth tokens", "API keys"],
-      "complexity": "Medium",
-      "tags": ["security", "tokens", "authentication"]
-    },
-    {
-      "id": "rate-limiting",
-      "name": "Rate Limiting Pattern",
-      "category": "Security",
-      "description": "Limits the rate of requests to prevent abuse and ensure system availability",
-      "when_to_use": ["API protection", "DDoS prevention", "Resource protection"],
-      "benefits": ["Abuse prevention", "System protection", "Fair usage"],
-      "drawbacks": ["User experience impact", "Implementation complexity", "False positives"],
-      "use_cases": ["API gateways", "Web services", "Resource-intensive operations"],
-      "complexity": "Medium",
-      "tags": ["security", "rate-limiting", "protection"]
-    },
-    {
-      "id": "audit-logging",
-      "name": "Audit Logging Pattern",
-      "category": "Security",
-      "description": "Records security-relevant events for monitoring, compliance, and forensics",
-      "when_to_use": ["Security monitoring", "Compliance requirements", "Forensic analysis"],
-      "benefits": ["Security monitoring", "Compliance", "Forensic capability"],
-      "drawbacks": ["Storage overhead", "Performance impact", "Log management"],
-      "use_cases": ["Security events", "Access logs", "Compliance tracking"],
-      "complexity": "Medium",
-      "tags": ["security", "logging", "audit"]
-    },
-    {
-      "id": "principle-of-least-privilege",
-      "name": "Principle of Least Privilege",
-      "category": "Security",
-      "description": "Grants minimum necessary permissions required to perform specific tasks",
-      "when_to_use": ["Access control design", "Security architecture", "Risk minimization"],
-      "benefits": ["Risk minimization", "Security enhancement", "Damage limitation"],
-      "drawbacks": ["Administrative overhead", "User experience impact", "Complex permission management"],
-      "use_cases": ["System access", "Application permissions", "Database access"],
-      "complexity": "Medium",
-      "tags": ["security", "privilege", "access-control"]
-    },
-    {
-      "id": "defense-in-depth",
-      "name": "Defense in Depth",
-      "category": "Security",
-      "description": "Implements multiple layers of security controls to protect against various threats",
-      "when_to_use": ["Comprehensive security", "Risk mitigation", "Critical systems"],
-      "benefits": ["Multiple protection layers", "Risk mitigation", "Comprehensive security"],
-      "drawbacks": ["Complexity", "Cost overhead", "Performance impact"],
-      "use_cases": ["Enterprise security", "Critical systems", "High-risk environments"],
-      "complexity": "High",
-      "tags": ["security", "defense", "layered"]
-    },
-    {
-      "id": "security-by-design",
-      "name": "Security by Design",
-      "category": "Security",
-      "description": "Integrates security considerations from the beginning of system design",
-      "when_to_use": ["New system development", "Security-critical applications", "Risk prevention"],
-      "benefits": ["Proactive security", "Cost effectiveness", "Comprehensive protection"],
-      "drawbacks": ["Design complexity", "Development overhead", "Skill requirements"],
-      "use_cases": ["System architecture", "Application development", "Security frameworks"],
-      "complexity": "High",
-      "tags": ["security", "design", "proactive"]
-    }
-  ]
-}
+[
+  {
+    "id": "authentication-pattern",
+    "name": "Authentication Pattern",
+    "category": "Security",
+    "description": "Verifies identity of users or systems before granting access",
+    "when_to_use": [
+      "User verification",
+      "System access control",
+      "Identity management"
+    ],
+    "benefits": [
+      "Identity verification",
+      "Access control",
+      "Security enforcement"
+    ],
+    "drawbacks": [
+      "User experience impact",
+      "Implementation complexity",
+      "Credential management"
+    ],
+    "use_cases": [
+      "User login systems",
+      "API authentication",
+      "System access"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "authentication",
+      "identity"
+    ]
+  },
+  {
+    "id": "authorization-pattern",
+    "name": "Authorization Pattern",
+    "category": "Security",
+    "description": "Controls what authenticated users can access and what actions they can perform",
+    "when_to_use": [
+      "Access control",
+      "Permission management",
+      "Resource protection"
+    ],
+    "benefits": [
+      "Access control",
+      "Permission granularity",
+      "Resource protection"
+    ],
+    "drawbacks": [
+      "Complex permission models",
+      "Performance overhead",
+      "Management complexity"
+    ],
+    "use_cases": [
+      "Role-based access",
+      "Resource permissions",
+      "Action authorization"
+    ],
+    "complexity": "High",
+    "tags": [
+      "security",
+      "authorization",
+      "access-control"
+    ]
+  },
+  {
+    "id": "secure-session-management",
+    "name": "Secure Session Management",
+    "category": "Security",
+    "description": "Manages user sessions securely with proper lifecycle and protection",
+    "when_to_use": [
+      "Web applications",
+      "Stateful interactions",
+      "User context"
+    ],
+    "benefits": [
+      "Session security",
+      "State management",
+      "User experience"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "Scalability challenges",
+      "Session hijacking risk"
+    ],
+    "use_cases": [
+      "Web applications",
+      "Shopping carts",
+      "User preferences"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "session",
+      "state"
+    ]
+  },
+  {
+    "id": "input-validation",
+    "name": "Input Validation Pattern",
+    "category": "Security",
+    "description": "Validates all input data to prevent injection attacks and data corruption",
+    "when_to_use": [
+      "User input",
+      "External data",
+      "API parameters"
+    ],
+    "benefits": [
+      "Injection prevention",
+      "Data integrity",
+      "System protection"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "User experience impact",
+      "Validation complexity"
+    ],
+    "use_cases": [
+      "Form validation",
+      "API inputs",
+      "File uploads"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "validation",
+      "input"
+    ]
+  },
+  {
+    "id": "output-encoding",
+    "name": "Output Encoding Pattern",
+    "category": "Security",
+    "description": "Encodes output data to prevent XSS and other output-based attacks",
+    "when_to_use": [
+      "Web output",
+      "Dynamic content",
+      "User-generated content"
+    ],
+    "benefits": [
+      "XSS prevention",
+      "Output safety",
+      "Content protection"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Encoding complexity",
+      "Content formatting"
+    ],
+    "use_cases": [
+      "Web pages",
+      "API responses",
+      "Email content"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "encoding",
+      "output"
+    ]
+  },
+  {
+    "id": "secure-communication",
+    "name": "Secure Communication Pattern",
+    "category": "Security",
+    "description": "Encrypts data in transit to protect against eavesdropping and tampering",
+    "when_to_use": [
+      "Network communication",
+      "API calls",
+      "Sensitive data"
+    ],
+    "benefits": [
+      "Data protection",
+      "Privacy",
+      "Integrity"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Certificate management",
+      "Configuration complexity"
+    ],
+    "use_cases": [
+      "HTTPS connections",
+      "API security",
+      "Database connections"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "encryption",
+      "communication"
+    ]
+  },
+  {
+    "id": "data-encryption",
+    "name": "Data Encryption Pattern",
+    "category": "Security",
+    "description": "Encrypts sensitive data at rest to protect against unauthorized access",
+    "when_to_use": [
+      "Sensitive data storage",
+      "Compliance requirements",
+      "Data protection"
+    ],
+    "benefits": [
+      "Data protection",
+      "Compliance",
+      "Privacy"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Key management",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Database encryption",
+      "File storage",
+      "Backup protection"
+    ],
+    "complexity": "High",
+    "tags": [
+      "security",
+      "encryption",
+      "storage"
+    ]
+  },
+  {
+    "id": "access-control-list",
+    "name": "Access Control List (ACL)",
+    "category": "Security",
+    "description": "Maintains list of permissions attached to objects specifying which users can access them",
+    "when_to_use": [
+      "Fine-grained access control",
+      "Resource protection",
+      "Permission management"
+    ],
+    "benefits": [
+      "Fine-grained control",
+      "Flexible permissions",
+      "Resource-specific access"
+    ],
+    "drawbacks": [
+      "Management complexity",
+      "Performance overhead",
+      "Scale limitations"
+    ],
+    "use_cases": [
+      "File systems",
+      "Database rows",
+      "API resources"
+    ],
+    "complexity": "High",
+    "tags": [
+      "security",
+      "acl",
+      "permissions"
+    ]
+  },
+  {
+    "id": "role-based-access-control",
+    "name": "Role-Based Access Control (RBAC)",
+    "category": "Security",
+    "description": "Assigns permissions to roles and roles to users for simplified access management",
+    "when_to_use": [
+      "User role management",
+      "Permission simplification",
+      "Enterprise systems"
+    ],
+    "benefits": [
+      "Simplified management",
+      "Role-based permissions",
+      "Scalable access control"
+    ],
+    "drawbacks": [
+      "Role proliferation",
+      "Complexity in hierarchies",
+      "Role conflicts"
+    ],
+    "use_cases": [
+      "Enterprise applications",
+      "User management",
+      "System administration"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "rbac",
+      "roles"
+    ]
+  },
+  {
+    "id": "security-token",
+    "name": "Security Token Pattern",
+    "category": "Security",
+    "description": "Uses tokens for secure authentication and authorization without exposing credentials",
+    "when_to_use": [
+      "Stateless authentication",
+      "API security",
+      "Distributed systems"
+    ],
+    "benefits": [
+      "Stateless authentication",
+      "Token-based security",
+      "Distributed access"
+    ],
+    "drawbacks": [
+      "Token management",
+      "Expiration handling",
+      "Storage security"
+    ],
+    "use_cases": [
+      "JWT tokens",
+      "OAuth tokens",
+      "API keys"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "tokens",
+      "authentication"
+    ]
+  },
+  {
+    "id": "rate-limiting",
+    "name": "Rate Limiting Pattern",
+    "category": "Security",
+    "description": "Limits the rate of requests to prevent abuse and ensure system availability",
+    "when_to_use": [
+      "API protection",
+      "DDoS prevention",
+      "Resource protection"
+    ],
+    "benefits": [
+      "Abuse prevention",
+      "System protection",
+      "Fair usage"
+    ],
+    "drawbacks": [
+      "User experience impact",
+      "Implementation complexity",
+      "False positives"
+    ],
+    "use_cases": [
+      "API gateways",
+      "Web services",
+      "Resource-intensive operations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "rate-limiting",
+      "protection"
+    ]
+  },
+  {
+    "id": "audit-logging",
+    "name": "Audit Logging Pattern",
+    "category": "Security",
+    "description": "Records security-relevant events for monitoring, compliance, and forensics",
+    "when_to_use": [
+      "Security monitoring",
+      "Compliance requirements",
+      "Forensic analysis"
+    ],
+    "benefits": [
+      "Security monitoring",
+      "Compliance",
+      "Forensic capability"
+    ],
+    "drawbacks": [
+      "Storage overhead",
+      "Performance impact",
+      "Log management"
+    ],
+    "use_cases": [
+      "Security events",
+      "Access logs",
+      "Compliance tracking"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "logging",
+      "audit"
+    ]
+  },
+  {
+    "id": "principle-of-least-privilege",
+    "name": "Principle of Least Privilege",
+    "category": "Security",
+    "description": "Grants minimum necessary permissions required to perform specific tasks",
+    "when_to_use": [
+      "Access control design",
+      "Security architecture",
+      "Risk minimization"
+    ],
+    "benefits": [
+      "Risk minimization",
+      "Security enhancement",
+      "Damage limitation"
+    ],
+    "drawbacks": [
+      "Administrative overhead",
+      "User experience impact",
+      "Complex permission management"
+    ],
+    "use_cases": [
+      "System access",
+      "Application permissions",
+      "Database access"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "privilege",
+      "access-control"
+    ]
+  },
+  {
+    "id": "defense-in-depth",
+    "name": "Defense in Depth",
+    "category": "Security",
+    "description": "Implements multiple layers of security controls to protect against various threats",
+    "when_to_use": [
+      "Comprehensive security",
+      "Risk mitigation",
+      "Critical systems"
+    ],
+    "benefits": [
+      "Multiple protection layers",
+      "Risk mitigation",
+      "Comprehensive security"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Cost overhead",
+      "Performance impact"
+    ],
+    "use_cases": [
+      "Enterprise security",
+      "Critical systems",
+      "High-risk environments"
+    ],
+    "complexity": "High",
+    "tags": [
+      "security",
+      "defense",
+      "layered"
+    ]
+  },
+  {
+    "id": "security-by-design",
+    "name": "Security by Design",
+    "category": "Security",
+    "description": "Integrates security considerations from the beginning of system design",
+    "when_to_use": [
+      "New system development",
+      "Security-critical applications",
+      "Risk prevention"
+    ],
+    "benefits": [
+      "Proactive security",
+      "Cost effectiveness",
+      "Comprehensive protection"
+    ],
+    "drawbacks": [
+      "Design complexity",
+      "Development overhead",
+      "Skill requirements"
+    ],
+    "use_cases": [
+      "System architecture",
+      "Application development",
+      "Security frameworks"
+    ],
+    "complexity": "High",
+    "tags": [
+      "security",
+      "design",
+      "proactive"
+    ]
+  }
+]

@@ -1,39 +1,54 @@
-{
-  "id": "single-runner",
-  "name": "Single Runner",
-  "category": "Data Engineering",
-  "description": "Executes a pipeline with strict single-instance semantics, ensuring only one runner processes a given record or job at a time. Prevents duplicate side effects when multiple runners might otherwise pick up the same work.",
-  "when_to_use": [
-    "Work items must be processed exactly once per attempt",
-    "Multiple schedulers compete for jobs",
-    "Side effects (charges, emails) cannot tolerate duplicates"
-  ],
-  "benefits": [
-    "Exactly-once attempt semantics",
-    "Predictable side effects",
-    "Clean coordination model"
-  ],
-  "drawbacks": [
-    "Throughput limited by single runner",
-    "Runner failure requires handover",
-    "Coordination layer is a SPOF"
-  ],
-  "use_cases": [
-    "Cron-style scheduled jobs with lease locks",
-    "Kafka compacted log with consumer-group coordination",
-    "Database row-level locks for batch updates"
-  ],
-  "complexity": "Medium",
-  "tags": ["data-engineering", "concurrency", "leader", "exactly-once"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "async function withSingleRunnerLock(key: string, fn: () => Promise<void>) {\n  const lease = await kvStore.acquire(`runner:${key}`, { ttlMs: 60_000 });\n  if (!lease) throw new Error('another runner active');\n  try { await fn(); } finally { await lease.release(); }\n}",
-      "description": "Distributed lock wrapper."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "concurrent-runner", "type": "alternative-to", "strength": 0.8},
-    {"target_pattern_id": "idempotency", "type": "complements", "strength": 0.6}
-  ]
-}
+[
+  {
+    "id": "single-runner",
+    "name": "Single Runner",
+    "category": "Data Engineering",
+    "description": "Executes a pipeline with strict single-instance semantics, ensuring only one runner processes a given record or job at a time. Prevents duplicate side effects when multiple runners might otherwise pick up the same work.",
+    "when_to_use": [
+      "Work items must be processed exactly once per attempt",
+      "Multiple schedulers compete for jobs",
+      "Side effects (charges, emails) cannot tolerate duplicates"
+    ],
+    "benefits": [
+      "Exactly-once attempt semantics",
+      "Predictable side effects",
+      "Clean coordination model"
+    ],
+    "drawbacks": [
+      "Throughput limited by single runner",
+      "Runner failure requires handover",
+      "Coordination layer is a SPOF"
+    ],
+    "use_cases": [
+      "Cron-style scheduled jobs with lease locks",
+      "Kafka compacted log with consumer-group coordination",
+      "Database row-level locks for batch updates"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-engineering",
+      "concurrency",
+      "leader",
+      "exactly-once"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "async function withSingleRunnerLock(key: string, fn: () => Promise<void>) {\n  const lease = await kvStore.acquire(`runner:${key}`, { ttlMs: 60_000 });\n  if (!lease) throw new Error('another runner active');\n  try { await fn(); } finally { await lease.release(); }\n}",
+        "description": "Distributed lock wrapper."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "concurrent-runner",
+        "type": "alternative-to",
+        "strength": 0.8
+      },
+      {
+        "target_pattern_id": "idempotency",
+        "type": "complements",
+        "strength": 0.6
+      }
+    ]
+  }
+]

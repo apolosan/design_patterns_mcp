@@ -1,24 +1,26 @@
-{
-  "id": "eip4844-blob",
-  "name": "EIP-4844 Blob Storage",
-  "category": "Storage",
-  "description": "Proto-danksharding blob transactions for L2 data availability. Temporary (~18 days) but ultra-cheap.",
-  "when_to_use": "L2 rollup data, temporary data, cost-sensitive applications",
-  "benefits": "10-100x cheaper than calldata, dedicated blob space",
-  "drawbacks": "Temporary (~18 days), requires blob indexer, not accessible from EVM",
-  "use_cases": "Optimistic/ZK rollups, data availability layers",
-  "complexity": "High",
-  "tags": [
-    "storage",
-    "eip4844",
-    "blobs",
-    "layer2",
-    "data-availability"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Commit to blob hash (actual blobs in separate space)\nfunction commitBlobBatch(bytes32 blobHash, bytes calldata batchData) external {\n    require(blobHash == keccak256(batchData));\n    emit BatchCommitted(batchNum++, blobHash);\n    // Blob data accessible via blob transactions, not EVM\n}"
+[
+  {
+    "id": "eip4844-blob",
+    "name": "EIP-4844 Blob Storage",
+    "category": "Storage",
+    "description": "Proto-danksharding blob transactions for L2 data availability. Temporary (~18 days) but ultra-cheap.",
+    "when_to_use": "L2 rollup data, temporary data, cost-sensitive applications",
+    "benefits": "10-100x cheaper than calldata, dedicated blob space",
+    "drawbacks": "Temporary (~18 days), requires blob indexer, not accessible from EVM",
+    "use_cases": "Optimistic/ZK rollups, data availability layers",
+    "complexity": "High",
+    "tags": [
+      "storage",
+      "eip4844",
+      "blobs",
+      "layer2",
+      "data-availability"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Commit to blob hash (actual blobs in separate space)\nfunction commitBlobBatch(bytes32 blobHash, bytes calldata batchData) external {\n    require(blobHash == keccak256(batchData));\n    emit BatchCommitted(batchNum++, blobHash);\n    // Blob data accessible via blob transactions, not EVM\n}"
+      }
     }
   }
-}
+]

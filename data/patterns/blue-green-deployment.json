@@ -1,22 +1,24 @@
-{
-  "id": "blue-green-deployment",
-  "name": "Blue-Green Deployment",
-  "category": "Microservices",
-  "description": "Maintains two identical production environments for zero-downtime deployments",
-  "when_to_use": "Zero-downtime deployment\nQuick rollbacks\nProduction safety",
-  "benefits": "Zero downtime\nQuick rollback\nProduction testing",
-  "drawbacks": "Resource duplication\nCost overhead\nDatabase complexity",
-  "use_cases": "Critical services\nHigh availability systems\nSafe deployments",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "deployment",
-    "availability"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Blue-Green Deployment: zero-downtime deployments\nclass LoadBalancer {\n  private activeEnv: 'blue' | 'green' = 'blue';\n  private envs = {\n    blue: 'http://blue-env:3000',\n    green: 'http://green-env:3000'\n  };\n  \n  async route(request: Request): Promise<Response> {\n    const targetUrl = this.envs[this.activeEnv];\n    return fetch(targetUrl + request.url, {\n      method: request.method,\n      headers: request.headers\n    });\n  }\n  \n  async switchEnvironment() {\n    const newEnv = this.activeEnv === 'blue' ? 'green' : 'blue';\n    const healthy = await this.healthCheck(this.envs[newEnv]);\n    \n    if (healthy) {\n      console.log('Switching to ' + newEnv);\n      this.activeEnv = newEnv;\n      return true;\n    } else {\n      throw new Error('New environment is not healthy');\n    }\n  }\n  \n  async healthCheck(url: string): Promise<boolean> {\n    const response = await fetch(url + '/health');\n    return response.ok;\n  }\n}"
+[
+  {
+    "id": "blue-green-deployment",
+    "name": "Blue-Green Deployment",
+    "category": "Microservices",
+    "description": "Maintains two identical production environments for zero-downtime deployments",
+    "when_to_use": "Zero-downtime deployment\nQuick rollbacks\nProduction safety",
+    "benefits": "Zero downtime\nQuick rollback\nProduction testing",
+    "drawbacks": "Resource duplication\nCost overhead\nDatabase complexity",
+    "use_cases": "Critical services\nHigh availability systems\nSafe deployments",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "deployment",
+      "availability"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Blue-Green Deployment: zero-downtime deployments\nclass LoadBalancer {\n  private activeEnv: 'blue' | 'green' = 'blue';\n  private envs = {\n    blue: 'http://blue-env:3000',\n    green: 'http://green-env:3000'\n  };\n  \n  async route(request: Request): Promise<Response> {\n    const targetUrl = this.envs[this.activeEnv];\n    return fetch(targetUrl + request.url, {\n      method: request.method,\n      headers: request.headers\n    });\n  }\n  \n  async switchEnvironment() {\n    const newEnv = this.activeEnv === 'blue' ? 'green' : 'blue';\n    const healthy = await this.healthCheck(this.envs[newEnv]);\n    \n    if (healthy) {\n      console.log('Switching to ' + newEnv);\n      this.activeEnv = newEnv;\n      return true;\n    } else {\n      throw new Error('New environment is not healthy');\n    }\n  }\n  \n  async healthCheck(url: string): Promise<boolean> {\n    const response = await fetch(url + '/health');\n    return response.ok;\n  }\n}"
+      }
     }
   }
-}
+]

@@ -1,16 +1,18 @@
-{
-  "id": "transaction-script",
-  "name": "Transaction Script",
-  "category": "Enterprise",
-  "description": "Organizes business logic by procedures where each procedure handles a single request",
-  "when_to_use": "Simple business logic\nProcedural approach\nRapid development",
-  "benefits": "Simple to understand\nEasy to implement\nFast development",
-  "drawbacks": "Code duplication\nHard to maintain\nNo object modeling",
-  "use_cases": "Simple CRUD operations\nData processing scripts\nQuick prototypes",
-  "complexity": "Low",
-  "tags": [
-    "enterprise",
-    "domain-logic",
-    "procedural"
-  ]
-}
+[
+  {
+    "id": "transaction-script",
+    "name": "Transaction Script",
+    "category": "Enterprise",
+    "description": "Organizes business logic by procedures where each procedure handles a single request",
+    "when_to_use": "Simple business logic\nProcedural approach\nRapid development",
+    "benefits": "Simple to understand\nEasy to implement\nFast development",
+    "drawbacks": "Code duplication\nHard to maintain\nNo object modeling",
+    "use_cases": "Simple CRUD operations\nData processing scripts\nQuick prototypes",
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "domain-logic",
+      "procedural"
+    ]
+  }
+]

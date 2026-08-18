@@ -1,38 +1,49 @@
-{
-  "id": "vertical-partitioner",
-  "name": "Vertical Partitioner",
-  "category": "Data Engineering",
-  "description": "Splits a wide record across multiple storage columns or files by field groups (hot vs cold, sensitive vs public). Improves query performance and enables field-level access control without restructuring the schema.",
-  "when_to_use": [
-    "Tables have many rarely-accessed columns",
-    "Column-level security is required",
-    "Read patterns select only a subset of fields"
-  ],
-  "benefits": [
-    "Reduces I/O for narrow queries",
-    "Enables column-level encryption",
-    "Lower storage cost via compression"
-  ],
-  "drawbacks": [
-    "Join cost on full-record reads",
-    "Schema evolution across partitions",
-    "More moving parts to maintain"
-  ],
-  "use_cases": [
-    "Parquet columnar storage",
-    "Bigtable column families",
-    "Wide-column Cassandra tables"
-  ],
-  "complexity": "Medium",
-  "tags": ["data-engineering", "partitioning", "columnar", "storage"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "function verticalPartition<T>(rec: T, hotKeys: (keyof T)[], coldKeys: (keyof T)[]) {\n  const pick = (keys: (keyof T)[]) => Object.fromEntries(keys.map(k => [k, rec[k]]));\n  return { hot: pick(hotKeys), cold: pick(coldKeys) };\n}",
-      "description": "Hot/cold column split."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "horizontal-partitioner", "type": "similar-to", "strength": 0.7}
-  ]
-}
+[
+  {
+    "id": "vertical-partitioner",
+    "name": "Vertical Partitioner",
+    "category": "Data Engineering",
+    "description": "Splits a wide record across multiple storage columns or files by field groups (hot vs cold, sensitive vs public). Improves query performance and enables field-level access control without restructuring the schema.",
+    "when_to_use": [
+      "Tables have many rarely-accessed columns",
+      "Column-level security is required",
+      "Read patterns select only a subset of fields"
+    ],
+    "benefits": [
+      "Reduces I/O for narrow queries",
+      "Enables column-level encryption",
+      "Lower storage cost via compression"
+    ],
+    "drawbacks": [
+      "Join cost on full-record reads",
+      "Schema evolution across partitions",
+      "More moving parts to maintain"
+    ],
+    "use_cases": [
+      "Parquet columnar storage",
+      "Bigtable column families",
+      "Wide-column Cassandra tables"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-engineering",
+      "partitioning",
+      "columnar",
+      "storage"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "function verticalPartition<T>(rec: T, hotKeys: (keyof T)[], coldKeys: (keyof T)[]) {\n  const pick = (keys: (keyof T)[]) => Object.fromEntries(keys.map(k => [k, rec[k]]));\n  return { hot: pick(hotKeys), cold: pick(coldKeys) };\n}",
+        "description": "Hot/cold column split."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "horizontal-partitioner",
+        "type": "similar-to",
+        "strength": 0.7
+      }
+    ]
+  }
+]

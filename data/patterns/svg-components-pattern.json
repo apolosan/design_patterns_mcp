@@ -1,25 +1,27 @@
-{
-  "id": "svg-components-pattern",
-  "name": "SVG Components Pattern",
-  "category": "React UI",
-  "description": "Inline SVG components for icons, illustrations, and data visualizations.",
-  "when_to_use": "Icon systems, data viz, custom graphics, animations, interactive SVG",
-  "benefits": "Styleable with CSS, animatable, accessible, small bundle size",
-  "drawbacks": "Verbose for complex SVG, requires SVG knowledge",
-  "use_cases": "Icon libraries, charts, maps, logos, illustrations, progress indicators",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "svg",
-    "icons",
-    "graphics",
-    "data-visualization",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "interface IconProps {\n  size?: number;\n  color?: string;\n  className?: string;\n}\n\nfunction CheckIcon({ size = 24, color = 'currentColor', className }: IconProps) {\n  return (\n    <svg\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke={color}\n      strokeWidth={2}\n      className={className}\n    >\n      <polyline points=\"20 6 9 17 4 12\" />\n    </svg>\n  );\n}\n\nfunction Logo({ animated = false }: { animated?: boolean }) {\n  return (\n    <svg viewBox=\"0 0 100 100\" className=\"logo\">\n      <circle\n        cx=\"50\"\n        cy=\"50\"\n        r=\"40\"\n        fill=\"none\"\n        stroke=\"currentColor\"\n        strokeWidth=\"4\"\n        className={animated ? 'animate-spin' : ''}\n      />\n      <path d=\"M50 30 L70 70 L30 70 Z\" fill=\"currentColor\" />\n    </svg>\n  );\n}\n\nfunction ProgressCircle({ percent }: { percent: number }) {\n  const radius = 45;\n  const circumference = 2 * Math.PI * radius;\n  const offset = circumference - (percent / 100) * circumference;\n  \n  return (\n    <svg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\">\n      <circle\n        cx=\"50\"\n        cy=\"50\"\n        r={radius}\n        fill=\"none\"\n        stroke=\"#e5e7eb\"\n        strokeWidth=\"10\"\n      />\n      <circle\n        cx=\"50\"\n        cy=\"50\"\n        r={radius}\n        fill=\"none\"\n        stroke=\"#3b82f6\"\n        strokeWidth=\"10\"\n        strokeDasharray={circumference}\n        strokeDashoffset={offset}\n        transform=\"rotate(-90 50 50)\"\n        style={{ transition: 'stroke-dashoffset 0.3s' }}\n      />\n      <text\n        x=\"50\"\n        y=\"50\"\n        textAnchor=\"middle\"\n        dy=\"0.3em\"\n        fontSize=\"20\"\n        fill=\"currentColor\"\n      >\n        {percent}%\n      </text>\n    </svg>\n  );\n}\n\nfunction InteractiveSVG() {\n  const [hovered, setHovered] = useState<string | null>(null);\n  \n  return (\n    <svg viewBox=\"0 0 200 200\">\n      <rect\n        x=\"10\"\n        y=\"10\"\n        width=\"80\"\n        height=\"80\"\n        fill={hovered === 'rect' ? '#3b82f6' : '#e5e7eb'}\n        onMouseEnter={() => setHovered('rect')}\n        onMouseLeave={() => setHovered(null)}\n        style={{ cursor: 'pointer', transition: 'fill 0.2s' }}\n      />\n    </svg>\n  );\n}"
+[
+  {
+    "id": "svg-components-pattern",
+    "name": "SVG Components Pattern",
+    "category": "React UI",
+    "description": "Inline SVG components for icons, illustrations, and data visualizations.",
+    "when_to_use": "Icon systems, data viz, custom graphics, animations, interactive SVG",
+    "benefits": "Styleable with CSS, animatable, accessible, small bundle size",
+    "drawbacks": "Verbose for complex SVG, requires SVG knowledge",
+    "use_cases": "Icon libraries, charts, maps, logos, illustrations, progress indicators",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "svg",
+      "icons",
+      "graphics",
+      "data-visualization",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "interface IconProps {\n  size?: number;\n  color?: string;\n  className?: string;\n}\n\nfunction CheckIcon({ size = 24, color = 'currentColor', className }: IconProps) {\n  return (\n    <svg\n      width={size}\n      height={size}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke={color}\n      strokeWidth={2}\n      className={className}\n    >\n      <polyline points=\"20 6 9 17 4 12\" />\n    </svg>\n  );\n}\n\nfunction Logo({ animated = false }: { animated?: boolean }) {\n  return (\n    <svg viewBox=\"0 0 100 100\" className=\"logo\">\n      <circle\n        cx=\"50\"\n        cy=\"50\"\n        r=\"40\"\n        fill=\"none\"\n        stroke=\"currentColor\"\n        strokeWidth=\"4\"\n        className={animated ? 'animate-spin' : ''}\n      />\n      <path d=\"M50 30 L70 70 L30 70 Z\" fill=\"currentColor\" />\n    </svg>\n  );\n}\n\nfunction ProgressCircle({ percent }: { percent: number }) {\n  const radius = 45;\n  const circumference = 2 * Math.PI * radius;\n  const offset = circumference - (percent / 100) * circumference;\n  \n  return (\n    <svg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\">\n      <circle\n        cx=\"50\"\n        cy=\"50\"\n        r={radius}\n        fill=\"none\"\n        stroke=\"#e5e7eb\"\n        strokeWidth=\"10\"\n      />\n      <circle\n        cx=\"50\"\n        cy=\"50\"\n        r={radius}\n        fill=\"none\"\n        stroke=\"#3b82f6\"\n        strokeWidth=\"10\"\n        strokeDasharray={circumference}\n        strokeDashoffset={offset}\n        transform=\"rotate(-90 50 50)\"\n        style={{ transition: 'stroke-dashoffset 0.3s' }}\n      />\n      <text\n        x=\"50\"\n        y=\"50\"\n        textAnchor=\"middle\"\n        dy=\"0.3em\"\n        fontSize=\"20\"\n        fill=\"currentColor\"\n      >\n        {percent}%\n      </text>\n    </svg>\n  );\n}\n\nfunction InteractiveSVG() {\n  const [hovered, setHovered] = useState<string | null>(null);\n  \n  return (\n    <svg viewBox=\"0 0 200 200\">\n      <rect\n        x=\"10\"\n        y=\"10\"\n        width=\"80\"\n        height=\"80\"\n        fill={hovered === 'rect' ? '#3b82f6' : '#e5e7eb'}\n        onMouseEnter={() => setHovered('rect')}\n        onMouseLeave={() => setHovered(null)}\n        style={{ cursor: 'pointer', transition: 'fill 0.2s' }}\n      />\n    </svg>\n  );\n}"
+      }
     }
   }
-}
+]

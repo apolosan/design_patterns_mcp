@@ -162,7 +162,9 @@ export class EmbeddingStrategyFactory {
 
   private log(message: string): void {
     if (this.config.enableLogging) {
-      console.log(`[EmbeddingFactory] ${message}`);
+      // stdout is reserved EXCLUSIVELY for JSON-RPC frames in the MCP stdio
+      // transport; diagnostics go to stderr.
+      process.stderr.write(`[EmbeddingFactory] ${message}\n`);
     }
   }
 }

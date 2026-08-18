@@ -1,18 +1,20 @@
-{
-  "id": "incremental-loader",
-  "name": "Incremental Loader",
-  "category": "Data Ingestion",
-  "description": "The Incremental Loader pattern processes new parts of the dataset since the last run. There are two implementations: one uses a delta column to identify rows added since the last run, and another relies on time-partitioned datasets where the ingestion job uses time-based partitions to detect new records.",
-  "when_to_use": "[\"Continuously growing datasets\",\"Need to process only new data since last run\",\"Large datasets where full reload is inefficient\"]",
-  "benefits": "[\"Reduces ingested data volume\",\"More efficient for large datasets\",\"Lower resource consumption\"]",
-  "drawbacks": "[\"Hard deletes handling\",\"Backfilling issues\",\"Complexity in tracking delta\"]",
-  "use_cases": "[\"Streaming data ingestion\",\"Batch processing of incremental data\",\"Event log processing\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"incremental-load\"",
-    "\"data-ingestion\"",
-    "\"delta-column\"",
-    "\"partitioned\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "incremental-loader",
+    "name": "Incremental Loader",
+    "category": "Data Ingestion",
+    "description": "The Incremental Loader pattern processes new parts of the dataset since the last run. There are two implementations: one uses a delta column to identify rows added since the last run, and another relies on time-partitioned datasets where the ingestion job uses time-based partitions to detect new records.",
+    "when_to_use": "[\"Continuously growing datasets\",\"Need to process only new data since last run\",\"Large datasets where full reload is inefficient\"]",
+    "benefits": "[\"Reduces ingested data volume\",\"More efficient for large datasets\",\"Lower resource consumption\"]",
+    "drawbacks": "[\"Hard deletes handling\",\"Backfilling issues\",\"Complexity in tracking delta\"]",
+    "use_cases": "[\"Streaming data ingestion\",\"Batch processing of incremental data\",\"Event log processing\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"incremental-load\"",
+      "\"data-ingestion\"",
+      "\"delta-column\"",
+      "\"partitioned\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

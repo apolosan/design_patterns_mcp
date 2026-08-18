@@ -1,24 +1,26 @@
-{
-  "id": "tokenized-treasury-rwa",
-  "name": "Tokenized Treasury (RWA)",
-  "category": "Real World Assets",
-  "description": "On-chain exposure to government bonds via tokenization. SPV holds Treasuries, issues tokens.",
-  "when_to_use": "Stablecoin collateral, institutional DeFi, stable yield",
-  "benefits": "Stable yield (4-5%), regulatory clarity, $12.8B market",
-  "drawbacks": "KYC required, jurisdiction limits, traditional finance dependency",
-  "use_cases": "Ondo Finance, Franklin Templeton, institutional stablecoins",
-  "complexity": "Very High",
-  "tags": [
-    "rwa",
-    "tokenization",
-    "treasuries",
-    "institutional",
-    "compliance"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Tokenized Treasury pattern\ncontract TokenizedTreasury is ERC20, AccessControl {\n    address public spv; // Special Purpose Vehicle\n    uint256 public navPerToken; // Net Asset Value\n    \n    function mint(address to, uint256 amount) external onlyRole(SPV_ROLE) {\n        require(isKYCApproved(to), \"KYC required\");\n        _mint(to, amount);\n    }\n    \n    function updateNAV(uint256 newNAV) external onlyOracle {\n        navPerToken = newNAV; // Updated daily based on Treasury prices\n        emit NAVUpdated(newNAV);\n    }\n    \n    function redeem(uint256 amount) external {\n        _burn(msg.sender, amount);\n        // SPV processes T+1 settlement\n    }\n}"
+[
+  {
+    "id": "tokenized-treasury-rwa",
+    "name": "Tokenized Treasury (RWA)",
+    "category": "Real World Assets",
+    "description": "On-chain exposure to government bonds via tokenization. SPV holds Treasuries, issues tokens.",
+    "when_to_use": "Stablecoin collateral, institutional DeFi, stable yield",
+    "benefits": "Stable yield (4-5%), regulatory clarity, $12.8B market",
+    "drawbacks": "KYC required, jurisdiction limits, traditional finance dependency",
+    "use_cases": "Ondo Finance, Franklin Templeton, institutional stablecoins",
+    "complexity": "Very High",
+    "tags": [
+      "rwa",
+      "tokenization",
+      "treasuries",
+      "institutional",
+      "compliance"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Tokenized Treasury pattern\ncontract TokenizedTreasury is ERC20, AccessControl {\n    address public spv; // Special Purpose Vehicle\n    uint256 public navPerToken; // Net Asset Value\n    \n    function mint(address to, uint256 amount) external onlyRole(SPV_ROLE) {\n        require(isKYCApproved(to), \"KYC required\");\n        _mint(to, amount);\n    }\n    \n    function updateNAV(uint256 newNAV) external onlyOracle {\n        navPerToken = newNAV; // Updated daily based on Treasury prices\n        emit NAVUpdated(newNAV);\n    }\n    \n    function redeem(uint256 amount) external {\n        _burn(msg.sender, amount);\n        // SPV processes T+1 settlement\n    }\n}"
+      }
     }
   }
-}
+]

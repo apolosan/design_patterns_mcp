@@ -1,17 +1,19 @@
-{
-  "id": "stateful-sessionizer",
-  "name": "Stateful Sessionizer",
-  "category": "Data Value",
-  "description": "The Stateful Sessionizer handles real-time sessionization in stream processing.",
-  "when_to_use": "[\"Real-time sessions\",\"Streaming data\"]",
-  "benefits": "[\"Real-time processing\",\"Fresh data\"]",
-  "drawbacks": "[\"State management\",\"Complexity\"]",
-  "use_cases": "[\"Real-time analytics\",\"Live sessions\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"data-value\"",
-    "\"sessionizer\"",
-    "\"stateful\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "stateful-sessionizer",
+    "name": "Stateful Sessionizer",
+    "category": "Data Value",
+    "description": "The Stateful Sessionizer handles real-time sessionization in stream processing.",
+    "when_to_use": "[\"Real-time sessions\",\"Streaming data\"]",
+    "benefits": "[\"Real-time processing\",\"Fresh data\"]",
+    "drawbacks": "[\"State management\",\"Complexity\"]",
+    "use_cases": "[\"Real-time analytics\",\"Live sessions\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"data-value\"",
+      "\"sessionizer\"",
+      "\"stateful\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

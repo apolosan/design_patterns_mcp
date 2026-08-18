@@ -1,26 +1,28 @@
-{
-  "id": "react-animations-pattern",
-  "name": "React Animations Pattern",
-  "category": "React UI",
-  "description": "Modern animations with Framer Motion. Declarative animations for React.",
-  "when_to_use": "UI transitions, page animations, interactive elements, micro-interactions",
-  "benefits": "Declarative, performant, gesture support, layout animations, easy API",
-  "drawbacks": "Bundle size, complexity for simple animations",
-  "use_cases": "Page transitions, modals, dropdowns, hover effects, list animations",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "animations",
-    "framer-motion",
-    "transitions",
-    "gestures",
-    "modern",
-    "2024"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { motion, AnimatePresence } from 'framer-motion';\nimport { useState } from 'react';\n\nfunction FadeIn({ children }: { children: ReactNode }) {\n  return (\n    <motion.div\n      initial={{ opacity: 0, y: 20 }}\n      animate={{ opacity: 1, y: 0 }}\n      exit={{ opacity: 0, y: -20 }}\n      transition={{ duration: 0.3 }}\n    >\n      {children}\n    </motion.div>\n  );\n}\n\nfunction Modal({ isOpen, onClose, children }: ModalProps) {\n  return (\n    <AnimatePresence>\n      {isOpen && (\n        <>\n          <motion.div\n            className=\"backdrop\"\n            initial={{ opacity: 0 }}\n            animate={{ opacity: 1 }}\n            exit={{ opacity: 0 }}\n            onClick={onClose}\n          />\n          \n          <motion.div\n            className=\"modal\"\n            initial={{ opacity: 0, scale: 0.8 }}\n            animate={{ opacity: 1, scale: 1 }}\n            exit={{ opacity: 0, scale: 0.8 }}\n          >\n            {children}\n          </motion.div>\n        </>\n      )}\n    </AnimatePresence>\n  );\n}\n\nfunction List({ items }: { items: Item[] }) {\n  return (\n    <motion.ul layout>\n      <AnimatePresence>\n        {items.map(item => (\n          <motion.li\n            key={item.id}\n            layout\n            initial={{ opacity: 0, x: -50 }}\n            animate={{ opacity: 1, x: 0 }}\n            exit={{ opacity: 0, x: 50 }}\n          >\n            {item.name}\n          </motion.li>\n        ))}\n      </AnimatePresence>\n    </motion.ul>\n  );\n}\n\nfunction DragCard() {\n  return (\n    <motion.div\n      drag\n      dragConstraints={{ left: 0, right: 300, top: 0, bottom: 300 }}\n      whileHover={{ scale: 1.05 }}\n      whileTap={{ scale: 0.95 }}\n    >\n      Drag me!\n    </motion.div>\n  );\n}"
+[
+  {
+    "id": "react-animations-pattern",
+    "name": "React Animations Pattern",
+    "category": "React UI",
+    "description": "Modern animations with Framer Motion. Declarative animations for React.",
+    "when_to_use": "UI transitions, page animations, interactive elements, micro-interactions",
+    "benefits": "Declarative, performant, gesture support, layout animations, easy API",
+    "drawbacks": "Bundle size, complexity for simple animations",
+    "use_cases": "Page transitions, modals, dropdowns, hover effects, list animations",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "animations",
+      "framer-motion",
+      "transitions",
+      "gestures",
+      "modern",
+      "2024"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { motion, AnimatePresence } from 'framer-motion';\nimport { useState } from 'react';\n\nfunction FadeIn({ children }: { children: ReactNode }) {\n  return (\n    <motion.div\n      initial={{ opacity: 0, y: 20 }}\n      animate={{ opacity: 1, y: 0 }}\n      exit={{ opacity: 0, y: -20 }}\n      transition={{ duration: 0.3 }}\n    >\n      {children}\n    </motion.div>\n  );\n}\n\nfunction Modal({ isOpen, onClose, children }: ModalProps) {\n  return (\n    <AnimatePresence>\n      {isOpen && (\n        <>\n          <motion.div\n            className=\"backdrop\"\n            initial={{ opacity: 0 }}\n            animate={{ opacity: 1 }}\n            exit={{ opacity: 0 }}\n            onClick={onClose}\n          />\n          \n          <motion.div\n            className=\"modal\"\n            initial={{ opacity: 0, scale: 0.8 }}\n            animate={{ opacity: 1, scale: 1 }}\n            exit={{ opacity: 0, scale: 0.8 }}\n          >\n            {children}\n          </motion.div>\n        </>\n      )}\n    </AnimatePresence>\n  );\n}\n\nfunction List({ items }: { items: Item[] }) {\n  return (\n    <motion.ul layout>\n      <AnimatePresence>\n        {items.map(item => (\n          <motion.li\n            key={item.id}\n            layout\n            initial={{ opacity: 0, x: -50 }}\n            animate={{ opacity: 1, x: 0 }}\n            exit={{ opacity: 0, x: 50 }}\n          >\n            {item.name}\n          </motion.li>\n        ))}\n      </AnimatePresence>\n    </motion.ul>\n  );\n}\n\nfunction DragCard() {\n  return (\n    <motion.div\n      drag\n      dragConstraints={{ left: 0, right: 300, top: 0, bottom: 300 }}\n      whileHover={{ scale: 1.05 }}\n      whileTap={{ scale: 0.95 }}\n    >\n      Drag me!\n    </motion.div>\n  );\n}"
+      }
     }
   }
-}
+]

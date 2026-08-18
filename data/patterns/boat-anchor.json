@@ -1,15 +1,17 @@
-{
-  "id": "boat-anchor",
-  "name": "Boat Anchor Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Hardware or software that serves no useful purpose but is retained due to cost or politics",
-  "when_to_use": "Expensive unused components\nPolitical reasons prevent removal\nSunk cost fallacy in decisions",
-  "drawbacks": "Wasted resources\nMaintenance overhead\nSystem complexity\nOpportunity cost",
-  "use_cases": "Unused expensive software licenses\nLegacy hardware kept running\nOver-engineered solutions for simple problems",
-  "complexity": "Medium",
-  "tags": [
-    "anti-pattern",
-    "resources",
-    "politics"
-  ]
-}
+[
+  {
+    "id": "boat-anchor",
+    "name": "Boat Anchor Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Hardware or software that serves no useful purpose but is retained due to cost or politics",
+    "when_to_use": "Expensive unused components\nPolitical reasons prevent removal\nSunk cost fallacy in decisions",
+    "drawbacks": "Wasted resources\nMaintenance overhead\nSystem complexity\nOpportunity cost",
+    "use_cases": "Unused expensive software licenses\nLegacy hardware kept running\nOver-engineered solutions for simple problems",
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "resources",
+      "politics"
+    ]
+  }
+]

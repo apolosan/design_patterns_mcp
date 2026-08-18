@@ -1,22 +1,24 @@
-{
-  "id": "gatekeeper",
-  "name": "Gatekeeper Pattern",
-  "category": "Cloud-Native",
-  "description": "Dedicated host acts as broker between clients and services",
-  "when_to_use": "Security layer\nProtocol translation\nValidation",
-  "benefits": "Security enforcement\nProtocol flexibility\nCentralized validation",
-  "drawbacks": "Single point of failure\nPerformance bottleneck\nAdditional complexity",
-  "use_cases": "API gateways\nLegacy integration\nSecurity enforcement",
-  "complexity": "High",
-  "tags": [
-    "security",
-    "gateway",
-    "validation"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Gatekeeper: validate requests\nclass Gatekeeper {\n  async validate(request: Request) {\n    const errors: string[] = [];\n    \n    if (!this.isAuthenticated(request)) {\n      errors.push('Invalid authentication');\n    }\n    \n    if (!await this.isAuthorized(request)) {\n      errors.push('Insufficient permissions');\n    }\n    \n    const inputErrors = this.validateInput(request);\n    errors.push(...inputErrors);\n    \n    return { valid: errors.length === 0, errors };\n  }\n  \n  private isAuthenticated(req: Request): boolean {\n    return !!req.headers.get('Authorization');\n  }\n  \n  private async isAuthorized(req: Request): Promise<boolean> {\n    return true;\n  }\n  \n  private validateInput(req: Request): string[] {\n    return [];\n  }\n}\n\nconst gatekeeper = new Gatekeeper();\nconst result = await gatekeeper.validate(request);"
+[
+  {
+    "id": "gatekeeper",
+    "name": "Gatekeeper Pattern",
+    "category": "Cloud-Native",
+    "description": "Dedicated host acts as broker between clients and services",
+    "when_to_use": "Security layer\nProtocol translation\nValidation",
+    "benefits": "Security enforcement\nProtocol flexibility\nCentralized validation",
+    "drawbacks": "Single point of failure\nPerformance bottleneck\nAdditional complexity",
+    "use_cases": "API gateways\nLegacy integration\nSecurity enforcement",
+    "complexity": "High",
+    "tags": [
+      "security",
+      "gateway",
+      "validation"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Gatekeeper: validate requests\nclass Gatekeeper {\n  async validate(request: Request) {\n    const errors: string[] = [];\n    \n    if (!this.isAuthenticated(request)) {\n      errors.push('Invalid authentication');\n    }\n    \n    if (!await this.isAuthorized(request)) {\n      errors.push('Insufficient permissions');\n    }\n    \n    const inputErrors = this.validateInput(request);\n    errors.push(...inputErrors);\n    \n    return { valid: errors.length === 0, errors };\n  }\n  \n  private isAuthenticated(req: Request): boolean {\n    return !!req.headers.get('Authorization');\n  }\n  \n  private async isAuthorized(req: Request): Promise<boolean> {\n    return true;\n  }\n  \n  private validateInput(req: Request): string[] {\n    return [];\n  }\n}\n\nconst gatekeeper = new Gatekeeper();\nconst result = await gatekeeper.validate(request);"
+      }
     }
   }
-}
+]

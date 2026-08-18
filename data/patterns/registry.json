@@ -1,22 +1,24 @@
-{
-  "id": "registry",
-  "name": "Registry Pattern",
-  "category": "Enterprise",
-  "description": "Well-known object that other objects can use to find common objects and services",
-  "when_to_use": "Global access\nService location\nConfiguration",
-  "benefits": "Global access\nDecoupling\nService location\nConfiguration",
-  "drawbacks": "Global state\nTesting difficulties\nHidden dependencies",
-  "use_cases": "Service locators\nConfiguration\nGlobal objects",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "registry",
-    "global"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Registry: global access point for objects\nclass Registry {\n  private static instance: Registry;\n  private services = new Map<string, any>();\n  \n  private constructor() {}\n  \n  static getInstance(): Registry {\n    if (!Registry.instance) {\n      Registry.instance = new Registry();\n    }\n    return Registry.instance;\n  }\n  \n  register<T>(name: string, service: T): void {\n    this.services.set(name, service);\n  }\n  \n  get<T>(name: string): T {\n    const service = this.services.get(name);\n    if (!service) {\n      throw new Error('Service not found: ' + name);\n    }\n    return service as T;\n  }\n  \n  has(name: string): boolean {\n    return this.services.has(name);\n  }\n}\n\n// Setup\nconst registry = Registry.getInstance();\nregistry.register('userRepository', new UserRepository(db));\nregistry.register('emailService', new EmailService(config));\n\n// Access from anywhere\nclass UserController {\n  processRequest() {\n    const userRepo = Registry.getInstance().get<UserRepository>('userRepository');\n    return userRepo.findAll();\n  }\n}"
+[
+  {
+    "id": "registry",
+    "name": "Registry Pattern",
+    "category": "Enterprise",
+    "description": "Well-known object that other objects can use to find common objects and services",
+    "when_to_use": "Global access\nService location\nConfiguration",
+    "benefits": "Global access\nDecoupling\nService location\nConfiguration",
+    "drawbacks": "Global state\nTesting difficulties\nHidden dependencies",
+    "use_cases": "Service locators\nConfiguration\nGlobal objects",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "registry",
+      "global"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Registry: global access point for objects\nclass Registry {\n  private static instance: Registry;\n  private services = new Map<string, any>();\n  \n  private constructor() {}\n  \n  static getInstance(): Registry {\n    if (!Registry.instance) {\n      Registry.instance = new Registry();\n    }\n    return Registry.instance;\n  }\n  \n  register<T>(name: string, service: T): void {\n    this.services.set(name, service);\n  }\n  \n  get<T>(name: string): T {\n    const service = this.services.get(name);\n    if (!service) {\n      throw new Error('Service not found: ' + name);\n    }\n    return service as T;\n  }\n  \n  has(name: string): boolean {\n    return this.services.has(name);\n  }\n}\n\n// Setup\nconst registry = Registry.getInstance();\nregistry.register('userRepository', new UserRepository(db));\nregistry.register('emailService', new EmailService(config));\n\n// Access from anywhere\nclass UserController {\n  processRequest() {\n    const userRepo = Registry.getInstance().get<UserRepository>('userRepository');\n    return userRepo.findAll();\n  }\n}"
+      }
     }
   }
-}
+]

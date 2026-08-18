@@ -1,22 +1,24 @@
-{
-  "id": "zip",
-  "name": "Zip Pattern",
-  "category": "Reactive",
-  "description": "Combines emissions from multiple observables by pairing them",
-  "when_to_use": "Pairing data\nSynchronization\nParallel processing",
-  "benefits": "Data pairing\nSynchronization\nParallel combination",
-  "drawbacks": "Slowest source limitation\nMemory buffering\nTiming dependency",
-  "use_cases": "Coordinate pairing\nSynchronized updates\nData correlation",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "zip",
-    "pairing"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Zip: combine corresponding values\nfunction zip<T extends any[]>(\n  ...observables: Observable<any>[]\n): Observable<T> {\n  return new Observable(observer => {\n    const buffers = observables.map(() => [] as any[]);\n    const completed = new Array(observables.length).fill(false);\n    \n    const emit = () => {\n      if (buffers.every(b => b.length > 0)) {\n        const values = buffers.map(b => b.shift());\n        observer.next(values as T);\n      }\n      \n      if (buffers.some((b, i) => b.length === 0 && completed[i])) {\n        observer.complete();\n      }\n    };\n    \n    const subscriptions = observables.map((obs, index) =>\n      obs.subscribe({\n        next: value => {\n          buffers[index].push(value);\n          emit();\n        },\n        error: err => observer.error(err),\n        complete: () => {\n          completed[index] = true;\n          emit();\n        }\n      })\n    );\n    \n    return () => subscriptions.forEach(sub => sub.unsubscribe());\n  });\n}\n\n// Usage: Pair first with first, second with second\nconst letters = from(['A', 'B', 'C']);\nconst numbers = from([1, 2, 3]);\n\nzip(letters, numbers).subscribe({\n  next: ([letter, number]) => console.log(letter, number),  // A 1, B 2, C 3\n  error: () => {},\n  complete: () => {}\n});"
+[
+  {
+    "id": "zip",
+    "name": "Zip Pattern",
+    "category": "Reactive",
+    "description": "Combines emissions from multiple observables by pairing them",
+    "when_to_use": "Pairing data\nSynchronization\nParallel processing",
+    "benefits": "Data pairing\nSynchronization\nParallel combination",
+    "drawbacks": "Slowest source limitation\nMemory buffering\nTiming dependency",
+    "use_cases": "Coordinate pairing\nSynchronized updates\nData correlation",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "zip",
+      "pairing"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Zip: combine corresponding values\nfunction zip<T extends any[]>(\n  ...observables: Observable<any>[]\n): Observable<T> {\n  return new Observable(observer => {\n    const buffers = observables.map(() => [] as any[]);\n    const completed = new Array(observables.length).fill(false);\n    \n    const emit = () => {\n      if (buffers.every(b => b.length > 0)) {\n        const values = buffers.map(b => b.shift());\n        observer.next(values as T);\n      }\n      \n      if (buffers.some((b, i) => b.length === 0 && completed[i])) {\n        observer.complete();\n      }\n    };\n    \n    const subscriptions = observables.map((obs, index) =>\n      obs.subscribe({\n        next: value => {\n          buffers[index].push(value);\n          emit();\n        },\n        error: err => observer.error(err),\n        complete: () => {\n          completed[index] = true;\n          emit();\n        }\n      })\n    );\n    \n    return () => subscriptions.forEach(sub => sub.unsubscribe());\n  });\n}\n\n// Usage: Pair first with first, second with second\nconst letters = from(['A', 'B', 'C']);\nconst numbers = from([1, 2, 3]);\n\nzip(letters, numbers).subscribe({\n  next: ([letter, number]) => console.log(letter, number),  // A 1, B 2, C 3\n  error: () => {},\n  complete: () => {}\n});"
+      }
     }
   }
-}
+]

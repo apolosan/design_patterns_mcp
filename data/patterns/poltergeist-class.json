@@ -1,15 +1,17 @@
-{
-  "id": "poltergeist-class",
-  "name": "Poltergeist Class Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Classes with limited responsibilities and short lifecycles that pop up to perform tasks",
-  "when_to_use": "Classes created just to invoke methods on other classes\nTemporary objects with minimal purpose\nUnnecessary intermediary classes",
-  "drawbacks": "Unnecessary complexity\nPoor object model\nPerformance overhead\nConfusing design",
-  "use_cases": "Controller classes that just delegate\nWrapper classes with no added value\nClasses created for single method calls",
-  "complexity": "Medium",
-  "tags": [
-    "anti-pattern",
-    "oop",
-    "design"
-  ]
-}
+[
+  {
+    "id": "poltergeist-class",
+    "name": "Poltergeist Class Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Classes with limited responsibilities and short lifecycles that pop up to perform tasks",
+    "when_to_use": "Classes created just to invoke methods on other classes\nTemporary objects with minimal purpose\nUnnecessary intermediary classes",
+    "drawbacks": "Unnecessary complexity\nPoor object model\nPerformance overhead\nConfusing design",
+    "use_cases": "Controller classes that just delegate\nWrapper classes with no added value\nClasses created for single method calls",
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "oop",
+      "design"
+    ]
+  }
+]

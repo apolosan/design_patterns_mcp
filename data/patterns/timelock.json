@@ -1,24 +1,26 @@
-{
-  "id": "timelock",
-  "name": "Timelock Controller",
-  "category": "DAO Governance",
-  "description": "Delay execution to allow exit opportunity",
-  "when_to_use": "Protocol upgrades, critical parameter changes",
-  "benefits": "Security buffer, exit opportunity, transparency",
-  "drawbacks": "Slows emergency response, coordination overhead",
-  "use_cases": "All governance systems, security buffer",
-  "complexity": "Medium",
-  "tags": [
-    "governance",
-    "dao",
-    "timelock",
-    "security",
-    "delay"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Timelock: delay before execution\nimport \"@openzeppelin/contracts/governance/TimelockController.sol\";\n\ncontract Governance {\n    TimelockController public timelock;\n    uint256 constant DELAY = 2 days;\n    \n    function executeProposal(bytes memory data) external {\n        timelock.schedule(target, 0, data, bytes32(0), bytes32(0), DELAY);\n    }\n}"
+[
+  {
+    "id": "timelock",
+    "name": "Timelock Controller",
+    "category": "DAO Governance",
+    "description": "Delay execution to allow exit opportunity",
+    "when_to_use": "Protocol upgrades, critical parameter changes",
+    "benefits": "Security buffer, exit opportunity, transparency",
+    "drawbacks": "Slows emergency response, coordination overhead",
+    "use_cases": "All governance systems, security buffer",
+    "complexity": "Medium",
+    "tags": [
+      "governance",
+      "dao",
+      "timelock",
+      "security",
+      "delay"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Timelock: delay before execution\nimport \"@openzeppelin/contracts/governance/TimelockController.sol\";\n\ncontract Governance {\n    TimelockController public timelock;\n    uint256 constant DELAY = 2 days;\n    \n    function executeProposal(bytes memory data) external {\n        timelock.schedule(target, 0, data, bytes32(0), bytes32(0), DELAY);\n    }\n}"
+      }
     }
   }
-}
+]

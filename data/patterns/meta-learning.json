@@ -1,16 +1,18 @@
-{
-  "id": "meta-learning",
-  "name": "Meta-Learning",
-  "category": "AI/ML",
-  "description": "Learns how to learn, enabling fast adaptation to new tasks",
-  "when_to_use": "Few examples available\nFast adaptation needed\nMultiple related tasks",
-  "benefits": "Fast adaptation\nSample efficiency\nGeneralization\nTask diversity",
-  "drawbacks": "Complex implementation\nMeta-training required\nTask distribution dependency",
-  "use_cases": "Few-shot learning\nPersonalization\nRapid adaptation",
-  "complexity": "Very High",
-  "tags": [
-    "meta-learning",
-    "adaptation",
-    "few-shot"
-  ]
-}
+[
+  {
+    "id": "meta-learning",
+    "name": "Meta-Learning",
+    "category": "AI/ML",
+    "description": "Learns how to learn, enabling fast adaptation to new tasks",
+    "when_to_use": "Few examples available\nFast adaptation needed\nMultiple related tasks",
+    "benefits": "Fast adaptation\nSample efficiency\nGeneralization\nTask diversity",
+    "drawbacks": "Complex implementation\nMeta-training required\nTask distribution dependency",
+    "use_cases": "Few-shot learning\nPersonalization\nRapid adaptation",
+    "complexity": "Very High",
+    "tags": [
+      "meta-learning",
+      "adaptation",
+      "few-shot"
+    ]
+  }
+]

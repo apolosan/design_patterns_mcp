@@ -1,24 +1,26 @@
-{
-  "id": "emergency-stop",
-  "name": "Emergency Stop / Circuit Breaker",
-  "category": "Smart Contract Security",
-  "description": "Pause contract in case of discovered vulnerability Problem: Need to halt operations during security incidents",
-  "when_to_use": "Pausable pattern with whenNotPaused modifier",
-  "benefits": "Safety mechanism, limits exploit damage, recovery time",
-  "drawbacks": "Centralization risk, can lock funds, admin trust",
-  "use_cases": "All production contracts, high-value DeFi protocols",
-  "complexity": "Low",
-  "tags": [
-    "security",
-    "pausable",
-    "emergency",
-    "admin",
-    "openzeppelin"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/security/Pausable.sol\";\n\ncontract MyContract is Pausable {\n    function deposit() public whenNotPaused {\n        // Protected logic\n    }\n}"
+[
+  {
+    "id": "emergency-stop",
+    "name": "Emergency Stop / Circuit Breaker",
+    "category": "Smart Contract Security",
+    "description": "Pause contract in case of discovered vulnerability Problem: Need to halt operations during security incidents",
+    "when_to_use": "Pausable pattern with whenNotPaused modifier",
+    "benefits": "Safety mechanism, limits exploit damage, recovery time",
+    "drawbacks": "Centralization risk, can lock funds, admin trust",
+    "use_cases": "All production contracts, high-value DeFi protocols",
+    "complexity": "Low",
+    "tags": [
+      "security",
+      "pausable",
+      "emergency",
+      "admin",
+      "openzeppelin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/security/Pausable.sol\";\n\ncontract MyContract is Pausable {\n    function deposit() public whenNotPaused {\n        // Protected logic\n    }\n}"
+      }
     }
   }
-}
+]

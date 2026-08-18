@@ -1,24 +1,26 @@
-{
-  "id": "erc721a",
-  "name": "ERC-721A (Azuki)",
-  "category": "NFT",
-  "description": "Gas-optimized ERC-721 for batch minting",
-  "when_to_use": "NFT collections with batch minting, gas optimization",
-  "benefits": "87% gas savings on batch mint, sequential IDs",
-  "drawbacks": "More complex, slight overhead on transfers",
-  "use_cases": "10k PFP collections, batch mint optimization",
-  "complexity": "Medium",
-  "tags": [
-    "nft",
-    "erc721a",
-    "gas-optimization",
-    "batch-mint",
-    "azuki"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// ERC-721A: efficient batch mint\nimport \"erc721a/contracts/ERC721A.sol\";\n\ncontract NFT is ERC721A {\n    function mint(uint256 quantity) external payable {\n        require(msg.value >= PRICE * quantity);\n        _mint(msg.sender, quantity); // Gas-efficient batch\n    }\n}"
+[
+  {
+    "id": "erc721a",
+    "name": "ERC-721A (Azuki)",
+    "category": "NFT",
+    "description": "Gas-optimized ERC-721 for batch minting",
+    "when_to_use": "NFT collections with batch minting, gas optimization",
+    "benefits": "87% gas savings on batch mint, sequential IDs",
+    "drawbacks": "More complex, slight overhead on transfers",
+    "use_cases": "10k PFP collections, batch mint optimization",
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "erc721a",
+      "gas-optimization",
+      "batch-mint",
+      "azuki"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ERC-721A: efficient batch mint\nimport \"erc721a/contracts/ERC721A.sol\";\n\ncontract NFT is ERC721A {\n    function mint(uint256 quantity) external payable {\n        require(msg.value >= PRICE * quantity);\n        _mint(msg.sender, quantity); // Gas-efficient batch\n    }\n}"
+      }
     }
   }
-}
+]

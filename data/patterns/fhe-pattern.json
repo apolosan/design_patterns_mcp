@@ -1,24 +1,26 @@
-{
-  "id": "fhe-pattern",
-  "name": "Fully Homomorphic Encryption (FHE)",
-  "category": "Privacy",
-  "description": "Compute on encrypted data without decryption. True confidential smart contracts.",
-  "when_to_use": "Private smart contracts, confidential DeFi, encrypted computation",
-  "benefits": "True computation on encrypted data, maximum privacy",
-  "drawbacks": "Very high computational overhead, early stage, slow",
-  "use_cases": "Inco Network, Fhenix, confidential auctions, private voting",
-  "complexity": "Very High",
-  "tags": [
-    "privacy",
-    "fhe",
-    "encryption",
-    "confidential",
-    "homomorphic"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// FHE example (Fhenix/Inco Network)\nimport \"fhenix/TFHE.sol\";\n\ncontract ConfidentialAuction {\n    mapping(address => euint32) public encryptedBids; // Encrypted bids\n    \n    function submitBid(bytes calldata encryptedBid) external {\n        // Store encrypted bid - contract never sees plaintext\n        encryptedBids[msg.sender] = TFHE.asEuint32(encryptedBid);\n    }\n    \n    function determineWinner() external view returns (address) {\n        euint32 highestBid = TFHE.asEuint32(0);\n        address winner;\n        \n        for (address bidder in bidders) {\n            // Compute on encrypted data!\n            ebool isHigher = TFHE.gt(encryptedBids[bidder], highestBid);\n            highestBid = TFHE.select(isHigher, encryptedBids[bidder], highestBid);\n            winner = isHigher ? bidder : winner;\n        }\n        return winner;\n    }\n}"
+[
+  {
+    "id": "fhe-pattern",
+    "name": "Fully Homomorphic Encryption (FHE)",
+    "category": "Privacy",
+    "description": "Compute on encrypted data without decryption. True confidential smart contracts.",
+    "when_to_use": "Private smart contracts, confidential DeFi, encrypted computation",
+    "benefits": "True computation on encrypted data, maximum privacy",
+    "drawbacks": "Very high computational overhead, early stage, slow",
+    "use_cases": "Inco Network, Fhenix, confidential auctions, private voting",
+    "complexity": "Very High",
+    "tags": [
+      "privacy",
+      "fhe",
+      "encryption",
+      "confidential",
+      "homomorphic"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// FHE example (Fhenix/Inco Network)\nimport \"fhenix/TFHE.sol\";\n\ncontract ConfidentialAuction {\n    mapping(address => euint32) public encryptedBids; // Encrypted bids\n    \n    function submitBid(bytes calldata encryptedBid) external {\n        // Store encrypted bid - contract never sees plaintext\n        encryptedBids[msg.sender] = TFHE.asEuint32(encryptedBid);\n    }\n    \n    function determineWinner() external view returns (address) {\n        euint32 highestBid = TFHE.asEuint32(0);\n        address winner;\n        \n        for (address bidder in bidders) {\n            // Compute on encrypted data!\n            ebool isHigher = TFHE.gt(encryptedBids[bidder], highestBid);\n            highestBid = TFHE.select(isHigher, encryptedBids[bidder], highestBid);\n            winner = isHigher ? bidder : winner;\n        }\n        return winner;\n    }\n}"
+      }
     }
   }
-}
+]

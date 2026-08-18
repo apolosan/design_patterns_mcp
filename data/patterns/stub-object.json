@@ -1,16 +1,18 @@
-{
-  "id": "stub-object",
-  "name": "Stub Object",
-  "category": "Testing",
-  "description": "Provides predetermined responses to method calls during testing",
-  "when_to_use": "State-based testing\nData provision\nSimple responses",
-  "benefits": "Simple implementation\nPredictable data\nFast execution",
-  "drawbacks": "Limited behavior\nMaintenance overhead\nStatic responses",
-  "use_cases": "Data providers\nConfiguration objects\nSimple services",
-  "complexity": "Low",
-  "tags": [
-    "testing",
-    "stub",
-    "data"
-  ]
-}
+[
+  {
+    "id": "stub-object",
+    "name": "Stub Object",
+    "category": "Testing",
+    "description": "Provides predetermined responses to method calls during testing",
+    "when_to_use": "State-based testing\nData provision\nSimple responses",
+    "benefits": "Simple implementation\nPredictable data\nFast execution",
+    "drawbacks": "Limited behavior\nMaintenance overhead\nStatic responses",
+    "use_cases": "Data providers\nConfiguration objects\nSimple services",
+    "complexity": "Low",
+    "tags": [
+      "testing",
+      "stub",
+      "data"
+    ]
+  }
+]

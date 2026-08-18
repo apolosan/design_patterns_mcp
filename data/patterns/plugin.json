@@ -1,22 +1,24 @@
-{
-  "id": "plugin",
-  "name": "Plugin Pattern",
-  "category": "Enterprise",
-  "description": "Links classes during configuration rather than compilation",
-  "when_to_use": "Extensibility\nRuntime configuration\nThird-party integration",
-  "benefits": "Extensibility\nRuntime configuration\nModularity\nThird-party support",
-  "drawbacks": "Complex configuration\nRuntime errors\nPerformance overhead",
-  "use_cases": "Extension systems\nThird-party integrations\nConfigurable applications",
-  "complexity": "High",
-  "tags": [
-    "enterprise",
-    "plugin",
-    "extensibility"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Plugin: add functionality at runtime\ninterface Plugin {\n  name: string;\n  initialize(app: Application): void;\n}\n\nclass Application {\n  private plugins: Plugin[] = [];\n  private hooks = new Map<string, Array<(...args: any[]) => void>>();\n  \n  use(plugin: Plugin): void {\n    this.plugins.push(plugin);\n    plugin.initialize(this);\n  }\n  \n  hook(event: string, callback: (...args: any[]) => void): void {\n    if (!this.hooks.has(event)) {\n      this.hooks.set(event, []);\n    }\n    this.hooks.get(event)!.push(callback);\n  }\n  \n  trigger(event: string, ...args: any[]): void {\n    const callbacks = this.hooks.get(event) || [];\n    callbacks.forEach(cb => cb(...args));\n  }\n}\n\n// Plugins\nclass LoggingPlugin implements Plugin {\n  name = 'logging';\n  \n  initialize(app: Application): void {\n    app.hook('request', (req) => {\n      console.log('Request:', req.method, req.url);\n    });\n  }\n}\n\nclass AuthPlugin implements Plugin {\n  name = 'auth';\n  \n  initialize(app: Application): void {\n    app.hook('request', (req) => {\n      if (!req.headers.authorization) {\n        throw new Error('Unauthorized');\n      }\n    });\n  }\n}\n\n// Usage\nconst app = new Application();\napp.use(new LoggingPlugin());\napp.use(new AuthPlugin());\n\napp.trigger('request', { method: 'GET', url: '/users' });"
+[
+  {
+    "id": "plugin",
+    "name": "Plugin Pattern",
+    "category": "Enterprise",
+    "description": "Links classes during configuration rather than compilation",
+    "when_to_use": "Extensibility\nRuntime configuration\nThird-party integration",
+    "benefits": "Extensibility\nRuntime configuration\nModularity\nThird-party support",
+    "drawbacks": "Complex configuration\nRuntime errors\nPerformance overhead",
+    "use_cases": "Extension systems\nThird-party integrations\nConfigurable applications",
+    "complexity": "High",
+    "tags": [
+      "enterprise",
+      "plugin",
+      "extensibility"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Plugin: add functionality at runtime\ninterface Plugin {\n  name: string;\n  initialize(app: Application): void;\n}\n\nclass Application {\n  private plugins: Plugin[] = [];\n  private hooks = new Map<string, Array<(...args: any[]) => void>>();\n  \n  use(plugin: Plugin): void {\n    this.plugins.push(plugin);\n    plugin.initialize(this);\n  }\n  \n  hook(event: string, callback: (...args: any[]) => void): void {\n    if (!this.hooks.has(event)) {\n      this.hooks.set(event, []);\n    }\n    this.hooks.get(event)!.push(callback);\n  }\n  \n  trigger(event: string, ...args: any[]): void {\n    const callbacks = this.hooks.get(event) || [];\n    callbacks.forEach(cb => cb(...args));\n  }\n}\n\n// Plugins\nclass LoggingPlugin implements Plugin {\n  name = 'logging';\n  \n  initialize(app: Application): void {\n    app.hook('request', (req) => {\n      console.log('Request:', req.method, req.url);\n    });\n  }\n}\n\nclass AuthPlugin implements Plugin {\n  name = 'auth';\n  \n  initialize(app: Application): void {\n    app.hook('request', (req) => {\n      if (!req.headers.authorization) {\n        throw new Error('Unauthorized');\n      }\n    });\n  }\n}\n\n// Usage\nconst app = new Application();\napp.use(new LoggingPlugin());\napp.use(new AuthPlugin());\n\napp.trigger('request', { method: 'GET', url: '/users' });"
+      }
     }
   }
-}
+]

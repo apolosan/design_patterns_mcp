@@ -1,22 +1,24 @@
-{
-  "id": "subject",
-  "name": "Subject Pattern",
-  "category": "Reactive",
-  "description": "Acts as both observer and observable in reactive streams",
-  "when_to_use": "Multicasting\nState management\nEvent bridges",
-  "benefits": "Multicasting\nState sharing\nEvent bridging\nFlexibility",
-  "drawbacks": "Complexity\nMemory management\nSubscription handling",
-  "use_cases": "State stores\nEvent buses\nData sharing",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "subject",
-    "multicast"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Subject: observable and observer\nclass Subject<T> {\n  private observers: Observer<T>[] = [];\n  \n  subscribe(observer: Observer<T>): Subscription {\n    this.observers.push(observer);\n    return {\n      unsubscribe: () => {\n        const index = this.observers.indexOf(observer);\n        if (index > -1) this.observers.splice(index, 1);\n      }\n    };\n  }\n  \n  next(value: T): void {\n    this.observers.forEach(obs => obs.next(value));\n  }\n  \n  error(err: any): void {\n    this.observers.forEach(obs => obs.error(err));\n  }\n  \n  complete(): void {\n    this.observers.forEach(obs => obs.complete());\n  }\n}\n\n// Usage: Multicast to multiple observers\nconst subject = new Subject<number>();\n\nsubject.subscribe({ \n  next: x => console.log('Observer 1:', x),\n  error: () => {},\n  complete: () => {}\n});\n\nsubject.subscribe({ \n  next: x => console.log('Observer 2:', x),\n  error: () => {},\n  complete: () => {}\n});\n\nsubject.next(1);  // Both observers receive\nsubject.next(2);"
+[
+  {
+    "id": "subject",
+    "name": "Subject Pattern",
+    "category": "Reactive",
+    "description": "Acts as both observer and observable in reactive streams",
+    "when_to_use": "Multicasting\nState management\nEvent bridges",
+    "benefits": "Multicasting\nState sharing\nEvent bridging\nFlexibility",
+    "drawbacks": "Complexity\nMemory management\nSubscription handling",
+    "use_cases": "State stores\nEvent buses\nData sharing",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "subject",
+      "multicast"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Subject: observable and observer\nclass Subject<T> {\n  private observers: Observer<T>[] = [];\n  \n  subscribe(observer: Observer<T>): Subscription {\n    this.observers.push(observer);\n    return {\n      unsubscribe: () => {\n        const index = this.observers.indexOf(observer);\n        if (index > -1) this.observers.splice(index, 1);\n      }\n    };\n  }\n  \n  next(value: T): void {\n    this.observers.forEach(obs => obs.next(value));\n  }\n  \n  error(err: any): void {\n    this.observers.forEach(obs => obs.error(err));\n  }\n  \n  complete(): void {\n    this.observers.forEach(obs => obs.complete());\n  }\n}\n\n// Usage: Multicast to multiple observers\nconst subject = new Subject<number>();\n\nsubject.subscribe({ \n  next: x => console.log('Observer 1:', x),\n  error: () => {},\n  complete: () => {}\n});\n\nsubject.subscribe({ \n  next: x => console.log('Observer 2:', x),\n  error: () => {},\n  complete: () => {}\n});\n\nsubject.next(1);  // Both observers receive\nsubject.next(2);"
+      }
     }
   }
-}
+]

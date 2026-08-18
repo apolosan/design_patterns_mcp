@@ -1,16 +1,18 @@
-{
-  "id": "customer-supplier",
-  "name": "Customer/Supplier",
-  "category": "Domain-Driven Design",
-  "description": "Relationship where upstream team acts as supplier to downstream customer team",
-  "when_to_use": "Clear dependencies\nService provision\nTeam relationships",
-  "benefits": "Clear responsibilities\nService orientation\nDefined interfaces",
-  "drawbacks": "Dependency management\nCommunication overhead\nPower imbalance",
-  "use_cases": "Service relationships\nAPI provision\nData feeds",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "strategic",
-    "relationship"
-  ]
-}
+[
+  {
+    "id": "customer-supplier",
+    "name": "Customer/Supplier",
+    "category": "Domain-Driven Design",
+    "description": "Relationship where upstream team acts as supplier to downstream customer team",
+    "when_to_use": "Clear dependencies\nService provision\nTeam relationships",
+    "benefits": "Clear responsibilities\nService orientation\nDefined interfaces",
+    "drawbacks": "Dependency management\nCommunication overhead\nPower imbalance",
+    "use_cases": "Service relationships\nAPI provision\nData feeds",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "relationship"
+    ]
+  }
+]

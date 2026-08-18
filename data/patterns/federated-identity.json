@@ -1,16 +1,18 @@
-{
-  "id": "federated-identity",
-  "name": "Federated Identity Pattern",
-  "category": "Cloud-Native",
-  "description": "Delegates authentication to external identity providers",
-  "when_to_use": "Multi-organization access\nSingle sign-on\nIdentity management",
-  "benefits": "Simplified authentication\nUser convenience\nCentralized identity",
-  "drawbacks": "External dependencies\nComplexity\nTrust relationships",
-  "use_cases": "Enterprise applications\nSaaS platforms\nPartner integration",
-  "complexity": "High",
-  "tags": [
-    "authentication",
-    "identity",
-    "sso"
-  ]
-}
+[
+  {
+    "id": "federated-identity",
+    "name": "Federated Identity Pattern",
+    "category": "Cloud-Native",
+    "description": "Delegates authentication to external identity providers",
+    "when_to_use": "Multi-organization access\nSingle sign-on\nIdentity management",
+    "benefits": "Simplified authentication\nUser convenience\nCentralized identity",
+    "drawbacks": "External dependencies\nComplexity\nTrust relationships",
+    "use_cases": "Enterprise applications\nSaaS platforms\nPartner integration",
+    "complexity": "High",
+    "tags": [
+      "authentication",
+      "identity",
+      "sso"
+    ]
+  }
+]

@@ -1,16 +1,18 @@
-{
-  "id": "secure-session-management",
-  "name": "Secure Session Management",
-  "category": "Security",
-  "description": "Manages user sessions securely with proper lifecycle and protection",
-  "when_to_use": "Web applications\nStateful interactions\nUser context",
-  "benefits": "Session security\nState management\nUser experience",
-  "drawbacks": "Memory overhead\nScalability challenges\nSession hijacking risk",
-  "use_cases": "Web applications\nShopping carts\nUser preferences",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "session",
-    "state"
-  ]
-}
+[
+  {
+    "id": "secure-session-management",
+    "name": "Secure Session Management",
+    "category": "Security",
+    "description": "Manages user sessions securely with proper lifecycle and protection",
+    "when_to_use": "Web applications\nStateful interactions\nUser context",
+    "benefits": "Session security\nState management\nUser experience",
+    "drawbacks": "Memory overhead\nScalability challenges\nSession hijacking risk",
+    "use_cases": "Web applications\nShopping carts\nUser preferences",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "session",
+      "state"
+    ]
+  }
+]

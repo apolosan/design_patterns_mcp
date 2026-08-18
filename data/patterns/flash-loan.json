@@ -1,24 +1,26 @@
-{
-  "id": "flash-loan",
-  "name": "Flash Loan",
-  "category": "DeFi Lending",
-  "description": "Uncollateralized loan repaid in same transaction Problem: Need capital without upfront collateral",
-  "when_to_use": "Loan and repayment atomic, reverts if not repaid",
-  "benefits": "No capital needed, instant liquidity, atomic",
-  "drawbacks": "Same-transaction repayment, complex logic, exploit risk",
-  "use_cases": "Arbitrage, collateral swaps, liquidations, refinancing",
-  "complexity": "High",
-  "tags": [
-    "defi",
-    "flash-loan",
-    "lending",
-    "arbitrage",
-    "aave"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "interface IFlashLoanReceiver {\n    function executeOperation(\n        address[] calldata assets,\n        uint256[] calldata amounts,\n        uint256[] calldata premiums,\n        bytes calldata params\n    ) external returns (bool);\n}"
+[
+  {
+    "id": "flash-loan",
+    "name": "Flash Loan",
+    "category": "DeFi Lending",
+    "description": "Uncollateralized loan repaid in same transaction Problem: Need capital without upfront collateral",
+    "when_to_use": "Loan and repayment atomic, reverts if not repaid",
+    "benefits": "No capital needed, instant liquidity, atomic",
+    "drawbacks": "Same-transaction repayment, complex logic, exploit risk",
+    "use_cases": "Arbitrage, collateral swaps, liquidations, refinancing",
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "flash-loan",
+      "lending",
+      "arbitrage",
+      "aave"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "interface IFlashLoanReceiver {\n    function executeOperation(\n        address[] calldata assets,\n        uint256[] calldata amounts,\n        uint256[] calldata premiums,\n        bytes calldata params\n    ) external returns (bool);\n}"
+      }
     }
   }
-}
+]

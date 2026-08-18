@@ -1,24 +1,26 @@
-{
-  "id": "unchecked-math-pattern",
-  "name": "Unchecked Math Pattern",
-  "category": "Smart Contract Gas Optimization",
-  "description": "Skip overflow/underflow checks when mathematically impossible. Saves ~20-40 gas per operation.",
-  "when_to_use": "Loop counters, validated math contexts, post-Solidity 0.8.0",
-  "benefits": "Saves 20-40 gas per arithmetic operation",
-  "drawbacks": "Must manually ensure no overflow/underflow, security risk if misused",
-  "use_cases": "Loops, batch operations, increment operations known to be safe",
-  "complexity": "Medium",
-  "tags": [
-    "gas-optimization",
-    "solidity",
-    "loops",
-    "arithmetic",
-    "safety"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "unchecked {\n    for (uint256 i = 0; i < length; ++i) {\n        _transfer(recipients[i], amounts[i]);\n        // i cannot overflow: array length limited\n    }\n}"
+[
+  {
+    "id": "unchecked-math-pattern",
+    "name": "Unchecked Math Pattern",
+    "category": "Smart Contract Gas Optimization",
+    "description": "Skip overflow/underflow checks when mathematically impossible. Saves ~20-40 gas per operation.",
+    "when_to_use": "Loop counters, validated math contexts, post-Solidity 0.8.0",
+    "benefits": "Saves 20-40 gas per arithmetic operation",
+    "drawbacks": "Must manually ensure no overflow/underflow, security risk if misused",
+    "use_cases": "Loops, batch operations, increment operations known to be safe",
+    "complexity": "Medium",
+    "tags": [
+      "gas-optimization",
+      "solidity",
+      "loops",
+      "arithmetic",
+      "safety"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "unchecked {\n    for (uint256 i = 0; i < length; ++i) {\n        _transfer(recipients[i], amounts[i]);\n        // i cannot overflow: array length limited\n    }\n}"
+      }
     }
   }
-}
+]

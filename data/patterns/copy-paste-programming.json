@@ -1,15 +1,17 @@
-{
-  "id": "copy-paste-programming",
-  "name": "Copy-Paste Programming Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Reusing code by copying and pasting rather than creating reusable abstractions",
-  "when_to_use": "Similar code appears in multiple places\nQuick fixes are duplicated\nLogic is copied instead of abstracted",
-  "drawbacks": "Code duplication\nMaintenance nightmares\nInconsistent behavior\nBug multiplication",
-  "use_cases": "Utility functions copied across modules\nSimilar UI components without abstraction\nValidation logic repeated in multiple places",
-  "complexity": "Medium",
-  "tags": [
-    "anti-pattern",
-    "duplication",
-    "maintainability"
-  ]
-}
+[
+  {
+    "id": "copy-paste-programming",
+    "name": "Copy-Paste Programming Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Reusing code by copying and pasting rather than creating reusable abstractions",
+    "when_to_use": "Similar code appears in multiple places\nQuick fixes are duplicated\nLogic is copied instead of abstracted",
+    "drawbacks": "Code duplication\nMaintenance nightmares\nInconsistent behavior\nBug multiplication",
+    "use_cases": "Utility functions copied across modules\nSimilar UI components without abstraction\nValidation logic repeated in multiple places",
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "duplication",
+      "maintainability"
+    ]
+  }
+]

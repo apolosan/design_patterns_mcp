@@ -1,23 +1,25 @@
-{
-  "id": "interest-rate-model",
-  "name": "Interest Rate Model",
-  "category": "DeFi Lending",
-  "description": "Dynamic rates based on utilization with kink mechanism",
-  "when_to_use": "All lending protocols, borrow/supply rate calculation",
-  "benefits": "Market-driven, incentivizes balance, automatic adjustment",
-  "drawbacks": "Can spike during high demand, complex parameters",
-  "use_cases": "Aave rates, Compound rates, optimal utilization",
-  "complexity": "Medium",
-  "tags": [
-    "defi",
-    "lending",
-    "interest-rates",
-    "utilization"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Interest Rate: kink model\nfunction getBorrowRate(uint256 utilization) public view returns (uint256) {\n    if (utilization <= KINK) {\n        return BASE_RATE + utilization * SLOPE1 / 1e18;\n    } else {\n        return BASE_RATE + KINK * SLOPE1 / 1e18 +\n               (utilization - KINK) * SLOPE2 / 1e18;\n    }\n}"
+[
+  {
+    "id": "interest-rate-model",
+    "name": "Interest Rate Model",
+    "category": "DeFi Lending",
+    "description": "Dynamic rates based on utilization with kink mechanism",
+    "when_to_use": "All lending protocols, borrow/supply rate calculation",
+    "benefits": "Market-driven, incentivizes balance, automatic adjustment",
+    "drawbacks": "Can spike during high demand, complex parameters",
+    "use_cases": "Aave rates, Compound rates, optimal utilization",
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "lending",
+      "interest-rates",
+      "utilization"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Interest Rate: kink model\nfunction getBorrowRate(uint256 utilization) public view returns (uint256) {\n    if (utilization <= KINK) {\n        return BASE_RATE + utilization * SLOPE1 / 1e18;\n    } else {\n        return BASE_RATE + KINK * SLOPE1 / 1e18 +\n               (utilization - KINK) * SLOPE2 / 1e18;\n    }\n}"
+      }
     }
   }
-}
+]

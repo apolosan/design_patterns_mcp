@@ -1,22 +1,24 @@
-{
-  "id": "load-balancing",
-  "name": "Load Balancing Pattern",
-  "category": "Performance",
-  "description": "Distributes work across multiple resources to optimize performance and reliability",
-  "when_to_use": "High load\nScalability\nResource distribution",
-  "benefits": "Better resource utilization\nImproved scalability\nFault tolerance",
-  "drawbacks": "Complexity\nLoad balancer overhead\nState management",
-  "use_cases": "Web servers\nDatabase clusters\nMicroservices",
-  "complexity": "High",
-  "tags": [
-    "performance",
-    "load-balancing",
-    "scalability"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Load Balancing: distribute work across resources\nclass LoadBalancer<T> {\n  private servers: T[];\n  private currentIndex = 0;\n  private requestCounts = new Map<T, number>();\n  \n  constructor(servers: T[]) {\n    this.servers = servers;\n    servers.forEach(s => this.requestCounts.set(s, 0));\n  }\n  \n  roundRobin(): T {\n    const server = this.servers[this.currentIndex];\n    this.currentIndex = (this.currentIndex + 1) % this.servers.length;\n    return server;\n  }\n  \n  leastConnections(): T {\n    let minServer = this.servers[0];\n    let minCount = this.requestCounts.get(minServer)!;\n    \n    for (const server of this.servers) {\n      const count = this.requestCounts.get(server)!;\n      if (count < minCount) {\n        minCount = count;\n        minServer = server;\n      }\n    }\n    \n    this.requestCounts.set(minServer, minCount + 1);\n    return minServer;\n  }\n  \n  releaseConnection(server: T): void {\n    const count = this.requestCounts.get(server)!;\n    this.requestCounts.set(server, Math.max(0, count - 1));\n  }\n}\n\nconst balancer = new LoadBalancer([server1, server2, server3]);\nconst server = balancer.leastConnections();\n// Use server...\nbalancer.releaseConnection(server);"
+[
+  {
+    "id": "load-balancing",
+    "name": "Load Balancing Pattern",
+    "category": "Performance",
+    "description": "Distributes work across multiple resources to optimize performance and reliability",
+    "when_to_use": "High load\nScalability\nResource distribution",
+    "benefits": "Better resource utilization\nImproved scalability\nFault tolerance",
+    "drawbacks": "Complexity\nLoad balancer overhead\nState management",
+    "use_cases": "Web servers\nDatabase clusters\nMicroservices",
+    "complexity": "High",
+    "tags": [
+      "performance",
+      "load-balancing",
+      "scalability"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Load Balancing: distribute work across resources\nclass LoadBalancer<T> {\n  private servers: T[];\n  private currentIndex = 0;\n  private requestCounts = new Map<T, number>();\n  \n  constructor(servers: T[]) {\n    this.servers = servers;\n    servers.forEach(s => this.requestCounts.set(s, 0));\n  }\n  \n  roundRobin(): T {\n    const server = this.servers[this.currentIndex];\n    this.currentIndex = (this.currentIndex + 1) % this.servers.length;\n    return server;\n  }\n  \n  leastConnections(): T {\n    let minServer = this.servers[0];\n    let minCount = this.requestCounts.get(minServer)!;\n    \n    for (const server of this.servers) {\n      const count = this.requestCounts.get(server)!;\n      if (count < minCount) {\n        minCount = count;\n        minServer = server;\n      }\n    }\n    \n    this.requestCounts.set(minServer, minCount + 1);\n    return minServer;\n  }\n  \n  releaseConnection(server: T): void {\n    const count = this.requestCounts.get(server)!;\n    this.requestCounts.set(server, Math.max(0, count - 1));\n  }\n}\n\nconst balancer = new LoadBalancer([server1, server2, server3]);\nconst server = balancer.leastConnections();\n// Use server...\nbalancer.releaseConnection(server);"
+      }
     }
   }
-}
+]

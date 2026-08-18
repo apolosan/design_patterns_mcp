@@ -1,16 +1,18 @@
-{
-  "id": "function-composition",
-  "name": "Function Composition Pattern",
-  "category": "Functional",
-  "description": "Combines simple functions to build complex operations",
-  "when_to_use": "Pipeline processing\nCode reuse\nFunctional programming",
-  "benefits": "Modularity\nReusability\nTestability\nReadability",
-  "drawbacks": "Debugging complexity\nPerformance overhead\nLearning curve",
-  "use_cases": "Data pipelines\nValidation chains\nTransformation sequences",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "composition",
-    "pipeline"
-  ]
-}
+[
+  {
+    "id": "function-composition",
+    "name": "Function Composition Pattern",
+    "category": "Functional",
+    "description": "Combines simple functions to build complex operations",
+    "when_to_use": "Pipeline processing\nCode reuse\nFunctional programming",
+    "benefits": "Modularity\nReusability\nTestability\nReadability",
+    "drawbacks": "Debugging complexity\nPerformance overhead\nLearning curve",
+    "use_cases": "Data pipelines\nValidation chains\nTransformation sequences",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "composition",
+      "pipeline"
+    ]
+  }
+]

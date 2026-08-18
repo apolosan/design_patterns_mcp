@@ -1,22 +1,24 @@
-{
-  "id": "identity-map",
-  "name": "Identity Map",
-  "category": "Enterprise",
-  "description": "Ensures that each object gets loaded only once by keeping every loaded object in a map",
-  "when_to_use": "Object identity\nPerformance optimization\nMemory management",
-  "benefits": "Object identity\nPerformance\nMemory efficiency\nConsistency",
-  "drawbacks": "Memory overhead\nComplex cleanup\nConcurrency issues",
-  "use_cases": "ORM systems\nCaching layers\nSession management",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "identity",
-    "caching"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Identity Map: ensure one object instance per record\nclass IdentityMap<T> {\n  private map = new Map<string, T>();\n  \n  get(id: string): T | undefined {\n    return this.map.get(id);\n  }\n  \n  put(id: string, object: T): void {\n    this.map.set(id, object);\n  }\n  \n  has(id: string): boolean {\n    return this.map.has(id);\n  }\n  \n  clear(): void {\n    this.map.clear();\n  }\n}\n\nclass UserRepository {\n  private identityMap = new IdentityMap<User>();\n  \n  async findById(id: string): Promise<User> {\n    // Check map first\n    const cached = this.identityMap.get(id);\n    if (cached) {\n      console.log('Returning cached user');\n      return cached;\n    }\n    \n    // Load from database\n    const row = await db.query('SELECT * FROM users WHERE id = ?', [id]);\n    const user = new User(row);\n    \n    // Store in map\n    this.identityMap.put(id, user);\n    \n    return user;\n  }\n  \n  clearCache(): void {\n    this.identityMap.clear();\n  }\n}\n\n// Usage: Multiple calls return same instance\nconst repo = new UserRepository();\nconst user1 = await repo.findById('123');\nconst user2 = await repo.findById('123');\nconsole.log(user1 === user2); // true - same instance"
+[
+  {
+    "id": "identity-map",
+    "name": "Identity Map",
+    "category": "Enterprise",
+    "description": "Ensures that each object gets loaded only once by keeping every loaded object in a map",
+    "when_to_use": "Object identity\nPerformance optimization\nMemory management",
+    "benefits": "Object identity\nPerformance\nMemory efficiency\nConsistency",
+    "drawbacks": "Memory overhead\nComplex cleanup\nConcurrency issues",
+    "use_cases": "ORM systems\nCaching layers\nSession management",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "identity",
+      "caching"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Identity Map: ensure one object instance per record\nclass IdentityMap<T> {\n  private map = new Map<string, T>();\n  \n  get(id: string): T | undefined {\n    return this.map.get(id);\n  }\n  \n  put(id: string, object: T): void {\n    this.map.set(id, object);\n  }\n  \n  has(id: string): boolean {\n    return this.map.has(id);\n  }\n  \n  clear(): void {\n    this.map.clear();\n  }\n}\n\nclass UserRepository {\n  private identityMap = new IdentityMap<User>();\n  \n  async findById(id: string): Promise<User> {\n    // Check map first\n    const cached = this.identityMap.get(id);\n    if (cached) {\n      console.log('Returning cached user');\n      return cached;\n    }\n    \n    // Load from database\n    const row = await db.query('SELECT * FROM users WHERE id = ?', [id]);\n    const user = new User(row);\n    \n    // Store in map\n    this.identityMap.put(id, user);\n    \n    return user;\n  }\n  \n  clearCache(): void {\n    this.identityMap.clear();\n  }\n}\n\n// Usage: Multiple calls return same instance\nconst repo = new UserRepository();\nconst user1 = await repo.findById('123');\nconst user2 = await repo.findById('123');\nconsole.log(user1 === user2); // true - same instance"
+      }
     }
   }
-}
+]

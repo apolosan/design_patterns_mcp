@@ -1,16 +1,18 @@
-{
-  "id": "edge-processing",
-  "name": "Edge Processing Pattern",
-  "category": "IoT",
-  "description": "Processes data at edge devices to reduce latency and bandwidth usage",
-  "when_to_use": "Real-time processing\nBandwidth constraints\nLow latency requirements",
-  "benefits": "Reduced latency\nBandwidth savings\nLocal processing",
-  "drawbacks": "Limited processing power\nComplex deployment\nEdge management",
-  "use_cases": "Real-time analytics\nVideo processing\nAutonomous vehicles",
-  "complexity": "High",
-  "tags": [
-    "iot",
-    "edge",
-    "processing"
-  ]
-}
+[
+  {
+    "id": "edge-processing",
+    "name": "Edge Processing Pattern",
+    "category": "IoT",
+    "description": "Processes data at edge devices to reduce latency and bandwidth usage",
+    "when_to_use": "Real-time processing\nBandwidth constraints\nLow latency requirements",
+    "benefits": "Reduced latency\nBandwidth savings\nLocal processing",
+    "drawbacks": "Limited processing power\nComplex deployment\nEdge management",
+    "use_cases": "Real-time analytics\nVideo processing\nAutonomous vehicles",
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "edge",
+      "processing"
+    ]
+  }
+]

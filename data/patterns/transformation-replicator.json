@@ -1,18 +1,20 @@
-{
-  "id": "transformation-replicator",
-  "name": "Transformation Replicator",
-  "category": "Data Ingestion",
-  "description": "The Transformation Replicator pattern, in addition to the classical read and write parts from the Passthrough Replicator pattern, has a transformation layer in between. This is necessary when replicating data with sensitive information that needs to be anonymized or removed during replication.",
-  "when_to_use": "[\"Replicating data with sensitive information\",\"Need to anonymize or remove PII during replication\"]",
-  "benefits": "[\"Handles PII data safely\",\"Customizable transformation logic\"]",
-  "drawbacks": "[\"Transformation risk for text formats\",\"Desynchronization risks\"]",
-  "use_cases": "[\"Testing with production-like data\",\"Data anonymization\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"replication\"",
-    "\"data-ingestion\"",
-    "\"transformation\"",
-    "\"pii\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "transformation-replicator",
+    "name": "Transformation Replicator",
+    "category": "Data Ingestion",
+    "description": "The Transformation Replicator pattern, in addition to the classical read and write parts from the Passthrough Replicator pattern, has a transformation layer in between. This is necessary when replicating data with sensitive information that needs to be anonymized or removed during replication.",
+    "when_to_use": "[\"Replicating data with sensitive information\",\"Need to anonymize or remove PII during replication\"]",
+    "benefits": "[\"Handles PII data safely\",\"Customizable transformation logic\"]",
+    "drawbacks": "[\"Transformation risk for text formats\",\"Desynchronization risks\"]",
+    "use_cases": "[\"Testing with production-like data\",\"Data anonymization\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"replication\"",
+      "\"data-ingestion\"",
+      "\"transformation\"",
+      "\"pii\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

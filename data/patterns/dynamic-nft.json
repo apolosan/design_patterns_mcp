@@ -1,24 +1,26 @@
-{
-  "id": "dynamic-nft",
-  "name": "Dynamic NFT",
-  "category": "NFT",
-  "description": "Metadata that changes based on external data or time",
-  "when_to_use": "Interactive art, game progression, oracle-fed NFTs",
-  "benefits": "Interactive, increased utility, engagement",
-  "drawbacks": "Oracle dependency, complexity, gas costs",
-  "use_cases": "Weather-reactive art, leveling systems, evolving metadata",
-  "complexity": "Medium",
-  "tags": [
-    "nft",
-    "dynamic",
-    "oracle",
-    "chainlink",
-    "metadata"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Dynamic NFT: Chainlink oracle updates\ncontract DynamicNFT is ERC721, ChainlinkClient {\n    mapping(uint256 => uint256) public level;\n    \n    function updateLevel(uint256 tokenId) external {\n        Chainlink.Request memory req = buildChainlinkRequest(...);\n        sendChainlinkRequest(req, fee);\n    }\n    \n    function fulfill(bytes32 requestId, uint256 data) public {\n        level[tokenId] = data;\n    }\n}"
+[
+  {
+    "id": "dynamic-nft",
+    "name": "Dynamic NFT",
+    "category": "NFT",
+    "description": "Metadata that changes based on external data or time",
+    "when_to_use": "Interactive art, game progression, oracle-fed NFTs",
+    "benefits": "Interactive, increased utility, engagement",
+    "drawbacks": "Oracle dependency, complexity, gas costs",
+    "use_cases": "Weather-reactive art, leveling systems, evolving metadata",
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "dynamic",
+      "oracle",
+      "chainlink",
+      "metadata"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Dynamic NFT: Chainlink oracle updates\ncontract DynamicNFT is ERC721, ChainlinkClient {\n    mapping(uint256 => uint256) public level;\n    \n    function updateLevel(uint256 tokenId) external {\n        Chainlink.Request memory req = buildChainlinkRequest(...);\n        sendChainlinkRequest(req, fee);\n    }\n    \n    function fulfill(bytes32 requestId, uint256 data) public {\n        level[tokenId] = data;\n    }\n}"
+      }
     }
   }
-}
+]

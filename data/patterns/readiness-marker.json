@@ -1,18 +1,20 @@
-{
-  "id": "readiness-marker",
-  "name": "Readiness Marker",
-  "category": "Data Ingestion",
-  "description": "The Readiness Marker is a pattern that helps trigger the ingestion process at the most appropriate moment. Its goal is to guarantee the ingestion of the complete dataset. The first implementation uses an event to signal the dataset's completeness, often implemented with a flag file created after successful data generation.",
-  "when_to_use": "[\"Need to signal when dataset is complete\",\"Preventing consumption of incomplete data\"]",
-  "benefits": "[\"Guarantees complete dataset ingestion\",\"Simple implementation\"]",
-  "drawbacks": "[\"Lack of enforcement\",\"Reliability issues with late data\"]",
-  "use_cases": "[\"Batch job coordination\",\"Data pipeline synchronization\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"readiness\"",
-    "\"data-ingestion\"",
-    "\"marker\"",
-    "\"synchronization\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "readiness-marker",
+    "name": "Readiness Marker",
+    "category": "Data Ingestion",
+    "description": "The Readiness Marker is a pattern that helps trigger the ingestion process at the most appropriate moment. Its goal is to guarantee the ingestion of the complete dataset. The first implementation uses an event to signal the dataset's completeness, often implemented with a flag file created after successful data generation.",
+    "when_to_use": "[\"Need to signal when dataset is complete\",\"Preventing consumption of incomplete data\"]",
+    "benefits": "[\"Guarantees complete dataset ingestion\",\"Simple implementation\"]",
+    "drawbacks": "[\"Lack of enforcement\",\"Reliability issues with late data\"]",
+    "use_cases": "[\"Batch job coordination\",\"Data pipeline synchronization\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"readiness\"",
+      "\"data-ingestion\"",
+      "\"marker\"",
+      "\"synchronization\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

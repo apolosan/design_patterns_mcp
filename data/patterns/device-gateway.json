@@ -1,16 +1,18 @@
-{
-  "id": "device-gateway",
-  "name": "Device Gateway Pattern",
-  "category": "IoT",
-  "description": "Intermediary that connects devices to cloud services and handles protocol translation",
-  "when_to_use": "Protocol translation\nDevice aggregation\nLegacy device integration",
-  "benefits": "Protocol abstraction\nDevice aggregation\nLegacy support",
-  "drawbacks": "Single point of failure\nGateway complexity\nPerformance bottleneck",
-  "use_cases": "Smart home hubs\nIndustrial gateways\nProtocol converters",
-  "complexity": "High",
-  "tags": [
-    "iot",
-    "gateway",
-    "protocol"
-  ]
-}
+[
+  {
+    "id": "device-gateway",
+    "name": "Device Gateway Pattern",
+    "category": "IoT",
+    "description": "Intermediary that connects devices to cloud services and handles protocol translation",
+    "when_to_use": "Protocol translation\nDevice aggregation\nLegacy device integration",
+    "benefits": "Protocol abstraction\nDevice aggregation\nLegacy support",
+    "drawbacks": "Single point of failure\nGateway complexity\nPerformance bottleneck",
+    "use_cases": "Smart home hubs\nIndustrial gateways\nProtocol converters",
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "gateway",
+      "protocol"
+    ]
+  }
+]

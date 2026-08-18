@@ -1,16 +1,18 @@
-{
-  "id": "shared-kernel",
-  "name": "Shared Kernel",
-  "category": "Domain-Driven Design",
-  "description": "Subset of domain model shared between multiple bounded contexts",
-  "when_to_use": "Close collaboration\nShared concepts\nSmall teams",
-  "benefits": "Code reuse\nConsistency\nReduced duplication",
-  "drawbacks": "Tight coupling\nCoordination overhead\nChange management",
-  "use_cases": "Common utilities\nShared data structures\nBase types",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "strategic",
-    "sharing"
-  ]
-}
+[
+  {
+    "id": "shared-kernel",
+    "name": "Shared Kernel",
+    "category": "Domain-Driven Design",
+    "description": "Subset of domain model shared between multiple bounded contexts",
+    "when_to_use": "Close collaboration\nShared concepts\nSmall teams",
+    "benefits": "Code reuse\nConsistency\nReduced duplication",
+    "drawbacks": "Tight coupling\nCoordination overhead\nChange management",
+    "use_cases": "Common utilities\nShared data structures\nBase types",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "sharing"
+    ]
+  }
+]

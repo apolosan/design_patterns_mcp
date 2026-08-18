@@ -1,22 +1,24 @@
-{
-  "id": "backpressure",
-  "name": "Backpressure Pattern",
-  "category": "Reactive",
-  "description": "Handles situations where data producers are faster than consumers",
-  "when_to_use": "High-throughput systems\nStream processing\nRate limiting",
-  "benefits": "System stability\nResource protection\nFlow control\nPerformance",
-  "drawbacks": "Implementation complexity\nBuffering overhead\nLatency",
-  "use_cases": "Stream processing\nMessage queues\nData pipelines",
-  "complexity": "High",
-  "tags": [
-    "backpressure",
-    "flow-control",
-    "performance"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Backpressure: handle fast producer, slow consumer\nclass BackpressureObservable<T> {\n  constructor(\n    private source: Observable<T>,\n    private strategy: 'buffer' | 'drop' | 'latest'\n  ) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    const buffer: T[] = [];\n    let processing = false;\n    \n    const processNext = async () => {\n      if (processing || buffer.length === 0) return;\n      \n      processing = true;\n      const value = buffer.shift()!;\n      \n      try {\n        await observer.next(value);\n      } finally {\n        processing = false;\n        processNext();\n      }\n    };\n    \n    return this.source.subscribe({\n      next: value => {\n        if (this.strategy === 'buffer') {\n          buffer.push(value);\n        } else if (this.strategy === 'drop' && !processing) {\n          buffer.push(value);\n        } else if (this.strategy === 'latest') {\n          buffer.length = 0;\n          buffer.push(value);\n        }\n        processNext();\n      },\n      error: err => observer.error(err),\n      complete: () => observer.complete()\n    });\n  }\n}\n\n// Usage: Fast data producer, slow processor\nconst fastProducer = interval(10);  // Every 10ms\nconst slowConsumer = new BackpressureObservable(fastProducer, 'drop');\n\nslowConsumer.subscribe({\n  next: async value => {\n    await slowOperation(value);  // Takes 100ms\n  },\n  error: () => {},\n  complete: () => {}\n});"
+[
+  {
+    "id": "backpressure",
+    "name": "Backpressure Pattern",
+    "category": "Reactive",
+    "description": "Handles situations where data producers are faster than consumers",
+    "when_to_use": "High-throughput systems\nStream processing\nRate limiting",
+    "benefits": "System stability\nResource protection\nFlow control\nPerformance",
+    "drawbacks": "Implementation complexity\nBuffering overhead\nLatency",
+    "use_cases": "Stream processing\nMessage queues\nData pipelines",
+    "complexity": "High",
+    "tags": [
+      "backpressure",
+      "flow-control",
+      "performance"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Backpressure: handle fast producer, slow consumer\nclass BackpressureObservable<T> {\n  constructor(\n    private source: Observable<T>,\n    private strategy: 'buffer' | 'drop' | 'latest'\n  ) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    const buffer: T[] = [];\n    let processing = false;\n    \n    const processNext = async () => {\n      if (processing || buffer.length === 0) return;\n      \n      processing = true;\n      const value = buffer.shift()!;\n      \n      try {\n        await observer.next(value);\n      } finally {\n        processing = false;\n        processNext();\n      }\n    };\n    \n    return this.source.subscribe({\n      next: value => {\n        if (this.strategy === 'buffer') {\n          buffer.push(value);\n        } else if (this.strategy === 'drop' && !processing) {\n          buffer.push(value);\n        } else if (this.strategy === 'latest') {\n          buffer.length = 0;\n          buffer.push(value);\n        }\n        processNext();\n      },\n      error: err => observer.error(err),\n      complete: () => observer.complete()\n    });\n  }\n}\n\n// Usage: Fast data producer, slow processor\nconst fastProducer = interval(10);  // Every 10ms\nconst slowConsumer = new BackpressureObservable(fastProducer, 'drop');\n\nslowConsumer.subscribe({\n  next: async value => {\n    await slowOperation(value);  // Takes 100ms\n  },\n  error: () => {},\n  complete: () => {}\n});"
+      }
     }
   }
-}
+]

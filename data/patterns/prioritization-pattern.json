@@ -1,19 +1,21 @@
-{
-  "id": "prioritization-pattern",
-  "name": "Prioritization Pattern",
-  "category": "AI/ML",
-  "description": "Enables agents to prioritize tasks, requests, or actions based on importance, urgency, or other criteria to optimize resource allocation.",
-  "when_to_use": "[\"Multiple concurrent tasks\",\"Resource constraints\",\"Time-sensitive operations\"]",
-  "benefits": "[\"Optimized resource use\",\"Better task management\",\"Improved efficiency\"]",
-  "drawbacks": "[\"Prioritization logic complexity\",\"Potential bias\",\"Dynamic adjustment needs\"]",
-  "use_cases": "[\"Task schedulers\",\"Resource managers\",\"Workflow systems\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"prioritization\"",
-    "\"scheduling\"",
-    "\"optimization\"",
-    "\"resources\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "prioritization-pattern",
+    "name": "Prioritization Pattern",
+    "category": "AI/ML",
+    "description": "Enables agents to prioritize tasks, requests, or actions based on importance, urgency, or other criteria to optimize resource allocation.",
+    "when_to_use": "[\"Multiple concurrent tasks\",\"Resource constraints\",\"Time-sensitive operations\"]",
+    "benefits": "[\"Optimized resource use\",\"Better task management\",\"Improved efficiency\"]",
+    "drawbacks": "[\"Prioritization logic complexity\",\"Potential bias\",\"Dynamic adjustment needs\"]",
+    "use_cases": "[\"Task schedulers\",\"Resource managers\",\"Workflow systems\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"prioritization\"",
+      "\"scheduling\"",
+      "\"optimization\"",
+      "\"resources\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

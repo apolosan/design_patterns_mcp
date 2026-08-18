@@ -1,16 +1,18 @@
-{
-  "id": "data-encryption",
-  "name": "Data Encryption Pattern",
-  "category": "Security",
-  "description": "Encrypts sensitive data at rest to protect against unauthorized access",
-  "when_to_use": "Sensitive data storage\nCompliance requirements\nData protection",
-  "benefits": "Data protection\nCompliance\nPrivacy",
-  "drawbacks": "Performance overhead\nKey management\nComplexity",
-  "use_cases": "Database encryption\nFile storage\nBackup protection",
-  "complexity": "High",
-  "tags": [
-    "security",
-    "encryption",
-    "storage"
-  ]
-}
+[
+  {
+    "id": "data-encryption",
+    "name": "Data Encryption Pattern",
+    "category": "Security",
+    "description": "Encrypts sensitive data at rest to protect against unauthorized access",
+    "when_to_use": "Sensitive data storage\nCompliance requirements\nData protection",
+    "benefits": "Data protection\nCompliance\nPrivacy",
+    "drawbacks": "Performance overhead\nKey management\nComplexity",
+    "use_cases": "Database encryption\nFile storage\nBackup protection",
+    "complexity": "High",
+    "tags": [
+      "security",
+      "encryption",
+      "storage"
+    ]
+  }
+]

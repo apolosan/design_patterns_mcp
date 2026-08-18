@@ -1,22 +1,24 @@
-{
-  "id": "switch-map",
-  "name": "SwitchMap Pattern",
-  "category": "Reactive",
-  "description": "Projects emissions to inner observables and switches to new ones",
-  "when_to_use": "Switching contexts\nCanceling previous\nLatest results",
-  "benefits": "Automatic cancellation\nLatest results\nMemory efficiency",
-  "drawbacks": "Lost emissions\nComplexity\nRace conditions",
-  "use_cases": "Search autocomplete\nNavigation\nData fetching",
-  "complexity": "High",
-  "tags": [
-    "reactive",
-    "switch",
-    "projection"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// SwitchMap: cancel previous inner observable\nclass Observable<T> {\n  switchMap<R>(project: (value: T) => Observable<R>): Observable<R> {\n    return new Observable(observer => {\n      let innerSub: Subscription | null = null;\n      \n      return this.subscribe({\n        next: value => {\n          if (innerSub) innerSub.unsubscribe();\n          \n          innerSub = project(value).subscribe({\n            next: inner => observer.next(inner),\n            error: err => observer.error(err),\n            complete: () => {}\n          });\n        },\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n}\n\n// Usage: Search autocomplete (cancel previous request)\nconst searchInput = new Subject<string>();\n\nsearchInput\n  .switchMap(query => searchAPI(query))\n  .subscribe({\n    next: results => console.log('Results:', results),\n    error: () => {},\n    complete: () => {}\n  });\n\nsearchInput.next('ja');   // Starts search\nsearchInput.next('jav');  // Cancels previous, starts new\nsearchInput.next('java'); // Cancels previous, starts new"
+[
+  {
+    "id": "switch-map",
+    "name": "SwitchMap Pattern",
+    "category": "Reactive",
+    "description": "Projects emissions to inner observables and switches to new ones",
+    "when_to_use": "Switching contexts\nCanceling previous\nLatest results",
+    "benefits": "Automatic cancellation\nLatest results\nMemory efficiency",
+    "drawbacks": "Lost emissions\nComplexity\nRace conditions",
+    "use_cases": "Search autocomplete\nNavigation\nData fetching",
+    "complexity": "High",
+    "tags": [
+      "reactive",
+      "switch",
+      "projection"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// SwitchMap: cancel previous inner observable\nclass Observable<T> {\n  switchMap<R>(project: (value: T) => Observable<R>): Observable<R> {\n    return new Observable(observer => {\n      let innerSub: Subscription | null = null;\n      \n      return this.subscribe({\n        next: value => {\n          if (innerSub) innerSub.unsubscribe();\n          \n          innerSub = project(value).subscribe({\n            next: inner => observer.next(inner),\n            error: err => observer.error(err),\n            complete: () => {}\n          });\n        },\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n}\n\n// Usage: Search autocomplete (cancel previous request)\nconst searchInput = new Subject<string>();\n\nsearchInput\n  .switchMap(query => searchAPI(query))\n  .subscribe({\n    next: results => console.log('Results:', results),\n    error: () => {},\n    complete: () => {}\n  });\n\nsearchInput.next('ja');   // Starts search\nsearchInput.next('jav');  // Cancels previous, starts new\nsearchInput.next('java'); // Cancels previous, starts new"
+      }
     }
   }
-}
+]

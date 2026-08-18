@@ -1,17 +1,19 @@
-{
-  "id": "static-late-data-integrator",
-  "name": "Static Late Data Integrator",
-  "category": "Error Management",
-  "description": "The Static Late Data Integrator provides a fixed tolerance period for including late data. It allows valuable late data to be included in processing with a simple, static configuration.",
-  "when_to_use": "[\"Late data is valuable\",\"Fixed tolerance acceptable\"]",
-  "benefits": "[\"Includes valuable late data\",\"Simple configuration\"]",
-  "drawbacks": "[\"Fixed tolerance may not fit all cases\",\"Potential delays\"]",
-  "use_cases": "[\"E-commerce order processing\",\"Financial transactions\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"error-management\"",
-    "\"late-data\"",
-    "\"integration\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "static-late-data-integrator",
+    "name": "Static Late Data Integrator",
+    "category": "Error Management",
+    "description": "The Static Late Data Integrator provides a fixed tolerance period for including late data. It allows valuable late data to be included in processing with a simple, static configuration.",
+    "when_to_use": "[\"Late data is valuable\",\"Fixed tolerance acceptable\"]",
+    "benefits": "[\"Includes valuable late data\",\"Simple configuration\"]",
+    "drawbacks": "[\"Fixed tolerance may not fit all cases\",\"Potential delays\"]",
+    "use_cases": "[\"E-commerce order processing\",\"Financial transactions\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"error-management\"",
+      "\"late-data\"",
+      "\"integration\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

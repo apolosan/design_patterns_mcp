@@ -1,23 +1,25 @@
-{
-  "id": "plasma",
-  "name": "Plasma",
-  "category": "Layer 2 Scaling",
-  "description": "Hierarchical side-chains with fraud proofs and mass exit mechanisms.",
-  "when_to_use": "Payment channels, simple token transfers, predictable state transitions",
-  "benefits": "High throughput, low fees, Ethereum security fallback",
-  "drawbacks": "Mass exit challenges, limited smart contract support, data availability",
-  "use_cases": "OMG Network (legacy), Polygon Plasma, payment networks",
-  "complexity": "High",
-  "tags": [
-    "layer2",
-    "plasma",
-    "fraud-proof",
-    "side-chain"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Plasma exit mechanism\nfunction startExit(uint256 utxoPos, bytes memory txBytes, bytes memory proof) external {\n    require(verifyInclusion(utxoPos, txBytes, proof));\n    exits[utxoPos] = Exit({\n        owner: msg.sender,\n        amount: getAmount(txBytes),\n        exitableAt: block.timestamp + CHALLENGE_PERIOD\n    });\n}"
+[
+  {
+    "id": "plasma",
+    "name": "Plasma",
+    "category": "Layer 2 Scaling",
+    "description": "Hierarchical side-chains with fraud proofs and mass exit mechanisms.",
+    "when_to_use": "Payment channels, simple token transfers, predictable state transitions",
+    "benefits": "High throughput, low fees, Ethereum security fallback",
+    "drawbacks": "Mass exit challenges, limited smart contract support, data availability",
+    "use_cases": "OMG Network (legacy), Polygon Plasma, payment networks",
+    "complexity": "High",
+    "tags": [
+      "layer2",
+      "plasma",
+      "fraud-proof",
+      "side-chain"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Plasma exit mechanism\nfunction startExit(uint256 utxoPos, bytes memory txBytes, bytes memory proof) external {\n    require(verifyInclusion(utxoPos, txBytes, proof));\n    exits[utxoPos] = Exit({\n        owner: msg.sender,\n        amount: getAmount(txBytes),\n        exitableAt: block.timestamp + CHALLENGE_PERIOD\n    });\n}"
+      }
     }
   }
-}
+]

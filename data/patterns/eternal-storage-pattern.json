@@ -1,24 +1,26 @@
-{
-  "id": "eternal-storage-pattern",
-  "name": "Eternal Storage Pattern",
-  "category": "Smart Contract Upgradeability",
-  "description": "Separate storage from logic for upgradeability. Storage contract persists, logic contracts can be replaced.",
-  "when_to_use": "Legacy systems, maximum upgrade flexibility, simple separation of concerns",
-  "benefits": "Clean separation, simple upgrades, storage persistence",
-  "drawbacks": "Verbose, gas-intensive, less common now (proxies preferred)",
-  "use_cases": "Early upgradeable contracts, maximum flexibility requirements",
-  "complexity": "Medium",
-  "tags": [
-    "upgradeability",
-    "storage",
-    "legacy",
-    "separation",
-    "pattern"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract EternalStorage {\n    mapping(bytes32 => uint256) uintStorage;\n    \n    function setUint(bytes32 key, uint256 value) external onlyLogic {\n        uintStorage[key] = value;\n    }\n    \n    function getUint(bytes32 key) external view returns (uint256) {\n        return uintStorage[key];\n    }\n}"
+[
+  {
+    "id": "eternal-storage-pattern",
+    "name": "Eternal Storage Pattern",
+    "category": "Smart Contract Upgradeability",
+    "description": "Separate storage from logic for upgradeability. Storage contract persists, logic contracts can be replaced.",
+    "when_to_use": "Legacy systems, maximum upgrade flexibility, simple separation of concerns",
+    "benefits": "Clean separation, simple upgrades, storage persistence",
+    "drawbacks": "Verbose, gas-intensive, less common now (proxies preferred)",
+    "use_cases": "Early upgradeable contracts, maximum flexibility requirements",
+    "complexity": "Medium",
+    "tags": [
+      "upgradeability",
+      "storage",
+      "legacy",
+      "separation",
+      "pattern"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract EternalStorage {\n    mapping(bytes32 => uint256) uintStorage;\n    \n    function setUint(bytes32 key, uint256 value) external onlyLogic {\n        uintStorage[key] = value;\n    }\n    \n    function getUint(bytes32 key) external view returns (uint256) {\n        return uintStorage[key];\n    }\n}"
+      }
     }
   }
-}
+]

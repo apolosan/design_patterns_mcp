@@ -1,24 +1,26 @@
-{
-  "id": "rbac",
-  "name": "Role-Based Access Control (RBAC)",
-  "category": "Smart Contract Access Control",
-  "description": "Granular permissions with multiple roles Problem: Need fine-grained access control with multiple admin types",
-  "when_to_use": "Role-based system with flexible permission assignment",
-  "benefits": "Granular permissions, flexible, scalable, audit trail",
-  "drawbacks": "Complex, higher gas, role management overhead",
-  "use_cases": "Complex protocols, DAOs, enterprise apps, multi-admin",
-  "complexity": "Medium",
-  "tags": [
-    "access-control",
-    "rbac",
-    "roles",
-    "permissions",
-    "openzeppelin"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/access/AccessControl.sol\";\n\ncontract MyContract is AccessControl {\n    bytes32 public constant MINTER = keccak256(\"MINTER\");\n    \n    function mint(address to) public onlyRole(MINTER) {\n        _mint(to, 1);\n    }\n}"
+[
+  {
+    "id": "rbac",
+    "name": "Role-Based Access Control (RBAC)",
+    "category": "Smart Contract Access Control",
+    "description": "Granular permissions with multiple roles Problem: Need fine-grained access control with multiple admin types",
+    "when_to_use": "Role-based system with flexible permission assignment",
+    "benefits": "Granular permissions, flexible, scalable, audit trail",
+    "drawbacks": "Complex, higher gas, role management overhead",
+    "use_cases": "Complex protocols, DAOs, enterprise apps, multi-admin",
+    "complexity": "Medium",
+    "tags": [
+      "access-control",
+      "rbac",
+      "roles",
+      "permissions",
+      "openzeppelin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/access/AccessControl.sol\";\n\ncontract MyContract is AccessControl {\n    bytes32 public constant MINTER = keccak256(\"MINTER\");\n    \n    function mint(address to) public onlyRole(MINTER) {\n        _mint(to, 1);\n    }\n}"
+      }
     }
   }
-}
+]

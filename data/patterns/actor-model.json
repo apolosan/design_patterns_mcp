@@ -1,22 +1,24 @@
-{
-  "id": "actor-model",
-  "name": "Actor Model",
-  "category": "Concurrency",
-  "description": "Concurrent computation based on isolated actors communicating via messages",
-  "when_to_use": "Distributed systems\nFault tolerance\nScalable concurrency",
-  "benefits": "Isolation\nFault tolerance\nScalability\nNo shared state",
-  "drawbacks": "Learning curve\nMessage overhead\nComplex debugging",
-  "use_cases": "Distributed systems\nReal-time systems\nIoT applications",
-  "complexity": "High",
-  "tags": [
-    "concurrency",
-    "actors",
-    "messaging"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Actor Model: isolated concurrent entities with message passing\ntype Message = { type: string; data: any };\n\nclass Actor {\n  private mailbox: Message[] = [];\n  private processing = false;\n  \n  async send(message: Message): Promise<void> {\n    this.mailbox.push(message);\n    if (!this.processing) {\n      this.processMessages();\n    }\n  }\n  \n  private async processMessages() {\n    this.processing = true;\n    \n    while (this.mailbox.length > 0) {\n      const message = this.mailbox.shift()!;\n      await this.receive(message);\n    }\n    \n    this.processing = false;\n  }\n  \n  protected async receive(message: Message): Promise<void> {\n    // Override in subclass\n  }\n}\n\nclass CounterActor extends Actor {\n  private count = 0;\n  \n  protected async receive(message: Message) {\n    switch (message.type) {\n      case 'increment':\n        this.count++;\n        console.log('Count:', this.count);\n        break;\n      case 'get':\n        message.data.resolve(this.count);\n        break;\n    }\n  }\n}\n\n// Usage\nconst counter = new CounterActor();\ncounter.send({ type: 'increment', data: null });\ncounter.send({ type: 'increment', data: null });\n\nconst count = await new Promise(resolve => \n  counter.send({ type: 'get', data: { resolve } })\n);"
+[
+  {
+    "id": "actor-model",
+    "name": "Actor Model",
+    "category": "Concurrency",
+    "description": "Concurrent computation based on isolated actors communicating via messages",
+    "when_to_use": "Distributed systems\nFault tolerance\nScalable concurrency",
+    "benefits": "Isolation\nFault tolerance\nScalability\nNo shared state",
+    "drawbacks": "Learning curve\nMessage overhead\nComplex debugging",
+    "use_cases": "Distributed systems\nReal-time systems\nIoT applications",
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "actors",
+      "messaging"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Actor Model: isolated concurrent entities with message passing\ntype Message = { type: string; data: any };\n\nclass Actor {\n  private mailbox: Message[] = [];\n  private processing = false;\n  \n  async send(message: Message): Promise<void> {\n    this.mailbox.push(message);\n    if (!this.processing) {\n      this.processMessages();\n    }\n  }\n  \n  private async processMessages() {\n    this.processing = true;\n    \n    while (this.mailbox.length > 0) {\n      const message = this.mailbox.shift()!;\n      await this.receive(message);\n    }\n    \n    this.processing = false;\n  }\n  \n  protected async receive(message: Message): Promise<void> {\n    // Override in subclass\n  }\n}\n\nclass CounterActor extends Actor {\n  private count = 0;\n  \n  protected async receive(message: Message) {\n    switch (message.type) {\n      case 'increment':\n        this.count++;\n        console.log('Count:', this.count);\n        break;\n      case 'get':\n        message.data.resolve(this.count);\n        break;\n    }\n  }\n}\n\n// Usage\nconst counter = new CounterActor();\ncounter.send({ type: 'increment', data: null });\ncounter.send({ type: 'increment', data: null });\n\nconst count = await new Promise(resolve => \n  counter.send({ type: 'get', data: { resolve } })\n);"
+      }
     }
   }
-}
+]

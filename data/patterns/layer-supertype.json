@@ -1,16 +1,18 @@
-{
-  "id": "layer-supertype",
-  "name": "Layer Supertype",
-  "category": "Enterprise",
-  "description": "Type that acts as supertype for all types in its layer",
-  "when_to_use": "Common layer behavior\nCode reuse\nConsistent interfaces",
-  "benefits": "Code reuse\nConsistent interfaces\nCommon behavior\nMaintenance",
-  "drawbacks": "Inheritance coupling\nComplex hierarchies\nOver-generalization",
-  "use_cases": "Domain objects\nData access objects\nService classes",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "supertype",
-    "inheritance"
-  ]
-}
+[
+  {
+    "id": "layer-supertype",
+    "name": "Layer Supertype",
+    "category": "Enterprise",
+    "description": "Type that acts as supertype for all types in its layer",
+    "when_to_use": "Common layer behavior\nCode reuse\nConsistent interfaces",
+    "benefits": "Code reuse\nConsistent interfaces\nCommon behavior\nMaintenance",
+    "drawbacks": "Inheritance coupling\nComplex hierarchies\nOver-generalization",
+    "use_cases": "Domain objects\nData access objects\nService classes",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "supertype",
+      "inheritance"
+    ]
+  }
+]

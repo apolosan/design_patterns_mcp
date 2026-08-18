@@ -1,26 +1,28 @@
-{
-  "id": "react-19-features",
-  "name": "React 19 New Features",
-  "category": "React Modern",
-  "description": "React 19 features: use hook, form actions, useOptimistic, useFormStatus.",
-  "when_to_use": "React 19+ apps, async data, form handling, optimistic updates",
-  "benefits": "Better DX, built-in form handling, optimistic updates, simpler async",
-  "drawbacks": "React 19 only (cutting edge), ecosystem catching up",
-  "use_cases": "Form submissions, async resources, optimistic UI, loading states",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "react-19",
-    "use",
-    "form-actions",
-    "optimistic",
-    "modern",
-    "2025"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { use, useOptimistic, useFormStatus } from 'react';\n\n// 'use' hook - unwrap promises\nfunction Post({ postPromise }: { postPromise: Promise<Post> }) {\n  const post = use(postPromise); // Suspends until resolved\n  \n  return (\n    <article>\n      <h1>{post.title}</h1>\n      <p>{post.content}</p>\n    </article>\n  );\n}\n\n// Form Actions (built-in)\nfunction AddTodoForm() {\n  async function addTodo(formData: FormData) {\n    'use server'; // Server Action\n    \n    const text = formData.get('todo') as string;\n    await db.todo.create({ data: { text } });\n  }\n  \n  return (\n    <form action={addTodo}>\n      <input name=\"todo\" required />\n      <button type=\"submit\">Add</button>\n    </form>\n  );\n}\n\n// useOptimistic - instant UI updates\nfunction LikeButton({ postId, initialLikes }: Props) {\n  const [likes, setLikes] = useState(initialLikes);\n  const [optimisticLikes, addOptimisticLike] = useOptimistic(\n    likes,\n    (current) => current + 1\n  );\n  \n  async function handleLike() {\n    addOptimisticLike(); // Instant UI update\n    \n    const newLikes = await likePost(postId);\n    setLikes(newLikes); // Update with real data\n  }\n  \n  return (\n    <button onClick={handleLike}>\n      ❤️ {optimisticLikes}\n    </button>\n  );\n}\n\n// useFormStatus - form submission state\nfunction SubmitButton() {\n  const { pending } = useFormStatus();\n  \n  return (\n    <button type=\"submit\" disabled={pending}>\n      {pending ? 'Submitting...' : 'Submit'}\n    </button>\n  );\n}\n\nfunction Form() {\n  async function handleSubmit(formData: FormData) {\n    await saveData(formData);\n  }\n  \n  return (\n    <form action={handleSubmit}>\n      <input name=\"email\" />\n      <SubmitButton /> {/* Knows form status */}\n    </form>\n  );\n}"
+[
+  {
+    "id": "react-19-features",
+    "name": "React 19 New Features",
+    "category": "React Modern",
+    "description": "React 19 features: use hook, form actions, useOptimistic, useFormStatus.",
+    "when_to_use": "React 19+ apps, async data, form handling, optimistic updates",
+    "benefits": "Better DX, built-in form handling, optimistic updates, simpler async",
+    "drawbacks": "React 19 only (cutting edge), ecosystem catching up",
+    "use_cases": "Form submissions, async resources, optimistic UI, loading states",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "react-19",
+      "use",
+      "form-actions",
+      "optimistic",
+      "modern",
+      "2025"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { use, useOptimistic, useFormStatus } from 'react';\n\n// 'use' hook - unwrap promises\nfunction Post({ postPromise }: { postPromise: Promise<Post> }) {\n  const post = use(postPromise); // Suspends until resolved\n  \n  return (\n    <article>\n      <h1>{post.title}</h1>\n      <p>{post.content}</p>\n    </article>\n  );\n}\n\n// Form Actions (built-in)\nfunction AddTodoForm() {\n  async function addTodo(formData: FormData) {\n    'use server'; // Server Action\n    \n    const text = formData.get('todo') as string;\n    await db.todo.create({ data: { text } });\n  }\n  \n  return (\n    <form action={addTodo}>\n      <input name=\"todo\" required />\n      <button type=\"submit\">Add</button>\n    </form>\n  );\n}\n\n// useOptimistic - instant UI updates\nfunction LikeButton({ postId, initialLikes }: Props) {\n  const [likes, setLikes] = useState(initialLikes);\n  const [optimisticLikes, addOptimisticLike] = useOptimistic(\n    likes,\n    (current) => current + 1\n  );\n  \n  async function handleLike() {\n    addOptimisticLike(); // Instant UI update\n    \n    const newLikes = await likePost(postId);\n    setLikes(newLikes); // Update with real data\n  }\n  \n  return (\n    <button onClick={handleLike}>\n      ❤️ {optimisticLikes}\n    </button>\n  );\n}\n\n// useFormStatus - form submission state\nfunction SubmitButton() {\n  const { pending } = useFormStatus();\n  \n  return (\n    <button type=\"submit\" disabled={pending}>\n      {pending ? 'Submitting...' : 'Submit'}\n    </button>\n  );\n}\n\nfunction Form() {\n  async function handleSubmit(formData: FormData) {\n    await saveData(formData);\n  }\n  \n  return (\n    <form action={handleSubmit}>\n      <input name=\"email\" />\n      <SubmitButton /> {/* Knows form status */}\n    </form>\n  );\n}"
+      }
     }
   }
-}
+]

@@ -1,22 +1,24 @@
-{
-  "id": "gateway",
-  "name": "Gateway Pattern",
-  "category": "Enterprise",
-  "description": "Object that encapsulates access to external system or resource",
-  "when_to_use": "External system access\nAPI wrapping\nProtocol translation",
-  "benefits": "Encapsulation\nProtocol abstraction\nError handling\nTesting",
-  "drawbacks": "Additional layer\nPerformance overhead\nMaintenance",
-  "use_cases": "External APIs\nDatabase access\nFile systems",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "gateway",
-    "external"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Gateway: encapsulate external system access\ninterface PaymentGateway {\n  charge(amount: number, token: string): Promise<PaymentResult>;\n  refund(transactionId: string): Promise<void>;\n}\n\nclass StripeGateway implements PaymentGateway {\n  constructor(private apiKey: string) {}\n  \n  async charge(amount: number, token: string): Promise<PaymentResult> {\n    const response = await fetch('https://api.stripe.com/v1/charges', {\n      method: 'POST',\n      headers: {\n        'Authorization': 'Bearer ' + this.apiKey,\n        'Content-Type': 'application/x-www-form-urlencoded'\n      },\n      body: 'amount=' + amount + '&currency=usd&source=' + token\n    });\n    \n    const data = await response.json();\n    \n    return {\n      success: data.status === 'succeeded',\n      transactionId: data.id,\n      message: data.status\n    };\n  }\n  \n  async refund(transactionId: string): Promise<void> {\n    await fetch('https://api.stripe.com/v1/refunds', {\n      method: 'POST',\n      headers: { 'Authorization': 'Bearer ' + this.apiKey },\n      body: 'charge=' + transactionId\n    });\n  }\n}\n\n// Application code uses gateway interface\nclass PaymentService {\n  constructor(private gateway: PaymentGateway) {}\n  \n  async processPayment(amount: number, token: string): Promise<boolean> {\n    const result = await this.gateway.charge(amount, token);\n    return result.success;\n  }\n}\n\nconst paymentService = new PaymentService(new StripeGateway('sk_test_...'));"
+[
+  {
+    "id": "gateway",
+    "name": "Gateway Pattern",
+    "category": "Enterprise",
+    "description": "Object that encapsulates access to external system or resource",
+    "when_to_use": "External system access\nAPI wrapping\nProtocol translation",
+    "benefits": "Encapsulation\nProtocol abstraction\nError handling\nTesting",
+    "drawbacks": "Additional layer\nPerformance overhead\nMaintenance",
+    "use_cases": "External APIs\nDatabase access\nFile systems",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "gateway",
+      "external"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Gateway: encapsulate external system access\ninterface PaymentGateway {\n  charge(amount: number, token: string): Promise<PaymentResult>;\n  refund(transactionId: string): Promise<void>;\n}\n\nclass StripeGateway implements PaymentGateway {\n  constructor(private apiKey: string) {}\n  \n  async charge(amount: number, token: string): Promise<PaymentResult> {\n    const response = await fetch('https://api.stripe.com/v1/charges', {\n      method: 'POST',\n      headers: {\n        'Authorization': 'Bearer ' + this.apiKey,\n        'Content-Type': 'application/x-www-form-urlencoded'\n      },\n      body: 'amount=' + amount + '&currency=usd&source=' + token\n    });\n    \n    const data = await response.json();\n    \n    return {\n      success: data.status === 'succeeded',\n      transactionId: data.id,\n      message: data.status\n    };\n  }\n  \n  async refund(transactionId: string): Promise<void> {\n    await fetch('https://api.stripe.com/v1/refunds', {\n      method: 'POST',\n      headers: { 'Authorization': 'Bearer ' + this.apiKey },\n      body: 'charge=' + transactionId\n    });\n  }\n}\n\n// Application code uses gateway interface\nclass PaymentService {\n  constructor(private gateway: PaymentGateway) {}\n  \n  async processPayment(amount: number, token: string): Promise<boolean> {\n    const result = await this.gateway.charge(amount, token);\n    return result.success;\n  }\n}\n\nconst paymentService = new PaymentService(new StripeGateway('sk_test_...'));"
+      }
     }
   }
-}
+]

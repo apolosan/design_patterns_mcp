@@ -1,24 +1,26 @@
-{
-  "id": "eip4844-blobs",
-  "name": "EIP-4844 Blob Transactions",
-  "category": "Layer 2 Data Availability",
-  "description": "Temporary data blobs for cheap L2 posting Problem: Expensive rollup data posting to L1",
-  "when_to_use": "Separate blob space with KZG commitments",
-  "benefits": "10-100x cheaper, separate fee market, scalable",
-  "drawbacks": "Temporary storage (~18 days), limited blob space",
-  "use_cases": "L2 rollups, data availability, post-Dencun",
-  "complexity": "High",
-  "tags": [
-    "layer2",
-    "data-availability",
-    "eip4844",
-    "blobs",
-    "dencun"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// EIP-4844: Blob KZG verification\nfunction verifyBlobKZG(\n    bytes32 commitment,\n    bytes memory blob,\n    bytes memory proof\n) external view returns (bool) {\n    return POINT_EVALUATION_PRECOMPILE.staticcall(\n        abi.encode(commitment, blob, proof)\n    );\n}"
+[
+  {
+    "id": "eip4844-blobs",
+    "name": "EIP-4844 Blob Transactions",
+    "category": "Layer 2 Data Availability",
+    "description": "Temporary data blobs for cheap L2 posting Problem: Expensive rollup data posting to L1",
+    "when_to_use": "Separate blob space with KZG commitments",
+    "benefits": "10-100x cheaper, separate fee market, scalable",
+    "drawbacks": "Temporary storage (~18 days), limited blob space",
+    "use_cases": "L2 rollups, data availability, post-Dencun",
+    "complexity": "High",
+    "tags": [
+      "layer2",
+      "data-availability",
+      "eip4844",
+      "blobs",
+      "dencun"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// EIP-4844: Blob KZG verification\nfunction verifyBlobKZG(\n    bytes32 commitment,\n    bytes memory blob,\n    bytes memory proof\n) external view returns (bool) {\n    return POINT_EVALUATION_PRECOMPILE.staticcall(\n        abi.encode(commitment, blob, proof)\n    );\n}"
+      }
     }
   }
-}
+]

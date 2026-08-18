@@ -1,16 +1,18 @@
-{
-  "id": "valet-key",
-  "name": "Valet Key Pattern",
-  "category": "Cloud-Native",
-  "description": "Provides clients with restricted direct access to specific resources",
-  "when_to_use": "Direct resource access\nReduced server load\nTemporary access",
-  "benefits": "Reduced server load\nDirect access\nScalability\nCost effective",
-  "drawbacks": "Security complexity\nToken management\nLimited control",
-  "use_cases": "File uploads\nDirect storage access\nCDN integration",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "access-control",
-    "scalability"
-  ]
-}
+[
+  {
+    "id": "valet-key",
+    "name": "Valet Key Pattern",
+    "category": "Cloud-Native",
+    "description": "Provides clients with restricted direct access to specific resources",
+    "when_to_use": "Direct resource access\nReduced server load\nTemporary access",
+    "benefits": "Reduced server load\nDirect access\nScalability\nCost effective",
+    "drawbacks": "Security complexity\nToken management\nLimited control",
+    "use_cases": "File uploads\nDirect storage access\nCDN integration",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "access-control",
+      "scalability"
+    ]
+  }
+]

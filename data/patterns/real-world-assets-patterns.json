@@ -1,126 +1,122 @@
-{
-  "category": "Real World Assets",
-  "description": "Real World Assets design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "erc3643-compliance",
-      "name": "RWA Compliance Pattern (ERC-3643)",
-      "category": "Real World Assets",
-      "description": "On-chain regulatory compliance for security tokens. Automated transfer restrictions, identity verification.",
-      "when_to_use": [
-        "Regulated token transfers",
-        "security tokens",
-        "compliance automation"
-      ],
-      "benefits": [
-        "Automated compliance",
-        "transparent",
-        "jurisdiction-aware"
-      ],
-      "drawbacks": [
-        "Complex implementation",
-        "jurisdiction-specific rules"
-      ],
-      "use_cases": [
-        "Security tokens",
-        "RWA tokens",
-        "regulated DeFi"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "rwa",
-        "compliance",
-        "erc-3643",
-        "security-token",
-        "regulation"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@onchainid/solidity/contracts/interface/IIdentity.sol\";\n\ncontract T_REX_Token is ERC20 {\n    IIdentityRegistry public identityRegistry;\n    IComplianceRegistry public complianceRegistry;\n    \n    function transfer(address to, uint256 amount) public override returns (bool) {\n        require(canTransfer(msg.sender, to, amount), \"Transfer not compliant\");\n        return super.transfer(to, amount);\n    }\n    \n    function canTransfer(address from, address to, uint256 amount) public view returns (bool) {\n        // Check identity verification\n        require(identityRegistry.isVerified(to), \"Recipient not verified\");\n        \n        // Check compliance rules (e.g., country restrictions, investor limits)\n        return complianceRegistry.checkCompliance(from, to, amount);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "real-estate-tokenization",
-      "name": "Real Estate Tokenization (RWA)",
-      "category": "Real World Assets",
-      "description": "Fractional property ownership via tokens. Global access, 24/7 liquidity, compliance layers.",
-      "when_to_use": [
-        "Property investment",
-        "fractional ownership",
-        "global real estate access"
-      ],
-      "benefits": [
-        "Global access",
-        "24/7 liquidity",
-        "fractional ownership",
-        "reduced barriers"
-      ],
-      "drawbacks": [
-        "Complex legal structure",
-        "jurisdiction issues",
-        "property management"
-      ],
-      "use_cases": [
-        "RealT",
-        "Propy",
-        "fractional property ownership"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "rwa",
-        "real-estate",
-        "tokenization",
-        "fractional",
-        "compliance"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/token/ERC1400/ERC1400.sol\"; // Security token\n\ncontract RealEstateToken is ERC1400 {\n    struct Property {\n        string location;\n        uint256 valuation;\n        uint256 rentalYield; // Annual %\n        bytes32 legalDocHash;\n    }\n    \n    Property public property;\n    mapping(address => bool) public accreditedInvestors;\n    \n    modifier onlyAccredited() {\n        require(accreditedInvestors[msg.sender], \"Must be accredited\");\n        _;\n    }\n    \n    function distributeRent() external onlyOwner {\n        uint256 totalRent = property.valuation * property.rentalYield / 10000;\n        // Distribute proportionally to token holders\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "tokenized-treasury-rwa",
-      "name": "Tokenized Treasury (RWA)",
-      "category": "Real World Assets",
-      "description": "On-chain exposure to government bonds via tokenization. SPV holds Treasuries, issues tokens.",
-      "when_to_use": [
-        "Stablecoin collateral",
-        "institutional DeFi",
-        "stable yield"
-      ],
-      "benefits": [
-        "Stable yield (4-5%)",
-        "regulatory clarity",
-        "$12.8B market"
-      ],
-      "drawbacks": [
-        "KYC required",
-        "jurisdiction limits",
-        "traditional finance dependency"
-      ],
-      "use_cases": [
-        "Ondo Finance",
-        "Franklin Templeton",
-        "institutional stablecoins"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "rwa",
-        "tokenization",
-        "treasuries",
-        "institutional",
-        "compliance"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Tokenized Treasury pattern\ncontract TokenizedTreasury is ERC20, AccessControl {\n    address public spv; // Special Purpose Vehicle\n    uint256 public navPerToken; // Net Asset Value\n    \n    function mint(address to, uint256 amount) external onlyRole(SPV_ROLE) {\n        require(isKYCApproved(to), \"KYC required\");\n        _mint(to, amount);\n    }\n    \n    function updateNAV(uint256 newNAV) external onlyOracle {\n        navPerToken = newNAV; // Updated daily based on Treasury prices\n        emit NAVUpdated(newNAV);\n    }\n    \n    function redeem(uint256 amount) external {\n        _burn(msg.sender, amount);\n        // SPV processes T+1 settlement\n    }\n}"
-        }
+[
+  {
+    "id": "erc3643-compliance",
+    "name": "RWA Compliance Pattern (ERC-3643)",
+    "category": "Real World Assets",
+    "description": "On-chain regulatory compliance for security tokens. Automated transfer restrictions, identity verification.",
+    "when_to_use": [
+      "Regulated token transfers",
+      "security tokens",
+      "compliance automation"
+    ],
+    "benefits": [
+      "Automated compliance",
+      "transparent",
+      "jurisdiction-aware"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "jurisdiction-specific rules"
+    ],
+    "use_cases": [
+      "Security tokens",
+      "RWA tokens",
+      "regulated DeFi"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "rwa",
+      "compliance",
+      "erc-3643",
+      "security-token",
+      "regulation"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@onchainid/solidity/contracts/interface/IIdentity.sol\";\n\ncontract T_REX_Token is ERC20 {\n    IIdentityRegistry public identityRegistry;\n    IComplianceRegistry public complianceRegistry;\n    \n    function transfer(address to, uint256 amount) public override returns (bool) {\n        require(canTransfer(msg.sender, to, amount), \"Transfer not compliant\");\n        return super.transfer(to, amount);\n    }\n    \n    function canTransfer(address from, address to, uint256 amount) public view returns (bool) {\n        // Check identity verification\n        require(identityRegistry.isVerified(to), \"Recipient not verified\");\n        \n        // Check compliance rules (e.g., country restrictions, investor limits)\n        return complianceRegistry.checkCompliance(from, to, amount);\n    }\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "real-estate-tokenization",
+    "name": "Real Estate Tokenization (RWA)",
+    "category": "Real World Assets",
+    "description": "Fractional property ownership via tokens. Global access, 24/7 liquidity, compliance layers.",
+    "when_to_use": [
+      "Property investment",
+      "fractional ownership",
+      "global real estate access"
+    ],
+    "benefits": [
+      "Global access",
+      "24/7 liquidity",
+      "fractional ownership",
+      "reduced barriers"
+    ],
+    "drawbacks": [
+      "Complex legal structure",
+      "jurisdiction issues",
+      "property management"
+    ],
+    "use_cases": [
+      "RealT",
+      "Propy",
+      "fractional property ownership"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "rwa",
+      "real-estate",
+      "tokenization",
+      "fractional",
+      "compliance"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/ERC1400/ERC1400.sol\"; // Security token\n\ncontract RealEstateToken is ERC1400 {\n    struct Property {\n        string location;\n        uint256 valuation;\n        uint256 rentalYield; // Annual %\n        bytes32 legalDocHash;\n    }\n    \n    Property public property;\n    mapping(address => bool) public accreditedInvestors;\n    \n    modifier onlyAccredited() {\n        require(accreditedInvestors[msg.sender], \"Must be accredited\");\n        _;\n    }\n    \n    function distributeRent() external onlyOwner {\n        uint256 totalRent = property.valuation * property.rentalYield / 10000;\n        // Distribute proportionally to token holders\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "tokenized-treasury-rwa",
+    "name": "Tokenized Treasury (RWA)",
+    "category": "Real World Assets",
+    "description": "On-chain exposure to government bonds via tokenization. SPV holds Treasuries, issues tokens.",
+    "when_to_use": [
+      "Stablecoin collateral",
+      "institutional DeFi",
+      "stable yield"
+    ],
+    "benefits": [
+      "Stable yield (4-5%)",
+      "regulatory clarity",
+      "$12.8B market"
+    ],
+    "drawbacks": [
+      "KYC required",
+      "jurisdiction limits",
+      "traditional finance dependency"
+    ],
+    "use_cases": [
+      "Ondo Finance",
+      "Franklin Templeton",
+      "institutional stablecoins"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "rwa",
+      "tokenization",
+      "treasuries",
+      "institutional",
+      "compliance"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Tokenized Treasury pattern\ncontract TokenizedTreasury is ERC20, AccessControl {\n    address public spv; // Special Purpose Vehicle\n    uint256 public navPerToken; // Net Asset Value\n    \n    function mint(address to, uint256 amount) external onlyRole(SPV_ROLE) {\n        require(isKYCApproved(to), \"KYC required\");\n        _mint(to, amount);\n    }\n    \n    function updateNAV(uint256 newNAV) external onlyOracle {\n        navPerToken = newNAV; // Updated daily based on Treasury prices\n        emit NAVUpdated(newNAV);\n    }\n    \n    function redeem(uint256 amount) external {\n        _burn(msg.sender, amount);\n        // SPV processes T+1 settlement\n    }\n}"
+      }
+    }
+  }
+]

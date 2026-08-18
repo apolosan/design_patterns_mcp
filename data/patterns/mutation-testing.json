@@ -1,16 +1,18 @@
-{
-  "id": "mutation-testing",
-  "name": "Mutation Testing",
-  "category": "Testing",
-  "description": "Evaluates test quality by introducing bugs and checking if tests detect them",
-  "when_to_use": "Test quality assessment\nCoverage improvement\nCritical code validation",
-  "benefits": "Test quality measurement\nCoverage improvement\nBug detection",
-  "drawbacks": "Computational overhead\nComplex analysis\nTool dependency",
-  "use_cases": "Critical systems\nTest improvement\nQuality assurance",
-  "complexity": "High",
-  "tags": [
-    "testing",
-    "mutation",
-    "quality"
-  ]
-}
+[
+  {
+    "id": "mutation-testing",
+    "name": "Mutation Testing",
+    "category": "Testing",
+    "description": "Evaluates test quality by introducing bugs and checking if tests detect them",
+    "when_to_use": "Test quality assessment\nCoverage improvement\nCritical code validation",
+    "benefits": "Test quality measurement\nCoverage improvement\nBug detection",
+    "drawbacks": "Computational overhead\nComplex analysis\nTool dependency",
+    "use_cases": "Critical systems\nTest improvement\nQuality assurance",
+    "complexity": "High",
+    "tags": [
+      "testing",
+      "mutation",
+      "quality"
+    ]
+  }
+]

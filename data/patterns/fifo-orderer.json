@@ -1,39 +1,54 @@
-{
-  "id": "fifo-orderer",
-  "name": "FIFO Orderer",
-  "category": "Data Engineering",
-  "description": "Preserves first-in-first-out ordering of records through a pipeline by assigning monotonic sequence numbers and reordering out-of-order arrivals before downstream emission. Guarantees per-key or global order depending on partitioning.",
-  "when_to_use": [
-    "Downstream systems require strict order (e.g., financial ledgers)",
-    "Upstream may emit records out of order due to retries or parallelism",
-    "Replay or backfill must match live ordering"
-  ],
-  "benefits": [
-    "Predictable downstream semantics",
-    "Correctness for ordered systems (logs, ledgers)",
-    "Replayable pipelines"
-  ],
-  "drawbacks": [
-    "Adds latency to wait for late records",
-    "State grows with reorder window",
-    "Bottleneck under high skew"
-  ],
-  "use_cases": [
-    "Transaction log replay",
-    "Event sourcing sequence numbers",
-    "CDC stream ordering per partition"
-  ],
-  "complexity": "Medium",
-  "tags": ["data-engineering", "ordering", "fifo", "sequence"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "class FifoOrderer<T> {\n  private next = 0;\n  private pending = new Map<number,T>();\n  private out: T[] = [];\n  ingest(seq: number, rec: T) {\n    this.pending.set(seq, rec);\n    while (this.pending.has(this.next)) {\n      this.out.push(this.pending.get(this.next)!);\n      this.pending.delete(this.next);\n      this.next++;\n    }\n  }\n  flush() { return this.out.splice(0); }\n}",
-      "description": "Sequence-based FIFO reorderer."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "isolated-sequencer", "type": "relates-to", "strength": 0.6},
-    {"target_pattern_id": "bin-pack-orderer", "type": "relates-to", "strength": 0.4}
-  ]
-}
+[
+  {
+    "id": "fifo-orderer",
+    "name": "FIFO Orderer",
+    "category": "Data Engineering",
+    "description": "Preserves first-in-first-out ordering of records through a pipeline by assigning monotonic sequence numbers and reordering out-of-order arrivals before downstream emission. Guarantees per-key or global order depending on partitioning.",
+    "when_to_use": [
+      "Downstream systems require strict order (e.g., financial ledgers)",
+      "Upstream may emit records out of order due to retries or parallelism",
+      "Replay or backfill must match live ordering"
+    ],
+    "benefits": [
+      "Predictable downstream semantics",
+      "Correctness for ordered systems (logs, ledgers)",
+      "Replayable pipelines"
+    ],
+    "drawbacks": [
+      "Adds latency to wait for late records",
+      "State grows with reorder window",
+      "Bottleneck under high skew"
+    ],
+    "use_cases": [
+      "Transaction log replay",
+      "Event sourcing sequence numbers",
+      "CDC stream ordering per partition"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-engineering",
+      "ordering",
+      "fifo",
+      "sequence"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "class FifoOrderer<T> {\n  private next = 0;\n  private pending = new Map<number,T>();\n  private out: T[] = [];\n  ingest(seq: number, rec: T) {\n    this.pending.set(seq, rec);\n    while (this.pending.has(this.next)) {\n      this.out.push(this.pending.get(this.next)!);\n      this.pending.delete(this.next);\n      this.next++;\n    }\n  }\n  flush() { return this.out.splice(0); }\n}",
+        "description": "Sequence-based FIFO reorderer."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "isolated-sequencer",
+        "type": "relates-to",
+        "strength": 0.6
+      },
+      {
+        "target_pattern_id": "bin-pack-orderer",
+        "type": "relates-to",
+        "strength": 0.4
+      }
+    ]
+  }
+]

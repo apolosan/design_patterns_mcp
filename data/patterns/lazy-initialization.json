@@ -1,22 +1,24 @@
-{
-  "id": "lazy-initialization",
-  "name": "Lazy Initialization",
-  "category": "Performance",
-  "description": "Delays initialization of expensive resources until they are actually needed",
-  "when_to_use": "Expensive object creation\nMemory optimization\nStartup performance",
-  "benefits": "Faster startup\nMemory savings\nResource efficiency",
-  "drawbacks": "First-access delay\nThread safety complexity\nUnpredictable latency",
-  "use_cases": "Database connections\nLarge objects\nExpensive computations",
-  "complexity": "Medium",
-  "tags": [
-    "performance",
-    "lazy",
-    "initialization"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Lazy Initialization: create on first use\nclass LazyValue<T> {\n  private _value?: T;\n  private _initialized = false;\n  \n  constructor(private initializer: () => T) {}\n  \n  get value(): T {\n    if (!this._initialized) {\n      this._value = this.initializer();\n      this._initialized = true;\n    }\n    return this._value!;\n  }\n  \n  isInitialized(): boolean {\n    return this._initialized;\n  }\n  \n  reset(): void {\n    this._value = undefined;\n    this._initialized = false;\n  }\n}\n\n// Example: Expensive computation\nclass Config {\n  private _database = new LazyValue(() => {\n    console.log('Initializing database connection...');\n    return new DatabaseConnection(this.dbUrl);\n  });\n  \n  constructor(private dbUrl: string) {}\n  \n  get database(): DatabaseConnection {\n    return this._database.value; // Created on first access\n  }\n}\n\nconst config = new Config('postgres://localhost');\n// Database not connected yet\nconst db = config.database;  // Connection created now\nconst db2 = config.database; // Reuses same connection"
+[
+  {
+    "id": "lazy-initialization",
+    "name": "Lazy Initialization",
+    "category": "Performance",
+    "description": "Delays initialization of expensive resources until they are actually needed",
+    "when_to_use": "Expensive object creation\nMemory optimization\nStartup performance",
+    "benefits": "Faster startup\nMemory savings\nResource efficiency",
+    "drawbacks": "First-access delay\nThread safety complexity\nUnpredictable latency",
+    "use_cases": "Database connections\nLarge objects\nExpensive computations",
+    "complexity": "Medium",
+    "tags": [
+      "performance",
+      "lazy",
+      "initialization"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Lazy Initialization: create on first use\nclass LazyValue<T> {\n  private _value?: T;\n  private _initialized = false;\n  \n  constructor(private initializer: () => T) {}\n  \n  get value(): T {\n    if (!this._initialized) {\n      this._value = this.initializer();\n      this._initialized = true;\n    }\n    return this._value!;\n  }\n  \n  isInitialized(): boolean {\n    return this._initialized;\n  }\n  \n  reset(): void {\n    this._value = undefined;\n    this._initialized = false;\n  }\n}\n\n// Example: Expensive computation\nclass Config {\n  private _database = new LazyValue(() => {\n    console.log('Initializing database connection...');\n    return new DatabaseConnection(this.dbUrl);\n  });\n  \n  constructor(private dbUrl: string) {}\n  \n  get database(): DatabaseConnection {\n    return this._database.value; // Created on first access\n  }\n}\n\nconst config = new Config('postgres://localhost');\n// Database not connected yet\nconst db = config.database;  // Connection created now\nconst db2 = config.database; // Reuses same connection"
+      }
     }
   }
-}
+]

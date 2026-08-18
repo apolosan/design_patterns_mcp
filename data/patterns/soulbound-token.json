@@ -1,24 +1,26 @@
-{
-  "id": "soulbound-token",
-  "name": "Soulbound Token (SBT)",
-  "category": "NFT",
-  "description": "Non-transferable tokens for credentials",
-  "when_to_use": "Diplomas, POAPs, reputation, KYC credentials",
-  "benefits": "Cannot be bought/sold, true merit-based, decentralized ID",
-  "drawbacks": "Wallet loss = credential loss, privacy concerns",
-  "use_cases": "Education certificates, attendance proofs, identity",
-  "complexity": "Low",
-  "tags": [
-    "nft",
-    "soulbound",
-    "sbt",
-    "non-transferable",
-    "identity"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Soulbound: non-transferable\ncontract SoulboundToken is ERC721 {\n    function _beforeTokenTransfer(\n        address from,\n        address to,\n        uint256 tokenId\n    ) internal override {\n        require(from == address(0) || to == address(0), \n            \"Soulbound: transfer not allowed\");\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
+[
+  {
+    "id": "soulbound-token",
+    "name": "Soulbound Token (SBT)",
+    "category": "NFT",
+    "description": "Non-transferable tokens for credentials",
+    "when_to_use": "Diplomas, POAPs, reputation, KYC credentials",
+    "benefits": "Cannot be bought/sold, true merit-based, decentralized ID",
+    "drawbacks": "Wallet loss = credential loss, privacy concerns",
+    "use_cases": "Education certificates, attendance proofs, identity",
+    "complexity": "Low",
+    "tags": [
+      "nft",
+      "soulbound",
+      "sbt",
+      "non-transferable",
+      "identity"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Soulbound: non-transferable\ncontract SoulboundToken is ERC721 {\n    function _beforeTokenTransfer(\n        address from,\n        address to,\n        uint256 tokenId\n    ) internal override {\n        require(from == address(0) || to == address(0), \n            \"Soulbound: transfer not allowed\");\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
+      }
     }
   }
-}
+]

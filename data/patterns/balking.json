@@ -1,22 +1,24 @@
-{
-  "id": "balking",
-  "name": "Balking Pattern",
-  "category": "Concurrency",
-  "description": "Prevents object from executing if it's in inappropriate state",
-  "when_to_use": "State checking\nResource availability\nConditional execution",
-  "benefits": "State safety\nResource protection\nSimple logic\nError prevention",
-  "drawbacks": "Lost operations\nState management\nTiming issues",
-  "use_cases": "Resource management\nState machines\nService availability",
-  "complexity": "Low",
-  "tags": [
-    "concurrency",
-    "state",
-    "protection"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Balking: abort if object is not in appropriate state\nclass Document {\n  private modified = false;\n  private saving = false;\n  \n  edit(content: string): void {\n    this.modified = true;\n  }\n  \n  async save(): Promise<boolean> {\n    // Balk if already saving\n    if (this.saving) {\n      console.log('Save already in progress, balking');\n      return false;\n    }\n    \n    // Balk if no changes\n    if (!this.modified) {\n      console.log('No changes to save, balking');\n      return false;\n    }\n    \n    this.saving = true;\n    try {\n      await this.performSave();\n      this.modified = false;\n      return true;\n    } finally {\n      this.saving = false;\n    }\n  }\n  \n  private async performSave(): Promise<void> {\n    console.log('Saving document...');\n    await new Promise(resolve => setTimeout(resolve, 1000));\n  }\n}\n\nconst doc = new Document();\ndoc.edit('new content');\n\n// Multiple save attempts\nawait Promise.all([\n  doc.save(),  // Proceeds\n  doc.save(),  // Balks (already saving)\n  doc.save()   // Balks (already saving)\n]);"
+[
+  {
+    "id": "balking",
+    "name": "Balking Pattern",
+    "category": "Concurrency",
+    "description": "Prevents object from executing if it's in inappropriate state",
+    "when_to_use": "State checking\nResource availability\nConditional execution",
+    "benefits": "State safety\nResource protection\nSimple logic\nError prevention",
+    "drawbacks": "Lost operations\nState management\nTiming issues",
+    "use_cases": "Resource management\nState machines\nService availability",
+    "complexity": "Low",
+    "tags": [
+      "concurrency",
+      "state",
+      "protection"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Balking: abort if object is not in appropriate state\nclass Document {\n  private modified = false;\n  private saving = false;\n  \n  edit(content: string): void {\n    this.modified = true;\n  }\n  \n  async save(): Promise<boolean> {\n    // Balk if already saving\n    if (this.saving) {\n      console.log('Save already in progress, balking');\n      return false;\n    }\n    \n    // Balk if no changes\n    if (!this.modified) {\n      console.log('No changes to save, balking');\n      return false;\n    }\n    \n    this.saving = true;\n    try {\n      await this.performSave();\n      this.modified = false;\n      return true;\n    } finally {\n      this.saving = false;\n    }\n  }\n  \n  private async performSave(): Promise<void> {\n    console.log('Saving document...');\n    await new Promise(resolve => setTimeout(resolve, 1000));\n  }\n}\n\nconst doc = new Document();\ndoc.edit('new content');\n\n// Multiple save attempts\nawait Promise.all([\n  doc.save(),  // Proceeds\n  doc.save(),  // Balks (already saving)\n  doc.save()   // Balks (already saving)\n]);"
+      }
     }
   }
-}
+]

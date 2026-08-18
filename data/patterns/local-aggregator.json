@@ -1,17 +1,19 @@
-{
-  "id": "local-aggregator",
-  "name": "Local Aggregator",
-  "category": "Data Value",
-  "description": "The Local Aggregator performs aggregations locally without network overhead when data is correctly partitioned.",
-  "when_to_use": "[\"Partitioned data\",\"Small datasets\"]",
-  "benefits": "[\"No network overhead\",\"Faster execution\"]",
-  "drawbacks": "[\"Limited to local data\",\"Scalability constraints\"]",
-  "use_cases": "[\"Partitioned aggregations\",\"Local processing\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"data-value\"",
-    "\"aggregator\"",
-    "\"local\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "local-aggregator",
+    "name": "Local Aggregator",
+    "category": "Data Value",
+    "description": "The Local Aggregator performs aggregations locally without network overhead when data is correctly partitioned.",
+    "when_to_use": "[\"Partitioned data\",\"Small datasets\"]",
+    "benefits": "[\"No network overhead\",\"Faster execution\"]",
+    "drawbacks": "[\"Limited to local data\",\"Scalability constraints\"]",
+    "use_cases": "[\"Partitioned aggregations\",\"Local processing\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"data-value\"",
+      "\"aggregator\"",
+      "\"local\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

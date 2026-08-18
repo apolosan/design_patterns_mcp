@@ -1,16 +1,18 @@
-{
-  "id": "index-table",
-  "name": "Index Table Pattern",
-  "category": "Data Management",
-  "description": "Creates secondary indexes for efficient querying",
-  "when_to_use": "Multiple query patterns\nNoSQL databases\nQuery optimization",
-  "benefits": "Query flexibility\nPerformance optimization\nMultiple access patterns",
-  "drawbacks": "Storage overhead\nConsistency challenges\nMaintenance complexity",
-  "use_cases": "Product searches\nUser lookups\nAnalytics queries",
-  "complexity": "Medium",
-  "tags": [
-    "data-management",
-    "indexing",
-    "querying"
-  ]
-}
+[
+  {
+    "id": "index-table",
+    "name": "Index Table Pattern",
+    "category": "Data Management",
+    "description": "Creates secondary indexes for efficient querying",
+    "when_to_use": "Multiple query patterns\nNoSQL databases\nQuery optimization",
+    "benefits": "Query flexibility\nPerformance optimization\nMultiple access patterns",
+    "drawbacks": "Storage overhead\nConsistency challenges\nMaintenance complexity",
+    "use_cases": "Product searches\nUser lookups\nAnalytics queries",
+    "complexity": "Medium",
+    "tags": [
+      "data-management",
+      "indexing",
+      "querying"
+    ]
+  }
+]

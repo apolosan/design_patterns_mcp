@@ -1,12 +1,18 @@
-{
-  "id": "data-mapper",
-  "name": "Data Mapper",
-  "category": "Enterprise",
-  "description": "Layer that moves data between objects and database while keeping them independent",
-  "when_to_use": "Domain model independence\nComplex mappings\nLegacy databases",
-  "benefits": "Independence\nFlexibility\nTesting\nDomain focus",
-  "drawbacks": "Complex implementation\nPerformance overhead\nLearning curve",
-  "use_cases": "ORM layers\nLegacy integration\nDomain-driven design",
-  "complexity": "High",
-  "tags": ["enterprise", "mapping", "independence"]
-}
+[
+  {
+    "id": "data-mapper",
+    "name": "Data Mapper",
+    "category": "Enterprise",
+    "description": "Layer that moves data between objects and database while keeping them independent",
+    "when_to_use": "Domain model independence\nComplex mappings\nLegacy databases",
+    "benefits": "Independence\nFlexibility\nTesting\nDomain focus",
+    "drawbacks": "Complex implementation\nPerformance overhead\nLearning curve",
+    "use_cases": "ORM layers\nLegacy integration\nDomain-driven design",
+    "complexity": "High",
+    "tags": [
+      "enterprise",
+      "mapping",
+      "independence"
+    ]
+  }
+]

@@ -1,22 +1,24 @@
-{
-  "id": "cqrs",
-  "name": "Command Query Responsibility Segregation",
-  "category": "Architectural",
-  "description": "Separates read and write operations using different models",
-  "when_to_use": "Complex read/write patterns\nPerformance optimization\nEvent sourcing",
-  "benefits": "Performance\nScalability\nFlexibility\nOptimized models",
-  "drawbacks": "Increased complexity\nEventual consistency\nCode duplication",
-  "use_cases": "High-performance systems\nEvent sourcing\nComplex reporting",
-  "complexity": "High",
-  "tags": [
-    "command-query",
-    "performance",
-    "segregation"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// CQRS: separate read and write models\n\n// Command Side (Write Model)\ninterface Command {\n  execute(): Promise<void>;\n}\n\nclass CreateProductCommand implements Command {\n  constructor(\n    private id: string,\n    private name: string,\n    private writeDb: WriteDatabase\n  ) {}\n  \n  async execute() {\n    await this.writeDb.insert('products', { id: this.id, name: this.name });\n    // Publish event for read model\n    await eventBus.publish('ProductCreated', { id: this.id, name: this.name });\n  }\n}\n\n// Query Side (Read Model - optimized for queries)\nclass ProductQuery {\n  constructor(private readDb: ReadDatabase) {}\n  \n  async getProductById(id: string) {\n    return this.readDb.query('SELECT * FROM product_view WHERE id = ?', [id]);\n  }\n  \n  async searchProducts(term: string) {\n    return this.readDb.query('SELECT * FROM product_search WHERE name LIKE ?', [`%${term}%`]);\n  }\n}\n\n// Event Handler (syncs read model)\nclass ProductCreatedHandler {\n  constructor(private readDb: ReadDatabase) {}\n  \n  async handle(event: any) {\n    await this.readDb.insert('product_view', event);\n    await this.readDb.insert('product_search', event);\n  }\n}\n\n// Usage: separate paths for reads and writes\nconst command = new CreateProductCommand('1', 'Laptop', writeDb);\nawait command.execute();\n\nconst query = new ProductQuery(readDb);\nconst product = await query.getProductById('1');"
+[
+  {
+    "id": "cqrs",
+    "name": "Command Query Responsibility Segregation",
+    "category": "Architectural",
+    "description": "Separates read and write operations using different models",
+    "when_to_use": "Complex read/write patterns\nPerformance optimization\nEvent sourcing",
+    "benefits": "Performance\nScalability\nFlexibility\nOptimized models",
+    "drawbacks": "Increased complexity\nEventual consistency\nCode duplication",
+    "use_cases": "High-performance systems\nEvent sourcing\nComplex reporting",
+    "complexity": "High",
+    "tags": [
+      "command-query",
+      "performance",
+      "segregation"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// CQRS: separate read and write models\n\n// Command Side (Write Model)\ninterface Command {\n  execute(): Promise<void>;\n}\n\nclass CreateProductCommand implements Command {\n  constructor(\n    private id: string,\n    private name: string,\n    private writeDb: WriteDatabase\n  ) {}\n  \n  async execute() {\n    await this.writeDb.insert('products', { id: this.id, name: this.name });\n    // Publish event for read model\n    await eventBus.publish('ProductCreated', { id: this.id, name: this.name });\n  }\n}\n\n// Query Side (Read Model - optimized for queries)\nclass ProductQuery {\n  constructor(private readDb: ReadDatabase) {}\n  \n  async getProductById(id: string) {\n    return this.readDb.query('SELECT * FROM product_view WHERE id = ?', [id]);\n  }\n  \n  async searchProducts(term: string) {\n    return this.readDb.query('SELECT * FROM product_search WHERE name LIKE ?', [`%${term}%`]);\n  }\n}\n\n// Event Handler (syncs read model)\nclass ProductCreatedHandler {\n  constructor(private readDb: ReadDatabase) {}\n  \n  async handle(event: any) {\n    await this.readDb.insert('product_view', event);\n    await this.readDb.insert('product_search', event);\n  }\n}\n\n// Usage: separate paths for reads and writes\nconst command = new CreateProductCommand('1', 'Laptop', writeDb);\nawait command.execute();\n\nconst query = new ProductQuery(readDb);\nconst product = await query.getProductById('1');"
+      }
     }
   }
-}
+]

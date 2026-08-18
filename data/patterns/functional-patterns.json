@@ -1,268 +1,723 @@
-{
-  "patterns": [
-    {
-      "id": "monad",
-      "name": "Monad Pattern",
-      "category": "Functional",
-      "description": "Provides a way to wrap values and chain operations while handling context",
-      "when_to_use": ["Error handling", "Null safety", "Async operations"],
-      "benefits": ["Composable", "Type safety", "Error handling", "Immutable"],
-      "drawbacks": ["Learning curve", "Abstraction overhead", "Debugging complexity"],
-      "use_cases": ["Maybe/Option types", "Either types", "IO operations"],
-      "complexity": "High",
-      "tags": ["functional", "composition", "type-safety"]
-    },
-    {
-      "id": "functor",
-      "name": "Functor Pattern",
-      "category": "Functional",
-      "description": "Allows mapping functions over wrapped values",
-      "when_to_use": ["Value transformation", "Container types", "Functional composition"],
-      "benefits": ["Composable", "Type safe", "Reusable", "Predictable"],
-      "drawbacks": ["Abstract concept", "Performance overhead", "Memory usage"],
-      "use_cases": ["Array operations", "Optional values", "Container types"],
-      "complexity": "Medium",
-      "tags": ["functional", "mapping", "composition"]
-    },
-    {
-      "id": "immutability",
-      "name": "Immutability Pattern",
-      "category": "Functional",
-      "description": "Ensures objects cannot be modified after creation",
-      "when_to_use": ["Thread safety", "Predictable state", "Functional programming"],
-      "benefits": ["Thread safety", "No side effects", "Cacheable", "Predictable"],
-      "drawbacks": ["Memory overhead", "Performance cost", "Learning curve"],
-      "use_cases": ["Value objects", "Configuration", "Shared state"],
-      "complexity": "Medium",
-      "tags": ["immutable", "thread-safety", "functional"]
-    },
-    {
-      "id": "pure-function",
-      "name": "Pure Function Pattern",
-      "category": "Functional",
-      "description": "Functions with no side effects that always return same output for same input",
-      "when_to_use": ["Predictable behavior", "Testing", "Parallel processing"],
-      "benefits": ["Testable", "Cacheable", "Parallelizable", "No side effects"],
-      "drawbacks": ["Limited applicability", "State management complexity", "IO restrictions"],
-      "use_cases": ["Calculations", "Transformations", "Validation"],
-      "complexity": "Low",
-      "tags": ["pure", "functional", "side-effect-free"]
-    },
-    {
-      "id": "higher-order-function",
-      "name": "Higher-Order Function",
-      "category": "Functional",
-      "description": "Functions that take other functions as arguments or return functions",
-      "when_to_use": ["Code reuse", "Abstraction", "Functional composition"],
-      "benefits": ["Reusable", "Composable", "Abstract", "Flexible"],
-      "drawbacks": ["Complexity", "Performance overhead", "Debugging difficulty"],
-      "use_cases": ["Array methods", "Event handlers", "Middleware"],
-      "complexity": "Medium",
-      "tags": ["higher-order", "composition", "abstraction"]
-    },
-    {
-      "id": "applicative-functor",
-      "name": "Applicative Functor",
-      "category": "Functional",
-      "description": "Allows applying functions wrapped in context to values in context",
-      "when_to_use": ["Multiple parameter functions", "Validation", "Parallel computation"],
-      "benefits": ["Parallel operations", "Function lifting", "Context preservation"],
-      "drawbacks": ["Complexity", "Limited error aggregation", "Abstract concepts"],
-      "use_cases": ["Form validation", "Parallel API calls", "Configuration parsing"],
-      "complexity": "High",
-      "tags": ["functional", "applicative", "lifting"]
-    },
-    {
-      "id": "monoid",
-      "name": "Monoid Pattern",
-      "category": "Functional",
-      "description": "Type with an associative operation and identity element",
-      "when_to_use": ["Combining values", "Parallel processing", "Reduction operations"],
-      "benefits": ["Parallelizable", "Composable", "Identity preservation", "Associative"],
-      "drawbacks": ["Abstract concept", "Limited types", "Interface complexity"],
-      "use_cases": ["String concatenation", "Number addition", "List merging"],
-      "complexity": "Medium",
-      "tags": ["functional", "algebra", "combination"]
-    },
-    {
-      "id": "fold-reduce",
-      "name": "Fold/Reduce Pattern",
-      "category": "Functional",
-      "description": "Reduces collection to single value using accumulator function",
-      "when_to_use": ["Collection processing", "Aggregation", "Transformation"],
-      "benefits": ["Single pass processing", "Memory efficient", "Flexible", "Composable"],
-      "drawbacks": ["Sequential processing", "Accumulator management", "Complexity"],
-      "use_cases": ["Sum calculations", "String building", "Object transformation"],
-      "complexity": "Medium",
-      "tags": ["functional", "reduction", "aggregation"]
-    },
-    {
-      "id": "map-filter",
-      "name": "Map/Filter Pattern",
-      "category": "Functional",
-      "description": "Transforms and filters collections using function composition",
-      "when_to_use": ["Data transformation", "Collection processing", "Pipeline operations"],
-      "benefits": ["Composable", "Readable", "Immutable", "Chainable"],
-      "drawbacks": ["Multiple iterations", "Memory overhead", "Performance cost"],
-      "use_cases": ["Data processing", "Array transformations", "Stream operations"],
-      "complexity": "Low",
-      "tags": ["functional", "transformation", "filtering"]
-    },
-    {
-      "id": "currying",
-      "name": "Currying Pattern",
-      "category": "Functional",
-      "description": "Transforms function with multiple arguments into sequence of single-argument functions",
-      "when_to_use": ["Partial application", "Function composition", "Configuration"],
-      "benefits": ["Partial application", "Reusable", "Composable", "Flexible"],
-      "drawbacks": ["Performance overhead", "Debugging complexity", "Memory usage"],
-      "use_cases": ["Event handlers", "Configuration functions", "API builders"],
-      "complexity": "Medium",
-      "tags": ["functional", "currying", "partial-application"]
-    },
-    {
-      "id": "partial-application",
-      "name": "Partial Application Pattern",
-      "category": "Functional",
-      "description": "Fixes some arguments of function to produce new function with fewer parameters",
-      "when_to_use": ["Code reuse", "Configuration", "Specialization"],
-      "benefits": ["Code reuse", "Specialization", "Cleaner interfaces", "Configuration"],
-      "drawbacks": ["Memory overhead", "Debugging complexity", "Performance cost"],
-      "use_cases": ["Database queries", "Validators", "Event handlers"],
-      "complexity": "Medium",
-      "tags": ["functional", "partial", "specialization"]
-    },
-    {
-      "id": "memoization",
-      "name": "Memoization Pattern",
-      "category": "Functional",
-      "description": "Caches function results to avoid repeated calculations",
-      "when_to_use": ["Expensive computations", "Pure functions", "Recursive algorithms"],
-      "benefits": ["Performance improvement", "Time complexity reduction", "Automatic caching"],
-      "drawbacks": ["Memory usage", "Cache invalidation", "Not suitable for impure functions"],
-      "use_cases": ["Fibonacci calculation", "API responses", "Complex calculations"],
-      "complexity": "Medium",
-      "tags": ["functional", "optimization", "caching"]
-    },
-    {
-      "id": "tail-recursion",
-      "name": "Tail Recursion Pattern",
-      "category": "Functional",
-      "description": "Recursive calls at end of function to optimize stack usage",
-      "when_to_use": ["Recursive algorithms", "Stack optimization", "Functional programming"],
-      "benefits": ["Stack optimization", "Performance", "Functional style", "Memory efficient"],
-      "drawbacks": ["Language support required", "Complexity", "Limited applicability"],
-      "use_cases": ["List processing", "Tree traversal", "Mathematical computations"],
-      "complexity": "Medium",
-      "tags": ["functional", "recursion", "optimization"]
-    },
-    {
-      "id": "trampolining",
-      "name": "Trampolining Pattern",
-      "category": "Functional",
-      "description": "Converts recursion to iteration to avoid stack overflow",
-      "when_to_use": ["Deep recursion", "Stack overflow prevention", "Tail call optimization"],
-      "benefits": ["Stack overflow prevention", "Memory efficiency", "Deep recursion support"],
-      "drawbacks": ["Complexity", "Performance overhead", "Code readability"],
-      "use_cases": ["Deep tree processing", "Mutual recursion", "Parser implementations"],
-      "complexity": "High",
-      "tags": ["functional", "recursion", "stack-safety"]
-    },
-    {
-      "id": "function-composition",
-      "name": "Function Composition Pattern",
-      "category": "Functional",
-      "description": "Combines simple functions to build complex operations",
-      "when_to_use": ["Pipeline processing", "Code reuse", "Functional programming"],
-      "benefits": ["Modularity", "Reusability", "Testability", "Readability"],
-      "drawbacks": ["Debugging complexity", "Performance overhead", "Learning curve"],
-      "use_cases": ["Data pipelines", "Validation chains", "Transformation sequences"],
-      "complexity": "Medium",
-      "tags": ["functional", "composition", "pipeline"]
-    },
-    {
-      "id": "lens-pattern",
-      "name": "Lens Pattern",
-      "category": "Functional",
-      "description": "Composable getters and setters for immutable data structures",
-      "when_to_use": ["Immutable updates", "Deep object access", "Functional programming"],
-      "benefits": ["Immutable updates", "Composable", "Type safe", "Functional"],
-      "drawbacks": ["Complex syntax", "Learning curve", "Performance overhead"],
-      "use_cases": ["State management", "Form handling", "Nested data updates"],
-      "complexity": "High",
-      "tags": ["functional", "lens", "immutable"]
-    },
-    {
-      "id": "zipper-pattern",
-      "name": "Zipper Pattern",
-      "category": "Functional",
-      "description": "Data structure for efficient navigation and updating of immutable structures",
-      "when_to_use": ["Tree navigation", "Immutable updates", "Undo/redo operations"],
-      "benefits": ["Efficient navigation", "Immutable updates", "History tracking"],
-      "drawbacks": ["Complex implementation", "Memory overhead", "Learning curve"],
-      "use_cases": ["Text editors", "File system navigation", "Tree manipulation"],
-      "complexity": "High",
-      "tags": ["functional", "navigation", "immutable"]
-    },
-    {
-      "id": "free-monad",
-      "name": "Free Monad Pattern",
-      "category": "Functional",
-      "description": "Separates program structure from interpretation for flexibility",
-      "when_to_use": ["DSL creation", "Testability", "Interpreter patterns"],
-      "benefits": ["Separation of concerns", "Testability", "Flexibility", "Composability"],
-      "drawbacks": ["High complexity", "Performance overhead", "Abstract concepts"],
-      "use_cases": ["DSL interpreters", "Testing frameworks", "Command patterns"],
-      "complexity": "High",
-      "tags": ["functional", "monad", "dsl"]
-    },
-    {
-      "id": "option-maybe",
-      "name": "Option/Maybe Pattern",
-      "category": "Functional",
-      "description": "Represents optional values without null references",
-      "when_to_use": ["Null safety", "Optional values", "Error prevention"],
-      "benefits": ["Null safety", "Explicit optionality", "Composable", "Type safe"],
-      "drawbacks": ["Learning curve", "Verbose syntax", "Performance overhead"],
-      "use_cases": ["Database queries", "Configuration values", "API responses"],
-      "complexity": "Medium",
-      "tags": ["functional", "option", "null-safety"]
-    },
-    {
-      "id": "either-pattern",
-      "name": "Either Pattern",
-      "category": "Functional",
-      "description": "Represents values that can be one of two types, often success or error",
-      "when_to_use": ["Error handling", "Alternative values", "Validation"],
-      "benefits": ["Explicit error handling", "Type safety", "Composable", "No exceptions"],
-      "drawbacks": ["Verbose syntax", "Learning curve", "Complexity"],
-      "use_cases": ["Validation results", "Error handling", "Alternative computations"],
-      "complexity": "Medium",
-      "tags": ["functional", "either", "error-handling"]
-    },
-    {
-      "id": "validation-pattern",
-      "name": "Validation Pattern",
-      "category": "Functional",
-      "description": "Accumulates validation errors instead of short-circuiting",
-      "when_to_use": ["Form validation", "Error accumulation", "Multiple validations"],
-      "benefits": ["Error accumulation", "Complete validation", "User friendly", "Composable"],
-      "drawbacks": ["Complexity", "Learning curve", "Memory overhead"],
-      "use_cases": ["Form validation", "Data validation", "Configuration checking"],
-      "complexity": "Medium",
-      "tags": ["functional", "validation", "error-accumulation"]
-    },
-    {
-      "id": "continuation-passing-style",
-      "name": "Continuation-Passing Style (CPS)",
-      "category": "Functional",
-      "description": "Functions receive continuation function to call with their results",
-      "when_to_use": ["Control flow", "Async programming", "Callback management"],
-      "benefits": ["Explicit control flow", "Tail call optimization", "Callback composition"],
-      "drawbacks": ["Complex syntax", "Difficult debugging", "Performance overhead"],
-      "use_cases": ["Async operations", "Parser combinators", "Control flow libraries"],
-      "complexity": "High",
-      "tags": ["functional", "continuation", "control-flow"]
-    }
-  ]
-}
+[
+  {
+    "id": "monad",
+    "name": "Monad Pattern",
+    "category": "Functional",
+    "description": "Provides a way to wrap values and chain operations while handling context",
+    "when_to_use": [
+      "Error handling",
+      "Null safety",
+      "Async operations"
+    ],
+    "benefits": [
+      "Composable",
+      "Type safety",
+      "Error handling",
+      "Immutable"
+    ],
+    "drawbacks": [
+      "Learning curve",
+      "Abstraction overhead",
+      "Debugging complexity"
+    ],
+    "use_cases": [
+      "Maybe/Option types",
+      "Either types",
+      "IO operations"
+    ],
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "composition",
+      "type-safety"
+    ]
+  },
+  {
+    "id": "functor",
+    "name": "Functor Pattern",
+    "category": "Functional",
+    "description": "Allows mapping functions over wrapped values",
+    "when_to_use": [
+      "Value transformation",
+      "Container types",
+      "Functional composition"
+    ],
+    "benefits": [
+      "Composable",
+      "Type safe",
+      "Reusable",
+      "Predictable"
+    ],
+    "drawbacks": [
+      "Abstract concept",
+      "Performance overhead",
+      "Memory usage"
+    ],
+    "use_cases": [
+      "Array operations",
+      "Optional values",
+      "Container types"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "mapping",
+      "composition"
+    ]
+  },
+  {
+    "id": "immutability",
+    "name": "Immutability Pattern",
+    "category": "Functional",
+    "description": "Ensures objects cannot be modified after creation",
+    "when_to_use": [
+      "Thread safety",
+      "Predictable state",
+      "Functional programming"
+    ],
+    "benefits": [
+      "Thread safety",
+      "No side effects",
+      "Cacheable",
+      "Predictable"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "Performance cost",
+      "Learning curve"
+    ],
+    "use_cases": [
+      "Value objects",
+      "Configuration",
+      "Shared state"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "immutable",
+      "thread-safety",
+      "functional"
+    ]
+  },
+  {
+    "id": "pure-function",
+    "name": "Pure Function Pattern",
+    "category": "Functional",
+    "description": "Functions with no side effects that always return same output for same input",
+    "when_to_use": [
+      "Predictable behavior",
+      "Testing",
+      "Parallel processing"
+    ],
+    "benefits": [
+      "Testable",
+      "Cacheable",
+      "Parallelizable",
+      "No side effects"
+    ],
+    "drawbacks": [
+      "Limited applicability",
+      "State management complexity",
+      "IO restrictions"
+    ],
+    "use_cases": [
+      "Calculations",
+      "Transformations",
+      "Validation"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "pure",
+      "functional",
+      "side-effect-free"
+    ]
+  },
+  {
+    "id": "higher-order-function",
+    "name": "Higher-Order Function",
+    "category": "Functional",
+    "description": "Functions that take other functions as arguments or return functions",
+    "when_to_use": [
+      "Code reuse",
+      "Abstraction",
+      "Functional composition"
+    ],
+    "benefits": [
+      "Reusable",
+      "Composable",
+      "Abstract",
+      "Flexible"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Performance overhead",
+      "Debugging difficulty"
+    ],
+    "use_cases": [
+      "Array methods",
+      "Event handlers",
+      "Middleware"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "higher-order",
+      "composition",
+      "abstraction"
+    ]
+  },
+  {
+    "id": "applicative-functor",
+    "name": "Applicative Functor",
+    "category": "Functional",
+    "description": "Allows applying functions wrapped in context to values in context",
+    "when_to_use": [
+      "Multiple parameter functions",
+      "Validation",
+      "Parallel computation"
+    ],
+    "benefits": [
+      "Parallel operations",
+      "Function lifting",
+      "Context preservation"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Limited error aggregation",
+      "Abstract concepts"
+    ],
+    "use_cases": [
+      "Form validation",
+      "Parallel API calls",
+      "Configuration parsing"
+    ],
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "applicative",
+      "lifting"
+    ]
+  },
+  {
+    "id": "monoid",
+    "name": "Monoid Pattern",
+    "category": "Functional",
+    "description": "Type with an associative operation and identity element",
+    "when_to_use": [
+      "Combining values",
+      "Parallel processing",
+      "Reduction operations"
+    ],
+    "benefits": [
+      "Parallelizable",
+      "Composable",
+      "Identity preservation",
+      "Associative"
+    ],
+    "drawbacks": [
+      "Abstract concept",
+      "Limited types",
+      "Interface complexity"
+    ],
+    "use_cases": [
+      "String concatenation",
+      "Number addition",
+      "List merging"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "algebra",
+      "combination"
+    ]
+  },
+  {
+    "id": "fold-reduce",
+    "name": "Fold/Reduce Pattern",
+    "category": "Functional",
+    "description": "Reduces collection to single value using accumulator function",
+    "when_to_use": [
+      "Collection processing",
+      "Aggregation",
+      "Transformation"
+    ],
+    "benefits": [
+      "Single pass processing",
+      "Memory efficient",
+      "Flexible",
+      "Composable"
+    ],
+    "drawbacks": [
+      "Sequential processing",
+      "Accumulator management",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Sum calculations",
+      "String building",
+      "Object transformation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "reduction",
+      "aggregation"
+    ]
+  },
+  {
+    "id": "map-filter",
+    "name": "Map/Filter Pattern",
+    "category": "Functional",
+    "description": "Transforms and filters collections using function composition",
+    "when_to_use": [
+      "Data transformation",
+      "Collection processing",
+      "Pipeline operations"
+    ],
+    "benefits": [
+      "Composable",
+      "Readable",
+      "Immutable",
+      "Chainable"
+    ],
+    "drawbacks": [
+      "Multiple iterations",
+      "Memory overhead",
+      "Performance cost"
+    ],
+    "use_cases": [
+      "Data processing",
+      "Array transformations",
+      "Stream operations"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "functional",
+      "transformation",
+      "filtering"
+    ]
+  },
+  {
+    "id": "currying",
+    "name": "Currying Pattern",
+    "category": "Functional",
+    "description": "Transforms function with multiple arguments into sequence of single-argument functions",
+    "when_to_use": [
+      "Partial application",
+      "Function composition",
+      "Configuration"
+    ],
+    "benefits": [
+      "Partial application",
+      "Reusable",
+      "Composable",
+      "Flexible"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Debugging complexity",
+      "Memory usage"
+    ],
+    "use_cases": [
+      "Event handlers",
+      "Configuration functions",
+      "API builders"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "currying",
+      "partial-application"
+    ]
+  },
+  {
+    "id": "partial-application",
+    "name": "Partial Application Pattern",
+    "category": "Functional",
+    "description": "Fixes some arguments of function to produce new function with fewer parameters",
+    "when_to_use": [
+      "Code reuse",
+      "Configuration",
+      "Specialization"
+    ],
+    "benefits": [
+      "Code reuse",
+      "Specialization",
+      "Cleaner interfaces",
+      "Configuration"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "Debugging complexity",
+      "Performance cost"
+    ],
+    "use_cases": [
+      "Database queries",
+      "Validators",
+      "Event handlers"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "partial",
+      "specialization"
+    ]
+  },
+  {
+    "id": "memoization",
+    "name": "Memoization Pattern",
+    "category": "Functional",
+    "description": "Caches function results to avoid repeated calculations",
+    "when_to_use": [
+      "Expensive computations",
+      "Pure functions",
+      "Recursive algorithms"
+    ],
+    "benefits": [
+      "Performance improvement",
+      "Time complexity reduction",
+      "Automatic caching"
+    ],
+    "drawbacks": [
+      "Memory usage",
+      "Cache invalidation",
+      "Not suitable for impure functions"
+    ],
+    "use_cases": [
+      "Fibonacci calculation",
+      "API responses",
+      "Complex calculations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "optimization",
+      "caching"
+    ]
+  },
+  {
+    "id": "tail-recursion",
+    "name": "Tail Recursion Pattern",
+    "category": "Functional",
+    "description": "Recursive calls at end of function to optimize stack usage",
+    "when_to_use": [
+      "Recursive algorithms",
+      "Stack optimization",
+      "Functional programming"
+    ],
+    "benefits": [
+      "Stack optimization",
+      "Performance",
+      "Functional style",
+      "Memory efficient"
+    ],
+    "drawbacks": [
+      "Language support required",
+      "Complexity",
+      "Limited applicability"
+    ],
+    "use_cases": [
+      "List processing",
+      "Tree traversal",
+      "Mathematical computations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "recursion",
+      "optimization"
+    ]
+  },
+  {
+    "id": "trampolining",
+    "name": "Trampolining Pattern",
+    "category": "Functional",
+    "description": "Converts recursion to iteration to avoid stack overflow",
+    "when_to_use": [
+      "Deep recursion",
+      "Stack overflow prevention",
+      "Tail call optimization"
+    ],
+    "benefits": [
+      "Stack overflow prevention",
+      "Memory efficiency",
+      "Deep recursion support"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Performance overhead",
+      "Code readability"
+    ],
+    "use_cases": [
+      "Deep tree processing",
+      "Mutual recursion",
+      "Parser implementations"
+    ],
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "recursion",
+      "stack-safety"
+    ]
+  },
+  {
+    "id": "function-composition",
+    "name": "Function Composition Pattern",
+    "category": "Functional",
+    "description": "Combines simple functions to build complex operations",
+    "when_to_use": [
+      "Pipeline processing",
+      "Code reuse",
+      "Functional programming"
+    ],
+    "benefits": [
+      "Modularity",
+      "Reusability",
+      "Testability",
+      "Readability"
+    ],
+    "drawbacks": [
+      "Debugging complexity",
+      "Performance overhead",
+      "Learning curve"
+    ],
+    "use_cases": [
+      "Data pipelines",
+      "Validation chains",
+      "Transformation sequences"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "composition",
+      "pipeline"
+    ]
+  },
+  {
+    "id": "lens-pattern",
+    "name": "Lens Pattern",
+    "category": "Functional",
+    "description": "Composable getters and setters for immutable data structures",
+    "when_to_use": [
+      "Immutable updates",
+      "Deep object access",
+      "Functional programming"
+    ],
+    "benefits": [
+      "Immutable updates",
+      "Composable",
+      "Type safe",
+      "Functional"
+    ],
+    "drawbacks": [
+      "Complex syntax",
+      "Learning curve",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "State management",
+      "Form handling",
+      "Nested data updates"
+    ],
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "lens",
+      "immutable"
+    ]
+  },
+  {
+    "id": "zipper-pattern",
+    "name": "Zipper Pattern",
+    "category": "Functional",
+    "description": "Data structure for efficient navigation and updating of immutable structures",
+    "when_to_use": [
+      "Tree navigation",
+      "Immutable updates",
+      "Undo/redo operations"
+    ],
+    "benefits": [
+      "Efficient navigation",
+      "Immutable updates",
+      "History tracking"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Memory overhead",
+      "Learning curve"
+    ],
+    "use_cases": [
+      "Text editors",
+      "File system navigation",
+      "Tree manipulation"
+    ],
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "navigation",
+      "immutable"
+    ]
+  },
+  {
+    "id": "free-monad",
+    "name": "Free Monad Pattern",
+    "category": "Functional",
+    "description": "Separates program structure from interpretation for flexibility",
+    "when_to_use": [
+      "DSL creation",
+      "Testability",
+      "Interpreter patterns"
+    ],
+    "benefits": [
+      "Separation of concerns",
+      "Testability",
+      "Flexibility",
+      "Composability"
+    ],
+    "drawbacks": [
+      "High complexity",
+      "Performance overhead",
+      "Abstract concepts"
+    ],
+    "use_cases": [
+      "DSL interpreters",
+      "Testing frameworks",
+      "Command patterns"
+    ],
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "monad",
+      "dsl"
+    ]
+  },
+  {
+    "id": "option-maybe",
+    "name": "Option/Maybe Pattern",
+    "category": "Functional",
+    "description": "Represents optional values without null references",
+    "when_to_use": [
+      "Null safety",
+      "Optional values",
+      "Error prevention"
+    ],
+    "benefits": [
+      "Null safety",
+      "Explicit optionality",
+      "Composable",
+      "Type safe"
+    ],
+    "drawbacks": [
+      "Learning curve",
+      "Verbose syntax",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "Database queries",
+      "Configuration values",
+      "API responses"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "option",
+      "null-safety"
+    ]
+  },
+  {
+    "id": "either-pattern",
+    "name": "Either Pattern",
+    "category": "Functional",
+    "description": "Represents values that can be one of two types, often success or error",
+    "when_to_use": [
+      "Error handling",
+      "Alternative values",
+      "Validation"
+    ],
+    "benefits": [
+      "Explicit error handling",
+      "Type safety",
+      "Composable",
+      "No exceptions"
+    ],
+    "drawbacks": [
+      "Verbose syntax",
+      "Learning curve",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Validation results",
+      "Error handling",
+      "Alternative computations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "either",
+      "error-handling"
+    ]
+  },
+  {
+    "id": "validation-pattern",
+    "name": "Validation Pattern",
+    "category": "Functional",
+    "description": "Accumulates validation errors instead of short-circuiting",
+    "when_to_use": [
+      "Form validation",
+      "Error accumulation",
+      "Multiple validations"
+    ],
+    "benefits": [
+      "Error accumulation",
+      "Complete validation",
+      "User friendly",
+      "Composable"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Learning curve",
+      "Memory overhead"
+    ],
+    "use_cases": [
+      "Form validation",
+      "Data validation",
+      "Configuration checking"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "validation",
+      "error-accumulation"
+    ]
+  },
+  {
+    "id": "continuation-passing-style",
+    "name": "Continuation-Passing Style (CPS)",
+    "category": "Functional",
+    "description": "Functions receive continuation function to call with their results",
+    "when_to_use": [
+      "Control flow",
+      "Async programming",
+      "Callback management"
+    ],
+    "benefits": [
+      "Explicit control flow",
+      "Tail call optimization",
+      "Callback composition"
+    ],
+    "drawbacks": [
+      "Complex syntax",
+      "Difficult debugging",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "Async operations",
+      "Parser combinators",
+      "Control flow libraries"
+    ],
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "continuation",
+      "control-flow"
+    ]
+  }
+]

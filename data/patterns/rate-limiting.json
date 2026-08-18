@@ -1,23 +1,25 @@
-{
-  "id": "rate-limiting",
-  "name": "Rate Limiting",
-  "category": "Smart Contract Security",
-  "description": "Limit transaction frequency to prevent abuse Problem: Prevent spam and excessive usage",
-  "when_to_use": "Track timestamps and enforce cooling periods",
-  "benefits": "Abuse prevention, controlled resource usage",
-  "drawbacks": "UX friction, storage costs, timestamp manipulation",
-  "use_cases": "Faucets, minting limits, withdrawal caps, anti-spam",
-  "complexity": "Low",
-  "tags": [
-    "security",
-    "rate-limit",
-    "spam-prevention",
-    "throttling"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "mapping(address => uint256) public lastAction;\nuint256 constant COOLDOWN = 1 hours;\n\nfunction action() public {\n    require(block.timestamp >= lastAction[msg.sender] + COOLDOWN);\n    lastAction[msg.sender] = block.timestamp;\n}"
+[
+  {
+    "id": "rate-limiting",
+    "name": "Rate Limiting",
+    "category": "Smart Contract Security",
+    "description": "Limit transaction frequency to prevent abuse Problem: Prevent spam and excessive usage",
+    "when_to_use": "Track timestamps and enforce cooling periods",
+    "benefits": "Abuse prevention, controlled resource usage",
+    "drawbacks": "UX friction, storage costs, timestamp manipulation",
+    "use_cases": "Faucets, minting limits, withdrawal caps, anti-spam",
+    "complexity": "Low",
+    "tags": [
+      "security",
+      "rate-limit",
+      "spam-prevention",
+      "throttling"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "mapping(address => uint256) public lastAction;\nuint256 constant COOLDOWN = 1 hours;\n\nfunction action() public {\n    require(block.timestamp >= lastAction[msg.sender] + COOLDOWN);\n    lastAction[msg.sender] = block.timestamp;\n}"
+      }
     }
   }
-}
+]

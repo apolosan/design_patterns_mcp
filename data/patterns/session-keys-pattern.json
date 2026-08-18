@@ -1,24 +1,26 @@
-{
-  "id": "session-keys-pattern",
-  "name": "Session Keys Pattern",
-  "category": "Account Abstraction",
-  "description": "Temporary delegated permissions with time/scope limits. Reduces signature prompts for gaming/trading.",
-  "when_to_use": "Gaming sessions, trading bots, scoped authorizations",
-  "benefits": "Reduced signature requests, better UX, scoped permissions",
-  "drawbacks": "Security risks if poorly implemented, key management",
-  "use_cases": "Game sessions, temporary delegates, automated trading",
-  "complexity": "High",
-  "tags": [
-    "account-abstraction",
-    "session-keys",
-    "delegation",
-    "gaming",
-    "ux"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract SessionKeyManager {\n    struct SessionKey {\n        address key;\n        uint48 validUntil;\n        uint48 validAfter;\n        bytes4[] allowedSelectors;\n    }\n    \n    mapping(address => SessionKey[]) public sessionKeys;\n    \n    function addSessionKey(SessionKey memory session) external {\n        sessionKeys[msg.sender].push(session);\n    }\n    \n    function executeWithSession(address target, bytes calldata data) external {\n        SessionKey memory session = _getValidSession(msg.sender);\n        require(session.validUntil > block.timestamp);\n        require(_isAllowedSelector(session, bytes4(data[:4])));\n        \n        target.call(data);\n    }\n}"
+[
+  {
+    "id": "session-keys-pattern",
+    "name": "Session Keys Pattern",
+    "category": "Account Abstraction",
+    "description": "Temporary delegated permissions with time/scope limits. Reduces signature prompts for gaming/trading.",
+    "when_to_use": "Gaming sessions, trading bots, scoped authorizations",
+    "benefits": "Reduced signature requests, better UX, scoped permissions",
+    "drawbacks": "Security risks if poorly implemented, key management",
+    "use_cases": "Game sessions, temporary delegates, automated trading",
+    "complexity": "High",
+    "tags": [
+      "account-abstraction",
+      "session-keys",
+      "delegation",
+      "gaming",
+      "ux"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract SessionKeyManager {\n    struct SessionKey {\n        address key;\n        uint48 validUntil;\n        uint48 validAfter;\n        bytes4[] allowedSelectors;\n    }\n    \n    mapping(address => SessionKey[]) public sessionKeys;\n    \n    function addSessionKey(SessionKey memory session) external {\n        sessionKeys[msg.sender].push(session);\n    }\n    \n    function executeWithSession(address target, bytes calldata data) external {\n        SessionKey memory session = _getValidSession(msg.sender);\n        require(session.validUntil > block.timestamp);\n        require(_isAllowedSelector(session, bytes4(data[:4])));\n        \n        target.call(data);\n    }\n}"
+      }
     }
   }
-}
+]

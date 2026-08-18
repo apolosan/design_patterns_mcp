@@ -1,22 +1,24 @@
-{
-  "id": "lock-free-programming",
-  "name": "Lock-Free Programming",
-  "category": "Concurrency",
-  "description": "Concurrent programming without using locks, using atomic operations",
-  "when_to_use": "High performance\nReal-time systems\nLock contention issues",
-  "benefits": "No deadlocks\nHigh performance\nScalability\nReal-time suitability",
-  "drawbacks": "Complex implementation\nPlatform dependent\nABA problem",
-  "use_cases": "High-frequency trading\nReal-time systems\nPerformance-critical code",
-  "complexity": "High",
-  "tags": [
-    "concurrency",
-    "lock-free",
-    "atomic"
-  ],
-  "examples": {
-    "note": {
-      "language": "note",
-      "code": "⚠️ Advanced: Requires atomic operations, CAS (Compare-And-Swap), and memory ordering semantics. Language-specific implementation (C++, Rust, Java)."
+[
+  {
+    "id": "lock-free-programming",
+    "name": "Lock-Free Programming",
+    "category": "Concurrency",
+    "description": "Concurrent programming without using locks, using atomic operations",
+    "when_to_use": "High performance\nReal-time systems\nLock contention issues",
+    "benefits": "No deadlocks\nHigh performance\nScalability\nReal-time suitability",
+    "drawbacks": "Complex implementation\nPlatform dependent\nABA problem",
+    "use_cases": "High-frequency trading\nReal-time systems\nPerformance-critical code",
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "lock-free",
+      "atomic"
+    ],
+    "examples": {
+      "note": {
+        "language": "note",
+        "code": "⚠️ Advanced: Requires atomic operations, CAS (Compare-And-Swap), and memory ordering semantics. Language-specific implementation (C++, Rust, Java)."
+      }
     }
   }
-}
+]

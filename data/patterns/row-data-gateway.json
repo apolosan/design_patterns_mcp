@@ -1,22 +1,24 @@
-{
-  "id": "row-data-gateway",
-  "name": "Row Data Gateway",
-  "category": "Enterprise",
-  "description": "Object that acts as gateway to single record in data source",
-  "when_to_use": "Simple data access\nRecord-based operations\nDirect mapping",
-  "benefits": "Simple implementation\nDirect control\nClear mapping",
-  "drawbacks": "Limited abstraction\nRepetitive code\nTight coupling",
-  "use_cases": "Simple data access\nLegacy systems\nDirect database operations",
-  "complexity": "Low",
-  "tags": [
-    "enterprise",
-    "data-source",
-    "gateway"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Row Data Gateway: object wraps a database row\nclass UserGateway {\n  constructor(\n    public id: string,\n    public email: string,\n    public name: string\n  ) {}\n  \n  static async findById(db: Database, id: string): Promise<UserGateway | null> {\n    const row = await db.query('SELECT * FROM users WHERE id = ?', [id]);\n    return row ? new UserGateway(row.id, row.email, row.name) : null;\n  }\n  \n  static async findAll(db: Database): Promise<UserGateway[]> {\n    const rows = await db.query('SELECT * FROM users');\n    return rows.map((r: any) => new UserGateway(r.id, r.email, r.name));\n  }\n  \n  async update(db: Database): Promise<void> {\n    await db.query(\n      'UPDATE users SET email = ?, name = ? WHERE id = ?',\n      [this.email, this.name, this.id]\n    );\n  }\n  \n  async delete(db: Database): Promise<void> {\n    await db.query('DELETE FROM users WHERE id = ?', [this.id]);\n  }\n  \n  static async insert(db: Database, email: string, name: string): Promise<UserGateway> {\n    const result = await db.query(\n      'INSERT INTO users (email, name) VALUES (?, ?)',\n      [email, name]\n    );\n    return new UserGateway(result.insertId, email, name);\n  }\n}\n\n// Usage\nconst user = await UserGateway.findById(db, '123');\nif (user) {\n  user.name = 'Updated Name';\n  await user.update(db);\n}"
+[
+  {
+    "id": "row-data-gateway",
+    "name": "Row Data Gateway",
+    "category": "Enterprise",
+    "description": "Object that acts as gateway to single record in data source",
+    "when_to_use": "Simple data access\nRecord-based operations\nDirect mapping",
+    "benefits": "Simple implementation\nDirect control\nClear mapping",
+    "drawbacks": "Limited abstraction\nRepetitive code\nTight coupling",
+    "use_cases": "Simple data access\nLegacy systems\nDirect database operations",
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "data-source",
+      "gateway"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Row Data Gateway: object wraps a database row\nclass UserGateway {\n  constructor(\n    public id: string,\n    public email: string,\n    public name: string\n  ) {}\n  \n  static async findById(db: Database, id: string): Promise<UserGateway | null> {\n    const row = await db.query('SELECT * FROM users WHERE id = ?', [id]);\n    return row ? new UserGateway(row.id, row.email, row.name) : null;\n  }\n  \n  static async findAll(db: Database): Promise<UserGateway[]> {\n    const rows = await db.query('SELECT * FROM users');\n    return rows.map((r: any) => new UserGateway(r.id, r.email, r.name));\n  }\n  \n  async update(db: Database): Promise<void> {\n    await db.query(\n      'UPDATE users SET email = ?, name = ? WHERE id = ?',\n      [this.email, this.name, this.id]\n    );\n  }\n  \n  async delete(db: Database): Promise<void> {\n    await db.query('DELETE FROM users WHERE id = ?', [this.id]);\n  }\n  \n  static async insert(db: Database, email: string, name: string): Promise<UserGateway> {\n    const result = await db.query(\n      'INSERT INTO users (email, name) VALUES (?, ?)',\n      [email, name]\n    );\n    return new UserGateway(result.insertId, email, name);\n  }\n}\n\n// Usage\nconst user = await UserGateway.findById(db, '123');\nif (user) {\n  user.name = 'Updated Name';\n  await user.update(db);\n}"
+      }
     }
   }
-}
+]

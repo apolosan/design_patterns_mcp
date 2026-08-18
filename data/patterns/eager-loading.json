@@ -1,22 +1,24 @@
-{
-  "id": "eager-loading",
-  "name": "Eager Loading",
-  "category": "Data Access",
-  "description": "Loads related data upfront to avoid multiple database queries",
-  "when_to_use": "Known data requirements\nQuery optimization\nReducing database calls",
-  "benefits": "Fewer database calls\nPredictable performance\nSimple implementation",
-  "drawbacks": "Memory overhead\nPotential over-fetching\nComplex queries",
-  "use_cases": "Known access patterns\nPerformance optimization\nReporting systems",
-  "complexity": "Medium",
-  "tags": [
-    "data-access",
-    "optimization",
-    "loading"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Eager Loading: load related data upfront\nclass User {\n  constructor(\n    public id: string,\n    public email: string,\n    public posts: Post[]\n  ) {}\n}\n\nclass UserRepository {\n  async findByIdWithPosts(id: string): Promise<User> {\n    const userRow = await db.query('SELECT * FROM users WHERE id = $1', [id]);\n    const postRows = await db.query('SELECT * FROM posts WHERE user_id = $1', [id]);\n    \n    return new User(\n      userRow.id,\n      userRow.email,\n      postRows.map(p => ({ id: p.id, title: p.title }))\n    );\n  }\n  \n  async findAllWithPosts(): Promise<User[]> {\n    const query = \\`\n      SELECT u.*, p.id as post_id, p.title as post_title\n      FROM users u\n      LEFT JOIN posts p ON u.id = p.user_id\n    \\`;\n    \n    const rows = await db.query(query);\n    return this.groupByUser(rows);\n  }\n  \n  private groupByUser(rows: any[]): User[] {\n    const userMap = new Map<string, User>();\n    for (const row of rows) {\n      if (!userMap.has(row.id)) {\n        userMap.set(row.id, new User(row.id, row.email, []));\n      }\n      if (row.post_id) {\n        userMap.get(row.id)!.posts.push({ id: row.post_id, title: row.post_title });\n      }\n    }\n    return Array.from(userMap.values());\n  }\n}\n\nconst user = await userRepo.findByIdWithPosts('123');\n// Posts already loaded\nconsole.log(user.posts);"
+[
+  {
+    "id": "eager-loading",
+    "name": "Eager Loading",
+    "category": "Data Access",
+    "description": "Loads related data upfront to avoid multiple database queries",
+    "when_to_use": "Known data requirements\nQuery optimization\nReducing database calls",
+    "benefits": "Fewer database calls\nPredictable performance\nSimple implementation",
+    "drawbacks": "Memory overhead\nPotential over-fetching\nComplex queries",
+    "use_cases": "Known access patterns\nPerformance optimization\nReporting systems",
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "optimization",
+      "loading"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Eager Loading: load related data upfront\nclass User {\n  constructor(\n    public id: string,\n    public email: string,\n    public posts: Post[]\n  ) {}\n}\n\nclass UserRepository {\n  async findByIdWithPosts(id: string): Promise<User> {\n    const userRow = await db.query('SELECT * FROM users WHERE id = $1', [id]);\n    const postRows = await db.query('SELECT * FROM posts WHERE user_id = $1', [id]);\n    \n    return new User(\n      userRow.id,\n      userRow.email,\n      postRows.map(p => ({ id: p.id, title: p.title }))\n    );\n  }\n  \n  async findAllWithPosts(): Promise<User[]> {\n    const query = \\`\n      SELECT u.*, p.id as post_id, p.title as post_title\n      FROM users u\n      LEFT JOIN posts p ON u.id = p.user_id\n    \\`;\n    \n    const rows = await db.query(query);\n    return this.groupByUser(rows);\n  }\n  \n  private groupByUser(rows: any[]): User[] {\n    const userMap = new Map<string, User>();\n    for (const row of rows) {\n      if (!userMap.has(row.id)) {\n        userMap.set(row.id, new User(row.id, row.email, []));\n      }\n      if (row.post_id) {\n        userMap.get(row.id)!.posts.push({ id: row.post_id, title: row.post_title });\n      }\n    }\n    return Array.from(userMap.values());\n  }\n}\n\nconst user = await userRepo.findByIdWithPosts('123');\n// Posts already loaded\nconsole.log(user.posts);"
+      }
     }
   }
-}
+]

@@ -1,17 +1,19 @@
-{
-  "id": "transactional-writer",
-  "name": "Transactional Writer",
-  "category": "Idempotency",
-  "description": "The Transactional Writer uses database transactions for idempotent writes, providing all-or-nothing semantics.",
-  "when_to_use": "[\"Transactional databases\",\"Need atomic operations\"]",
-  "benefits": "[\"All-or-nothing semantics\",\"Atomic writes\"]",
-  "drawbacks": "[\"Database dependency\",\"Performance overhead\"]",
-  "use_cases": "[\"Transactional data writing\",\"Atomic updates\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"idempotency\"",
-    "\"transactional\"",
-    "\"atomic\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "transactional-writer",
+    "name": "Transactional Writer",
+    "category": "Idempotency",
+    "description": "The Transactional Writer uses database transactions for idempotent writes, providing all-or-nothing semantics.",
+    "when_to_use": "[\"Transactional databases\",\"Need atomic operations\"]",
+    "benefits": "[\"All-or-nothing semantics\",\"Atomic writes\"]",
+    "drawbacks": "[\"Database dependency\",\"Performance overhead\"]",
+    "use_cases": "[\"Transactional data writing\",\"Atomic updates\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"idempotency\"",
+      "\"transactional\"",
+      "\"atomic\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

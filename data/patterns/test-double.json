@@ -1,16 +1,18 @@
-{
-  "id": "test-double",
-  "name": "Test Double",
-  "category": "Testing",
-  "description": "Generic term for any case where you replace production object for testing purposes",
-  "when_to_use": "Dependency isolation\nExternal system testing\nControlled testing",
-  "benefits": "Isolation\nControl\nFaster tests\nReliability",
-  "drawbacks": "Test maintenance\nFalse confidence\nSetup complexity",
-  "use_cases": "Unit testing\nExternal dependencies\nDatabase testing",
-  "complexity": "Medium",
-  "tags": [
-    "testing",
-    "isolation",
-    "mock"
-  ]
-}
+[
+  {
+    "id": "test-double",
+    "name": "Test Double",
+    "category": "Testing",
+    "description": "Generic term for any case where you replace production object for testing purposes",
+    "when_to_use": "Dependency isolation\nExternal system testing\nControlled testing",
+    "benefits": "Isolation\nControl\nFaster tests\nReliability",
+    "drawbacks": "Test maintenance\nFalse confidence\nSetup complexity",
+    "use_cases": "Unit testing\nExternal dependencies\nDatabase testing",
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "isolation",
+      "mock"
+    ]
+  }
+]

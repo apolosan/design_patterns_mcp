@@ -1,22 +1,24 @@
-{
-  "id": "read-write-lock",
-  "name": "Read-Write Lock",
-  "category": "Concurrency",
-  "description": "Allows concurrent read access while ensuring exclusive write access",
-  "when_to_use": "Read-heavy workloads\nShared data\nPerformance optimization",
-  "benefits": "Concurrent reads\nData consistency\nPerformance\nScalability",
-  "drawbacks": "Complex implementation\nWriter starvation\nOverhead",
-  "use_cases": "Caching systems\nConfiguration data\nShared databases",
-  "complexity": "Medium",
-  "tags": [
-    "concurrency",
-    "locking",
-    "read-write"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Read-Write Lock: multiple readers OR single writer\nclass ReadWriteLock {\n  private readers = 0;\n  private writer = false;\n  private writeQueue: Array<() => void> = [];\n  private readQueue: Array<() => void> = [];\n  \n  async readLock(): Promise<void> {\n    while (this.writer || this.writeQueue.length > 0) {\n      await new Promise<void>(resolve => this.readQueue.push(resolve));\n    }\n    this.readers++;\n  }\n  \n  readUnlock(): void {\n    this.readers--;\n    if (this.readers === 0 && this.writeQueue.length > 0) {\n      const writer = this.writeQueue.shift()!;\n      writer();\n    }\n  }\n  \n  async writeLock(): Promise<void> {\n    while (this.writer || this.readers > 0) {\n      await new Promise<void>(resolve => this.writeQueue.push(resolve));\n    }\n    this.writer = true;\n  }\n  \n  writeUnlock(): void {\n    this.writer = false;\n    \n    if (this.writeQueue.length > 0) {\n      const writer = this.writeQueue.shift()!;\n      writer();\n    } else {\n      while (this.readQueue.length > 0) {\n        const reader = this.readQueue.shift()!;\n        reader();\n      }\n    }\n  }\n}\n\n// Usage\nconst lock = new ReadWriteLock();\nlet sharedData = 0;\n\n// Reader\nasync function reader() {\n  await lock.readLock();\n  console.log('Read:', sharedData);\n  lock.readUnlock();\n}\n\n// Writer\nasync function writer() {\n  await lock.writeLock();\n  sharedData++;\n  console.log('Write:', sharedData);\n  lock.writeUnlock();\n}"
+[
+  {
+    "id": "read-write-lock",
+    "name": "Read-Write Lock",
+    "category": "Concurrency",
+    "description": "Allows concurrent read access while ensuring exclusive write access",
+    "when_to_use": "Read-heavy workloads\nShared data\nPerformance optimization",
+    "benefits": "Concurrent reads\nData consistency\nPerformance\nScalability",
+    "drawbacks": "Complex implementation\nWriter starvation\nOverhead",
+    "use_cases": "Caching systems\nConfiguration data\nShared databases",
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "locking",
+      "read-write"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Read-Write Lock: multiple readers OR single writer\nclass ReadWriteLock {\n  private readers = 0;\n  private writer = false;\n  private writeQueue: Array<() => void> = [];\n  private readQueue: Array<() => void> = [];\n  \n  async readLock(): Promise<void> {\n    while (this.writer || this.writeQueue.length > 0) {\n      await new Promise<void>(resolve => this.readQueue.push(resolve));\n    }\n    this.readers++;\n  }\n  \n  readUnlock(): void {\n    this.readers--;\n    if (this.readers === 0 && this.writeQueue.length > 0) {\n      const writer = this.writeQueue.shift()!;\n      writer();\n    }\n  }\n  \n  async writeLock(): Promise<void> {\n    while (this.writer || this.readers > 0) {\n      await new Promise<void>(resolve => this.writeQueue.push(resolve));\n    }\n    this.writer = true;\n  }\n  \n  writeUnlock(): void {\n    this.writer = false;\n    \n    if (this.writeQueue.length > 0) {\n      const writer = this.writeQueue.shift()!;\n      writer();\n    } else {\n      while (this.readQueue.length > 0) {\n        const reader = this.readQueue.shift()!;\n        reader();\n      }\n    }\n  }\n}\n\n// Usage\nconst lock = new ReadWriteLock();\nlet sharedData = 0;\n\n// Reader\nasync function reader() {\n  await lock.readLock();\n  console.log('Read:', sharedData);\n  lock.readUnlock();\n}\n\n// Writer\nasync function writer() {\n  await lock.writeLock();\n  sharedData++;\n  console.log('Write:', sharedData);\n  lock.writeUnlock();\n}"
+      }
     }
   }
-}
+]

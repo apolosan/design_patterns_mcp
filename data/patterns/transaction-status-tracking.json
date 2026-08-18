@@ -1,24 +1,26 @@
-{
-  "id": "transaction-status-tracking",
-  "name": "Transaction Status Tracking",
-  "category": "Web3 Frontend",
-  "description": "Monitor transaction lifecycle: pending → mined → confirmed. Handle reorgs and errors.",
-  "when_to_use": "All dApps with transactions, user feedback, error handling",
-  "benefits": "Better UX, clear feedback, error handling, reorg protection",
-  "drawbacks": "Requires polling or websockets, complexity, edge cases",
-  "use_cases": "Transaction confirmation, error handling, UX improvements",
-  "complexity": "Medium",
-  "tags": [
-    "web3",
-    "transaction",
-    "status",
-    "frontend",
-    "ux"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "import { useWaitForTransaction } from 'wagmi';\n\nfunction SendTransaction() {\n  const { data: txHash, write } = useContractWrite({...});\n  \n  const { isLoading, isSuccess, isError } = useWaitForTransaction({\n    hash: txHash,\n    confirmations: 2 // Wait for 2 confirmations\n  });\n  \n  return (\n    <div>\n      {isLoading && <Spinner>Confirming...</Spinner>}\n      {isSuccess && <Success>Transaction confirmed!</Success>}\n      {isError && <Error>Transaction failed</Error>}\n    </div>\n  );\n}"
+[
+  {
+    "id": "transaction-status-tracking",
+    "name": "Transaction Status Tracking",
+    "category": "Web3 Frontend",
+    "description": "Monitor transaction lifecycle: pending → mined → confirmed. Handle reorgs and errors.",
+    "when_to_use": "All dApps with transactions, user feedback, error handling",
+    "benefits": "Better UX, clear feedback, error handling, reorg protection",
+    "drawbacks": "Requires polling or websockets, complexity, edge cases",
+    "use_cases": "Transaction confirmation, error handling, UX improvements",
+    "complexity": "Medium",
+    "tags": [
+      "web3",
+      "transaction",
+      "status",
+      "frontend",
+      "ux"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { useWaitForTransaction } from 'wagmi';\n\nfunction SendTransaction() {\n  const { data: txHash, write } = useContractWrite({...});\n  \n  const { isLoading, isSuccess, isError } = useWaitForTransaction({\n    hash: txHash,\n    confirmations: 2 // Wait for 2 confirmations\n  });\n  \n  return (\n    <div>\n      {isLoading && <Spinner>Confirming...</Spinner>}\n      {isSuccess && <Success>Transaction confirmed!</Success>}\n      {isError && <Error>Transaction failed</Error>}\n    </div>\n  );\n}"
+      }
     }
   }
-}
+]

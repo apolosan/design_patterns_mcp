@@ -1,16 +1,18 @@
-{
-  "id": "queue-based-load-leveling",
-  "name": "Queue-Based Load Leveling",
-  "category": "Messaging",
-  "description": "Uses queue to buffer between services for load management",
-  "when_to_use": "Variable workloads\nLoad spikes\nService decoupling",
-  "benefits": "Load smoothing\nService isolation\nScalability\nReliability",
-  "drawbacks": "Increased latency\nQueue management\nComplexity",
-  "use_cases": "Order processing\nImage processing\nBatch jobs",
-  "complexity": "Medium",
-  "tags": [
-    "messaging",
-    "load-balancing",
-    "queuing"
-  ]
-}
+[
+  {
+    "id": "queue-based-load-leveling",
+    "name": "Queue-Based Load Leveling",
+    "category": "Messaging",
+    "description": "Uses queue to buffer between services for load management",
+    "when_to_use": "Variable workloads\nLoad spikes\nService decoupling",
+    "benefits": "Load smoothing\nService isolation\nScalability\nReliability",
+    "drawbacks": "Increased latency\nQueue management\nComplexity",
+    "use_cases": "Order processing\nImage processing\nBatch jobs",
+    "complexity": "Medium",
+    "tags": [
+      "messaging",
+      "load-balancing",
+      "queuing"
+    ]
+  }
+]

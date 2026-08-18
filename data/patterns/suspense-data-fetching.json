@@ -1,25 +1,27 @@
-{
-  "id": "suspense-data-fetching",
-  "name": "Suspense for Data Fetching",
-  "category": "React Server Components",
-  "description": "Declarative loading states with Suspense. Stream UI as data loads.",
-  "when_to_use": "Async data fetching, streaming SSR, loading states",
-  "benefits": "Declarative loading, streaming, better UX, automatic code splitting",
-  "drawbacks": "Requires Suspense-compatible data sources, React 18+",
-  "use_cases": "Server data, slow API calls, incremental rendering",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "suspense",
-    "streaming",
-    "loading",
-    "data-fetching",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { Suspense } from 'react';\n\n// App with Suspense boundaries\nfunction App() {\n  return (\n    <div>\n      <h1>Dashboard</h1>\n      \n      {/* Fast content renders immediately */}\n      <UserInfo />\n      \n      {/* Slow content shows fallback while loading */}\n      <Suspense fallback={<Skeleton />}>\n        <SlowData />\n      </Suspense>\n      \n      {/* Multiple suspense boundaries */}\n      <div className=\"grid\">\n        <Suspense fallback={<ChartSkeleton />}>\n          <Chart />\n        </Suspense>\n        \n        <Suspense fallback={<TableSkeleton />}>\n          <DataTable />\n        </Suspense>\n      </div>\n    </div>\n  );\n}\n\n// Server Component with slow data\nasync function SlowData() {\n  const data = await fetchSlowData(); // Suspends here\n  return <div>{data.content}</div>;\n}\n\n// Nested Suspense\nfunction Page() {\n  return (\n    <Suspense fallback={<PageSkeleton />}>\n      <Layout>\n        <Suspense fallback={<Spinner />}>\n          <Comments />\n        </Suspense>\n      </Layout>\n    </Suspense>\n  );\n}\n\n// Error Boundary + Suspense\nfunction DataWithError() {\n  return (\n    <ErrorBoundary fallback={<Error />}>\n      <Suspense fallback={<Loading />}>\n        <Data />\n      </Suspense>\n    </ErrorBoundary>\n  );\n}"
+[
+  {
+    "id": "suspense-data-fetching",
+    "name": "Suspense for Data Fetching",
+    "category": "React Server Components",
+    "description": "Declarative loading states with Suspense. Stream UI as data loads.",
+    "when_to_use": "Async data fetching, streaming SSR, loading states",
+    "benefits": "Declarative loading, streaming, better UX, automatic code splitting",
+    "drawbacks": "Requires Suspense-compatible data sources, React 18+",
+    "use_cases": "Server data, slow API calls, incremental rendering",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "suspense",
+      "streaming",
+      "loading",
+      "data-fetching",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { Suspense } from 'react';\n\n// App with Suspense boundaries\nfunction App() {\n  return (\n    <div>\n      <h1>Dashboard</h1>\n      \n      {/* Fast content renders immediately */}\n      <UserInfo />\n      \n      {/* Slow content shows fallback while loading */}\n      <Suspense fallback={<Skeleton />}>\n        <SlowData />\n      </Suspense>\n      \n      {/* Multiple suspense boundaries */}\n      <div className=\"grid\">\n        <Suspense fallback={<ChartSkeleton />}>\n          <Chart />\n        </Suspense>\n        \n        <Suspense fallback={<TableSkeleton />}>\n          <DataTable />\n        </Suspense>\n      </div>\n    </div>\n  );\n}\n\n// Server Component with slow data\nasync function SlowData() {\n  const data = await fetchSlowData(); // Suspends here\n  return <div>{data.content}</div>;\n}\n\n// Nested Suspense\nfunction Page() {\n  return (\n    <Suspense fallback={<PageSkeleton />}>\n      <Layout>\n        <Suspense fallback={<Spinner />}>\n          <Comments />\n        </Suspense>\n      </Layout>\n    </Suspense>\n  );\n}\n\n// Error Boundary + Suspense\nfunction DataWithError() {\n  return (\n    <ErrorBoundary fallback={<Error />}>\n      <Suspense fallback={<Loading />}>\n        <Data />\n      </Suspense>\n    </ErrorBoundary>\n  );\n}"
+      }
     }
   }
-}
+]

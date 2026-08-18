@@ -1,16 +1,18 @@
-{
-  "id": "specification",
-  "name": "Specification Pattern",
-  "category": "Domain-Driven Design",
-  "description": "Encapsulates business rules that can be combined and reused",
-  "when_to_use": "Complex business rules\nRule combination\nValidation",
-  "benefits": "Rule reuse\nCombinability\nTestability\nDomain clarity",
-  "drawbacks": "Object proliferation\nComplex composition\nPerformance overhead",
-  "use_cases": "Business rule validation\nQuery filtering\nRule composition",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "tactical",
-    "rules"
-  ]
-}
+[
+  {
+    "id": "specification",
+    "name": "Specification Pattern",
+    "category": "Domain-Driven Design",
+    "description": "Encapsulates business rules that can be combined and reused",
+    "when_to_use": "Complex business rules\nRule combination\nValidation",
+    "benefits": "Rule reuse\nCombinability\nTestability\nDomain clarity",
+    "drawbacks": "Object proliferation\nComplex composition\nPerformance overhead",
+    "use_cases": "Business rule validation\nQuery filtering\nRule composition",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "tactical",
+      "rules"
+    ]
+  }
+]

@@ -1,22 +1,24 @@
-{
-  "id": "retry-pattern",
-  "name": "Retry Pattern",
-  "category": "Cloud-Native",
-  "description": "Automatically retries failed operations with backoff strategies",
-  "when_to_use": "Transient failures\nNetwork unreliability\nExternal services",
-  "benefits": "Improved reliability\nHandles transient errors\nBetter user experience",
-  "drawbacks": "Increased latency\nResource consumption\nCascading delays",
-  "use_cases": "API calls\nDatabase operations\nMessage processing",
-  "complexity": "Low",
-  "tags": [
-    "resilience",
-    "error-handling",
-    "reliability"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Retry Pattern: handle transient failures\nclass RetryPolicy {\n  constructor(\n    private maxRetries: number = 3,\n    private delayMs: number = 1000\n  ) {}\n  \n  async execute<T>(fn: () => Promise<T>): Promise<T> {\n    let lastError: Error;\n    \n    for (let attempt = 0; attempt <= this.maxRetries; attempt++) {\n      try {\n        return await fn();\n      } catch (error) {\n        lastError = error as Error;\n        if (attempt < this.maxRetries) {\n          await this.sleep(this.delayMs * Math.pow(2, attempt));\n        }\n      }\n    }\n    throw lastError!;\n  }\n  \n  private sleep(ms: number) {\n    return new Promise(resolve => setTimeout(resolve, ms));\n  }\n}\n\nconst retry = new RetryPolicy(3, 1000);\nconst data = await retry.execute(() => fetch('https://api.com/data'));"
+[
+  {
+    "id": "retry-pattern",
+    "name": "Retry Pattern",
+    "category": "Cloud-Native",
+    "description": "Automatically retries failed operations with backoff strategies",
+    "when_to_use": "Transient failures\nNetwork unreliability\nExternal services",
+    "benefits": "Improved reliability\nHandles transient errors\nBetter user experience",
+    "drawbacks": "Increased latency\nResource consumption\nCascading delays",
+    "use_cases": "API calls\nDatabase operations\nMessage processing",
+    "complexity": "Low",
+    "tags": [
+      "resilience",
+      "error-handling",
+      "reliability"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Retry Pattern: handle transient failures\nclass RetryPolicy {\n  constructor(\n    private maxRetries: number = 3,\n    private delayMs: number = 1000\n  ) {}\n  \n  async execute<T>(fn: () => Promise<T>): Promise<T> {\n    let lastError: Error;\n    \n    for (let attempt = 0; attempt <= this.maxRetries; attempt++) {\n      try {\n        return await fn();\n      } catch (error) {\n        lastError = error as Error;\n        if (attempt < this.maxRetries) {\n          await this.sleep(this.delayMs * Math.pow(2, attempt));\n        }\n      }\n    }\n    throw lastError!;\n  }\n  \n  private sleep(ms: number) {\n    return new Promise(resolve => setTimeout(resolve, ms));\n  }\n}\n\nconst retry = new RetryPolicy(3, 1000);\nconst data = await retry.execute(() => fetch('https://api.com/data'));"
+      }
     }
   }
-}
+]

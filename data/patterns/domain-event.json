@@ -1,16 +1,18 @@
-{
-  "id": "domain-event",
-  "name": "Domain Event",
-  "category": "Domain-Driven Design",
-  "description": "Something that happened in the domain that domain experts care about",
-  "when_to_use": "Event-driven architecture\nDecoupling\nIntegration",
-  "benefits": "Decoupling\nIntegration\nAudit trail\nFlexibility",
-  "drawbacks": "Complexity\nEvent management\nEventual consistency",
-  "use_cases": "Order placed\nUser registered\nPayment processed",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "tactical",
-    "event"
-  ]
-}
+[
+  {
+    "id": "domain-event",
+    "name": "Domain Event",
+    "category": "Domain-Driven Design",
+    "description": "Something that happened in the domain that domain experts care about",
+    "when_to_use": "Event-driven architecture\nDecoupling\nIntegration",
+    "benefits": "Decoupling\nIntegration\nAudit trail\nFlexibility",
+    "drawbacks": "Complexity\nEvent management\nEventual consistency",
+    "use_cases": "Order placed\nUser registered\nPayment processed",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "tactical",
+      "event"
+    ]
+  }
+]

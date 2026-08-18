@@ -1,22 +1,24 @@
-{
-  "id": "spatial-partitioning-perf",
-  "name": "Spatial Partitioning (Performance)",
-  "category": "Performance",
-  "description": "Divides space into regions to optimize spatial queries and reduce search complexity",
-  "when_to_use": "Spatial data\nCollision detection\nProximity searches",
-  "benefits": "Faster queries\nReduced complexity\nScalable searches",
-  "drawbacks": "Implementation complexity\nMemory overhead\nDynamic updates",
-  "use_cases": "Collision detection\nGeographic systems\nSpatial databases",
-  "complexity": "High",
-  "tags": [
-    "performance",
-    "spatial",
-    "search"
-  ],
-  "examples": {
-    "note": {
-      "language": "note",
-      "code": "⚠️ Specialized: Game dev/graphics optimization using data structures like Quadtree, Octree, or BSP trees for spatial queries."
+[
+  {
+    "id": "spatial-partitioning-perf",
+    "name": "Spatial Partitioning (Performance)",
+    "category": "Performance",
+    "description": "Divides space into regions to optimize spatial queries and reduce search complexity",
+    "when_to_use": "Spatial data\nCollision detection\nProximity searches",
+    "benefits": "Faster queries\nReduced complexity\nScalable searches",
+    "drawbacks": "Implementation complexity\nMemory overhead\nDynamic updates",
+    "use_cases": "Collision detection\nGeographic systems\nSpatial databases",
+    "complexity": "High",
+    "tags": [
+      "performance",
+      "spatial",
+      "search"
+    ],
+    "examples": {
+      "note": {
+        "language": "note",
+        "code": "⚠️ Specialized: Game dev/graphics optimization using data structures like Quadtree, Octree, or BSP trees for spatial queries."
+      }
     }
   }
-}
+]

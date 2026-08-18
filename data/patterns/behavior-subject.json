@@ -1,22 +1,24 @@
-{
-  "id": "behavior-subject",
-  "name": "BehaviorSubject Pattern",
-  "category": "Reactive",
-  "description": "Subject that requires initial value and emits current value to new subscribers",
-  "when_to_use": "State management\nCurrent value access\nInitial state",
-  "benefits": "Current value access\nState preservation\nImmediate emission",
-  "drawbacks": "Memory overhead\nState management complexity\nInitial value requirement",
-  "use_cases": "Application state\nUser preferences\nConfiguration",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "state",
-    "behavior-subject"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// BehaviorSubject: subject with current value\nclass BehaviorSubject<T> {\n  private observers: Observer<T>[] = [];\n  \n  constructor(private value: T) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    observer.next(this.value);  // Emit current value immediately\n    this.observers.push(observer);\n    return {\n      unsubscribe: () => {\n        const index = this.observers.indexOf(observer);\n        if (index > -1) this.observers.splice(index, 1);\n      }\n    };\n  }\n  \n  next(value: T): void {\n    this.value = value;\n    this.observers.forEach(obs => obs.next(value));\n  }\n  \n  getValue(): T {\n    return this.value;\n  }\n}\n\n// Usage: State management\nconst currentUser = new BehaviorSubject<string | null>(null);\n\n// New subscriber gets current value immediately\ncurrentUser.subscribe({\n  next: user => console.log('User:', user),  // Logs: null\n  error: () => {},\n  complete: () => {}\n});\n\ncurrentUser.next('john@example.com');  // Logs: john@example.com"
+[
+  {
+    "id": "behavior-subject",
+    "name": "BehaviorSubject Pattern",
+    "category": "Reactive",
+    "description": "Subject that requires initial value and emits current value to new subscribers",
+    "when_to_use": "State management\nCurrent value access\nInitial state",
+    "benefits": "Current value access\nState preservation\nImmediate emission",
+    "drawbacks": "Memory overhead\nState management complexity\nInitial value requirement",
+    "use_cases": "Application state\nUser preferences\nConfiguration",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "state",
+      "behavior-subject"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// BehaviorSubject: subject with current value\nclass BehaviorSubject<T> {\n  private observers: Observer<T>[] = [];\n  \n  constructor(private value: T) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    observer.next(this.value);  // Emit current value immediately\n    this.observers.push(observer);\n    return {\n      unsubscribe: () => {\n        const index = this.observers.indexOf(observer);\n        if (index > -1) this.observers.splice(index, 1);\n      }\n    };\n  }\n  \n  next(value: T): void {\n    this.value = value;\n    this.observers.forEach(obs => obs.next(value));\n  }\n  \n  getValue(): T {\n    return this.value;\n  }\n}\n\n// Usage: State management\nconst currentUser = new BehaviorSubject<string | null>(null);\n\n// New subscriber gets current value immediately\ncurrentUser.subscribe({\n  next: user => console.log('User:', user),  // Logs: null\n  error: () => {},\n  complete: () => {}\n});\n\ncurrentUser.next('john@example.com');  // Logs: john@example.com"
+      }
     }
   }
-}
+]

@@ -1,22 +1,24 @@
-{
-  "id": "timeout-pattern",
-  "name": "Timeout Pattern",
-  "category": "Cloud-Native",
-  "description": "Sets maximum wait time for operations to prevent resource blocking",
-  "when_to_use": "External service calls\nResource protection\nResponsive systems",
-  "benefits": "Resource protection\nSystem responsiveness\nPrevents blocking",
-  "drawbacks": "Premature timeouts\nConfiguration complexity\nFalse failures",
-  "use_cases": "HTTP requests\nDatabase queries\nRemote procedure calls",
-  "complexity": "Low",
-  "tags": [
-    "timeout",
-    "resource-protection",
-    "performance"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Timeout Pattern: prevent indefinite waiting\nclass TimeoutHandler {\n  async execute<T>(fn: () => Promise<T>, timeoutMs: number): Promise<T> {\n    return Promise.race([\n      fn(),\n      new Promise<T>((_, reject) =>\n        setTimeout(() => reject(new Error('Timeout')), timeoutMs)\n      )\n    ]);\n  }\n  \n  async withFallback<T>(fn: () => Promise<T>, timeoutMs: number, fallback: T): Promise<T> {\n    try {\n      return await this.execute(fn, timeoutMs);\n    } catch {\n      return fallback;\n    }\n  }\n}\n\nconst timeout = new TimeoutHandler();\nconst data = await timeout.execute(\n  () => fetch('https://api.com/data'),\n  5000\n);"
+[
+  {
+    "id": "timeout-pattern",
+    "name": "Timeout Pattern",
+    "category": "Cloud-Native",
+    "description": "Sets maximum wait time for operations to prevent resource blocking",
+    "when_to_use": "External service calls\nResource protection\nResponsive systems",
+    "benefits": "Resource protection\nSystem responsiveness\nPrevents blocking",
+    "drawbacks": "Premature timeouts\nConfiguration complexity\nFalse failures",
+    "use_cases": "HTTP requests\nDatabase queries\nRemote procedure calls",
+    "complexity": "Low",
+    "tags": [
+      "timeout",
+      "resource-protection",
+      "performance"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Timeout Pattern: prevent indefinite waiting\nclass TimeoutHandler {\n  async execute<T>(fn: () => Promise<T>, timeoutMs: number): Promise<T> {\n    return Promise.race([\n      fn(),\n      new Promise<T>((_, reject) =>\n        setTimeout(() => reject(new Error('Timeout')), timeoutMs)\n      )\n    ]);\n  }\n  \n  async withFallback<T>(fn: () => Promise<T>, timeoutMs: number, fallback: T): Promise<T> {\n    try {\n      return await this.execute(fn, timeoutMs);\n    } catch {\n      return fallback;\n    }\n  }\n}\n\nconst timeout = new TimeoutHandler();\nconst data = await timeout.execute(\n  () => fetch('https://api.com/data'),\n  5000\n);"
+      }
     }
   }
-}
+]

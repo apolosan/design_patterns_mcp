@@ -1,184 +1,485 @@
-{
-  "patterns": [
-    {
-      "id": "arrange-act-assert",
-      "name": "Arrange-Act-Assert (AAA)",
-      "category": "Testing",
-      "description": "Structure for unit tests with clear separation of setup, execution, and verification",
-      "when_to_use": ["Unit testing", "Test structure", "Clear test organization"],
-      "benefits": ["Clear test structure", "Readability", "Maintainability", "Consistency"],
-      "drawbacks": ["Verbose tests", "Repetitive setup", "Potential over-structuring"],
-      "use_cases": ["Unit tests", "Integration tests", "Automated testing"],
-      "complexity": "Low",
-      "tags": ["testing", "structure", "unit-test"]
-    },
-    {
-      "id": "test-double",
-      "name": "Test Double",
-      "category": "Testing",
-      "description": "Generic term for any case where you replace production object for testing purposes",
-      "when_to_use": ["Dependency isolation", "External system testing", "Controlled testing"],
-      "benefits": ["Isolation", "Control", "Faster tests", "Reliability"],
-      "drawbacks": ["Test maintenance", "False confidence", "Setup complexity"],
-      "use_cases": ["Unit testing", "External dependencies", "Database testing"],
-      "complexity": "Medium",
-      "tags": ["testing", "isolation", "mock"]
-    },
-    {
-      "id": "mock-object",
-      "name": "Mock Object",
-      "category": "Testing",
-      "description": "Simulates behavior of real objects in controlled ways for testing",
-      "when_to_use": ["Behavior verification", "External dependencies", "Interaction testing"],
-      "benefits": ["Behavior verification", "Dependency isolation", "Fast execution"],
-      "drawbacks": ["Over-mocking", "Brittle tests", "Implementation coupling"],
-      "use_cases": ["Service interactions", "API calls", "Database operations"],
-      "complexity": "Medium",
-      "tags": ["testing", "mock", "behavior"]
-    },
-    {
-      "id": "stub-object",
-      "name": "Stub Object",
-      "category": "Testing",
-      "description": "Provides predetermined responses to method calls during testing",
-      "when_to_use": ["State-based testing", "Data provision", "Simple responses"],
-      "benefits": ["Simple implementation", "Predictable data", "Fast execution"],
-      "drawbacks": ["Limited behavior", "Maintenance overhead", "Static responses"],
-      "use_cases": ["Data providers", "Configuration objects", "Simple services"],
-      "complexity": "Low",
-      "tags": ["testing", "stub", "data"]
-    },
-    {
-      "id": "page-object-model",
-      "name": "Page Object Model",
-      "category": "Testing",
-      "description": "Encapsulates web page elements and operations for UI testing",
-      "when_to_use": ["UI testing", "Web automation", "Test maintenance"],
-      "benefits": ["Code reusability", "Maintainability", "Abstraction", "Readability"],
-      "drawbacks": ["Additional complexity", "Setup overhead", "Learning curve"],
-      "use_cases": ["Selenium testing", "UI automation", "End-to-end testing"],
-      "complexity": "Medium",
-      "tags": ["testing", "ui", "automation"]
-    },
-    {
-      "id": "test-data-builder",
-      "name": "Test Data Builder",
-      "category": "Testing",
-      "description": "Builds test data objects using fluent interface for readable test setup",
-      "when_to_use": ["Complex object creation", "Test data setup", "Readable tests"],
-      "benefits": ["Readable tests", "Flexible data creation", "Reusable builders"],
-      "drawbacks": ["Additional code", "Maintenance overhead", "Over-engineering"],
-      "use_cases": ["Object creation", "Test setup", "Data variation"],
-      "complexity": "Medium",
-      "tags": ["testing", "builder", "data"]
-    },
-    {
-      "id": "object-mother",
-      "name": "Object Mother",
-      "category": "Testing",
-      "description": "Factory for creating commonly used test objects with meaningful names",
-      "when_to_use": ["Common test objects", "Shared test data", "Domain-specific objects"],
-      "benefits": ["Shared test data", "Meaningful names", "Reduced duplication"],
-      "drawbacks": ["Centralized dependency", "Maintenance burden", "Coupling risk"],
-      "use_cases": ["Domain objects", "Common scenarios", "Shared fixtures"],
-      "complexity": "Medium",
-      "tags": ["testing", "factory", "objects"]
-    },
-    {
-      "id": "test-fixture",
-      "name": "Test Fixture",
-      "category": "Testing",
-      "description": "Fixed state of software under test used as baseline for running tests",
-      "when_to_use": ["Consistent test environment", "Setup/teardown", "Shared state"],
-      "benefits": ["Consistent environment", "Shared setup", "Reliable tests"],
-      "drawbacks": ["Test coupling", "Setup complexity", "State management"],
-      "use_cases": ["Database setup", "File systems", "Configuration"],
-      "complexity": "Medium",
-      "tags": ["testing", "fixture", "setup"]
-    },
-    {
-      "id": "parameterized-test",
-      "name": "Parameterized Test",
-      "category": "Testing",
-      "description": "Runs same test logic with different input parameters and expected results",
-      "when_to_use": ["Multiple test cases", "Data-driven testing", "Boundary testing"],
-      "benefits": ["Reduced duplication", "Comprehensive coverage", "Easy data addition"],
-      "drawbacks": ["Complex debugging", "Shared test logic", "Parameter management"],
-      "use_cases": ["Boundary testing", "Data validation", "Algorithm testing"],
-      "complexity": "Medium",
-      "tags": ["testing", "parameterized", "data-driven"]
-    },
-    {
-      "id": "test-spy",
-      "name": "Test Spy",
-      "category": "Testing",
-      "description": "Records information about how it was called for later verification",
-      "when_to_use": ["Interaction verification", "Call tracking", "Behavior testing"],
-      "benefits": ["Call verification", "Argument capture", "Interaction testing"],
-      "drawbacks": ["Complex setup", "State management", "Verification complexity"],
-      "use_cases": ["Logging verification", "Event tracking", "Callback testing"],
-      "complexity": "Medium",
-      "tags": ["testing", "spy", "verification"]
-    },
-    {
-      "id": "fake-object",
-      "name": "Fake Object",
-      "category": "Testing",
-      "description": "Working implementation with shortcuts that make it unsuitable for production",
-      "when_to_use": ["Integration testing", "External system replacement", "Performance testing"],
-      "benefits": ["Real behavior", "Integration testing", "Performance"],
-      "drawbacks": ["Implementation effort", "Maintenance burden", "Behavioral differences"],
-      "use_cases": ["In-memory databases", "File system fakes", "Network services"],
-      "complexity": "High",
-      "tags": ["testing", "fake", "integration"]
-    },
-    {
-      "id": "test-containerization",
-      "name": "Test Containerization",
-      "category": "Testing",
-      "description": "Uses containers to create isolated, reproducible test environments",
-      "when_to_use": ["Integration testing", "Environment consistency", "CI/CD pipelines"],
-      "benefits": ["Environment consistency", "Isolation", "Reproducibility"],
-      "drawbacks": ["Resource overhead", "Setup complexity", "Container management"],
-      "use_cases": ["Database testing", "Service integration", "End-to-end testing"],
-      "complexity": "High",
-      "tags": ["testing", "containers", "environment"]
-    },
-    {
-      "id": "golden-master-testing",
-      "name": "Golden Master Testing",
-      "category": "Testing",
-      "description": "Compares current output against approved golden master for regression testing",
-      "when_to_use": ["Legacy code testing", "Regression testing", "Complex output validation"],
-      "benefits": ["Regression detection", "Legacy code support", "Comprehensive validation"],
-      "drawbacks": ["Brittle tests", "Output management", "Change detection"],
-      "use_cases": ["Legacy systems", "Report generation", "Complex algorithms"],
-      "complexity": "Medium",
-      "tags": ["testing", "regression", "legacy"]
-    },
-    {
-      "id": "mutation-testing",
-      "name": "Mutation Testing",
-      "category": "Testing",
-      "description": "Evaluates test quality by introducing bugs and checking if tests detect them",
-      "when_to_use": ["Test quality assessment", "Coverage improvement", "Critical code validation"],
-      "benefits": ["Test quality measurement", "Coverage improvement", "Bug detection"],
-      "drawbacks": ["Computational overhead", "Complex analysis", "Tool dependency"],
-      "use_cases": ["Critical systems", "Test improvement", "Quality assurance"],
-      "complexity": "High",
-      "tags": ["testing", "mutation", "quality"]
-    },
-    {
-      "id": "property-based-testing",
-      "name": "Property-Based Testing",
-      "category": "Testing",
-      "description": "Tests properties that should hold for all valid inputs rather than specific examples",
-      "when_to_use": ["Algorithm testing", "Invariant verification", "Edge case discovery"],
-      "benefits": ["Edge case discovery", "Comprehensive testing", "Property verification"],
-      "drawbacks": ["Complex property definition", "Debugging difficulty", "Tool requirements"],
-      "use_cases": ["Algorithm validation", "Invariant testing", "Mathematical functions"],
-      "complexity": "High",
-      "tags": ["testing", "property-based", "algorithms"]
-    }
-  ]
-}
+[
+  {
+    "id": "arrange-act-assert",
+    "name": "Arrange-Act-Assert (AAA)",
+    "category": "Testing",
+    "description": "Structure for unit tests with clear separation of setup, execution, and verification",
+    "when_to_use": [
+      "Unit testing",
+      "Test structure",
+      "Clear test organization"
+    ],
+    "benefits": [
+      "Clear test structure",
+      "Readability",
+      "Maintainability",
+      "Consistency"
+    ],
+    "drawbacks": [
+      "Verbose tests",
+      "Repetitive setup",
+      "Potential over-structuring"
+    ],
+    "use_cases": [
+      "Unit tests",
+      "Integration tests",
+      "Automated testing"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "testing",
+      "structure",
+      "unit-test"
+    ]
+  },
+  {
+    "id": "test-double",
+    "name": "Test Double",
+    "category": "Testing",
+    "description": "Generic term for any case where you replace production object for testing purposes",
+    "when_to_use": [
+      "Dependency isolation",
+      "External system testing",
+      "Controlled testing"
+    ],
+    "benefits": [
+      "Isolation",
+      "Control",
+      "Faster tests",
+      "Reliability"
+    ],
+    "drawbacks": [
+      "Test maintenance",
+      "False confidence",
+      "Setup complexity"
+    ],
+    "use_cases": [
+      "Unit testing",
+      "External dependencies",
+      "Database testing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "isolation",
+      "mock"
+    ]
+  },
+  {
+    "id": "mock-object",
+    "name": "Mock Object",
+    "category": "Testing",
+    "description": "Simulates behavior of real objects in controlled ways for testing",
+    "when_to_use": [
+      "Behavior verification",
+      "External dependencies",
+      "Interaction testing"
+    ],
+    "benefits": [
+      "Behavior verification",
+      "Dependency isolation",
+      "Fast execution"
+    ],
+    "drawbacks": [
+      "Over-mocking",
+      "Brittle tests",
+      "Implementation coupling"
+    ],
+    "use_cases": [
+      "Service interactions",
+      "API calls",
+      "Database operations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "mock",
+      "behavior"
+    ]
+  },
+  {
+    "id": "stub-object",
+    "name": "Stub Object",
+    "category": "Testing",
+    "description": "Provides predetermined responses to method calls during testing",
+    "when_to_use": [
+      "State-based testing",
+      "Data provision",
+      "Simple responses"
+    ],
+    "benefits": [
+      "Simple implementation",
+      "Predictable data",
+      "Fast execution"
+    ],
+    "drawbacks": [
+      "Limited behavior",
+      "Maintenance overhead",
+      "Static responses"
+    ],
+    "use_cases": [
+      "Data providers",
+      "Configuration objects",
+      "Simple services"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "testing",
+      "stub",
+      "data"
+    ]
+  },
+  {
+    "id": "page-object-model",
+    "name": "Page Object Model",
+    "category": "Testing",
+    "description": "Encapsulates web page elements and operations for UI testing",
+    "when_to_use": [
+      "UI testing",
+      "Web automation",
+      "Test maintenance"
+    ],
+    "benefits": [
+      "Code reusability",
+      "Maintainability",
+      "Abstraction",
+      "Readability"
+    ],
+    "drawbacks": [
+      "Additional complexity",
+      "Setup overhead",
+      "Learning curve"
+    ],
+    "use_cases": [
+      "Selenium testing",
+      "UI automation",
+      "End-to-end testing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "ui",
+      "automation"
+    ]
+  },
+  {
+    "id": "test-data-builder",
+    "name": "Test Data Builder",
+    "category": "Testing",
+    "description": "Builds test data objects using fluent interface for readable test setup",
+    "when_to_use": [
+      "Complex object creation",
+      "Test data setup",
+      "Readable tests"
+    ],
+    "benefits": [
+      "Readable tests",
+      "Flexible data creation",
+      "Reusable builders"
+    ],
+    "drawbacks": [
+      "Additional code",
+      "Maintenance overhead",
+      "Over-engineering"
+    ],
+    "use_cases": [
+      "Object creation",
+      "Test setup",
+      "Data variation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "builder",
+      "data"
+    ]
+  },
+  {
+    "id": "object-mother",
+    "name": "Object Mother",
+    "category": "Testing",
+    "description": "Factory for creating commonly used test objects with meaningful names",
+    "when_to_use": [
+      "Common test objects",
+      "Shared test data",
+      "Domain-specific objects"
+    ],
+    "benefits": [
+      "Shared test data",
+      "Meaningful names",
+      "Reduced duplication"
+    ],
+    "drawbacks": [
+      "Centralized dependency",
+      "Maintenance burden",
+      "Coupling risk"
+    ],
+    "use_cases": [
+      "Domain objects",
+      "Common scenarios",
+      "Shared fixtures"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "factory",
+      "objects"
+    ]
+  },
+  {
+    "id": "test-fixture",
+    "name": "Test Fixture",
+    "category": "Testing",
+    "description": "Fixed state of software under test used as baseline for running tests",
+    "when_to_use": [
+      "Consistent test environment",
+      "Setup/teardown",
+      "Shared state"
+    ],
+    "benefits": [
+      "Consistent environment",
+      "Shared setup",
+      "Reliable tests"
+    ],
+    "drawbacks": [
+      "Test coupling",
+      "Setup complexity",
+      "State management"
+    ],
+    "use_cases": [
+      "Database setup",
+      "File systems",
+      "Configuration"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "fixture",
+      "setup"
+    ]
+  },
+  {
+    "id": "parameterized-test",
+    "name": "Parameterized Test",
+    "category": "Testing",
+    "description": "Runs same test logic with different input parameters and expected results",
+    "when_to_use": [
+      "Multiple test cases",
+      "Data-driven testing",
+      "Boundary testing"
+    ],
+    "benefits": [
+      "Reduced duplication",
+      "Comprehensive coverage",
+      "Easy data addition"
+    ],
+    "drawbacks": [
+      "Complex debugging",
+      "Shared test logic",
+      "Parameter management"
+    ],
+    "use_cases": [
+      "Boundary testing",
+      "Data validation",
+      "Algorithm testing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "parameterized",
+      "data-driven"
+    ]
+  },
+  {
+    "id": "test-spy",
+    "name": "Test Spy",
+    "category": "Testing",
+    "description": "Records information about how it was called for later verification",
+    "when_to_use": [
+      "Interaction verification",
+      "Call tracking",
+      "Behavior testing"
+    ],
+    "benefits": [
+      "Call verification",
+      "Argument capture",
+      "Interaction testing"
+    ],
+    "drawbacks": [
+      "Complex setup",
+      "State management",
+      "Verification complexity"
+    ],
+    "use_cases": [
+      "Logging verification",
+      "Event tracking",
+      "Callback testing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "spy",
+      "verification"
+    ]
+  },
+  {
+    "id": "fake-object",
+    "name": "Fake Object",
+    "category": "Testing",
+    "description": "Working implementation with shortcuts that make it unsuitable for production",
+    "when_to_use": [
+      "Integration testing",
+      "External system replacement",
+      "Performance testing"
+    ],
+    "benefits": [
+      "Real behavior",
+      "Integration testing",
+      "Performance"
+    ],
+    "drawbacks": [
+      "Implementation effort",
+      "Maintenance burden",
+      "Behavioral differences"
+    ],
+    "use_cases": [
+      "In-memory databases",
+      "File system fakes",
+      "Network services"
+    ],
+    "complexity": "High",
+    "tags": [
+      "testing",
+      "fake",
+      "integration"
+    ]
+  },
+  {
+    "id": "test-containerization",
+    "name": "Test Containerization",
+    "category": "Testing",
+    "description": "Uses containers to create isolated, reproducible test environments",
+    "when_to_use": [
+      "Integration testing",
+      "Environment consistency",
+      "CI/CD pipelines"
+    ],
+    "benefits": [
+      "Environment consistency",
+      "Isolation",
+      "Reproducibility"
+    ],
+    "drawbacks": [
+      "Resource overhead",
+      "Setup complexity",
+      "Container management"
+    ],
+    "use_cases": [
+      "Database testing",
+      "Service integration",
+      "End-to-end testing"
+    ],
+    "complexity": "High",
+    "tags": [
+      "testing",
+      "containers",
+      "environment"
+    ]
+  },
+  {
+    "id": "golden-master-testing",
+    "name": "Golden Master Testing",
+    "category": "Testing",
+    "description": "Compares current output against approved golden master for regression testing",
+    "when_to_use": [
+      "Legacy code testing",
+      "Regression testing",
+      "Complex output validation"
+    ],
+    "benefits": [
+      "Regression detection",
+      "Legacy code support",
+      "Comprehensive validation"
+    ],
+    "drawbacks": [
+      "Brittle tests",
+      "Output management",
+      "Change detection"
+    ],
+    "use_cases": [
+      "Legacy systems",
+      "Report generation",
+      "Complex algorithms"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "regression",
+      "legacy"
+    ]
+  },
+  {
+    "id": "mutation-testing",
+    "name": "Mutation Testing",
+    "category": "Testing",
+    "description": "Evaluates test quality by introducing bugs and checking if tests detect them",
+    "when_to_use": [
+      "Test quality assessment",
+      "Coverage improvement",
+      "Critical code validation"
+    ],
+    "benefits": [
+      "Test quality measurement",
+      "Coverage improvement",
+      "Bug detection"
+    ],
+    "drawbacks": [
+      "Computational overhead",
+      "Complex analysis",
+      "Tool dependency"
+    ],
+    "use_cases": [
+      "Critical systems",
+      "Test improvement",
+      "Quality assurance"
+    ],
+    "complexity": "High",
+    "tags": [
+      "testing",
+      "mutation",
+      "quality"
+    ]
+  },
+  {
+    "id": "property-based-testing",
+    "name": "Property-Based Testing",
+    "category": "Testing",
+    "description": "Tests properties that should hold for all valid inputs rather than specific examples",
+    "when_to_use": [
+      "Algorithm testing",
+      "Invariant verification",
+      "Edge case discovery"
+    ],
+    "benefits": [
+      "Edge case discovery",
+      "Comprehensive testing",
+      "Property verification"
+    ],
+    "drawbacks": [
+      "Complex property definition",
+      "Debugging difficulty",
+      "Tool requirements"
+    ],
+    "use_cases": [
+      "Algorithm validation",
+      "Invariant testing",
+      "Mathematical functions"
+    ],
+    "complexity": "High",
+    "tags": [
+      "testing",
+      "property-based",
+      "algorithms"
+    ]
+  }
+]

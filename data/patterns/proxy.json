@@ -1,22 +1,24 @@
-{
-  "id": "proxy",
-  "name": "Proxy",
-  "category": "Structural",
-  "description": "Provides a placeholder or surrogate for another object to control access",
-  "when_to_use": "Access control\nLazy initialization\nRemote objects",
-  "benefits": "Security\nPerformance\nSeparation of concerns",
-  "drawbacks": "Response time\nComplexity",
-  "use_cases": "Virtual proxies\nProtection proxies\nRemote proxies",
-  "complexity": "Medium",
-  "tags": [
-    "structural",
-    "proxy",
-    "access-control"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Image {\n  display(): void;\n}\n\nclass RealImage implements Image {\n  constructor(private filename: string) {\n    console.log(`Loading ${filename}`);\n  }\n  display() { console.log(`Displaying ${this.filename}`); }\n}\n\nclass ImageProxy implements Image {\n  private realImage?: RealImage;\n  constructor(private filename: string) {}\n  \n  display() {\n    if (!this.realImage) {\n      this.realImage = new RealImage(this.filename);\n    }\n    this.realImage.display();\n  }\n}\n\n// Usage: lazy loading\nconst image = new ImageProxy('photo.jpg');\nimage.display(); // Loads then displays"
+[
+  {
+    "id": "proxy",
+    "name": "Proxy",
+    "category": "Structural",
+    "description": "Provides a placeholder or surrogate for another object to control access",
+    "when_to_use": "Access control\nLazy initialization\nRemote objects",
+    "benefits": "Security\nPerformance\nSeparation of concerns",
+    "drawbacks": "Response time\nComplexity",
+    "use_cases": "Virtual proxies\nProtection proxies\nRemote proxies",
+    "complexity": "Medium",
+    "tags": [
+      "structural",
+      "proxy",
+      "access-control"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Image {\n  display(): void;\n}\n\nclass RealImage implements Image {\n  constructor(private filename: string) {\n    console.log(`Loading ${filename}`);\n  }\n  display() { console.log(`Displaying ${this.filename}`); }\n}\n\nclass ImageProxy implements Image {\n  private realImage?: RealImage;\n  constructor(private filename: string) {}\n  \n  display() {\n    if (!this.realImage) {\n      this.realImage = new RealImage(this.filename);\n    }\n    this.realImage.display();\n  }\n}\n\n// Usage: lazy loading\nconst image = new ImageProxy('photo.jpg');\nimage.display(); // Loads then displays"
+      }
     }
   }
-}
+]

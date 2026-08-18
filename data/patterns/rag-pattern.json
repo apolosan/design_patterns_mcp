@@ -1,23 +1,25 @@
-{
-  "id": "rag-pattern",
-  "name": "Retrieval-Augmented Generation (RAG)",
-  "category": "AI/ML",
-  "description": "Combines retrieval with generation for improved responses using external knowledge",
-  "when_to_use": "Need accurate factual responses\nReduce hallucinations\nDomain-specific knowledge",
-  "benefits": "Improved accuracy\nFactual responses\nUp-to-date information\nReduced hallucinations",
-  "drawbacks": "Complex implementation\nVector database required\nLatency overhead",
-  "use_cases": "Chatbots\nQ&A systems\nContent generation\nDocumentation assistance",
-  "complexity": "High",
-  "tags": [
-    "rag",
-    "retrieval",
-    "generation",
-    "llm"
-  ],
-  "examples": {
-    "python": {
-      "language": "python",
-      "code": "# RAG: Retrieval-Augmented Generation\n\nclass RAGSystem:\n    def __init__(self, llm, vector_db):\n        self.llm = llm\n        self.vector_db = vector_db\n    \n    def query(self, question: str, top_k: int = 3):\n        # 1. Retrieve relevant documents\n        docs = self.vector_db.similarity_search(question, k=top_k)\n        \n        # 2. Build context from retrieved docs\n        context = \"\\n\\n\".join([doc.content for doc in docs])\n        \n        # 3. Generate answer using context\n        prompt = f\"\"\"\n        Context:\n        {context}\n        \n        Question: {question}\n        \n        Answer based only on the context above:\n        \"\"\"\n        \n        answer = self.llm.generate(prompt)\n        \n        return {\n            'answer': answer,\n            'sources': [doc.metadata for doc in docs]\n        }\n\n# Usage: ground responses in retrieved data\nrag = RAGSystem(llm, vector_db)\nresult = rag.query(\"What is the refund policy?\")\nprint(result['answer'])\nprint(f\"Sources: {result['sources']}\")"
+[
+  {
+    "id": "rag-pattern",
+    "name": "Retrieval-Augmented Generation (RAG)",
+    "category": "AI/ML",
+    "description": "Combines retrieval with generation for improved responses using external knowledge",
+    "when_to_use": "Need accurate factual responses\nReduce hallucinations\nDomain-specific knowledge",
+    "benefits": "Improved accuracy\nFactual responses\nUp-to-date information\nReduced hallucinations",
+    "drawbacks": "Complex implementation\nVector database required\nLatency overhead",
+    "use_cases": "Chatbots\nQ&A systems\nContent generation\nDocumentation assistance",
+    "complexity": "High",
+    "tags": [
+      "rag",
+      "retrieval",
+      "generation",
+      "llm"
+    ],
+    "examples": {
+      "python": {
+        "language": "python",
+        "code": "# RAG: Retrieval-Augmented Generation\n\nclass RAGSystem:\n    def __init__(self, llm, vector_db):\n        self.llm = llm\n        self.vector_db = vector_db\n    \n    def query(self, question: str, top_k: int = 3):\n        # 1. Retrieve relevant documents\n        docs = self.vector_db.similarity_search(question, k=top_k)\n        \n        # 2. Build context from retrieved docs\n        context = \"\\n\\n\".join([doc.content for doc in docs])\n        \n        # 3. Generate answer using context\n        prompt = f\"\"\"\n        Context:\n        {context}\n        \n        Question: {question}\n        \n        Answer based only on the context above:\n        \"\"\"\n        \n        answer = self.llm.generate(prompt)\n        \n        return {\n            'answer': answer,\n            'sources': [doc.metadata for doc in docs]\n        }\n\n# Usage: ground responses in retrieved data\nrag = RAGSystem(llm, vector_db)\nresult = rag.query(\"What is the refund policy?\")\nprint(result['answer'])\nprint(f\"Sources: {result['sources']}\")"
+      }
     }
   }
-}
+]

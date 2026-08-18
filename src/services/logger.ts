@@ -216,9 +216,13 @@ export class Logger {
    * Write to console with appropriate coloring
    */
   private writeToConsole(entry: LogEntry, formattedEntry: string): void {
-    const stream = entry.level >= LogLevel.ERROR ? process.stderr : process.stdout;
+    // MCP stdio protocol: stdout is reserved EXCLUSIVELY for JSON-RPC frames.
+    // ALL diagnostic logs MUST go to stderr, otherwise the stdio transport
+    // corrupts the protocol stream. ANSI colors only when stderr is a TTY.
+    const stream = process.stderr;
+    const useColor = process.stderr.isTTY === true;
 
-    if (this.config.format === 'text') {
+    if (this.config.format === 'text' && useColor) {
       // Add ANSI color codes for text format
       const color = this.getColorForLevel(entry.level);
       stream.write(`${color}${formattedEntry}\x1b[0m\n`);

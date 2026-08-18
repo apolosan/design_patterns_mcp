@@ -1,224 +1,582 @@
-{
-  "patterns": [
-    {
-      "id": "message-router",
-      "name": "Message Router",
-      "category": "Integration",
-      "description": "Routes messages to different destinations based on content or rules",
-      "when_to_use": ["Message routing", "Conditional processing", "Dynamic destinations"],
-      "benefits": ["Flexible routing", "Decoupling", "Dynamic behavior", "Content-based decisions"],
-      "drawbacks": ["Routing complexity", "Performance overhead", "Single point of failure"],
-      "use_cases": ["Message brokers", "Workflow systems", "Content-based routing"],
-      "complexity": "Medium",
-      "tags": ["integration", "messaging", "routing"]
-    },
-    {
-      "id": "message-translator",
-      "name": "Message Translator",
-      "category": "Integration",
-      "description": "Translates data format between different systems",
-      "when_to_use": ["Format differences", "Protocol translation", "Legacy integration"],
-      "benefits": ["Format compatibility", "System independence", "Legacy support"],
-      "drawbacks": ["Translation overhead", "Data loss risk", "Maintenance complexity"],
-      "use_cases": ["API integration", "Legacy systems", "Data format conversion"],
-      "complexity": "Medium",
-      "tags": ["integration", "translation", "format"]
-    },
-    {
-      "id": "message-endpoint",
-      "name": "Message Endpoint",
-      "category": "Integration",
-      "description": "Connection point for applications to send and receive messages",
-      "when_to_use": [
-        "Message-based communication",
-        "Decoupled systems",
-        "Asynchronous processing"
-      ],
-      "benefits": ["Decoupling", "Asynchronous communication", "Location transparency"],
-      "drawbacks": ["Message handling complexity", "Error management", "Delivery guarantees"],
-      "use_cases": ["Microservices communication", "Event-driven architecture", "Message queues"],
-      "complexity": "Medium",
-      "tags": ["integration", "messaging", "endpoint"]
-    },
-    {
-      "id": "publish-subscribe",
-      "name": "Publish-Subscribe",
-      "category": "Integration",
-      "description": "Messaging pattern where publishers send messages to subscribers through a broker",
-      "when_to_use": ["Event broadcasting", "Loose coupling", "Multiple consumers"],
-      "benefits": ["Loose coupling", "Scalability", "Dynamic subscribers", "Event-driven"],
-      "drawbacks": ["Delivery guarantees", "Message ordering", "Broker dependency"],
-      "use_cases": ["Event systems", "Notifications", "Real-time updates"],
-      "complexity": "Medium",
-      "tags": ["integration", "messaging", "pubsub"]
-    },
-    {
-      "id": "request-reply",
-      "name": "Request-Reply",
-      "category": "Integration",
-      "description": "Two-way messaging pattern where requestor sends message and waits for reply",
-      "when_to_use": ["Synchronous communication", "Query operations", "Remote procedure calls"],
-      "benefits": ["Synchronous semantics", "Clear communication", "Request correlation"],
-      "drawbacks": ["Blocking behavior", "Timeout handling", "Coupling"],
-      "use_cases": ["RPC systems", "API calls", "Database queries"],
-      "complexity": "Low",
-      "tags": ["integration", "messaging", "synchronous"]
-    },
-    {
-      "id": "scatter-gather",
-      "name": "Scatter-Gather",
-      "category": "Integration",
-      "description": "Broadcasts request to multiple recipients and aggregates responses",
-      "when_to_use": ["Multiple data sources", "Parallel processing", "Best response selection"],
-      "benefits": ["Parallel processing", "Multiple sources", "Response aggregation"],
-      "drawbacks": ["Complex aggregation", "Timeout handling", "Partial failures"],
-      "use_cases": ["Price comparisons", "Distributed queries", "Parallel searches"],
-      "complexity": "High",
-      "tags": ["integration", "messaging", "aggregation"]
-    },
-    {
-      "id": "content-filter",
-      "name": "Content Filter",
-      "category": "Integration",
-      "description": "Filters message content based on criteria to remove unnecessary data",
-      "when_to_use": ["Data filtering", "Bandwidth optimization", "Security filtering"],
-      "benefits": ["Reduced bandwidth", "Security", "Performance", "Selective processing"],
-      "drawbacks": ["Filter complexity", "Data loss risk", "Maintenance overhead"],
-      "use_cases": ["Data streaming", "Security filtering", "Bandwidth optimization"],
-      "complexity": "Medium",
-      "tags": ["integration", "filtering", "content"]
-    },
-    {
-      "id": "message-aggregator",
-      "name": "Message Aggregator",
-      "category": "Integration",
-      "description": "Combines multiple related messages into single composite message",
-      "when_to_use": ["Related messages", "Batch processing", "Performance optimization"],
-      "benefits": ["Batch processing", "Performance optimization", "Reduced overhead"],
-      "drawbacks": ["Aggregation complexity", "Timing issues", "Memory usage"],
-      "use_cases": ["Order processing", "Batch operations", "Performance optimization"],
-      "complexity": "High",
-      "tags": ["integration", "aggregation", "batching"]
-    },
-    {
-      "id": "message-splitter",
-      "name": "Message Splitter",
-      "category": "Integration",
-      "description": "Breaks composite message into individual messages for separate processing",
-      "when_to_use": ["Composite messages", "Parallel processing", "Different destinations"],
-      "benefits": ["Parallel processing", "Flexible routing", "Independent processing"],
-      "drawbacks": ["Message correlation", "Ordering issues", "Complex routing"],
-      "use_cases": ["Batch processing", "Order line items", "Multi-destination routing"],
-      "complexity": "Medium",
-      "tags": ["integration", "splitting", "parallel"]
-    },
-    {
-      "id": "message-sequence",
-      "name": "Message Sequence",
-      "category": "Integration",
-      "description": "Ensures messages are processed in correct order",
-      "when_to_use": ["Order dependencies", "Sequential processing", "State consistency"],
-      "benefits": ["Order preservation", "Consistency", "Predictable processing"],
-      "drawbacks": ["Performance bottleneck", "Single-threaded processing", "Complexity"],
-      "use_cases": ["Financial transactions", "State machines", "Ordered processing"],
-      "complexity": "High",
-      "tags": ["integration", "ordering", "sequence"]
-    },
-    {
-      "id": "correlation-identifier",
-      "name": "Correlation Identifier",
-      "category": "Integration",
-      "description": "Tracks related messages across multiple processing steps",
-      "when_to_use": ["Message correlation", "Request tracking", "Distributed processing"],
-      "benefits": ["Message tracking", "Request correlation", "Debugging support"],
-      "drawbacks": ["Identifier management", "Storage overhead", "Propagation complexity"],
-      "use_cases": ["Request tracking", "Distributed transactions", "Audit trails"],
-      "complexity": "Medium",
-      "tags": ["integration", "correlation", "tracking"]
-    },
-    {
-      "id": "dead-letter-queue",
-      "name": "Dead Letter Queue",
-      "category": "Integration",
-      "description": "Handles messages that cannot be processed successfully",
-      "when_to_use": ["Error handling", "Failed message processing", "System reliability"],
-      "benefits": ["Error handling", "Message preservation", "System stability"],
-      "drawbacks": ["Storage overhead", "Manual intervention", "Processing delay"],
-      "use_cases": ["Message systems", "Error handling", "Reliability patterns"],
-      "complexity": "Medium",
-      "tags": ["integration", "error-handling", "reliability"]
-    },
-    {
-      "id": "message-store",
-      "name": "Message Store",
-      "category": "Integration",
-      "description": "Persistent storage for messages to ensure delivery and recovery",
-      "when_to_use": ["Message persistence", "Reliability", "Recovery scenarios"],
-      "benefits": ["Message persistence", "Reliability", "Recovery capability"],
-      "drawbacks": ["Storage overhead", "Performance impact", "Maintenance complexity"],
-      "use_cases": ["Critical messaging", "Audit trails", "Message recovery"],
-      "complexity": "Medium",
-      "tags": ["integration", "persistence", "reliability"]
-    },
-    {
-      "id": "facade-integration",
-      "name": "Facade Pattern (Integration)",
-      "category": "Integration",
-      "description": "Provides simplified interface to complex subsystem for integration purposes",
-      "when_to_use": ["Complex subsystems", "Interface simplification", "Client protection"],
-      "benefits": ["Simplified interface", "Subsystem hiding", "Reduced coupling"],
-      "drawbacks": ["Additional layer", "Limited functionality", "Maintenance overhead"],
-      "use_cases": ["Complex system integration", "API simplification", "Legacy wrapping"],
-      "complexity": "Medium",
-      "tags": ["integration", "facade", "simplification"]
-    },
-    {
-      "id": "enterprise-service-bus",
-      "name": "Enterprise Service Bus (ESB)",
-      "category": "Integration",
-      "description": "Middleware infrastructure for integrating applications across enterprise",
-      "when_to_use": ["Enterprise integration", "Multiple systems", "Complex routing"],
-      "benefits": ["Centralized integration", "Protocol mediation", "Service orchestration"],
-      "drawbacks": ["Complex configuration", "Performance bottleneck", "Vendor lock-in"],
-      "use_cases": ["Enterprise integration", "Legacy modernization", "Service orchestration"],
-      "complexity": "High",
-      "tags": ["integration", "esb", "enterprise"]
-    },
-    {
-      "id": "webhook-pattern",
-      "name": "Webhook Pattern",
-      "category": "Integration",
-      "description": "HTTP callback mechanism for real-time notifications between systems",
-      "when_to_use": ["Real-time notifications", "Event-driven integration", "Loose coupling"],
-      "benefits": ["Real-time updates", "Reduced polling", "Event-driven", "Scalability"],
-      "drawbacks": ["Delivery guarantees", "Security concerns", "Error handling"],
-      "use_cases": ["Payment notifications", "CI/CD pipelines", "Real-time updates"],
-      "complexity": "Medium",
-      "tags": ["integration", "webhook", "notifications"]
-    },
-    {
-      "id": "batch-integration",
-      "name": "Batch Integration",
-      "category": "Integration",
-      "description": "Processes data in batches at scheduled intervals for integration",
-      "when_to_use": ["Large data volumes", "Scheduled processing", "ETL operations"],
-      "benefits": ["High throughput", "Resource efficiency", "Scheduled processing"],
-      "drawbacks": ["Latency", "Error handling", "Resource spikes"],
-      "use_cases": ["ETL processes", "Data synchronization", "Bulk operations"],
-      "complexity": "Medium",
-      "tags": ["integration", "batch", "processing"]
-    },
-    {
-      "id": "streaming-integration",
-      "name": "Streaming Integration",
-      "category": "Integration",
-      "description": "Continuous processing of data streams for real-time integration",
-      "when_to_use": ["Real-time processing", "Continuous data", "Low latency"],
-      "benefits": ["Real-time processing", "Low latency", "Continuous flow"],
-      "drawbacks": ["Complex implementation", "Resource intensive", "Error handling"],
-      "use_cases": ["Real-time analytics", "Event streaming", "Live data feeds"],
-      "complexity": "High",
-      "tags": ["integration", "streaming", "real-time"]
-    }
-  ]
-}
+[
+  {
+    "id": "message-router",
+    "name": "Message Router",
+    "category": "Integration",
+    "description": "Routes messages to different destinations based on content or rules",
+    "when_to_use": [
+      "Message routing",
+      "Conditional processing",
+      "Dynamic destinations"
+    ],
+    "benefits": [
+      "Flexible routing",
+      "Decoupling",
+      "Dynamic behavior",
+      "Content-based decisions"
+    ],
+    "drawbacks": [
+      "Routing complexity",
+      "Performance overhead",
+      "Single point of failure"
+    ],
+    "use_cases": [
+      "Message brokers",
+      "Workflow systems",
+      "Content-based routing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "messaging",
+      "routing"
+    ]
+  },
+  {
+    "id": "message-translator",
+    "name": "Message Translator",
+    "category": "Integration",
+    "description": "Translates data format between different systems",
+    "when_to_use": [
+      "Format differences",
+      "Protocol translation",
+      "Legacy integration"
+    ],
+    "benefits": [
+      "Format compatibility",
+      "System independence",
+      "Legacy support"
+    ],
+    "drawbacks": [
+      "Translation overhead",
+      "Data loss risk",
+      "Maintenance complexity"
+    ],
+    "use_cases": [
+      "API integration",
+      "Legacy systems",
+      "Data format conversion"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "translation",
+      "format"
+    ]
+  },
+  {
+    "id": "message-endpoint",
+    "name": "Message Endpoint",
+    "category": "Integration",
+    "description": "Connection point for applications to send and receive messages",
+    "when_to_use": [
+      "Message-based communication",
+      "Decoupled systems",
+      "Asynchronous processing"
+    ],
+    "benefits": [
+      "Decoupling",
+      "Asynchronous communication",
+      "Location transparency"
+    ],
+    "drawbacks": [
+      "Message handling complexity",
+      "Error management",
+      "Delivery guarantees"
+    ],
+    "use_cases": [
+      "Microservices communication",
+      "Event-driven architecture",
+      "Message queues"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "messaging",
+      "endpoint"
+    ]
+  },
+  {
+    "id": "publish-subscribe",
+    "name": "Publish-Subscribe",
+    "category": "Integration",
+    "description": "Messaging pattern where publishers send messages to subscribers through a broker",
+    "when_to_use": [
+      "Event broadcasting",
+      "Loose coupling",
+      "Multiple consumers"
+    ],
+    "benefits": [
+      "Loose coupling",
+      "Scalability",
+      "Dynamic subscribers",
+      "Event-driven"
+    ],
+    "drawbacks": [
+      "Delivery guarantees",
+      "Message ordering",
+      "Broker dependency"
+    ],
+    "use_cases": [
+      "Event systems",
+      "Notifications",
+      "Real-time updates"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "messaging",
+      "pubsub"
+    ]
+  },
+  {
+    "id": "request-reply",
+    "name": "Request-Reply",
+    "category": "Integration",
+    "description": "Two-way messaging pattern where requestor sends message and waits for reply",
+    "when_to_use": [
+      "Synchronous communication",
+      "Query operations",
+      "Remote procedure calls"
+    ],
+    "benefits": [
+      "Synchronous semantics",
+      "Clear communication",
+      "Request correlation"
+    ],
+    "drawbacks": [
+      "Blocking behavior",
+      "Timeout handling",
+      "Coupling"
+    ],
+    "use_cases": [
+      "RPC systems",
+      "API calls",
+      "Database queries"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "integration",
+      "messaging",
+      "synchronous"
+    ]
+  },
+  {
+    "id": "scatter-gather",
+    "name": "Scatter-Gather",
+    "category": "Integration",
+    "description": "Broadcasts request to multiple recipients and aggregates responses",
+    "when_to_use": [
+      "Multiple data sources",
+      "Parallel processing",
+      "Best response selection"
+    ],
+    "benefits": [
+      "Parallel processing",
+      "Multiple sources",
+      "Response aggregation"
+    ],
+    "drawbacks": [
+      "Complex aggregation",
+      "Timeout handling",
+      "Partial failures"
+    ],
+    "use_cases": [
+      "Price comparisons",
+      "Distributed queries",
+      "Parallel searches"
+    ],
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "messaging",
+      "aggregation"
+    ]
+  },
+  {
+    "id": "content-filter",
+    "name": "Content Filter",
+    "category": "Integration",
+    "description": "Filters message content based on criteria to remove unnecessary data",
+    "when_to_use": [
+      "Data filtering",
+      "Bandwidth optimization",
+      "Security filtering"
+    ],
+    "benefits": [
+      "Reduced bandwidth",
+      "Security",
+      "Performance",
+      "Selective processing"
+    ],
+    "drawbacks": [
+      "Filter complexity",
+      "Data loss risk",
+      "Maintenance overhead"
+    ],
+    "use_cases": [
+      "Data streaming",
+      "Security filtering",
+      "Bandwidth optimization"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "filtering",
+      "content"
+    ]
+  },
+  {
+    "id": "message-aggregator",
+    "name": "Message Aggregator",
+    "category": "Integration",
+    "description": "Combines multiple related messages into single composite message",
+    "when_to_use": [
+      "Related messages",
+      "Batch processing",
+      "Performance optimization"
+    ],
+    "benefits": [
+      "Batch processing",
+      "Performance optimization",
+      "Reduced overhead"
+    ],
+    "drawbacks": [
+      "Aggregation complexity",
+      "Timing issues",
+      "Memory usage"
+    ],
+    "use_cases": [
+      "Order processing",
+      "Batch operations",
+      "Performance optimization"
+    ],
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "aggregation",
+      "batching"
+    ]
+  },
+  {
+    "id": "message-splitter",
+    "name": "Message Splitter",
+    "category": "Integration",
+    "description": "Breaks composite message into individual messages for separate processing",
+    "when_to_use": [
+      "Composite messages",
+      "Parallel processing",
+      "Different destinations"
+    ],
+    "benefits": [
+      "Parallel processing",
+      "Flexible routing",
+      "Independent processing"
+    ],
+    "drawbacks": [
+      "Message correlation",
+      "Ordering issues",
+      "Complex routing"
+    ],
+    "use_cases": [
+      "Batch processing",
+      "Order line items",
+      "Multi-destination routing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "splitting",
+      "parallel"
+    ]
+  },
+  {
+    "id": "message-sequence",
+    "name": "Message Sequence",
+    "category": "Integration",
+    "description": "Ensures messages are processed in correct order",
+    "when_to_use": [
+      "Order dependencies",
+      "Sequential processing",
+      "State consistency"
+    ],
+    "benefits": [
+      "Order preservation",
+      "Consistency",
+      "Predictable processing"
+    ],
+    "drawbacks": [
+      "Performance bottleneck",
+      "Single-threaded processing",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Financial transactions",
+      "State machines",
+      "Ordered processing"
+    ],
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "ordering",
+      "sequence"
+    ]
+  },
+  {
+    "id": "correlation-identifier",
+    "name": "Correlation Identifier",
+    "category": "Integration",
+    "description": "Tracks related messages across multiple processing steps",
+    "when_to_use": [
+      "Message correlation",
+      "Request tracking",
+      "Distributed processing"
+    ],
+    "benefits": [
+      "Message tracking",
+      "Request correlation",
+      "Debugging support"
+    ],
+    "drawbacks": [
+      "Identifier management",
+      "Storage overhead",
+      "Propagation complexity"
+    ],
+    "use_cases": [
+      "Request tracking",
+      "Distributed transactions",
+      "Audit trails"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "correlation",
+      "tracking"
+    ]
+  },
+  {
+    "id": "dead-letter-queue",
+    "name": "Dead Letter Queue",
+    "category": "Integration",
+    "description": "Handles messages that cannot be processed successfully",
+    "when_to_use": [
+      "Error handling",
+      "Failed message processing",
+      "System reliability"
+    ],
+    "benefits": [
+      "Error handling",
+      "Message preservation",
+      "System stability"
+    ],
+    "drawbacks": [
+      "Storage overhead",
+      "Manual intervention",
+      "Processing delay"
+    ],
+    "use_cases": [
+      "Message systems",
+      "Error handling",
+      "Reliability patterns"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "error-handling",
+      "reliability"
+    ]
+  },
+  {
+    "id": "message-store",
+    "name": "Message Store",
+    "category": "Integration",
+    "description": "Persistent storage for messages to ensure delivery and recovery",
+    "when_to_use": [
+      "Message persistence",
+      "Reliability",
+      "Recovery scenarios"
+    ],
+    "benefits": [
+      "Message persistence",
+      "Reliability",
+      "Recovery capability"
+    ],
+    "drawbacks": [
+      "Storage overhead",
+      "Performance impact",
+      "Maintenance complexity"
+    ],
+    "use_cases": [
+      "Critical messaging",
+      "Audit trails",
+      "Message recovery"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "persistence",
+      "reliability"
+    ]
+  },
+  {
+    "id": "facade-integration",
+    "name": "Facade Pattern (Integration)",
+    "category": "Integration",
+    "description": "Provides simplified interface to complex subsystem for integration purposes",
+    "when_to_use": [
+      "Complex subsystems",
+      "Interface simplification",
+      "Client protection"
+    ],
+    "benefits": [
+      "Simplified interface",
+      "Subsystem hiding",
+      "Reduced coupling"
+    ],
+    "drawbacks": [
+      "Additional layer",
+      "Limited functionality",
+      "Maintenance overhead"
+    ],
+    "use_cases": [
+      "Complex system integration",
+      "API simplification",
+      "Legacy wrapping"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "facade",
+      "simplification"
+    ]
+  },
+  {
+    "id": "enterprise-service-bus",
+    "name": "Enterprise Service Bus (ESB)",
+    "category": "Integration",
+    "description": "Middleware infrastructure for integrating applications across enterprise",
+    "when_to_use": [
+      "Enterprise integration",
+      "Multiple systems",
+      "Complex routing"
+    ],
+    "benefits": [
+      "Centralized integration",
+      "Protocol mediation",
+      "Service orchestration"
+    ],
+    "drawbacks": [
+      "Complex configuration",
+      "Performance bottleneck",
+      "Vendor lock-in"
+    ],
+    "use_cases": [
+      "Enterprise integration",
+      "Legacy modernization",
+      "Service orchestration"
+    ],
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "esb",
+      "enterprise"
+    ]
+  },
+  {
+    "id": "webhook-pattern",
+    "name": "Webhook Pattern",
+    "category": "Integration",
+    "description": "HTTP callback mechanism for real-time notifications between systems",
+    "when_to_use": [
+      "Real-time notifications",
+      "Event-driven integration",
+      "Loose coupling"
+    ],
+    "benefits": [
+      "Real-time updates",
+      "Reduced polling",
+      "Event-driven",
+      "Scalability"
+    ],
+    "drawbacks": [
+      "Delivery guarantees",
+      "Security concerns",
+      "Error handling"
+    ],
+    "use_cases": [
+      "Payment notifications",
+      "CI/CD pipelines",
+      "Real-time updates"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "webhook",
+      "notifications"
+    ]
+  },
+  {
+    "id": "batch-integration",
+    "name": "Batch Integration",
+    "category": "Integration",
+    "description": "Processes data in batches at scheduled intervals for integration",
+    "when_to_use": [
+      "Large data volumes",
+      "Scheduled processing",
+      "ETL operations"
+    ],
+    "benefits": [
+      "High throughput",
+      "Resource efficiency",
+      "Scheduled processing"
+    ],
+    "drawbacks": [
+      "Latency",
+      "Error handling",
+      "Resource spikes"
+    ],
+    "use_cases": [
+      "ETL processes",
+      "Data synchronization",
+      "Bulk operations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "batch",
+      "processing"
+    ]
+  },
+  {
+    "id": "streaming-integration",
+    "name": "Streaming Integration",
+    "category": "Integration",
+    "description": "Continuous processing of data streams for real-time integration",
+    "when_to_use": [
+      "Real-time processing",
+      "Continuous data",
+      "Low latency"
+    ],
+    "benefits": [
+      "Real-time processing",
+      "Low latency",
+      "Continuous flow"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Resource intensive",
+      "Error handling"
+    ],
+    "use_cases": [
+      "Real-time analytics",
+      "Event streaming",
+      "Live data feeds"
+    ],
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "streaming",
+      "real-time"
+    ]
+  }
+]

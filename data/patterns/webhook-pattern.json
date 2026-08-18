@@ -1,16 +1,18 @@
-{
-  "id": "webhook-pattern",
-  "name": "Webhook Pattern",
-  "category": "Integration",
-  "description": "HTTP callback mechanism for real-time notifications between systems",
-  "when_to_use": "Real-time notifications\nEvent-driven integration\nLoose coupling",
-  "benefits": "Real-time updates\nReduced polling\nEvent-driven\nScalability",
-  "drawbacks": "Delivery guarantees\nSecurity concerns\nError handling",
-  "use_cases": "Payment notifications\nCI/CD pipelines\nReal-time updates",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "webhook",
-    "notifications"
-  ]
-}
+[
+  {
+    "id": "webhook-pattern",
+    "name": "Webhook Pattern",
+    "category": "Integration",
+    "description": "HTTP callback mechanism for real-time notifications between systems",
+    "when_to_use": "Real-time notifications\nEvent-driven integration\nLoose coupling",
+    "benefits": "Real-time updates\nReduced polling\nEvent-driven\nScalability",
+    "drawbacks": "Delivery guarantees\nSecurity concerns\nError handling",
+    "use_cases": "Payment notifications\nCI/CD pipelines\nReal-time updates",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "webhook",
+      "notifications"
+    ]
+  }
+]

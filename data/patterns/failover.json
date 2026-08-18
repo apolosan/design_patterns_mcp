@@ -1,16 +1,18 @@
-{
-  "id": "failover",
-  "name": "Failover",
-  "category": "Microservices",
-  "description": "Automatically switches to backup service when primary fails",
-  "when_to_use": "High availability\nService redundancy\nDisaster recovery",
-  "benefits": "High availability\nAutomatic recovery\nService continuity",
-  "drawbacks": "Resource duplication\nComplexity\nSync challenges",
-  "use_cases": "Critical services\nDatabase replicas\nLoad balancers",
-  "complexity": "High",
-  "tags": [
-    "microservices",
-    "resilience",
-    "availability"
-  ]
-}
+[
+  {
+    "id": "failover",
+    "name": "Failover",
+    "category": "Microservices",
+    "description": "Automatically switches to backup service when primary fails",
+    "when_to_use": "High availability\nService redundancy\nDisaster recovery",
+    "benefits": "High availability\nAutomatic recovery\nService continuity",
+    "drawbacks": "Resource duplication\nComplexity\nSync challenges",
+    "use_cases": "Critical services\nDatabase replicas\nLoad balancers",
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "resilience",
+      "availability"
+    ]
+  }
+]

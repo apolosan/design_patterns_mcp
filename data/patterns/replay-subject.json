@@ -1,22 +1,24 @@
-{
-  "id": "replay-subject",
-  "name": "ReplaySubject Pattern",
-  "category": "Reactive",
-  "description": "Subject that buffers and replays last N values to new subscribers",
-  "when_to_use": "Event replay\nHistory tracking\nLate subscribers",
-  "benefits": "Event history\nLate subscriber support\nBuffer control",
-  "drawbacks": "Memory usage\nBuffer management\nPerformance impact",
-  "use_cases": "Event sourcing\nUndo/redo\nActivity logs",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "replay",
-    "history"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// ReplaySubject: replay last N values to new subscribers\nclass ReplaySubject<T> {\n  private observers: Observer<T>[] = [];\n  private buffer: T[] = [];\n  \n  constructor(private bufferSize = Infinity) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    this.buffer.forEach(value => observer.next(value));\n    this.observers.push(observer);\n    return {\n      unsubscribe: () => {\n        const index = this.observers.indexOf(observer);\n        if (index > -1) this.observers.splice(index, 1);\n      }\n    };\n  }\n  \n  next(value: T): void {\n    this.buffer.push(value);\n    if (this.buffer.length > this.bufferSize) {\n      this.buffer.shift();\n    }\n    this.observers.forEach(obs => obs.next(value));\n  }\n}\n\n// Usage: Chat history\nconst messages = new ReplaySubject<string>(3);  // Keep last 3\n\nmessages.next('Hello');\nmessages.next('How are you?');\nmessages.next('I am fine');\n\n// New subscriber gets last 3 messages\nmessages.subscribe({\n  next: msg => console.log('Received:', msg),\n  error: () => {},\n  complete: () => {}\n});"
+[
+  {
+    "id": "replay-subject",
+    "name": "ReplaySubject Pattern",
+    "category": "Reactive",
+    "description": "Subject that buffers and replays last N values to new subscribers",
+    "when_to_use": "Event replay\nHistory tracking\nLate subscribers",
+    "benefits": "Event history\nLate subscriber support\nBuffer control",
+    "drawbacks": "Memory usage\nBuffer management\nPerformance impact",
+    "use_cases": "Event sourcing\nUndo/redo\nActivity logs",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "replay",
+      "history"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// ReplaySubject: replay last N values to new subscribers\nclass ReplaySubject<T> {\n  private observers: Observer<T>[] = [];\n  private buffer: T[] = [];\n  \n  constructor(private bufferSize = Infinity) {}\n  \n  subscribe(observer: Observer<T>): Subscription {\n    this.buffer.forEach(value => observer.next(value));\n    this.observers.push(observer);\n    return {\n      unsubscribe: () => {\n        const index = this.observers.indexOf(observer);\n        if (index > -1) this.observers.splice(index, 1);\n      }\n    };\n  }\n  \n  next(value: T): void {\n    this.buffer.push(value);\n    if (this.buffer.length > this.bufferSize) {\n      this.buffer.shift();\n    }\n    this.observers.forEach(obs => obs.next(value));\n  }\n}\n\n// Usage: Chat history\nconst messages = new ReplaySubject<string>(3);  // Keep last 3\n\nmessages.next('Hello');\nmessages.next('How are you?');\nmessages.next('I am fine');\n\n// New subscriber gets last 3 messages\nmessages.subscribe({\n  next: msg => console.log('Received:', msg),\n  error: () => {},\n  complete: () => {}\n});"
+      }
     }
   }
-}
+]

@@ -1,16 +1,18 @@
-{
-  "id": "prompt-engineering",
-  "name": "Prompt Engineering",
-  "category": "AI/ML",
-  "description": "Systematic design of prompts to elicit desired AI behavior and outputs",
-  "when_to_use": "Optimize AI responses\nControl output format\nImprove accuracy",
-  "benefits": "Better results\nConsistent behavior\nNo training needed\nQuick iteration",
-  "drawbacks": "Trial and error\nModel dependency\nPrompt brittleness",
-  "use_cases": "Content generation\nData extraction\nClassification",
-  "complexity": "Low",
-  "tags": [
-    "prompting",
-    "optimization",
-    "engineering"
-  ]
-}
+[
+  {
+    "id": "prompt-engineering",
+    "name": "Prompt Engineering",
+    "category": "AI/ML",
+    "description": "Systematic design of prompts to elicit desired AI behavior and outputs",
+    "when_to_use": "Optimize AI responses\nControl output format\nImprove accuracy",
+    "benefits": "Better results\nConsistent behavior\nNo training needed\nQuick iteration",
+    "drawbacks": "Trial and error\nModel dependency\nPrompt brittleness",
+    "use_cases": "Content generation\nData extraction\nClassification",
+    "complexity": "Low",
+    "tags": [
+      "prompting",
+      "optimization",
+      "engineering"
+    ]
+  }
+]

@@ -1,17 +1,19 @@
-{
-  "id": "dynamic-joiner",
-  "name": "Dynamic Joiner",
-  "category": "Data Value",
-  "description": "The Dynamic Joiner handles joins with streaming or frequently changing data.",
-  "when_to_use": "[\"Streaming data enrichment\",\"Dynamic reference data\"]",
-  "benefits": "[\"Handles streaming data\",\"Real-time enrichment\"]",
-  "drawbacks": "[\"Increased complexity\",\"Latency considerations\"]",
-  "use_cases": "[\"Real-time data enrichment\",\"Streaming joins\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"data-value\"",
-    "\"joiner\"",
-    "\"dynamic\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "dynamic-joiner",
+    "name": "Dynamic Joiner",
+    "category": "Data Value",
+    "description": "The Dynamic Joiner handles joins with streaming or frequently changing data.",
+    "when_to_use": "[\"Streaming data enrichment\",\"Dynamic reference data\"]",
+    "benefits": "[\"Handles streaming data\",\"Real-time enrichment\"]",
+    "drawbacks": "[\"Increased complexity\",\"Latency considerations\"]",
+    "use_cases": "[\"Real-time data enrichment\",\"Streaming joins\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"data-value\"",
+      "\"joiner\"",
+      "\"dynamic\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

@@ -1,22 +1,24 @@
-{
-  "id": "interpreter",
-  "name": "Interpreter",
-  "category": "Behavioral",
-  "description": "Defines grammar representation and interpreter for a language",
-  "when_to_use": "Simple grammars\nDomain-specific languages\nExpression evaluation",
-  "benefits": "Easy to extend\nEasy to implement\nSeparation of concerns",
-  "drawbacks": "Complex grammars difficult\nPerformance issues",
-  "use_cases": "Regular expressions\nSQL parsing\nConfiguration languages",
-  "complexity": "High",
-  "tags": [
-    "behavioral",
-    "language",
-    "grammar"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Expression {\n  interpret(context: Map<string, number>): number;\n}\n\nclass Variable implements Expression {\n  constructor(private name: string) {}\n  interpret(ctx: Map<string, number>) {\n    return ctx.get(this.name) || 0;\n  }\n}\n\nclass Add implements Expression {\n  constructor(private left: Expression, private right: Expression) {}\n  interpret(ctx: Map<string, number>) {\n    return this.left.interpret(ctx) + this.right.interpret(ctx);\n  }\n}\n\n// Usage: interpret language\nconst ctx = new Map([['x', 5], ['y', 10]]);\nconsole.log(new Add(new Variable('x'), new Variable('y')).interpret(ctx)); // 15"
+[
+  {
+    "id": "interpreter",
+    "name": "Interpreter",
+    "category": "Behavioral",
+    "description": "Defines grammar representation and interpreter for a language",
+    "when_to_use": "Simple grammars\nDomain-specific languages\nExpression evaluation",
+    "benefits": "Easy to extend\nEasy to implement\nSeparation of concerns",
+    "drawbacks": "Complex grammars difficult\nPerformance issues",
+    "use_cases": "Regular expressions\nSQL parsing\nConfiguration languages",
+    "complexity": "High",
+    "tags": [
+      "behavioral",
+      "language",
+      "grammar"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Expression {\n  interpret(context: Map<string, number>): number;\n}\n\nclass Variable implements Expression {\n  constructor(private name: string) {}\n  interpret(ctx: Map<string, number>) {\n    return ctx.get(this.name) || 0;\n  }\n}\n\nclass Add implements Expression {\n  constructor(private left: Expression, private right: Expression) {}\n  interpret(ctx: Map<string, number>) {\n    return this.left.interpret(ctx) + this.right.interpret(ctx);\n  }\n}\n\n// Usage: interpret language\nconst ctx = new Map([['x', 5], ['y', 10]]);\nconsole.log(new Add(new Variable('x'), new Variable('y')).interpret(ctx)); // 15"
+      }
     }
   }
-}
+]

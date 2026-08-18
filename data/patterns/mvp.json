@@ -1,22 +1,24 @@
-{
-  "id": "mvp",
-  "name": "Model-View-Presenter",
-  "category": "Architectural",
-  "description": "Improves testability by making presenter handle view logic",
-  "when_to_use": "Testing requirements\nComplex UI logic\nView technology changes",
-  "benefits": "High testability\nView independence\nClear responsibilities\nReusable presenters",
-  "drawbacks": "Increased complexity\nMore classes\nPotential god presenter",
-  "use_cases": "Desktop applications\nMobile apps\nTesting-critical systems",
-  "complexity": "Medium",
-  "tags": [
-    "presentation",
-    "testing",
-    "ui"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// MVP: Presenter mediates between View and Model\n\n// Model\nclass TaskModel {\n  private tasks: Array<{id: string, title: string, done: boolean}> = [];\n  \n  addTask(title: string) {\n    this.tasks.push({ id: crypto.randomUUID(), title, done: false });\n  }\n  \n  getTasks() { return this.tasks; }\n  \n  toggleTask(id: string) {\n    const task = this.tasks.find(t => t.id === id);\n    if (task) task.done = !task.done;\n  }\n}\n\n// View Interface (passive - no logic)\ninterface ITaskView {\n  displayTasks(tasks: Array<{id: string, title: string, done: boolean}>): void;\n  displayError(message: string): void;\n}\n\n// Presenter (mediates between View and Model)\nclass TaskPresenter {\n  constructor(\n    private view: ITaskView,\n    private model: TaskModel\n  ) {}\n  \n  loadTasks() {\n    const tasks = this.model.getTasks();\n    this.view.displayTasks(tasks);\n  }\n  \n  addTask(title: string) {\n    if (!title.trim()) {\n      this.view.displayError('Title cannot be empty');\n      return;\n    }\n    this.model.addTask(title);\n    this.loadTasks();\n  }\n  \n  toggleTask(id: string) {\n    this.model.toggleTask(id);\n    this.loadTasks();\n  }\n}\n\n// View Implementation (passive)\nclass TaskView implements ITaskView {\n  constructor(private presenter: TaskPresenter) {}\n  \n  displayTasks(tasks: any[]) {\n    console.log('Tasks:', tasks);\n  }\n  \n  displayError(message: string) {\n    console.error('Error:', message);\n  }\n  \n  // User actions delegate to presenter\n  onAddButtonClick(title: string) {\n    this.presenter.addTask(title);\n  }\n  \n  onTaskClick(id: string) {\n    this.presenter.toggleTask(id);\n  }\n}\n\n// Usage: Presenter contains all logic\nconst model = new TaskModel();\nconst presenter = new TaskPresenter(null as any, model);\nconst view = new TaskView(presenter);\npresenter['view'] = view; // wire up\npresenter.loadTasks();"
+[
+  {
+    "id": "mvp",
+    "name": "Model-View-Presenter",
+    "category": "Architectural",
+    "description": "Improves testability by making presenter handle view logic",
+    "when_to_use": "Testing requirements\nComplex UI logic\nView technology changes",
+    "benefits": "High testability\nView independence\nClear responsibilities\nReusable presenters",
+    "drawbacks": "Increased complexity\nMore classes\nPotential god presenter",
+    "use_cases": "Desktop applications\nMobile apps\nTesting-critical systems",
+    "complexity": "Medium",
+    "tags": [
+      "presentation",
+      "testing",
+      "ui"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// MVP: Presenter mediates between View and Model\n\n// Model\nclass TaskModel {\n  private tasks: Array<{id: string, title: string, done: boolean}> = [];\n  \n  addTask(title: string) {\n    this.tasks.push({ id: crypto.randomUUID(), title, done: false });\n  }\n  \n  getTasks() { return this.tasks; }\n  \n  toggleTask(id: string) {\n    const task = this.tasks.find(t => t.id === id);\n    if (task) task.done = !task.done;\n  }\n}\n\n// View Interface (passive - no logic)\ninterface ITaskView {\n  displayTasks(tasks: Array<{id: string, title: string, done: boolean}>): void;\n  displayError(message: string): void;\n}\n\n// Presenter (mediates between View and Model)\nclass TaskPresenter {\n  constructor(\n    private view: ITaskView,\n    private model: TaskModel\n  ) {}\n  \n  loadTasks() {\n    const tasks = this.model.getTasks();\n    this.view.displayTasks(tasks);\n  }\n  \n  addTask(title: string) {\n    if (!title.trim()) {\n      this.view.displayError('Title cannot be empty');\n      return;\n    }\n    this.model.addTask(title);\n    this.loadTasks();\n  }\n  \n  toggleTask(id: string) {\n    this.model.toggleTask(id);\n    this.loadTasks();\n  }\n}\n\n// View Implementation (passive)\nclass TaskView implements ITaskView {\n  constructor(private presenter: TaskPresenter) {}\n  \n  displayTasks(tasks: any[]) {\n    console.log('Tasks:', tasks);\n  }\n  \n  displayError(message: string) {\n    console.error('Error:', message);\n  }\n  \n  // User actions delegate to presenter\n  onAddButtonClick(title: string) {\n    this.presenter.addTask(title);\n  }\n  \n  onTaskClick(id: string) {\n    this.presenter.toggleTask(id);\n  }\n}\n\n// Usage: Presenter contains all logic\nconst model = new TaskModel();\nconst presenter = new TaskPresenter(null as any, model);\nconst view = new TaskView(presenter);\npresenter['view'] = view; // wire up\npresenter.loadTasks();"
+      }
     }
   }
-}
+]

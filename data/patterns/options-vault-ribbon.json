@@ -1,24 +1,26 @@
-{
-  "id": "options-vault-ribbon",
-  "name": "Options Vault (Ribbon Finance)",
-  "category": "DeFi Derivatives",
-  "description": "Automated options strategies (covered calls, cash-secured puts). Weekly options selling for yield.",
-  "when_to_use": "Automated options strategies, yield generation from volatility",
-  "benefits": "Automated professional strategies, consistent yield, risk-defined",
-  "drawbacks": "Capped upside (covered calls), strategy risk, options complexity",
-  "use_cases": "Ribbon Finance vaults, covered call strategies, options yield",
-  "complexity": "Very High",
-  "tags": [
-    "defi",
-    "options",
-    "ribbon",
-    "covered-call",
-    "derivatives"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract CoveredCallVault {\n    function rollover() external onlyKeeper {\n        // 1. Settle previous week's options\n        settleOptions();\n        \n        // 2. Select strike price (e.g., 10% OTM)\n        uint256 strike = (spotPrice * 110) / 100;\n        \n        // 3. Sell covered calls for next week\n        uint256 premium = optionsProtocol.sellCall(\n            totalAssets(), \n            strike, \n            block.timestamp + 7 days\n        );\n        \n        // 4. Distribute premium to vault\n        premiumEarned += premium;\n    }\n}"
+[
+  {
+    "id": "options-vault-ribbon",
+    "name": "Options Vault (Ribbon Finance)",
+    "category": "DeFi Derivatives",
+    "description": "Automated options strategies (covered calls, cash-secured puts). Weekly options selling for yield.",
+    "when_to_use": "Automated options strategies, yield generation from volatility",
+    "benefits": "Automated professional strategies, consistent yield, risk-defined",
+    "drawbacks": "Capped upside (covered calls), strategy risk, options complexity",
+    "use_cases": "Ribbon Finance vaults, covered call strategies, options yield",
+    "complexity": "Very High",
+    "tags": [
+      "defi",
+      "options",
+      "ribbon",
+      "covered-call",
+      "derivatives"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract CoveredCallVault {\n    function rollover() external onlyKeeper {\n        // 1. Settle previous week's options\n        settleOptions();\n        \n        // 2. Select strike price (e.g., 10% OTM)\n        uint256 strike = (spotPrice * 110) / 100;\n        \n        // 3. Sell covered calls for next week\n        uint256 premium = optionsProtocol.sellCall(\n            totalAssets(), \n            strike, \n            block.timestamp + 7 days\n        );\n        \n        // 4. Distribute premium to vault\n        premiumEarned += premium;\n    }\n}"
+      }
     }
   }
-}
+]

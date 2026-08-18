@@ -1,16 +1,18 @@
-{
-  "id": "push-notification-pattern",
-  "name": "Push Notification Pattern",
-  "category": "Mobile",
-  "description": "Delivers messages to mobile devices even when app is not actively running",
-  "when_to_use": "User engagement\nReal-time updates\nApp retention",
-  "benefits": "User engagement\nReal-time communication\nApp retention",
-  "drawbacks": "User privacy concerns\nNotification fatigue\nPlatform complexity",
-  "use_cases": "Messaging apps\nNews updates\nE-commerce",
-  "complexity": "High",
-  "tags": [
-    "mobile",
-    "notifications",
-    "engagement"
-  ]
-}
+[
+  {
+    "id": "push-notification-pattern",
+    "name": "Push Notification Pattern",
+    "category": "Mobile",
+    "description": "Delivers messages to mobile devices even when app is not actively running",
+    "when_to_use": "User engagement\nReal-time updates\nApp retention",
+    "benefits": "User engagement\nReal-time communication\nApp retention",
+    "drawbacks": "User privacy concerns\nNotification fatigue\nPlatform complexity",
+    "use_cases": "Messaging apps\nNews updates\nE-commerce",
+    "complexity": "High",
+    "tags": [
+      "mobile",
+      "notifications",
+      "engagement"
+    ]
+  }
+]

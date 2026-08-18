@@ -1,28 +1,30 @@
-{
-  "id": "use-ref-forward-ref-pattern",
-  "name": "useRef and forwardRef Pattern",
-  "category": "React Hooks",
-  "description": "Direct DOM access and ref forwarding for component libraries and imperative operations.",
-  "when_to_use": "DOM manipulation, focus management, animations, third-party libraries, component libraries",
-  "benefits": "Direct DOM access, persistent values, no re-renders, component library APIs",
-  "drawbacks": "Imperative (vs declarative), can bypass React, easy to misuse",
-  "use_cases": "Auto-focus, scroll position, media players, canvas, measuring elements, imperative API",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "hooks",
-    "useRef",
-    "forwardRef",
-    "dom",
-    "refs",
-    "imperative",
-    "component-library",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { useRef, forwardRef, useImperativeHandle, useEffect } from 'react';\n\n// 1. useRef - DOM access\nfunction AutoFocusInput() {\n  const inputRef = useRef<HTMLInputElement>(null);\n  \n  useEffect(() => {\n    inputRef.current?.focus();\n  }, []);\n  \n  return <input ref={inputRef} />;\n}\n\n// 2. useRef - Persistent value (no re-render)\nfunction Timer() {\n  const [count, setCount] = useState(0);\n  const intervalRef = useRef<number | null>(null);\n  \n  const start = () => {\n    if (intervalRef.current) return;\n    intervalRef.current = setInterval(() => {\n      setCount(c => c + 1);\n    }, 1000);\n  };\n  \n  const stop = () => {\n    if (intervalRef.current) {\n      clearInterval(intervalRef.current);\n      intervalRef.current = null;\n    }\n  };\n  \n  useEffect(() => stop, []);\n  \n  return (\n    <div>\n      <p>{count}</p>\n      <button onClick={start}>Start</button>\n      <button onClick={stop}>Stop</button>\n    </div>\n  );\n}\n\n// 3. forwardRef - Expose ref to parent\nconst CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(\n  ({ label, ...props }, ref) => {\n    return (\n      <div>\n        <label>{label}</label>\n        <input ref={ref} {...props} />\n      </div>\n    );\n  }\n);\n\nfunction Form() {\n  const nameRef = useRef<HTMLInputElement>(null);\n  \n  const handleSubmit = () => {\n    nameRef.current?.focus();\n  };\n  \n  return (\n    <form>\n      <CustomInput ref={nameRef} label=\"Name\" />\n      <button type=\"button\" onClick={handleSubmit}>Focus Name</button>\n    </form>\n  );\n}\n\n// 4. useImperativeHandle - Custom ref API\ninterface VideoPlayerRef {\n  play: () => void;\n  pause: () => void;\n  seek: (time: number) => void;\n}\n\nconst VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(\n  ({ src }, ref) => {\n    const videoRef = useRef<HTMLVideoElement>(null);\n    \n    useImperativeHandle(ref, () => ({\n      play() {\n        videoRef.current?.play();\n      },\n      pause() {\n        videoRef.current?.pause();\n      },\n      seek(time: number) {\n        if (videoRef.current) {\n          videoRef.current.currentTime = time;\n        }\n      }\n    }));\n    \n    return <video ref={videoRef} src={src} />;\n  }\n);\n\nfunction VideoApp() {\n  const playerRef = useRef<VideoPlayerRef>(null);\n  \n  return (\n    <div>\n      <VideoPlayer ref={playerRef} src=\"/video.mp4\" />\n      <button onClick={() => playerRef.current?.play()}>Play</button>\n      <button onClick={() => playerRef.current?.pause()}>Pause</button>\n      <button onClick={() => playerRef.current?.seek(10)}>Skip to 10s</button>\n    </div>\n  );\n}"
+[
+  {
+    "id": "use-ref-forward-ref-pattern",
+    "name": "useRef and forwardRef Pattern",
+    "category": "React Hooks",
+    "description": "Direct DOM access and ref forwarding for component libraries and imperative operations.",
+    "when_to_use": "DOM manipulation, focus management, animations, third-party libraries, component libraries",
+    "benefits": "Direct DOM access, persistent values, no re-renders, component library APIs",
+    "drawbacks": "Imperative (vs declarative), can bypass React, easy to misuse",
+    "use_cases": "Auto-focus, scroll position, media players, canvas, measuring elements, imperative API",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "hooks",
+      "useRef",
+      "forwardRef",
+      "dom",
+      "refs",
+      "imperative",
+      "component-library",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { useRef, forwardRef, useImperativeHandle, useEffect } from 'react';\n\n// 1. useRef - DOM access\nfunction AutoFocusInput() {\n  const inputRef = useRef<HTMLInputElement>(null);\n  \n  useEffect(() => {\n    inputRef.current?.focus();\n  }, []);\n  \n  return <input ref={inputRef} />;\n}\n\n// 2. useRef - Persistent value (no re-render)\nfunction Timer() {\n  const [count, setCount] = useState(0);\n  const intervalRef = useRef<number | null>(null);\n  \n  const start = () => {\n    if (intervalRef.current) return;\n    intervalRef.current = setInterval(() => {\n      setCount(c => c + 1);\n    }, 1000);\n  };\n  \n  const stop = () => {\n    if (intervalRef.current) {\n      clearInterval(intervalRef.current);\n      intervalRef.current = null;\n    }\n  };\n  \n  useEffect(() => stop, []);\n  \n  return (\n    <div>\n      <p>{count}</p>\n      <button onClick={start}>Start</button>\n      <button onClick={stop}>Stop</button>\n    </div>\n  );\n}\n\n// 3. forwardRef - Expose ref to parent\nconst CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(\n  ({ label, ...props }, ref) => {\n    return (\n      <div>\n        <label>{label}</label>\n        <input ref={ref} {...props} />\n      </div>\n    );\n  }\n);\n\nfunction Form() {\n  const nameRef = useRef<HTMLInputElement>(null);\n  \n  const handleSubmit = () => {\n    nameRef.current?.focus();\n  };\n  \n  return (\n    <form>\n      <CustomInput ref={nameRef} label=\"Name\" />\n      <button type=\"button\" onClick={handleSubmit}>Focus Name</button>\n    </form>\n  );\n}\n\n// 4. useImperativeHandle - Custom ref API\ninterface VideoPlayerRef {\n  play: () => void;\n  pause: () => void;\n  seek: (time: number) => void;\n}\n\nconst VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(\n  ({ src }, ref) => {\n    const videoRef = useRef<HTMLVideoElement>(null);\n    \n    useImperativeHandle(ref, () => ({\n      play() {\n        videoRef.current?.play();\n      },\n      pause() {\n        videoRef.current?.pause();\n      },\n      seek(time: number) {\n        if (videoRef.current) {\n          videoRef.current.currentTime = time;\n        }\n      }\n    }));\n    \n    return <video ref={videoRef} src={src} />;\n  }\n);\n\nfunction VideoApp() {\n  const playerRef = useRef<VideoPlayerRef>(null);\n  \n  return (\n    <div>\n      <VideoPlayer ref={playerRef} src=\"/video.mp4\" />\n      <button onClick={() => playerRef.current?.play()}>Play</button>\n      <button onClick={() => playerRef.current?.pause()}>Pause</button>\n      <button onClick={() => playerRef.current?.seek(10)}>Skip to 10s</button>\n    </div>\n  );\n}"
+      }
     }
   }
-}
+]

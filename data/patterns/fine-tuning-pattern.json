@@ -1,22 +1,24 @@
-{
-  "id": "fine-tuning-pattern",
-  "name": "Fine-Tuning Pattern",
-  "category": "AI/ML",
-  "description": "Adapts pre-trained models to specific domains or tasks",
-  "when_to_use": "Domain-specific tasks\nImprove performance\nCustom behavior",
-  "benefits": "Better performance\nDomain adaptation\nCustom behavior\nEfficiency",
-  "drawbacks": "Requires training data\nComputational cost\nOverfitting risk",
-  "use_cases": "Domain chatbots\nClassification\nText generation",
-  "complexity": "High",
-  "tags": [
-    "fine-tuning",
-    "training",
-    "adaptation"
-  ],
-  "examples": {
-    "python": {
-      "language": "python",
-      "code": "# Fine-Tuning: adapt model to specific task\n\nfrom transformers import AutoModelForSequenceClassification, Trainer\n\nclass FineTuner:\n    def __init__(self, base_model: str):\n        self.model = AutoModelForSequenceClassification.from_pretrained(\n            base_model,\n            num_labels=2\n        )\n    \n    def fine_tune(self, train_dataset, eval_dataset):\n        trainer = Trainer(\n            model=self.model,\n            train_dataset=train_dataset,\n            eval_dataset=eval_dataset,\n            args={\n                'output_dir': './results',\n                'num_train_epochs': 3,\n                'per_device_train_batch_size': 16,\n                'learning_rate': 2e-5\n            }\n        )\n        \n        # Train on domain-specific data\n        trainer.train()\n        \n        return self.model\n    \n    def predict(self, text: str):\n        inputs = self.tokenizer(text, return_tensors=\"pt\")\n        outputs = self.model(**inputs)\n        return outputs.logits.argmax(-1).item()\n\n# Usage: specialize model for domain\ntuner = FineTuner('bert-base-uncased')\nmodel = tuner.fine_tune(medical_train_data, medical_eval_data)\nprediction = model.predict(\"Patient shows symptoms of...\")"
+[
+  {
+    "id": "fine-tuning-pattern",
+    "name": "Fine-Tuning Pattern",
+    "category": "AI/ML",
+    "description": "Adapts pre-trained models to specific domains or tasks",
+    "when_to_use": "Domain-specific tasks\nImprove performance\nCustom behavior",
+    "benefits": "Better performance\nDomain adaptation\nCustom behavior\nEfficiency",
+    "drawbacks": "Requires training data\nComputational cost\nOverfitting risk",
+    "use_cases": "Domain chatbots\nClassification\nText generation",
+    "complexity": "High",
+    "tags": [
+      "fine-tuning",
+      "training",
+      "adaptation"
+    ],
+    "examples": {
+      "python": {
+        "language": "python",
+        "code": "# Fine-Tuning: adapt model to specific task\n\nfrom transformers import AutoModelForSequenceClassification, Trainer\n\nclass FineTuner:\n    def __init__(self, base_model: str):\n        self.model = AutoModelForSequenceClassification.from_pretrained(\n            base_model,\n            num_labels=2\n        )\n    \n    def fine_tune(self, train_dataset, eval_dataset):\n        trainer = Trainer(\n            model=self.model,\n            train_dataset=train_dataset,\n            eval_dataset=eval_dataset,\n            args={\n                'output_dir': './results',\n                'num_train_epochs': 3,\n                'per_device_train_batch_size': 16,\n                'learning_rate': 2e-5\n            }\n        )\n        \n        # Train on domain-specific data\n        trainer.train()\n        \n        return self.model\n    \n    def predict(self, text: str):\n        inputs = self.tokenizer(text, return_tensors=\"pt\")\n        outputs = self.model(**inputs)\n        return outputs.logits.argmax(-1).item()\n\n# Usage: specialize model for domain\ntuner = FineTuner('bert-base-uncased')\nmodel = tuner.fine_tune(medical_train_data, medical_eval_data)\nprediction = model.predict(\"Patient shows symptoms of...\")"
+      }
     }
   }
-}
+]

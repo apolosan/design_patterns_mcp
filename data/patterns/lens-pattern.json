@@ -1,16 +1,18 @@
-{
-  "id": "lens-pattern",
-  "name": "Lens Pattern",
-  "category": "Functional",
-  "description": "Composable getters and setters for immutable data structures",
-  "when_to_use": "Immutable updates\nDeep object access\nFunctional programming",
-  "benefits": "Immutable updates\nComposable\nType safe\nFunctional",
-  "drawbacks": "Complex syntax\nLearning curve\nPerformance overhead",
-  "use_cases": "State management\nForm handling\nNested data updates",
-  "complexity": "High",
-  "tags": [
-    "functional",
-    "lens",
-    "immutable"
-  ]
-}
+[
+  {
+    "id": "lens-pattern",
+    "name": "Lens Pattern",
+    "category": "Functional",
+    "description": "Composable getters and setters for immutable data structures",
+    "when_to_use": "Immutable updates\nDeep object access\nFunctional programming",
+    "benefits": "Immutable updates\nComposable\nType safe\nFunctional",
+    "drawbacks": "Complex syntax\nLearning curve\nPerformance overhead",
+    "use_cases": "State management\nForm handling\nNested data updates",
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "lens",
+      "immutable"
+    ]
+  }
+]

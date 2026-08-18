@@ -1,24 +1,26 @@
-{
-  "id": "gnosis-safe-treasury",
-  "name": "Multi-Signature Treasury (Gnosis Safe)",
-  "category": "DAO Treasury",
-  "description": "M-of-N multisig wallet for DAO funds. Industry standard with extensive integrations.",
-  "when_to_use": "All DAOs with significant funds, treasury management",
-  "benefits": "Industry standard, flexible thresholds (e.g., 3-of-5), extensive integrations, batching",
-  "drawbacks": "Coordination overhead, requires active signers, potential key loss",
-  "use_cases": "DAO treasuries, protocol funds, community multisigs",
-  "complexity": "Medium",
-  "tags": [
-    "dao",
-    "treasury",
-    "multisig",
-    "gnosis-safe",
-    "security"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Gnosis Safe is pre-deployed, but custom module example:\ncontract TreasuryModule {\n    GnosisSafe public safe;\n    \n    function executeFromModule(\n        address to,\n        uint256 value,\n        bytes memory data\n    ) external onlyAuthorized returns (bool) {\n        return safe.execTransactionFromModule(\n            to, value, data, Enum.Operation.Call\n        );\n    }\n}"
+[
+  {
+    "id": "gnosis-safe-treasury",
+    "name": "Multi-Signature Treasury (Gnosis Safe)",
+    "category": "DAO Treasury",
+    "description": "M-of-N multisig wallet for DAO funds. Industry standard with extensive integrations.",
+    "when_to_use": "All DAOs with significant funds, treasury management",
+    "benefits": "Industry standard, flexible thresholds (e.g., 3-of-5), extensive integrations, batching",
+    "drawbacks": "Coordination overhead, requires active signers, potential key loss",
+    "use_cases": "DAO treasuries, protocol funds, community multisigs",
+    "complexity": "Medium",
+    "tags": [
+      "dao",
+      "treasury",
+      "multisig",
+      "gnosis-safe",
+      "security"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Gnosis Safe is pre-deployed, but custom module example:\ncontract TreasuryModule {\n    GnosisSafe public safe;\n    \n    function executeFromModule(\n        address to,\n        uint256 value,\n        bytes memory data\n    ) external onlyAuthorized returns (bool) {\n        return safe.execTransactionFromModule(\n            to, value, data, Enum.Operation.Call\n        );\n    }\n}"
+      }
     }
   }
-}
+]

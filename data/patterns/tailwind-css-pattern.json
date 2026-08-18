@@ -1,26 +1,28 @@
-{
-  "id": "tailwind-css-pattern",
-  "name": "Tailwind CSS Pattern",
-  "category": "React Styling",
-  "description": "Utility-first CSS framework. Industry standard for React in 2024-2025.",
-  "when_to_use": "Modern React apps, rapid development, consistent design systems",
-  "benefits": "Fast development, no CSS files, great DX, tree-shakeable, consistent",
-  "drawbacks": "Learning curve, verbose HTML, requires build step",
-  "use_cases": "Component styling, responsive design, dark mode, design systems",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "tailwind",
-    "css",
-    "styling",
-    "utility-first",
-    "modern",
-    "2024"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { useState } from 'react';\n\nfunction Button({ variant = 'primary', children }: ButtonProps) {\n  const baseClasses = 'px-4 py-2 rounded font-medium transition-colors';\n  const variantClasses = {\n    primary: 'bg-blue-600 hover:bg-blue-700 text-white',\n    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',\n    danger: 'bg-red-600 hover:bg-red-700 text-white'\n  };\n  \n  return (\n    <button className={`${baseClasses} ${variantClasses[variant]}`}>\n      {children}\n    </button>\n  );\n}\n\n// Responsive + Dark mode\nfunction Card({ title, children }: CardProps) {\n  return (\n    <div className=\"\n      bg-white dark:bg-gray-800\n      p-4 md:p-6 lg:p-8\n      rounded-lg shadow-md\n      border border-gray-200 dark:border-gray-700\n    \">\n      <h2 className=\"text-xl md:text-2xl font-bold mb-4 dark:text-white\">\n        {title}\n      </h2>\n      <div className=\"text-gray-700 dark:text-gray-300\">\n        {children}\n      </div>\n    </div>\n  );\n}\n\n// With className prop (composable)\nfunction Container({ className, children }: ContainerProps) {\n  return (\n    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>\n      {children}\n    </div>\n  );\n}"
+[
+  {
+    "id": "tailwind-css-pattern",
+    "name": "Tailwind CSS Pattern",
+    "category": "React Styling",
+    "description": "Utility-first CSS framework. Industry standard for React in 2024-2025.",
+    "when_to_use": "Modern React apps, rapid development, consistent design systems",
+    "benefits": "Fast development, no CSS files, great DX, tree-shakeable, consistent",
+    "drawbacks": "Learning curve, verbose HTML, requires build step",
+    "use_cases": "Component styling, responsive design, dark mode, design systems",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "tailwind",
+      "css",
+      "styling",
+      "utility-first",
+      "modern",
+      "2024"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { useState } from 'react';\n\nfunction Button({ variant = 'primary', children }: ButtonProps) {\n  const baseClasses = 'px-4 py-2 rounded font-medium transition-colors';\n  const variantClasses = {\n    primary: 'bg-blue-600 hover:bg-blue-700 text-white',\n    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',\n    danger: 'bg-red-600 hover:bg-red-700 text-white'\n  };\n  \n  return (\n    <button className={`${baseClasses} ${variantClasses[variant]}`}>\n      {children}\n    </button>\n  );\n}\n\n// Responsive + Dark mode\nfunction Card({ title, children }: CardProps) {\n  return (\n    <div className=\"\n      bg-white dark:bg-gray-800\n      p-4 md:p-6 lg:p-8\n      rounded-lg shadow-md\n      border border-gray-200 dark:border-gray-700\n    \">\n      <h2 className=\"text-xl md:text-2xl font-bold mb-4 dark:text-white\">\n        {title}\n      </h2>\n      <div className=\"text-gray-700 dark:text-gray-300\">\n        {children}\n      </div>\n    </div>\n  );\n}\n\n// With className prop (composable)\nfunction Container({ className, children }: ContainerProps) {\n  return (\n    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>\n      {children}\n    </div>\n  );\n}"
+      }
     }
   }
-}
+]

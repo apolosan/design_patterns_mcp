@@ -1,15 +1,17 @@
-{
-  "id": "programming-by-exception",
-  "name": "Programming by Exception Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Using exception handling for normal program flow control",
-  "when_to_use": "Exceptions used for control flow\nExpected conditions handled as exceptions\nException catching for normal operations",
-  "drawbacks": "Poor performance\nUnclear program flow\nDebugging difficulties\nCode maintainability issues",
-  "use_cases": "Using exceptions to return values\nException-based validation\nFlow control through exception handling",
-  "complexity": "Medium",
-  "tags": [
-    "anti-pattern",
-    "exception-handling",
-    "control-flow"
-  ]
-}
+[
+  {
+    "id": "programming-by-exception",
+    "name": "Programming by Exception Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Using exception handling for normal program flow control",
+    "when_to_use": "Exceptions used for control flow\nExpected conditions handled as exceptions\nException catching for normal operations",
+    "drawbacks": "Poor performance\nUnclear program flow\nDebugging difficulties\nCode maintainability issues",
+    "use_cases": "Using exceptions to return values\nException-based validation\nFlow control through exception handling",
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "exception-handling",
+      "control-flow"
+    ]
+  }
+]

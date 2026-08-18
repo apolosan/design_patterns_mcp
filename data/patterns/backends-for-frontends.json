@@ -1,22 +1,24 @@
-{
-  "id": "backends-for-frontends",
-  "name": "Backends for Frontends (BFF)",
-  "category": "Cloud-Native",
-  "description": "Creates separate backend services for different frontend experiences",
-  "when_to_use": "Multiple client types\nDifferent data needs\nClient optimization",
-  "benefits": "Client optimization\nTeam autonomy\nFlexible APIs",
-  "drawbacks": "Code duplication\nMultiple services\nCoordination complexity",
-  "use_cases": "Mobile vs web apps\nPartner APIs\nDevice-specific backends",
-  "complexity": "Medium",
-  "tags": [
-    "api-design",
-    "client-optimization",
-    "separation"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// BFF: optimized APIs per client\nclass WebBFF {\n  async getUserDashboard(userId: string) {\n    const [user, orders, recs] = await Promise.all([\n      userService.getUser(userId),\n      orderService.getOrders(userId, 10),\n      recService.getRecommendations(userId, 20)\n    ]);\n    return { user, orders, recommendations: recs };\n  }\n}\n\nclass MobileBFF {\n  async getUserDashboard(userId: string) {\n    const [user, orders] = await Promise.all([\n      userService.getUser(userId),\n      orderService.getOrders(userId, 3)\n    ]);\n    return { user: { name: user.name }, orders };\n  }\n}\n\nconst webBFF = new WebBFF();\nconst mobileBFF = new MobileBFF();"
+[
+  {
+    "id": "backends-for-frontends",
+    "name": "Backends for Frontends (BFF)",
+    "category": "Cloud-Native",
+    "description": "Creates separate backend services for different frontend experiences",
+    "when_to_use": "Multiple client types\nDifferent data needs\nClient optimization",
+    "benefits": "Client optimization\nTeam autonomy\nFlexible APIs",
+    "drawbacks": "Code duplication\nMultiple services\nCoordination complexity",
+    "use_cases": "Mobile vs web apps\nPartner APIs\nDevice-specific backends",
+    "complexity": "Medium",
+    "tags": [
+      "api-design",
+      "client-optimization",
+      "separation"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// BFF: optimized APIs per client\nclass WebBFF {\n  async getUserDashboard(userId: string) {\n    const [user, orders, recs] = await Promise.all([\n      userService.getUser(userId),\n      orderService.getOrders(userId, 10),\n      recService.getRecommendations(userId, 20)\n    ]);\n    return { user, orders, recommendations: recs };\n  }\n}\n\nclass MobileBFF {\n  async getUserDashboard(userId: string) {\n    const [user, orders] = await Promise.all([\n      userService.getUser(userId),\n      orderService.getOrders(userId, 3)\n    ]);\n    return { user: { name: user.name }, orders };\n  }\n}\n\nconst webBFF = new WebBFF();\nconst mobileBFF = new MobileBFF();"
+      }
     }
   }
-}
+]

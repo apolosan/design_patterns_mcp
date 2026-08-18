@@ -1,16 +1,18 @@
-{
-  "id": "secure-communication",
-  "name": "Secure Communication Pattern",
-  "category": "Security",
-  "description": "Encrypts data in transit to protect against eavesdropping and tampering",
-  "when_to_use": "Network communication\nAPI calls\nSensitive data",
-  "benefits": "Data protection\nPrivacy\nIntegrity",
-  "drawbacks": "Performance overhead\nCertificate management\nConfiguration complexity",
-  "use_cases": "HTTPS connections\nAPI security\nDatabase connections",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "encryption",
-    "communication"
-  ]
-}
+[
+  {
+    "id": "secure-communication",
+    "name": "Secure Communication Pattern",
+    "category": "Security",
+    "description": "Encrypts data in transit to protect against eavesdropping and tampering",
+    "when_to_use": "Network communication\nAPI calls\nSensitive data",
+    "benefits": "Data protection\nPrivacy\nIntegrity",
+    "drawbacks": "Performance overhead\nCertificate management\nConfiguration complexity",
+    "use_cases": "HTTPS connections\nAPI security\nDatabase connections",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "encryption",
+      "communication"
+    ]
+  }
+]

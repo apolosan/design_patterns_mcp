@@ -1,17 +1,19 @@
-{
-  "id": "online-observer",
-  "name": "Online Observer",
-  "category": "Data Quality",
-  "description": "The Online Observer provides real-time data quality monitoring.",
-  "when_to_use": "[\"Real-time quality monitoring\",\"Streaming data\"]",
-  "benefits": "[\"Real-time monitoring\",\"Immediate feedback\"]",
-  "drawbacks": "[\"Performance impact\",\"Complexity\"]",
-  "use_cases": "[\"Streaming quality\",\"Real-time alerts\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"data-quality\"",
-    "\"observer\"",
-    "\"online\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "online-observer",
+    "name": "Online Observer",
+    "category": "Data Quality",
+    "description": "The Online Observer provides real-time data quality monitoring.",
+    "when_to_use": "[\"Real-time quality monitoring\",\"Streaming data\"]",
+    "benefits": "[\"Real-time monitoring\",\"Immediate feedback\"]",
+    "drawbacks": "[\"Performance impact\",\"Complexity\"]",
+    "use_cases": "[\"Streaming quality\",\"Real-time alerts\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"data-quality\"",
+      "\"observer\"",
+      "\"online\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

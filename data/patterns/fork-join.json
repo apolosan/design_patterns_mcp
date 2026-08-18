@@ -1,22 +1,24 @@
-{
-  "id": "fork-join",
-  "name": "Fork-Join",
-  "category": "Concurrency",
-  "description": "Divides task into subtasks, processes in parallel, then combines results",
-  "when_to_use": "Parallel computation\nDivide-and-conquer\nCPU-intensive tasks",
-  "benefits": "Parallel execution\nWork stealing\nScalability\nLoad balancing",
-  "drawbacks": "Overhead for small tasks\nComplex implementation\nDebugging difficulty",
-  "use_cases": "Mathematical computations\nData processing\nParallel algorithms",
-  "complexity": "High",
-  "tags": [
-    "concurrency",
-    "parallel",
-    "divide-conquer"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Fork-Join: split work, process in parallel, merge results\nclass ForkJoinPool {\n  async execute<T, R>(\n    tasks: T[],\n    worker: (task: T) => Promise<R>\n  ): Promise<R[]> {\n    const forked = tasks.map(task => worker(task));\n    return Promise.all(forked);\n  }\n  \n  async executeWithLimit<T, R>(\n    tasks: T[],\n    worker: (task: T) => Promise<R>,\n    concurrency: number\n  ): Promise<R[]> {\n    const results: R[] = [];\n    const executing: Promise<void>[] = [];\n    \n    for (const task of tasks) {\n      const promise = worker(task).then(result => {\n        results.push(result);\n      });\n      \n      executing.push(promise);\n      \n      if (executing.length >= concurrency) {\n        await Promise.race(executing);\n        executing.splice(\n          executing.findIndex(p => p === promise),\n          1\n        );\n      }\n    }\n    \n    await Promise.all(executing);\n    return results;\n  }\n}\n\n// Usage\nconst pool = new ForkJoinPool();\nconst tasks = [1, 2, 3, 4, 5];\n\nconst results = await pool.execute(\n  tasks,\n  async (n) => {\n    await new Promise(resolve => setTimeout(resolve, 100));\n    return n * 2;\n  }\n);\n\nconsole.log(results); // [2, 4, 6, 8, 10]"
+[
+  {
+    "id": "fork-join",
+    "name": "Fork-Join",
+    "category": "Concurrency",
+    "description": "Divides task into subtasks, processes in parallel, then combines results",
+    "when_to_use": "Parallel computation\nDivide-and-conquer\nCPU-intensive tasks",
+    "benefits": "Parallel execution\nWork stealing\nScalability\nLoad balancing",
+    "drawbacks": "Overhead for small tasks\nComplex implementation\nDebugging difficulty",
+    "use_cases": "Mathematical computations\nData processing\nParallel algorithms",
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "parallel",
+      "divide-conquer"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Fork-Join: split work, process in parallel, merge results\nclass ForkJoinPool {\n  async execute<T, R>(\n    tasks: T[],\n    worker: (task: T) => Promise<R>\n  ): Promise<R[]> {\n    const forked = tasks.map(task => worker(task));\n    return Promise.all(forked);\n  }\n  \n  async executeWithLimit<T, R>(\n    tasks: T[],\n    worker: (task: T) => Promise<R>,\n    concurrency: number\n  ): Promise<R[]> {\n    const results: R[] = [];\n    const executing: Promise<void>[] = [];\n    \n    for (const task of tasks) {\n      const promise = worker(task).then(result => {\n        results.push(result);\n      });\n      \n      executing.push(promise);\n      \n      if (executing.length >= concurrency) {\n        await Promise.race(executing);\n        executing.splice(\n          executing.findIndex(p => p === promise),\n          1\n        );\n      }\n    }\n    \n    await Promise.all(executing);\n    return results;\n  }\n}\n\n// Usage\nconst pool = new ForkJoinPool();\nconst tasks = [1, 2, 3, 4, 5];\n\nconst results = await pool.execute(\n  tasks,\n  async (n) => {\n    await new Promise(resolve => setTimeout(resolve, 100));\n    return n * 2;\n  }\n);\n\nconsole.log(results); // [2, 4, 6, 8, 10]"
+      }
     }
   }
-}
+]

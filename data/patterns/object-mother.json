@@ -1,16 +1,18 @@
-{
-  "id": "object-mother",
-  "name": "Object Mother",
-  "category": "Testing",
-  "description": "Factory for creating commonly used test objects with meaningful names",
-  "when_to_use": "Common test objects\nShared test data\nDomain-specific objects",
-  "benefits": "Shared test data\nMeaningful names\nReduced duplication",
-  "drawbacks": "Centralized dependency\nMaintenance burden\nCoupling risk",
-  "use_cases": "Domain objects\nCommon scenarios\nShared fixtures",
-  "complexity": "Medium",
-  "tags": [
-    "testing",
-    "factory",
-    "objects"
-  ]
-}
+[
+  {
+    "id": "object-mother",
+    "name": "Object Mother",
+    "category": "Testing",
+    "description": "Factory for creating commonly used test objects with meaningful names",
+    "when_to_use": "Common test objects\nShared test data\nDomain-specific objects",
+    "benefits": "Shared test data\nMeaningful names\nReduced duplication",
+    "drawbacks": "Centralized dependency\nMaintenance burden\nCoupling risk",
+    "use_cases": "Domain objects\nCommon scenarios\nShared fixtures",
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "factory",
+      "objects"
+    ]
+  }
+]

@@ -1,39 +1,54 @@
-{
-  "id": "sla-misses-detector",
-  "name": "SLA Misses Detector",
-  "category": "Data Engineering",
-  "description": "Monitors pipeline SLA metrics (latency, completeness, freshness, error rate) and emits structured alerts when thresholds are breached. Distinguishes hard misses (page) from soft misses (ticket).",
-  "when_to_use": [
-    "Pipeline SLAs are contractual",
-    "Downstream dashboards depend on freshness",
-    "On-call rotation needs actionable alerts"
-  ],
-  "benefits": [
-    "Quantifies reliability",
-    "Triggers timely remediation",
-    "Drives continuous improvement"
-  ],
-  "drawbacks": [
-    "Alert fatigue if thresholds are wrong",
-    "SLA definitions drift from business reality",
-    "Detective, not preventive"
-  ],
-  "use_cases": [
-    "Freshness SLA for dashboard tables",
-    "Latency SLA for streaming pipelines",
-    "Completeness SLA for regulatory reports"
-  ],
-  "complexity": "Low",
-  "tags": ["data-engineering", "sla", "monitoring", "alerts"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "async function checkSla(metric: number, threshold: number, sev: 'page'|'ticket') {\n  if (metric > threshold) await alert({ severity: sev, metric, threshold });\n}",
-      "description": "Threshold-based SLA alert."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "skew-detector", "type": "complements", "strength": 0.6},
-    {"target_pattern_id": "lag-detector", "type": "similar-to", "strength": 0.5}
-  ]
-}
+[
+  {
+    "id": "sla-misses-detector",
+    "name": "SLA Misses Detector",
+    "category": "Data Engineering",
+    "description": "Monitors pipeline SLA metrics (latency, completeness, freshness, error rate) and emits structured alerts when thresholds are breached. Distinguishes hard misses (page) from soft misses (ticket).",
+    "when_to_use": [
+      "Pipeline SLAs are contractual",
+      "Downstream dashboards depend on freshness",
+      "On-call rotation needs actionable alerts"
+    ],
+    "benefits": [
+      "Quantifies reliability",
+      "Triggers timely remediation",
+      "Drives continuous improvement"
+    ],
+    "drawbacks": [
+      "Alert fatigue if thresholds are wrong",
+      "SLA definitions drift from business reality",
+      "Detective, not preventive"
+    ],
+    "use_cases": [
+      "Freshness SLA for dashboard tables",
+      "Latency SLA for streaming pipelines",
+      "Completeness SLA for regulatory reports"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "data-engineering",
+      "sla",
+      "monitoring",
+      "alerts"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "async function checkSla(metric: number, threshold: number, sev: 'page'|'ticket') {\n  if (metric > threshold) await alert({ severity: sev, metric, threshold });\n}",
+        "description": "Threshold-based SLA alert."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "skew-detector",
+        "type": "complements",
+        "strength": 0.6
+      },
+      {
+        "target_pattern_id": "lag-detector",
+        "type": "similar-to",
+        "strength": 0.5
+      }
+    ]
+  }
+]

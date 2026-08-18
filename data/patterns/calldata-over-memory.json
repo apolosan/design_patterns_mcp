@@ -1,23 +1,25 @@
-{
-  "id": "calldata-over-memory",
-  "name": "Calldata Over Memory",
-  "category": "Gas Optimization",
-  "description": "Use calldata for read-only function parameters Problem: Memory parameters cost more gas",
-  "when_to_use": "Use calldata for external function array/struct parameters",
-  "benefits": "Cheaper than memory for external functions",
-  "drawbacks": "Read-only, only for external functions",
-  "use_cases": "External functions with array/struct parameters",
-  "complexity": "Low",
-  "tags": [
-    "gas-optimization",
-    "calldata",
-    "memory",
-    "solidity"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "function processBatch(uint256[] calldata ids) external {\n    // calldata is cheaper than memory for external functions\n    for (uint256 i = 0; i < ids.length; i++) {\n        process(ids[i]);\n    }\n}"
+[
+  {
+    "id": "calldata-over-memory",
+    "name": "Calldata Over Memory",
+    "category": "Gas Optimization",
+    "description": "Use calldata for read-only function parameters Problem: Memory parameters cost more gas",
+    "when_to_use": "Use calldata for external function array/struct parameters",
+    "benefits": "Cheaper than memory for external functions",
+    "drawbacks": "Read-only, only for external functions",
+    "use_cases": "External functions with array/struct parameters",
+    "complexity": "Low",
+    "tags": [
+      "gas-optimization",
+      "calldata",
+      "memory",
+      "solidity"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "function processBatch(uint256[] calldata ids) external {\n    // calldata is cheaper than memory for external functions\n    for (uint256 i = 0; i < ids.length; i++) {\n        process(ids[i]);\n    }\n}"
+      }
     }
   }
-}
+]

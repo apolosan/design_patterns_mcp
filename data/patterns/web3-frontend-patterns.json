@@ -1,524 +1,520 @@
-{
-  "category": "Web3 Frontend",
-  "description": "Web3 Frontend design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "erc4337",
-      "name": "ERC-4337 Account Abstraction",
-      "category": "Web3 Frontend",
-      "description": "Smart wallets with gasless transactions Problem: EOAs lack programmability and require ETH for gas",
-      "when_to_use": [
-        "UserOperations via bundlers",
-        "custom validation"
-      ],
-      "benefits": [
-        "Programmable wallets",
-        "better UX",
-        "no protocol changes"
-      ],
-      "drawbacks": [
-        "Higher gas",
-        "alt-mempool",
-        "infrastructure complexity"
-      ],
-      "use_cases": [
-        "Gasless UX",
-        "social recovery",
-        "session keys",
-        "sponsored gas"
-      ],
-      "complexity": "High",
-      "tags": [
-        "account-abstraction",
-        "erc4337",
-        "smart-wallet",
-        "gasless"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract SmartAccount is IAccount {\n    function validateUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 missingAccountFunds\n    ) external override returns (uint256) {\n        _validateSignature(userOp, userOpHash);\n        return 0;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "event-listening-pattern",
-      "name": "Event Listening Pattern",
-      "category": "Web3 Frontend",
-      "description": "Listen to contract events in real-time via WebSocket. Update UI automatically on blockchain events.",
-      "when_to_use": [
-        "Live notifications",
-        "real-time updates",
-        "state synchronization"
-      ],
-      "benefits": [
-        "Real-time updates",
-        "efficient",
-        "event-driven architecture"
-      ],
-      "drawbacks": [
-        "Requires WebSocket provider",
-        "connection management",
-        "pagination for history"
-      ],
-      "use_cases": [
-        "Live trading feeds",
-        "notification systems",
-        "real-time dashboards"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "web3",
-        "events",
-        "websocket",
-        "real-time",
-        "frontend"
-      ],
-      "examples": {
-        "typescript": {
-          "language": "typescript",
-          "code": "import { useContractEvent } from 'wagmi';\n\nfunction TransferListener() {\n  const [transfers, setTransfers] = useState([]);\n  \n  useContractEvent({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    eventName: 'Transfer',\n    listener(from, to, amount) {\n      setTransfers(prev => [...prev, { from, to, amount }]);\n    }\n  });\n  \n  return <TransferList transfers={transfers} />;\n}"
-        }
-      }
-    },
-    {
-      "id": "ipfs-gateway-fallback",
-      "name": "IPFS Gateway Fallback Pattern",
-      "category": "Web3 Frontend",
-      "description": "Multiple IPFS gateways with automatic fallback. Ensures content availability despite gateway downtime.",
-      "when_to_use": [
-        "All IPFS integrations",
-        "NFT metadata",
-        "decentralized storage"
-      ],
-      "benefits": [
-        "Resilience",
-        "no single point of failure",
-        "improved uptime"
-      ],
-      "drawbacks": [
-        "Slower on fallback",
-        "multiple requests",
-        "complexity"
-      ],
-      "use_cases": [
-        "NFT marketplaces",
-        "dApp assets",
-        "metadata retrieval"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "web3",
-        "ipfs",
-        "gateway",
-        "fallback",
-        "resilience"
-      ],
-      "examples": {
-        "typescript": {
-          "language": "typescript",
-          "code": "const GATEWAYS = [\n  'https://ipfs.io/ipfs/',\n  'https://cloudflare-ipfs.com/ipfs/',\n  'https://gateway.pinata.cloud/ipfs/'\n];\n\nasync function fetchFromIPFS(cid: string): Promise<any> {\n  for (const gateway of GATEWAYS) {\n    try {\n      const response = await fetch(gateway + cid, { timeout: 5000 });\n      if (response.ok) return response.json();\n    } catch (err) {\n      console.warn(`Gateway ${gateway} failed, trying next...`);\n    }\n  }\n  throw new Error('All IPFS gateways failed');\n}"
-        }
-      }
-    },
-    {
-      "id": "nonce-management",
-      "name": "Nonce Management Pattern",
-      "category": "Web3 Frontend",
-      "description": "Track and manage transaction nonces for concurrent transactions. Prevents stuck transactions.",
-      "when_to_use": [
-        "High-frequency trading",
-        "multiple simultaneous transactions",
-        "MEV bots"
-      ],
-      "benefits": [
-        "Prevents stuck transactions",
-        "enables concurrency",
-        "better UX"
-      ],
-      "drawbacks": [
-        "Complex edge cases",
-        "race conditions",
-        "provider dependencies"
-      ],
-      "use_cases": [
-        "Trading bots",
-        "batch operations",
-        "concurrent transaction submission"
-      ],
-      "complexity": "High",
-      "tags": [
-        "web3",
-        "nonce",
-        "transaction",
-        "concurrency",
-        "frontend"
-      ],
-      "examples": {
-        "typescript": {
-          "language": "typescript",
-          "code": "class NonceManager {\n  private pending = new Map<string, number>();\n  \n  async getNextNonce(address: string): Promise<number> {\n    const txCount = await provider.getTransactionCount(address, 'pending');\n    const pendingNonce = this.pending.get(address) ?? txCount;\n    const nextNonce = Math.max(txCount, pendingNonce);\n    \n    this.pending.set(address, nextNonce + 1);\n    return nextNonce;\n  }\n  \n  async sendTransaction(tx: Transaction) {\n    tx.nonce = await this.getNextNonce(tx.from);\n    return provider.sendTransaction(tx);\n  }\n}"
-        }
-      }
-    },
-    {
-      "id": "paymaster-pattern",
-      "name": "Paymaster Pattern (ERC-4337)",
-      "category": "Web3 Frontend",
-      "description": "Third-party gas sponsorship. Paymasters pay gas for users, enabling novel business models.",
-      "when_to_use": [
-        "Sponsored transactions",
-        "ERC-20 gas payment",
-        "dApp gas subsidies"
-      ],
-      "benefits": [
-        "Flexible fee structures",
-        "novel business models",
-        "improved UX"
-      ],
-      "drawbacks": [
-        "Staking requirements",
-        "DoS vectors",
-        "paymaster griefing"
-      ],
-      "use_cases": [
-        "Free onboarding",
-        "ERC-20 gas fees",
-        "subscription models"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "account-abstraction",
-        "paymaster",
-        "gas-sponsorship",
-        "erc-4337"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract Paymaster is IPaymaster {\n    function validatePaymasterUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 maxCost\n    ) external returns (bytes memory context, uint256 validationData) {\n        // Verify userOp meets sponsorship criteria\n        require(isEligible(userOp.sender));\n        \n        return (\"\", 0); // approve sponsorship\n    }\n    \n    function postOp(\n        PostOpMode mode,\n        bytes calldata context,\n        uint256 actualGasCost\n    ) external {\n        // Optional: charge user in ERC-20, or handle refunds\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "rainbowkit-pattern",
-      "name": "RainbowKit Pattern",
-      "category": "Web3 Frontend",
-      "description": "Beautiful, React-based wallet connection UI. Built on wagmi, supports multiple wallets out of the box.",
-      "when_to_use": [
-        "React dApps",
-        "quick wallet integration",
-        "beautiful UI"
-      ],
-      "benefits": [
-        "Beautiful UI",
-        "easy setup",
-        "multiple wallets",
-        "customizable",
-        "React hooks"
-      ],
-      "drawbacks": [
-        "React-specific",
-        "opinionated design",
-        "bundle size"
-      ],
-      "use_cases": [
-        "React dApps",
-        "Next.js apps",
-        "modern Web3 frontends"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "web3",
-        "wallet",
-        "rainbowkit",
-        "react",
-        "ui"
-      ],
-      "examples": {
-        "typescript": {
-          "language": "typescript",
-          "code": "import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';\nimport { configureChains, createConfig, WagmiConfig } from 'wagmi';\n\nconst { chains, publicClient } = configureChains([mainnet], [publicProvider()]);\nconst { connectors } = getDefaultWallets({ appName: 'My dApp', chains });\nconst config = createConfig({ connectors, publicClient });\n\nfunction App() {\n  return (\n    <WagmiConfig config={config}>\n      <RainbowKitProvider chains={chains}>\n        <ConnectButton />\n      </RainbowKitProvider>\n    </WagmiConfig>\n  );\n}"
-        }
-      }
-    },
-    {
-      "id": "session-keys-pattern",
-      "name": "Session Keys Pattern",
-      "category": "Web3 Frontend",
-      "description": "Temporary delegated permissions with time/scope limits. Reduces signature prompts for gaming/trading.",
-      "when_to_use": [
-        "Gaming sessions",
-        "trading bots",
-        "scoped authorizations"
-      ],
-      "benefits": [
-        "Reduced signature requests",
-        "better UX",
-        "scoped permissions"
-      ],
-      "drawbacks": [
-        "Security risks if poorly implemented",
-        "key management"
-      ],
-      "use_cases": [
-        "Game sessions",
-        "temporary delegates",
-        "automated trading"
-      ],
-      "complexity": "High",
-      "tags": [
-        "account-abstraction",
-        "session-keys",
-        "delegation",
-        "gaming",
-        "ux"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract SessionKeyManager {\n    struct SessionKey {\n        address key;\n        uint48 validUntil;\n        uint48 validAfter;\n        bytes4[] allowedSelectors;\n    }\n    \n    mapping(address => SessionKey[]) public sessionKeys;\n    \n    function addSessionKey(SessionKey memory session) external {\n        sessionKeys[msg.sender].push(session);\n    }\n    \n    function executeWithSession(address target, bytes calldata data) external {\n        SessionKey memory session = _getValidSession(msg.sender);\n        require(session.validUntil > block.timestamp);\n        require(_isAllowedSelector(session, bytes4(data[:4])));\n        \n        target.call(data);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "social-recovery-pattern",
-      "name": "Social Recovery Pattern",
-      "category": "Web3 Frontend",
-      "description": "M-of-N guardians can recover account instead of seed phrases. User-friendly backup.",
-      "when_to_use": [
-        "Wallet recovery",
-        "seed phrase alternatives",
-        "user-friendly security"
-      ],
-      "benefits": [
-        "No seed phrases needed",
-        "user-friendly",
-        "distributed trust"
-      ],
-      "drawbacks": [
-        "Guardian selection critical",
-        "social engineering risk"
-      ],
-      "use_cases": [
-        "Smart wallets",
-        "account recovery",
-        "guardian-based backup"
-      ],
-      "complexity": "High",
-      "tags": [
-        "account-abstraction",
-        "social-recovery",
-        "guardians",
-        "wallet",
-        "security"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract SocialRecovery {\n    mapping(address => address[]) public guardians;\n    mapping(address => mapping(address => bool)) public recoveryApprovals;\n    \n    function initiateRecovery(address newOwner) external {\n        require(isGuardian[msg.sender]);\n        recoveryApprovals[owner][newOwner] = true;\n    }\n    \n    function executeRecovery(address newOwner) external {\n        uint256 approvals = 0;\n        for (uint i = 0; i < guardians[owner].length; i++) {\n            if (recoveryApprovals[owner][newOwner]) approvals++;\n        }\n        require(approvals >= threshold); // e.g., 3 of 5\n        \n        owner = newOwner;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "transaction-replacement",
-      "name": "Transaction Replacement (RBF)",
-      "category": "Web3 Frontend",
-      "description": "Replace stuck transactions by resubmitting with higher gas and same nonce. Speed up or cancel.",
-      "when_to_use": [
-        "Stuck transactions",
-        "urgent operations",
-        "gas price volatility"
-      ],
-      "benefits": [
-        "User control over stuck txs",
-        "prevents frustration",
-        "UX improvement"
-      ],
-      "drawbacks": [
-        "Gas costs to replace",
-        "RBF complexity",
-        "not all providers support"
-      ],
-      "use_cases": [
-        "Speed up transactions",
-        "cancel pending transactions",
-        "unstuck wallets"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "web3",
-        "transaction",
-        "rbf",
-        "gas",
-        "replacement"
-      ],
-      "examples": {
-        "typescript": {
-          "language": "typescript",
-          "code": "async function speedUpTransaction(originalTx: Transaction) {\n  const newGasPrice = originalTx.gasPrice * 1.2; // 20% increase\n  \n  const replacementTx = {\n    ...originalTx,\n    nonce: originalTx.nonce, // SAME nonce\n    gasPrice: newGasPrice,\n    // or for EIP-1559:\n    maxFeePerGas: originalTx.maxFeePerGas * 1.2,\n    maxPriorityFeePerGas: originalTx.maxPriorityFeePerGas * 1.2\n  };\n  \n  return signer.sendTransaction(replacementTx);\n}"
-        }
-      }
-    },
-    {
-      "id": "transaction-status-tracking",
-      "name": "Transaction Status Tracking",
-      "category": "Web3 Frontend",
-      "description": "Monitor transaction lifecycle: pending → mined → confirmed. Handle reorgs and errors.",
-      "when_to_use": [
-        "All dApps with transactions",
-        "user feedback",
-        "error handling"
-      ],
-      "benefits": [
-        "Better UX",
-        "clear feedback",
-        "error handling",
-        "reorg protection"
-      ],
-      "drawbacks": [
-        "Requires polling or websockets",
-        "complexity",
-        "edge cases"
-      ],
-      "use_cases": [
-        "Transaction confirmation",
-        "error handling",
-        "UX improvements"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "web3",
-        "transaction",
-        "status",
-        "frontend",
-        "ux"
-      ],
-      "examples": {
-        "typescript": {
-          "language": "typescript",
-          "code": "import { useWaitForTransaction } from 'wagmi';\n\nfunction SendTransaction() {\n  const { data: txHash, write } = useContractWrite({...});\n  \n  const { isLoading, isSuccess, isError } = useWaitForTransaction({\n    hash: txHash,\n    confirmations: 2 // Wait for 2 confirmations\n  });\n  \n  return (\n    <div>\n      {isLoading && <Spinner>Confirming...</Spinner>}\n      {isSuccess && <Success>Transaction confirmed!</Success>}\n      {isError && <Error>Transaction failed</Error>}\n    </div>\n  );\n}"
-        }
-      }
-    },
-    {
-      "id": "user-operations-erc4337",
-      "name": "UserOperations Pattern (ERC-4337)",
-      "category": "Web3 Frontend",
-      "description": "Gasless transactions via bundlers without protocol changes. Users sign UserOps, bundlers submit on-chain.",
-      "when_to_use": [
-        "Onboarding",
-        "sponsored gas",
-        "smart contract wallets"
-      ],
-      "benefits": [
-        "No protocol changes needed",
-        "backwards compatible",
-        "flexible gas payment"
-      ],
-      "drawbacks": [
-        "Higher gas overhead (~42k extra)",
-        "alt-mempool complexity"
-      ],
-      "use_cases": [
-        "Gasless onboarding",
-        "sponsored transactions",
-        "wallet abstraction"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "account-abstraction",
-        "erc-4337",
-        "gasless",
-        "bundler",
-        "userops"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract SimpleAccount {\n    function validateUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 missingAccountFunds\n    ) external returns (uint256 validationData) {\n        _validateSignature(userOp, userOpHash);\n        _payPrefund(missingAccountFunds);\n        return 0; // valid\n    }\n    \n    function execute(address dest, uint256 value, bytes calldata func) external {\n        require(msg.sender == address(entryPoint));\n        dest.call{value: value}(func);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "wagmi-hooks",
-      "name": "Wagmi Hooks Pattern",
-      "category": "Web3 Frontend",
-      "description": "React hooks for Web3 interactions. TypeScript-first, composable, with built-in caching.",
-      "when_to_use": [
-        "React dApps",
-        "TypeScript projects",
-        "modern Web3 frontends"
-      ],
-      "benefits": [
-        "React-friendly",
-        "TypeScript support",
-        "auto-caching",
-        "composable",
-        "battle-tested"
-      ],
-      "drawbacks": [
-        "React-specific",
-        "learning curve",
-        "opinionated patterns"
-      ],
-      "use_cases": [
-        "Reading contracts",
-        "sending transactions",
-        "wallet management"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "web3",
-        "react",
-        "wagmi",
-        "hooks",
-        "typescript"
-      ],
-      "examples": {
-        "typescript": {
-          "language": "typescript",
-          "code": "import { useAccount, useBalance, useContractRead, useContractWrite } from 'wagmi';\n\nfunction TokenBalance() {\n  const { address } = useAccount();\n  const { data: balance } = useBalance({ address });\n  \n  const { data: tokenBalance } = useContractRead({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    functionName: 'balanceOf',\n    args: [address]\n  });\n  \n  const { write: transfer } = useContractWrite({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    functionName: 'transfer'\n  });\n  \n  return <div>Balance: {balance?.formatted} ETH</div>;\n}"
-        }
-      }
-    },
-    {
-      "id": "walletconnect-protocol",
-      "name": "WalletConnect Protocol",
-      "category": "Web3 Frontend",
-      "description": "Connect mobile wallets to dApps via QR code or deep link. Industry standard for mobile wallet connections.",
-      "when_to_use": [
-        "dApp mobile support",
-        "mobile wallet integration"
-      ],
-      "benefits": [
-        "Industry standard",
-        "170+ wallet support",
-        "QR code + deep link",
-        "secure"
-      ],
-      "drawbacks": [
-        "Requires relay server",
-        "session management complexity"
-      ],
-      "use_cases": [
-        "All dApps supporting mobile",
-        "cross-platform wallet connections"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "web3",
-        "wallet",
-        "walletconnect",
-        "mobile",
-        "qr-code"
-      ],
-      "examples": {
-        "typescript": {
-          "language": "typescript",
-          "code": "import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi';\n\nconst projectId = 'YOUR_PROJECT_ID';\nconst chains = [mainnet, polygon, arbitrum];\n\nconst wagmiConfig = defaultWagmiConfig({ chains, projectId });\n\ncreateWeb3Modal({ wagmiConfig, projectId, chains });\n\n// User scans QR or clicks deep link → wallet connects"
-        }
+[
+  {
+    "id": "erc4337",
+    "name": "ERC-4337 Account Abstraction",
+    "category": "Web3 Frontend",
+    "description": "Smart wallets with gasless transactions Problem: EOAs lack programmability and require ETH for gas",
+    "when_to_use": [
+      "UserOperations via bundlers",
+      "custom validation"
+    ],
+    "benefits": [
+      "Programmable wallets",
+      "better UX",
+      "no protocol changes"
+    ],
+    "drawbacks": [
+      "Higher gas",
+      "alt-mempool",
+      "infrastructure complexity"
+    ],
+    "use_cases": [
+      "Gasless UX",
+      "social recovery",
+      "session keys",
+      "sponsored gas"
+    ],
+    "complexity": "High",
+    "tags": [
+      "account-abstraction",
+      "erc4337",
+      "smart-wallet",
+      "gasless"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract SmartAccount is IAccount {\n    function validateUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 missingAccountFunds\n    ) external override returns (uint256) {\n        _validateSignature(userOp, userOpHash);\n        return 0;\n    }\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "event-listening-pattern",
+    "name": "Event Listening Pattern",
+    "category": "Web3 Frontend",
+    "description": "Listen to contract events in real-time via WebSocket. Update UI automatically on blockchain events.",
+    "when_to_use": [
+      "Live notifications",
+      "real-time updates",
+      "state synchronization"
+    ],
+    "benefits": [
+      "Real-time updates",
+      "efficient",
+      "event-driven architecture"
+    ],
+    "drawbacks": [
+      "Requires WebSocket provider",
+      "connection management",
+      "pagination for history"
+    ],
+    "use_cases": [
+      "Live trading feeds",
+      "notification systems",
+      "real-time dashboards"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "web3",
+      "events",
+      "websocket",
+      "real-time",
+      "frontend"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { useContractEvent } from 'wagmi';\n\nfunction TransferListener() {\n  const [transfers, setTransfers] = useState([]);\n  \n  useContractEvent({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    eventName: 'Transfer',\n    listener(from, to, amount) {\n      setTransfers(prev => [...prev, { from, to, amount }]);\n    }\n  });\n  \n  return <TransferList transfers={transfers} />;\n}"
+      }
+    }
+  },
+  {
+    "id": "ipfs-gateway-fallback",
+    "name": "IPFS Gateway Fallback Pattern",
+    "category": "Web3 Frontend",
+    "description": "Multiple IPFS gateways with automatic fallback. Ensures content availability despite gateway downtime.",
+    "when_to_use": [
+      "All IPFS integrations",
+      "NFT metadata",
+      "decentralized storage"
+    ],
+    "benefits": [
+      "Resilience",
+      "no single point of failure",
+      "improved uptime"
+    ],
+    "drawbacks": [
+      "Slower on fallback",
+      "multiple requests",
+      "complexity"
+    ],
+    "use_cases": [
+      "NFT marketplaces",
+      "dApp assets",
+      "metadata retrieval"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "web3",
+      "ipfs",
+      "gateway",
+      "fallback",
+      "resilience"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "const GATEWAYS = [\n  'https://ipfs.io/ipfs/',\n  'https://cloudflare-ipfs.com/ipfs/',\n  'https://gateway.pinata.cloud/ipfs/'\n];\n\nasync function fetchFromIPFS(cid: string): Promise<any> {\n  for (const gateway of GATEWAYS) {\n    try {\n      const response = await fetch(gateway + cid, { timeout: 5000 });\n      if (response.ok) return response.json();\n    } catch (err) {\n      console.warn(`Gateway ${gateway} failed, trying next...`);\n    }\n  }\n  throw new Error('All IPFS gateways failed');\n}"
+      }
+    }
+  },
+  {
+    "id": "nonce-management",
+    "name": "Nonce Management Pattern",
+    "category": "Web3 Frontend",
+    "description": "Track and manage transaction nonces for concurrent transactions. Prevents stuck transactions.",
+    "when_to_use": [
+      "High-frequency trading",
+      "multiple simultaneous transactions",
+      "MEV bots"
+    ],
+    "benefits": [
+      "Prevents stuck transactions",
+      "enables concurrency",
+      "better UX"
+    ],
+    "drawbacks": [
+      "Complex edge cases",
+      "race conditions",
+      "provider dependencies"
+    ],
+    "use_cases": [
+      "Trading bots",
+      "batch operations",
+      "concurrent transaction submission"
+    ],
+    "complexity": "High",
+    "tags": [
+      "web3",
+      "nonce",
+      "transaction",
+      "concurrency",
+      "frontend"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "class NonceManager {\n  private pending = new Map<string, number>();\n  \n  async getNextNonce(address: string): Promise<number> {\n    const txCount = await provider.getTransactionCount(address, 'pending');\n    const pendingNonce = this.pending.get(address) ?? txCount;\n    const nextNonce = Math.max(txCount, pendingNonce);\n    \n    this.pending.set(address, nextNonce + 1);\n    return nextNonce;\n  }\n  \n  async sendTransaction(tx: Transaction) {\n    tx.nonce = await this.getNextNonce(tx.from);\n    return provider.sendTransaction(tx);\n  }\n}"
+      }
+    }
+  },
+  {
+    "id": "paymaster-pattern",
+    "name": "Paymaster Pattern (ERC-4337)",
+    "category": "Web3 Frontend",
+    "description": "Third-party gas sponsorship. Paymasters pay gas for users, enabling novel business models.",
+    "when_to_use": [
+      "Sponsored transactions",
+      "ERC-20 gas payment",
+      "dApp gas subsidies"
+    ],
+    "benefits": [
+      "Flexible fee structures",
+      "novel business models",
+      "improved UX"
+    ],
+    "drawbacks": [
+      "Staking requirements",
+      "DoS vectors",
+      "paymaster griefing"
+    ],
+    "use_cases": [
+      "Free onboarding",
+      "ERC-20 gas fees",
+      "subscription models"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "account-abstraction",
+      "paymaster",
+      "gas-sponsorship",
+      "erc-4337"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract Paymaster is IPaymaster {\n    function validatePaymasterUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 maxCost\n    ) external returns (bytes memory context, uint256 validationData) {\n        // Verify userOp meets sponsorship criteria\n        require(isEligible(userOp.sender));\n        \n        return (\"\", 0); // approve sponsorship\n    }\n    \n    function postOp(\n        PostOpMode mode,\n        bytes calldata context,\n        uint256 actualGasCost\n    ) external {\n        // Optional: charge user in ERC-20, or handle refunds\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "rainbowkit-pattern",
+    "name": "RainbowKit Pattern",
+    "category": "Web3 Frontend",
+    "description": "Beautiful, React-based wallet connection UI. Built on wagmi, supports multiple wallets out of the box.",
+    "when_to_use": [
+      "React dApps",
+      "quick wallet integration",
+      "beautiful UI"
+    ],
+    "benefits": [
+      "Beautiful UI",
+      "easy setup",
+      "multiple wallets",
+      "customizable",
+      "React hooks"
+    ],
+    "drawbacks": [
+      "React-specific",
+      "opinionated design",
+      "bundle size"
+    ],
+    "use_cases": [
+      "React dApps",
+      "Next.js apps",
+      "modern Web3 frontends"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "web3",
+      "wallet",
+      "rainbowkit",
+      "react",
+      "ui"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';\nimport { configureChains, createConfig, WagmiConfig } from 'wagmi';\n\nconst { chains, publicClient } = configureChains([mainnet], [publicProvider()]);\nconst { connectors } = getDefaultWallets({ appName: 'My dApp', chains });\nconst config = createConfig({ connectors, publicClient });\n\nfunction App() {\n  return (\n    <WagmiConfig config={config}>\n      <RainbowKitProvider chains={chains}>\n        <ConnectButton />\n      </RainbowKitProvider>\n    </WagmiConfig>\n  );\n}"
+      }
+    }
+  },
+  {
+    "id": "session-keys-pattern",
+    "name": "Session Keys Pattern",
+    "category": "Web3 Frontend",
+    "description": "Temporary delegated permissions with time/scope limits. Reduces signature prompts for gaming/trading.",
+    "when_to_use": [
+      "Gaming sessions",
+      "trading bots",
+      "scoped authorizations"
+    ],
+    "benefits": [
+      "Reduced signature requests",
+      "better UX",
+      "scoped permissions"
+    ],
+    "drawbacks": [
+      "Security risks if poorly implemented",
+      "key management"
+    ],
+    "use_cases": [
+      "Game sessions",
+      "temporary delegates",
+      "automated trading"
+    ],
+    "complexity": "High",
+    "tags": [
+      "account-abstraction",
+      "session-keys",
+      "delegation",
+      "gaming",
+      "ux"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract SessionKeyManager {\n    struct SessionKey {\n        address key;\n        uint48 validUntil;\n        uint48 validAfter;\n        bytes4[] allowedSelectors;\n    }\n    \n    mapping(address => SessionKey[]) public sessionKeys;\n    \n    function addSessionKey(SessionKey memory session) external {\n        sessionKeys[msg.sender].push(session);\n    }\n    \n    function executeWithSession(address target, bytes calldata data) external {\n        SessionKey memory session = _getValidSession(msg.sender);\n        require(session.validUntil > block.timestamp);\n        require(_isAllowedSelector(session, bytes4(data[:4])));\n        \n        target.call(data);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "social-recovery-pattern",
+    "name": "Social Recovery Pattern",
+    "category": "Web3 Frontend",
+    "description": "M-of-N guardians can recover account instead of seed phrases. User-friendly backup.",
+    "when_to_use": [
+      "Wallet recovery",
+      "seed phrase alternatives",
+      "user-friendly security"
+    ],
+    "benefits": [
+      "No seed phrases needed",
+      "user-friendly",
+      "distributed trust"
+    ],
+    "drawbacks": [
+      "Guardian selection critical",
+      "social engineering risk"
+    ],
+    "use_cases": [
+      "Smart wallets",
+      "account recovery",
+      "guardian-based backup"
+    ],
+    "complexity": "High",
+    "tags": [
+      "account-abstraction",
+      "social-recovery",
+      "guardians",
+      "wallet",
+      "security"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract SocialRecovery {\n    mapping(address => address[]) public guardians;\n    mapping(address => mapping(address => bool)) public recoveryApprovals;\n    \n    function initiateRecovery(address newOwner) external {\n        require(isGuardian[msg.sender]);\n        recoveryApprovals[owner][newOwner] = true;\n    }\n    \n    function executeRecovery(address newOwner) external {\n        uint256 approvals = 0;\n        for (uint i = 0; i < guardians[owner].length; i++) {\n            if (recoveryApprovals[owner][newOwner]) approvals++;\n        }\n        require(approvals >= threshold); // e.g., 3 of 5\n        \n        owner = newOwner;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "transaction-replacement",
+    "name": "Transaction Replacement (RBF)",
+    "category": "Web3 Frontend",
+    "description": "Replace stuck transactions by resubmitting with higher gas and same nonce. Speed up or cancel.",
+    "when_to_use": [
+      "Stuck transactions",
+      "urgent operations",
+      "gas price volatility"
+    ],
+    "benefits": [
+      "User control over stuck txs",
+      "prevents frustration",
+      "UX improvement"
+    ],
+    "drawbacks": [
+      "Gas costs to replace",
+      "RBF complexity",
+      "not all providers support"
+    ],
+    "use_cases": [
+      "Speed up transactions",
+      "cancel pending transactions",
+      "unstuck wallets"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "web3",
+      "transaction",
+      "rbf",
+      "gas",
+      "replacement"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "async function speedUpTransaction(originalTx: Transaction) {\n  const newGasPrice = originalTx.gasPrice * 1.2; // 20% increase\n  \n  const replacementTx = {\n    ...originalTx,\n    nonce: originalTx.nonce, // SAME nonce\n    gasPrice: newGasPrice,\n    // or for EIP-1559:\n    maxFeePerGas: originalTx.maxFeePerGas * 1.2,\n    maxPriorityFeePerGas: originalTx.maxPriorityFeePerGas * 1.2\n  };\n  \n  return signer.sendTransaction(replacementTx);\n}"
+      }
+    }
+  },
+  {
+    "id": "transaction-status-tracking",
+    "name": "Transaction Status Tracking",
+    "category": "Web3 Frontend",
+    "description": "Monitor transaction lifecycle: pending → mined → confirmed. Handle reorgs and errors.",
+    "when_to_use": [
+      "All dApps with transactions",
+      "user feedback",
+      "error handling"
+    ],
+    "benefits": [
+      "Better UX",
+      "clear feedback",
+      "error handling",
+      "reorg protection"
+    ],
+    "drawbacks": [
+      "Requires polling or websockets",
+      "complexity",
+      "edge cases"
+    ],
+    "use_cases": [
+      "Transaction confirmation",
+      "error handling",
+      "UX improvements"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "web3",
+      "transaction",
+      "status",
+      "frontend",
+      "ux"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { useWaitForTransaction } from 'wagmi';\n\nfunction SendTransaction() {\n  const { data: txHash, write } = useContractWrite({...});\n  \n  const { isLoading, isSuccess, isError } = useWaitForTransaction({\n    hash: txHash,\n    confirmations: 2 // Wait for 2 confirmations\n  });\n  \n  return (\n    <div>\n      {isLoading && <Spinner>Confirming...</Spinner>}\n      {isSuccess && <Success>Transaction confirmed!</Success>}\n      {isError && <Error>Transaction failed</Error>}\n    </div>\n  );\n}"
+      }
+    }
+  },
+  {
+    "id": "user-operations-erc4337",
+    "name": "UserOperations Pattern (ERC-4337)",
+    "category": "Web3 Frontend",
+    "description": "Gasless transactions via bundlers without protocol changes. Users sign UserOps, bundlers submit on-chain.",
+    "when_to_use": [
+      "Onboarding",
+      "sponsored gas",
+      "smart contract wallets"
+    ],
+    "benefits": [
+      "No protocol changes needed",
+      "backwards compatible",
+      "flexible gas payment"
+    ],
+    "drawbacks": [
+      "Higher gas overhead (~42k extra)",
+      "alt-mempool complexity"
+    ],
+    "use_cases": [
+      "Gasless onboarding",
+      "sponsored transactions",
+      "wallet abstraction"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "account-abstraction",
+      "erc-4337",
+      "gasless",
+      "bundler",
+      "userops"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract SimpleAccount {\n    function validateUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 missingAccountFunds\n    ) external returns (uint256 validationData) {\n        _validateSignature(userOp, userOpHash);\n        _payPrefund(missingAccountFunds);\n        return 0; // valid\n    }\n    \n    function execute(address dest, uint256 value, bytes calldata func) external {\n        require(msg.sender == address(entryPoint));\n        dest.call{value: value}(func);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "wagmi-hooks",
+    "name": "Wagmi Hooks Pattern",
+    "category": "Web3 Frontend",
+    "description": "React hooks for Web3 interactions. TypeScript-first, composable, with built-in caching.",
+    "when_to_use": [
+      "React dApps",
+      "TypeScript projects",
+      "modern Web3 frontends"
+    ],
+    "benefits": [
+      "React-friendly",
+      "TypeScript support",
+      "auto-caching",
+      "composable",
+      "battle-tested"
+    ],
+    "drawbacks": [
+      "React-specific",
+      "learning curve",
+      "opinionated patterns"
+    ],
+    "use_cases": [
+      "Reading contracts",
+      "sending transactions",
+      "wallet management"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "web3",
+      "react",
+      "wagmi",
+      "hooks",
+      "typescript"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { useAccount, useBalance, useContractRead, useContractWrite } from 'wagmi';\n\nfunction TokenBalance() {\n  const { address } = useAccount();\n  const { data: balance } = useBalance({ address });\n  \n  const { data: tokenBalance } = useContractRead({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    functionName: 'balanceOf',\n    args: [address]\n  });\n  \n  const { write: transfer } = useContractWrite({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    functionName: 'transfer'\n  });\n  \n  return <div>Balance: {balance?.formatted} ETH</div>;\n}"
+      }
+    }
+  },
+  {
+    "id": "walletconnect-protocol",
+    "name": "WalletConnect Protocol",
+    "category": "Web3 Frontend",
+    "description": "Connect mobile wallets to dApps via QR code or deep link. Industry standard for mobile wallet connections.",
+    "when_to_use": [
+      "dApp mobile support",
+      "mobile wallet integration"
+    ],
+    "benefits": [
+      "Industry standard",
+      "170+ wallet support",
+      "QR code + deep link",
+      "secure"
+    ],
+    "drawbacks": [
+      "Requires relay server",
+      "session management complexity"
+    ],
+    "use_cases": [
+      "All dApps supporting mobile",
+      "cross-platform wallet connections"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "web3",
+      "wallet",
+      "walletconnect",
+      "mobile",
+      "qr-code"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi';\n\nconst projectId = 'YOUR_PROJECT_ID';\nconst chains = [mainnet, polygon, arbitrum];\n\nconst wagmiConfig = defaultWagmiConfig({ chains, projectId });\n\ncreateWeb3Modal({ wagmiConfig, projectId, chains });\n\n// User scans QR or clicks deep link → wallet connects"
+      }
+    }
+  }
+]

@@ -1,18 +1,20 @@
-{
-  "id": "passthrough-replicator",
-  "name": "Passthrough Replicator",
-  "category": "Data Ingestion",
-  "description": "The compute implementation relies on the EL job, which is a process with only two phases, read and write. Ideally, the EL job will copy files or rows from the input as is (i.e., without any data transformation). The infrastructure part is based on a replication policy document where you configure the input and output location and let your data storage provider replicate the records on your behalf.",
-  "when_to_use": "[\"Need exact copy of data across environments\",\"Non-idempotent data providers\",\"Cross-environment data consistency\"]",
-  "benefits": "[\"Simple replication\",\"Preserves data integrity\",\"Infrastructure-based options available\"]",
-  "drawbacks": "[\"Security and isolation risks\",\"Latency in infrastructure implementations\",\"Metadata preservation issues\"]",
-  "use_cases": "[\"Environment synchronization\",\"Backup and recovery\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"replication\"",
-    "\"data-ingestion\"",
-    "\"passthrough\"",
-    "\"el\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "passthrough-replicator",
+    "name": "Passthrough Replicator",
+    "category": "Data Ingestion",
+    "description": "The compute implementation relies on the EL job, which is a process with only two phases, read and write. Ideally, the EL job will copy files or rows from the input as is (i.e., without any data transformation). The infrastructure part is based on a replication policy document where you configure the input and output location and let your data storage provider replicate the records on your behalf.",
+    "when_to_use": "[\"Need exact copy of data across environments\",\"Non-idempotent data providers\",\"Cross-environment data consistency\"]",
+    "benefits": "[\"Simple replication\",\"Preserves data integrity\",\"Infrastructure-based options available\"]",
+    "drawbacks": "[\"Security and isolation risks\",\"Latency in infrastructure implementations\",\"Metadata preservation issues\"]",
+    "use_cases": "[\"Environment synchronization\",\"Backup and recovery\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"replication\"",
+      "\"data-ingestion\"",
+      "\"passthrough\"",
+      "\"el\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

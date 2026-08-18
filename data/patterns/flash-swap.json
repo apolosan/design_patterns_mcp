@@ -1,24 +1,26 @@
-{
-  "id": "flash-swap",
-  "name": "Flash Swap",
-  "category": "DeFi AMM",
-  "description": "Borrow tokens from pool, use them, repay in same transaction",
-  "when_to_use": "Arbitrage, collateral swaps, liquidations without capital",
-  "benefits": "No capital required, atomic, flexible",
-  "drawbacks": "Complex callback logic, gas intensive",
-  "use_cases": "DEX arbitrage, collateral replacement, flash minting",
-  "complexity": "High",
-  "tags": [
-    "defi",
-    "flash-swap",
-    "uniswap",
-    "arbitrage",
-    "atomic"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Flash Swap: Uniswap callback\nfunction uniswapV2Call(\n    address sender,\n    uint256 amount0,\n    uint256 amount1,\n    bytes calldata data\n) external {\n    // Use borrowed tokens\n    // Must repay amount + fee before end\n    require(token.transfer(msg.sender, amountToRepay));\n}"
+[
+  {
+    "id": "flash-swap",
+    "name": "Flash Swap",
+    "category": "DeFi AMM",
+    "description": "Borrow tokens from pool, use them, repay in same transaction",
+    "when_to_use": "Arbitrage, collateral swaps, liquidations without capital",
+    "benefits": "No capital required, atomic, flexible",
+    "drawbacks": "Complex callback logic, gas intensive",
+    "use_cases": "DEX arbitrage, collateral replacement, flash minting",
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "flash-swap",
+      "uniswap",
+      "arbitrage",
+      "atomic"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Flash Swap: Uniswap callback\nfunction uniswapV2Call(\n    address sender,\n    uint256 amount0,\n    uint256 amount1,\n    bytes calldata data\n) external {\n    // Use borrowed tokens\n    // Must repay amount + fee before end\n    require(token.transfer(msg.sender, amountToRepay));\n}"
+      }
     }
   }
-}
+]

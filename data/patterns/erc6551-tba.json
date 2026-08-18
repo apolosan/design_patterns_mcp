@@ -1,24 +1,26 @@
-{
-  "id": "erc6551-tba",
-  "name": "ERC-6551 Token Bound Accounts",
-  "category": "NFT",
-  "description": "NFTs as smart contract wallets that own assets",
-  "when_to_use": "Gaming with inventory, composable NFTs, NFT portfolios",
-  "benefits": "NFTs own assets, full wallet functionality, composability",
-  "drawbacks": "Complexity, security considerations, wallet loss",
-  "use_cases": "Game characters, NFT art with royalties, bundled assets",
-  "complexity": "High",
-  "tags": [
-    "nft",
-    "erc6551",
-    "token-bound-account",
-    "composability",
-    "gaming"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// ERC-6551: NFT as smart wallet\ncontract TokenBoundAccount {\n    function token() public view returns (uint256, address, uint256) {\n        return abi.decode(footer(), (uint256, address, uint256));\n    }\n    \n    function executeCall(address to, uint256 value, bytes calldata data)\n        external payable returns (bytes memory) {\n        require(msg.sender == owner());\n        (bool success, bytes memory result) = to.call{value: value}(data);\n        require(success);\n        return result;\n    }\n}"
+[
+  {
+    "id": "erc6551-tba",
+    "name": "ERC-6551 Token Bound Accounts",
+    "category": "NFT",
+    "description": "NFTs as smart contract wallets that own assets",
+    "when_to_use": "Gaming with inventory, composable NFTs, NFT portfolios",
+    "benefits": "NFTs own assets, full wallet functionality, composability",
+    "drawbacks": "Complexity, security considerations, wallet loss",
+    "use_cases": "Game characters, NFT art with royalties, bundled assets",
+    "complexity": "High",
+    "tags": [
+      "nft",
+      "erc6551",
+      "token-bound-account",
+      "composability",
+      "gaming"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ERC-6551: NFT as smart wallet\ncontract TokenBoundAccount {\n    function token() public view returns (uint256, address, uint256) {\n        return abi.decode(footer(), (uint256, address, uint256));\n    }\n    \n    function executeCall(address to, uint256 value, bytes calldata data)\n        external payable returns (bytes memory) {\n        require(msg.sender == owner());\n        (bool success, bytes memory result) = to.call{value: value}(data);\n        require(success);\n        return result;\n    }\n}"
+      }
     }
   }
-}
+]

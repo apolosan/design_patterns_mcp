@@ -1,26 +1,28 @@
-{
-  "id": "react-testing-library-pattern",
-  "name": "React Testing Library Pattern",
-  "category": "React Testing",
-  "description": "User-centric testing with React Testing Library. Test components as users interact.",
-  "when_to_use": "Component testing, integration testing, user behavior testing",
-  "benefits": "User-focused, encourages accessible code, simple API, maintainable",
-  "drawbacks": "Learning curve, can be verbose for complex scenarios",
-  "use_cases": "Form validation, user interactions, accessibility, component behavior",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "testing",
-    "react-testing-library",
-    "jest",
-    "tdd",
-    "modern",
-    "2024"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { render, screen, fireEvent, waitFor } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { describe, it, expect, vi } from 'vitest';\n\nfunction LoginForm({ onSubmit }: Props) {\n  const [email, setEmail] = useState('');\n  const [password, setPassword] = useState('');\n  const [error, setError] = useState('');\n  \n  const handleSubmit = async (e: FormEvent) => {\n    e.preventDefault();\n    try {\n      await onSubmit({ email, password });\n    } catch (err) {\n      setError('Login failed');\n    }\n  };\n  \n  return (\n    <form onSubmit={handleSubmit}>\n      <label htmlFor=\"email\">Email</label>\n      <input \n        id=\"email\" \n        type=\"email\" \n        value={email} \n        onChange={(e) => setEmail(e.target.value)} \n      />\n      \n      <label htmlFor=\"password\">Password</label>\n      <input \n        id=\"password\" \n        type=\"password\" \n        value={password} \n        onChange={(e) => setPassword(e.target.value)} \n      />\n      \n      <button type=\"submit\">Login</button>\n      {error && <div role=\"alert\">{error}</div>}\n    </form>\n  );\n}\n\ndescribe('LoginForm', () => {\n  it('submits form with user credentials', async () => {\n    const handleSubmit = vi.fn();\n    render(<LoginForm onSubmit={handleSubmit} />);\n    \n    await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com');\n    await userEvent.type(screen.getByLabelText(/password/i), 'password123');\n    \n    fireEvent.click(screen.getByRole('button', { name: /login/i }));\n    \n    await waitFor(() => {\n      expect(handleSubmit).toHaveBeenCalledWith({\n        email: 'test@example.com',\n        password: 'password123'\n      });\n    });\n  });\n  \n  it('shows error on failed login', async () => {\n    const handleSubmit = vi.fn().mockRejectedValue(new Error('Failed'));\n    render(<LoginForm onSubmit={handleSubmit} />);\n    \n    await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com');\n    await userEvent.type(screen.getByLabelText(/password/i), 'wrong');\n    fireEvent.click(screen.getByRole('button', { name: /login/i }));\n    \n    expect(await screen.findByRole('alert')).toHaveTextContent('Login failed');\n  });\n  \n  it('is accessible', () => {\n    render(<LoginForm onSubmit={vi.fn()} />);\n    \n    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();\n    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();\n  });\n});"
+[
+  {
+    "id": "react-testing-library-pattern",
+    "name": "React Testing Library Pattern",
+    "category": "React Testing",
+    "description": "User-centric testing with React Testing Library. Test components as users interact.",
+    "when_to_use": "Component testing, integration testing, user behavior testing",
+    "benefits": "User-focused, encourages accessible code, simple API, maintainable",
+    "drawbacks": "Learning curve, can be verbose for complex scenarios",
+    "use_cases": "Form validation, user interactions, accessibility, component behavior",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "testing",
+      "react-testing-library",
+      "jest",
+      "tdd",
+      "modern",
+      "2024"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { render, screen, fireEvent, waitFor } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { describe, it, expect, vi } from 'vitest';\n\nfunction LoginForm({ onSubmit }: Props) {\n  const [email, setEmail] = useState('');\n  const [password, setPassword] = useState('');\n  const [error, setError] = useState('');\n  \n  const handleSubmit = async (e: FormEvent) => {\n    e.preventDefault();\n    try {\n      await onSubmit({ email, password });\n    } catch (err) {\n      setError('Login failed');\n    }\n  };\n  \n  return (\n    <form onSubmit={handleSubmit}>\n      <label htmlFor=\"email\">Email</label>\n      <input \n        id=\"email\" \n        type=\"email\" \n        value={email} \n        onChange={(e) => setEmail(e.target.value)} \n      />\n      \n      <label htmlFor=\"password\">Password</label>\n      <input \n        id=\"password\" \n        type=\"password\" \n        value={password} \n        onChange={(e) => setPassword(e.target.value)} \n      />\n      \n      <button type=\"submit\">Login</button>\n      {error && <div role=\"alert\">{error}</div>}\n    </form>\n  );\n}\n\ndescribe('LoginForm', () => {\n  it('submits form with user credentials', async () => {\n    const handleSubmit = vi.fn();\n    render(<LoginForm onSubmit={handleSubmit} />);\n    \n    await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com');\n    await userEvent.type(screen.getByLabelText(/password/i), 'password123');\n    \n    fireEvent.click(screen.getByRole('button', { name: /login/i }));\n    \n    await waitFor(() => {\n      expect(handleSubmit).toHaveBeenCalledWith({\n        email: 'test@example.com',\n        password: 'password123'\n      });\n    });\n  });\n  \n  it('shows error on failed login', async () => {\n    const handleSubmit = vi.fn().mockRejectedValue(new Error('Failed'));\n    render(<LoginForm onSubmit={handleSubmit} />);\n    \n    await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com');\n    await userEvent.type(screen.getByLabelText(/password/i), 'wrong');\n    fireEvent.click(screen.getByRole('button', { name: /login/i }));\n    \n    expect(await screen.findByRole('alert')).toHaveTextContent('Login failed');\n  });\n  \n  it('is accessible', () => {\n    render(<LoginForm onSubmit={vi.fn()} />);\n    \n    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();\n    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();\n  });\n});"
+      }
     }
   }
-}
+]

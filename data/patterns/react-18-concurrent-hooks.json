@@ -1,28 +1,30 @@
-{
-  "id": "react-18-concurrent-hooks",
-  "name": "React 18 Concurrent Hooks (useId, useTransition, useDeferredValue)",
-  "category": "React Hooks",
-  "description": "React 18 hooks for concurrent rendering, non-blocking updates, and unique IDs.",
-  "when_to_use": "SSR hydration, unique IDs, non-urgent updates, large lists, heavy computations",
-  "benefits": "Better UX, non-blocking UI, SSR-safe IDs, smoother interactions",
-  "drawbacks": "React 18+ only, complexity for simple cases",
-  "use_cases": "Form IDs, accessibility, search filtering, tab switching, expensive renders",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "hooks",
-    "react-18",
-    "concurrent",
-    "useId",
-    "useTransition",
-    "useDeferredValue",
-    "modern",
-    "2024"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { useId, useTransition, useDeferredValue, useState } from 'react';\n\n// 1. useId - SSR-safe unique IDs\nfunction FormField({ label }: { label: string }) {\n  const id = useId();\n  \n  return (\n    <div>\n      <label htmlFor={id}>{label}</label>\n      <input id={id} />\n    </div>\n  );\n}\n\n// Multiple IDs from same hook\nfunction MultiField() {\n  const id = useId();\n  \n  return (\n    <>\n      <label htmlFor={`${id}-name`}>Name</label>\n      <input id={`${id}-name`} />\n      \n      <label htmlFor={`${id}-email`}>Email</label>\n      <input id={`${id}-email`} />\n    </>\n  );\n}\n\n// 2. useTransition - Non-blocking updates\nfunction TabContainer() {\n  const [tab, setTab] = useState('home');\n  const [isPending, startTransition] = useTransition();\n  \n  function selectTab(nextTab: string) {\n    startTransition(() => {\n      setTab(nextTab);\n    });\n  }\n  \n  return (\n    <div>\n      <button onClick={() => selectTab('home')}>Home</button>\n      <button onClick={() => selectTab('posts')}>Posts (slow)</button>\n      <button onClick={() => selectTab('profile')}>Profile</button>\n      \n      {isPending && <div>Loading...</div>}\n      <div style={{ opacity: isPending ? 0.5 : 1 }}>\n        {tab === 'home' && <Home />}\n        {tab === 'posts' && <SlowPostList />}\n        {tab === 'profile' && <Profile />}\n      </div>\n    </div>\n  );\n}\n\n// 3. useDeferredValue - Defer expensive renders\nfunction SearchResults() {\n  const [query, setQuery] = useState('');\n  const deferredQuery = useDeferredValue(query);\n  \n  const results = useMemo(() => {\n    return searchData(deferredQuery);\n  }, [deferredQuery]);\n  \n  const isStale = query !== deferredQuery;\n  \n  return (\n    <div>\n      <input value={query} onChange={(e) => setQuery(e.target.value)} />\n      \n      <div style={{ opacity: isStale ? 0.5 : 1 }}>\n        {results.map(r => <div key={r.id}>{r.name}</div>)}\n      </div>\n    </div>\n  );\n}\n\n// Combined example\nfunction Dashboard() {\n  const [filter, setFilter] = useState('');\n  const deferredFilter = useDeferredValue(filter);\n  const [isPending, startTransition] = useTransition();\n  \n  function handleFilterChange(value: string) {\n    setFilter(value);\n    startTransition(() => {\n    });\n  }\n  \n  return (\n    <div>\n      <input \n        value={filter} \n        onChange={(e) => handleFilterChange(e.target.value)} \n      />\n      {isPending && <Spinner />}\n      <ExpensiveList filter={deferredFilter} />\n    </div>\n  );\n}"
+[
+  {
+    "id": "react-18-concurrent-hooks",
+    "name": "React 18 Concurrent Hooks (useId, useTransition, useDeferredValue)",
+    "category": "React Hooks",
+    "description": "React 18 hooks for concurrent rendering, non-blocking updates, and unique IDs.",
+    "when_to_use": "SSR hydration, unique IDs, non-urgent updates, large lists, heavy computations",
+    "benefits": "Better UX, non-blocking UI, SSR-safe IDs, smoother interactions",
+    "drawbacks": "React 18+ only, complexity for simple cases",
+    "use_cases": "Form IDs, accessibility, search filtering, tab switching, expensive renders",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "hooks",
+      "react-18",
+      "concurrent",
+      "useId",
+      "useTransition",
+      "useDeferredValue",
+      "modern",
+      "2024"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { useId, useTransition, useDeferredValue, useState } from 'react';\n\n// 1. useId - SSR-safe unique IDs\nfunction FormField({ label }: { label: string }) {\n  const id = useId();\n  \n  return (\n    <div>\n      <label htmlFor={id}>{label}</label>\n      <input id={id} />\n    </div>\n  );\n}\n\n// Multiple IDs from same hook\nfunction MultiField() {\n  const id = useId();\n  \n  return (\n    <>\n      <label htmlFor={`${id}-name`}>Name</label>\n      <input id={`${id}-name`} />\n      \n      <label htmlFor={`${id}-email`}>Email</label>\n      <input id={`${id}-email`} />\n    </>\n  );\n}\n\n// 2. useTransition - Non-blocking updates\nfunction TabContainer() {\n  const [tab, setTab] = useState('home');\n  const [isPending, startTransition] = useTransition();\n  \n  function selectTab(nextTab: string) {\n    startTransition(() => {\n      setTab(nextTab);\n    });\n  }\n  \n  return (\n    <div>\n      <button onClick={() => selectTab('home')}>Home</button>\n      <button onClick={() => selectTab('posts')}>Posts (slow)</button>\n      <button onClick={() => selectTab('profile')}>Profile</button>\n      \n      {isPending && <div>Loading...</div>}\n      <div style={{ opacity: isPending ? 0.5 : 1 }}>\n        {tab === 'home' && <Home />}\n        {tab === 'posts' && <SlowPostList />}\n        {tab === 'profile' && <Profile />}\n      </div>\n    </div>\n  );\n}\n\n// 3. useDeferredValue - Defer expensive renders\nfunction SearchResults() {\n  const [query, setQuery] = useState('');\n  const deferredQuery = useDeferredValue(query);\n  \n  const results = useMemo(() => {\n    return searchData(deferredQuery);\n  }, [deferredQuery]);\n  \n  const isStale = query !== deferredQuery;\n  \n  return (\n    <div>\n      <input value={query} onChange={(e) => setQuery(e.target.value)} />\n      \n      <div style={{ opacity: isStale ? 0.5 : 1 }}>\n        {results.map(r => <div key={r.id}>{r.name}</div>)}\n      </div>\n    </div>\n  );\n}\n\n// Combined example\nfunction Dashboard() {\n  const [filter, setFilter] = useState('');\n  const deferredFilter = useDeferredValue(filter);\n  const [isPending, startTransition] = useTransition();\n  \n  function handleFilterChange(value: string) {\n    setFilter(value);\n    startTransition(() => {\n    });\n  }\n  \n  return (\n    <div>\n      <input \n        value={filter} \n        onChange={(e) => handleFilterChange(e.target.value)} \n      />\n      {isPending && <Spinner />}\n      <ExpensiveList filter={deferredFilter} />\n    </div>\n  );\n}"
+      }
     }
   }
-}
+]

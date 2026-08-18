@@ -1,17 +1,19 @@
-{
-  "id": "dynamic-late-data-integrator",
-  "name": "Dynamic Late Data Integrator",
-  "category": "Error Management",
-  "description": "The Dynamic Late Data Integrator adjusts the tolerance based on data patterns or external conditions. It provides a more dynamic approach that loads the partitions impacted by the late data instead of relying on fixed time periods.",
-  "when_to_use": "[\"Variable late data patterns\",\"Need adaptive tolerance\"]",
-  "benefits": "[\"Adapts to data patterns\",\"More accurate inclusion\"]",
-  "drawbacks": "[\"Increased complexity\",\"Requires monitoring\"]",
-  "use_cases": "[\"Variable latency scenarios\",\"Adaptive systems\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"error-management\"",
-    "\"late-data\"",
-    "\"dynamic\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "dynamic-late-data-integrator",
+    "name": "Dynamic Late Data Integrator",
+    "category": "Error Management",
+    "description": "The Dynamic Late Data Integrator adjusts the tolerance based on data patterns or external conditions. It provides a more dynamic approach that loads the partitions impacted by the late data instead of relying on fixed time periods.",
+    "when_to_use": "[\"Variable late data patterns\",\"Need adaptive tolerance\"]",
+    "benefits": "[\"Adapts to data patterns\",\"More accurate inclusion\"]",
+    "drawbacks": "[\"Increased complexity\",\"Requires monitoring\"]",
+    "use_cases": "[\"Variable latency scenarios\",\"Adaptive systems\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"error-management\"",
+      "\"late-data\"",
+      "\"dynamic\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

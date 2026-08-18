@@ -1,17 +1,19 @@
-{
-  "id": "dataset-tracker",
-  "name": "Dataset Tracker",
-  "category": "Data Observability",
-  "description": "The Dataset Tracker provides lineage tracking for datasets.",
-  "when_to_use": "[\"Data lineage\",\"Dataset tracking\"]",
-  "benefits": "[\"Lineage visibility\",\"Impact analysis\"]",
-  "drawbacks": "[\"Tracking overhead\",\"Complexity\"]",
-  "use_cases": "[\"Data lineage\",\"Impact analysis\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"data-observability\"",
-    "\"tracker\"",
-    "\"dataset\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "dataset-tracker",
+    "name": "Dataset Tracker",
+    "category": "Data Observability",
+    "description": "The Dataset Tracker provides lineage tracking for datasets.",
+    "when_to_use": "[\"Data lineage\",\"Dataset tracking\"]",
+    "benefits": "[\"Lineage visibility\",\"Impact analysis\"]",
+    "drawbacks": "[\"Tracking overhead\",\"Complexity\"]",
+    "use_cases": "[\"Data lineage\",\"Impact analysis\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"data-observability\"",
+      "\"tracker\"",
+      "\"dataset\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

@@ -1,1251 +1,1249 @@
-{
-  "patterns": [
-    {
-      "name": "Full Loader",
-      "id": "full-loader",
-      "category": "Data Ingestion",
-      "description": "The Full Loader implementation is one of the most straightforward patterns. It uses native data stores commands to export data from one database and import it to another using a two-step construction (extract and load). This EL approach is ideal for homogeneous data stores because it doesn't require any data transformation.",
-      "when_to_use": [
-        "Setting up the Silver layer with slowly evolving datasets",
-        "Database bootstrap",
-        "Reference dataset generation"
-      ],
-      "benefits": [
-        "Simple implementation",
-        "Straightforward two-step process",
-        "No transformation overhead"
-      ],
-      "drawbacks": [
-        "Data volume issues for growing datasets",
-        "Data consistency risks during ingestion",
-        "Not suitable for heterogeneous databases without transformation"
-      ],
-      "use_cases": [
-        "Loading reference data",
-        "Initial data migration",
-        "Static dataset synchronization"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "full-load",
-        "data-ingestion",
-        "el",
-        "etl",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Incremental Loader",
-      "id": "incremental-loader",
-      "category": "Data Ingestion",
-      "description": "The Incremental Loader pattern processes new parts of the dataset since the last run. There are two implementations: one uses a delta column to identify rows added since the last run, and another relies on time-partitioned datasets where the ingestion job uses time-based partitions to detect new records.",
-      "when_to_use": [
-        "Continuously growing datasets",
-        "Need to process only new data since last run",
-        "Large datasets where full reload is inefficient"
-      ],
-      "benefits": [
-        "Reduces ingested data volume",
-        "More efficient for large datasets",
-        "Lower resource consumption"
-      ],
-      "drawbacks": [
-        "Hard deletes handling",
-        "Backfilling issues",
-        "Complexity in tracking delta"
-      ],
-      "use_cases": [
-        "Streaming data ingestion",
-        "Batch processing of incremental data",
-        "Event log processing"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "incremental-load",
-        "data-ingestion",
-        "delta-column",
-        "partitioned",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Change Data Capture",
-      "id": "change-data-capture",
-      "category": "Data Ingestion",
-      "description": "The Change Data Capture (CDC) pattern continuously ingests all modified rows directly from the internal database commit log. It allows lower-level and faster access to the records compared to any high-level query or processing task. The CDC consumer streams those changes and sends them to the streaming broker or any other configured output.",
-      "when_to_use": [
-        "Need lower ingestion latency",
-        "Built-in support for physical deletes",
-        "Real-time data changes",
-        "Database replication requirements"
-      ],
-      "benefits": [
-        "Lower latency",
-        "Captures all data changes including deletes",
-        "Real-time ingestion",
-        "Minimal impact on source database"
-      ],
-      "drawbacks": [
-        "Complexity in setup",
-        "Data scope limitations",
-        "Payload includes extra metadata",
-        "Database-specific implementations"
-      ],
-      "use_cases": [
-        "Real-time data synchronization",
-        "Database change streaming",
-        "Event sourcing",
-        "Audit logging"
-      ],
-      "complexity": "High",
-      "tags": [
-        "cdc",
-        "data-ingestion",
-        "commit-log",
-        "real-time",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Passthrough Replicator",
-      "id": "passthrough-replicator",
-      "category": "Data Ingestion",
-      "description": "The compute implementation relies on the EL job, which is a process with only two phases, read and write. Ideally, the EL job will copy files or rows from the input as is (i.e., without any data transformation). The infrastructure part is based on a replication policy document where you configure the input and output location and let your data storage provider replicate the records on your behalf.",
-      "when_to_use": [
-        "Need exact copy of data across environments",
-        "Non-idempotent data providers",
-        "Cross-environment data consistency"
-      ],
-      "benefits": [
-        "Simple replication",
-        "Preserves data integrity",
-        "Infrastructure-based options available"
-      ],
-      "drawbacks": [
-        "Security and isolation risks",
-        "Latency in infrastructure implementations",
-        "Metadata preservation issues"
-      ],
-      "use_cases": [
-        "Environment synchronization",
-        "Backup and recovery"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "replication",
-        "data-ingestion",
-        "passthrough",
-        "el",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Transformation Replicator",
-      "id": "transformation-replicator",
-      "category": "Data Ingestion",
-      "description": "The Transformation Replicator pattern, in addition to the classical read and write parts from the Passthrough Replicator pattern, has a transformation layer in between. This is necessary when replicating data with sensitive information that needs to be anonymized or removed during replication.",
-      "when_to_use": [
-        "Replicating data with sensitive information",
-        "Need to anonymize or remove PII during replication"
-      ],
-      "benefits": [
-        "Handles PII data safely",
-        "Customizable transformation logic"
-      ],
-      "drawbacks": [
-        "Transformation risk for text formats",
-        "Desynchronization risks"
-      ],
-      "use_cases": [
-        "Testing with production-like data",
-        "Data anonymization"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "replication",
-        "data-ingestion",
-        "transformation",
-        "pii",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Compactor",
-      "id": "compactor",
-      "category": "Data Ingestion",
-      "description": "The Compactor pattern helps reduce the storage footprint of growing datasets by combining multiple smaller files into bigger ones, thus reducing the overall I/O overhead on reading. Storing many small files involves longer listing operations and heavier I/O for opening and closing files.",
-      "when_to_use": [
-        "Growing datasets with many small files",
-        "Metadata overhead impacting performance"
-      ],
-      "benefits": [
-        "Reduces I/O overhead",
-        "Improves read performance",
-        "Optimizes storage"
-      ],
-      "drawbacks": [
-        "Cost vs performance trade-offs",
-        "Consistency issues",
-        "Requires cleaning operations"
-      ],
-      "use_cases": [
-        "Data lake optimization",
-        "Batch job performance improvement"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "compaction",
-        "data-ingestion",
-        "file-optimization",
-        "storage",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Readiness Marker",
-      "id": "readiness-marker",
-      "category": "Data Ingestion",
-      "description": "The Readiness Marker is a pattern that helps trigger the ingestion process at the most appropriate moment. Its goal is to guarantee the ingestion of the complete dataset. The first implementation uses an event to signal the dataset's completeness, often implemented with a flag file created after successful data generation.",
-      "when_to_use": [
-        "Need to signal when dataset is complete",
-        "Preventing consumption of incomplete data"
-      ],
-      "benefits": [
-        "Guarantees complete dataset ingestion",
-        "Simple implementation"
-      ],
-      "drawbacks": [
-        "Lack of enforcement",
-        "Reliability issues with late data"
-      ],
-      "use_cases": [
-        "Batch job coordination",
-        "Data pipeline synchronization"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "readiness",
-        "data-ingestion",
-        "marker",
-        "synchronization",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "External Trigger",
-      "id": "external-trigger",
-      "category": "Data Ingestion",
-      "description": "The External Trigger pattern addresses event-driven data availability by allowing external events to trigger the ingestion process. This can be implemented through webhooks, message queues, or other event-driven mechanisms, favoring push semantics over pull semantics.",
-      "when_to_use": [
-        "Event-driven data availability",
-        "Need push-based notifications"
-      ],
-      "benefits": [
-        "Reduces polling overhead",
-        "Real-time responsiveness"
-      ],
-      "drawbacks": [
-        "Increased complexity",
-        "Dependency on external systems"
-      ],
-      "use_cases": [
-        "Real-time data pipelines",
-        "Event-driven architectures"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "trigger",
-        "data-ingestion",
-        "event-driven",
-        "push-semantics",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Dead-Letter",
-      "id": "dead-letter",
-      "category": "Error Management",
-      "description": "The Dead-Letter pattern provides a way to handle unprocessable records by routing them to a separate location for later analysis. It allows the pipeline to continue processing correct records while preserving bad records for investigation.",
-      "when_to_use": [
-        "Unprocessable records in data streams",
-        "Need to continue processing despite errors"
-      ],
-      "benefits": [
-        "Allows pipeline to continue",
-        "Preserves bad records for analysis"
-      ],
-      "drawbacks": [
-        "Potential data loss if not handled",
-        "Additional storage for dead letters"
-      ],
-      "use_cases": [
-        "Fault-tolerant data pipelines",
-        "Error isolation"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "error-management",
-        "dead-letter",
-        "fault-tolerance",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Windowed Deduplicator",
-      "id": "windowed-deduplicator",
-      "category": "Error Management",
-      "description": "The Windowed Deduplicator pattern handles duplicated records by using time windows or dataset scopes to identify and remove duplicates. For streaming jobs, the limits will be time-based windows, while batch jobs will reduce the scope to the currently processed dataset.",
-      "when_to_use": [
-        "At-least-once delivery semantics",
-        "Need to process each record only once"
-      ],
-      "benefits": [
-        "Ensures exactly-once processing",
-        "Handles duplicates in streams"
-      ],
-      "drawbacks": [
-        "State management complexity",
-        "Window configuration challenges"
-      ],
-      "use_cases": [
-        "Streaming deduplication",
-        "Batch data cleaning"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "error-management",
-        "deduplication",
-        "windowing",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Late Data Detector",
-      "id": "late-data-detector",
-      "category": "Error Management",
-      "description": "The Late Data Detector pattern identifies records that arrive after their expected processing time. It helps in completing already processed partitions or controlling the state in stateful jobs.",
-      "when_to_use": [
-        "Event-time processing",
-        "Need to detect out-of-order data"
-      ],
-      "benefits": [
-        "Identifies late arrivals",
-        "Helps maintain data accuracy"
-      ],
-      "drawbacks": [
-        "Watermark management",
-        "Late data handling decisions"
-      ],
-      "use_cases": [
-        "Stream processing",
-        "Real-time analytics"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "error-management",
-        "late-data",
-        "detection",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Static Late Data Integrator",
-      "id": "static-late-data-integrator",
-      "category": "Error Management",
-      "description": "The Static Late Data Integrator provides a fixed tolerance period for including late data. It allows valuable late data to be included in processing with a simple, static configuration.",
-      "when_to_use": [
-        "Late data is valuable",
-        "Fixed tolerance acceptable"
-      ],
-      "benefits": [
-        "Includes valuable late data",
-        "Simple configuration"
-      ],
-      "drawbacks": [
-        "Fixed tolerance may not fit all cases",
-        "Potential delays"
-      ],
-      "use_cases": [
-        "E-commerce order processing",
-        "Financial transactions"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "error-management",
-        "late-data",
-        "integration",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Dynamic Late Data Integrator",
-      "id": "dynamic-late-data-integrator",
-      "category": "Error Management",
-      "description": "The Dynamic Late Data Integrator adjusts the tolerance based on data patterns or external conditions. It provides a more dynamic approach that loads the partitions impacted by the late data instead of relying on fixed time periods.",
-      "when_to_use": [
-        "Variable late data patterns",
-        "Need adaptive tolerance"
-      ],
-      "benefits": [
-        "Adapts to data patterns",
-        "More accurate inclusion"
-      ],
-      "drawbacks": [
-        "Increased complexity",
-        "Requires monitoring"
-      ],
-      "use_cases": [
-        "Variable latency scenarios",
-        "Adaptive systems"
-      ],
-      "complexity": "High",
-      "tags": [
-        "error-management",
-        "late-data",
-        "dynamic",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Filter Interceptor",
-      "id": "filter-interceptor",
-      "category": "Error Management",
-      "description": "The Filter Interceptor pattern provides more insight into filtering operations, allowing you to detect errors due to aggressive and possibly buggy filtering conditions.",
-      "when_to_use": [
-        "Need visibility into filtering effects",
-        "Debugging filter conditions"
-      ],
-      "benefits": [
-        "Provides filtering insights",
-        "Helps detect errors"
-      ],
-      "drawbacks": [
-        "Additional processing overhead",
-        "Storage for filtered data"
-      ],
-      "use_cases": [
-        "Data quality monitoring",
-        "Pipeline debugging"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "error-management",
-        "filtering",
-        "interceptor",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Checkpointer",
-      "id": "checkpointer",
-      "category": "Error Management",
-      "description": "The Checkpointer pattern ensures recoverability for continuous data processing workflows by tracking progress. It is particularly critical in stream processing where applications work on continuously arriving events stored in append-only logs.",
-      "when_to_use": [
-        "Stream processing recovery",
-        "Need to resume from failure"
-      ],
-      "benefits": [
-        "Enables fault recovery",
-        "Tracks processing progress"
-      ],
-      "drawbacks": [
-        "State management",
-        "Potential data reprocessing"
-      ],
-      "use_cases": [
-        "Streaming applications",
-        "Long-running jobs"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "error-management",
-        "checkpointing",
-        "recovery",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Fast Metadata Cleaner",
-      "id": "fast-metadata-cleaner",
-      "category": "Idempotency",
-      "description": "The Fast Metadata Cleaner pattern leverages metadata to enable fast data cleaning for idempotent operations. Metadata operations are often the fastest since they operate on the logical level instead of the physical one.",
-      "when_to_use": [
-        "Need fast data removal",
-        "Metadata-level operations possible"
-      ],
-      "benefits": [
-        "Fast execution",
-        "No data file interaction"
-      ],
-      "drawbacks": [
-        "Limited to metadata operations",
-        "May not handle all cases"
-      ],
-      "use_cases": [
-        "Table truncation",
-        "Dataset reset"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "idempotency",
-        "metadata",
-        "cleaning",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Data Overwrite",
-      "id": "data-overwrite",
-      "category": "Idempotency",
-      "description": "The Data Overwrite pattern handles idempotency by overwriting existing data. Used when metadata operations are not available, such as when working with object stores.",
-      "when_to_use": [
-        "Metadata operations not available",
-        "Need data-level overwrite"
-      ],
-      "benefits": [
-        "Works with object stores",
-        "Ensures clean state"
-      ],
-      "drawbacks": [
-        "More resource intensive",
-        "Potential data loss"
-      ],
-      "use_cases": [
-        "Object store operations",
-        "Full dataset replacement"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "idempotency",
-        "overwrite",
-        "data-operation",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Merger",
-      "id": "merger",
-      "category": "Idempotency",
-      "description": "The Merger pattern combines new data with existing data to handle updates and inserts idempotently when dataset identity is static.",
-      "when_to_use": [
-        "Static dataset identity",
-        "Updates and inserts only"
-      ],
-      "benefits": [
-        "Handles updates efficiently",
-        "Preserves existing data"
-      ],
-      "drawbacks": [
-        "Complexity with identity changes",
-        "Backfilling issues"
-      ],
-      "use_cases": [
-        "Incremental updates",
-        "Change data integration"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "idempotency",
-        "merger",
-        "updates",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Stateful Merger",
-      "id": "stateful-merger",
-      "category": "Idempotency",
-      "description": "The Stateful Merger maintains state to ensure consistent merging operations, providing better consistency during backfills compared to the basic Merger pattern.",
-      "when_to_use": [
-        "Need consistency during backfills",
-        "Stateful operations required"
-      ],
-      "benefits": [
-        "Ensures consistency",
-        "Handles backfills better"
-      ],
-      "drawbacks": [
-        "Increased complexity",
-        "State management overhead"
-      ],
-      "use_cases": [
-        "Consistent data merging",
-        "Backfill operations"
-      ],
-      "complexity": "High",
-      "tags": [
-        "idempotency",
-        "stateful",
-        "merger",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Keyed Idempotency",
-      "id": "keyed-idempotency",
-      "category": "Idempotency",
-      "description": "The Keyed Idempotency pattern ensures operations are idempotent using unique keys with key-based data stores.",
-      "when_to_use": [
-        "Key-based data stores",
-        "Need exactly-once semantics"
-      ],
-      "benefits": [
-        "Guarantees exactly-once",
-        "Simple key-based approach"
-      ],
-      "drawbacks": [
-        "Requires unique key generation",
-        "Key collision risks"
-      ],
-      "use_cases": [
-        "Transactional writes",
-        "Deduplication"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "idempotency",
-        "keyed",
-        "exactly-once",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Transactional Writer",
-      "id": "transactional-writer",
-      "category": "Idempotency",
-      "description": "The Transactional Writer uses database transactions for idempotent writes, providing all-or-nothing semantics.",
-      "when_to_use": [
-        "Transactional databases",
-        "Need atomic operations"
-      ],
-      "benefits": [
-        "All-or-nothing semantics",
-        "Atomic writes"
-      ],
-      "drawbacks": [
-        "Database dependency",
-        "Performance overhead"
-      ],
-      "use_cases": [
-        "Transactional data writing",
-        "Atomic updates"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "idempotency",
-        "transactional",
-        "atomic",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Proxy",
-      "id": "proxy-idempotency",
-      "category": "Idempotency",
-      "description": "The Proxy pattern provides an indirection layer for immutable datasets to achieve idempotency.",
-      "when_to_use": [
-        "Immutable datasets",
-        "Cannot modify existing data"
-      ],
-      "benefits": [
-        "Works with immutable data",
-        "Extra indirection level"
-      ],
-      "drawbacks": [
-        "Added complexity",
-        "Indirection overhead"
-      ],
-      "use_cases": [
-        "Immutable data handling",
-        "Versioned datasets"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "idempotency",
-        "proxy",
-        "indirection",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Static Joiner",
-      "id": "static-joiner",
-      "category": "Data Value",
-      "description": "The Static Joiner performs joins with static reference data.",
-      "when_to_use": [
-        "Static enrichment data",
-        "Reference data joins"
-      ],
-      "benefits": [
-        "Simple implementation",
-        "Efficient for static data"
-      ],
-      "drawbacks": [
-        "Not suitable for dynamic data",
-        "Data freshness issues"
-      ],
-      "use_cases": [
-        "Reference data enrichment",
-        "Static lookups"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "data-value",
-        "joiner",
-        "static",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Dynamic Joiner",
-      "id": "dynamic-joiner",
-      "category": "Data Value",
-      "description": "The Dynamic Joiner handles joins with streaming or frequently changing data.",
-      "when_to_use": [
-        "Streaming data enrichment",
-        "Dynamic reference data"
-      ],
-      "benefits": [
-        "Handles streaming data",
-        "Real-time enrichment"
-      ],
-      "drawbacks": [
-        "Increased complexity",
-        "Latency considerations"
-      ],
-      "use_cases": [
-        "Real-time data enrichment",
-        "Streaming joins"
-      ],
-      "complexity": "High",
-      "tags": [
-        "data-value",
-        "joiner",
-        "dynamic",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Distributed Aggregator",
-      "id": "distributed-aggregator",
-      "category": "Data Value",
-      "description": "The Distributed Aggregator performs aggregations across distributed data using distributed data processing frameworks.",
-      "when_to_use": [
-        "Large-scale aggregations",
-        "Distributed data processing"
-      ],
-      "benefits": [
-        "Scalable aggregations",
-        "Handles large datasets"
-      ],
-      "drawbacks": [
-        "Shuffle overhead",
-        "Network costs"
-      ],
-      "use_cases": [
-        "Big data aggregations",
-        "Distributed computing"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-value",
-        "aggregator",
-        "distributed",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Local Aggregator",
-      "id": "local-aggregator",
-      "category": "Data Value",
-      "description": "The Local Aggregator performs aggregations locally without network overhead when data is correctly partitioned.",
-      "when_to_use": [
-        "Partitioned data",
-        "Small datasets"
-      ],
-      "benefits": [
-        "No network overhead",
-        "Faster execution"
-      ],
-      "drawbacks": [
-        "Limited to local data",
-        "Scalability constraints"
-      ],
-      "use_cases": [
-        "Partitioned aggregations",
-        "Local processing"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "data-value",
-        "aggregator",
-        "local",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Stateful Sessionizer",
-      "id": "stateful-sessionizer",
-      "category": "Data Value",
-      "description": "The Stateful Sessionizer handles real-time sessionization in stream processing.",
-      "when_to_use": [
-        "Real-time sessions",
-        "Streaming data"
-      ],
-      "benefits": [
-        "Real-time processing",
-        "Fresh data"
-      ],
-      "drawbacks": [
-        "State management",
-        "Complexity"
-      ],
-      "use_cases": [
-        "Real-time analytics",
-        "Live sessions"
-      ],
-      "complexity": "High",
-      "tags": [
-        "data-value",
-        "sessionizer",
-        "stateful",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Local Sequencer",
-      "id": "local-sequencer",
-      "category": "Data Flow",
-      "description": "The Local Sequencer manages task sequences within a single job.",
-      "when_to_use": [
-        "Single job orchestration",
-        "Local task dependencies"
-      ],
-      "benefits": [
-        "Simple orchestration",
-        "Local control"
-      ],
-      "drawbacks": [
-        "Limited to single job",
-        "No distributed coordination"
-      ],
-      "use_cases": [
-        "ETL pipelines",
-        "Single-job workflows"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "data-flow",
-        "sequencer",
-        "local",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Parallel Split",
-      "id": "parallel-split",
-      "category": "Data Flow",
-      "description": "The Parallel Split sends one input to multiple parallel outputs.",
-      "when_to_use": [
-        "One-to-many distribution",
-        "Parallel processing"
-      ],
-      "benefits": [
-        "Enables parallelism",
-        "Scales processing"
-      ],
-      "drawbacks": [
-        "Coordination overhead",
-        "Resource management"
-      ],
-      "use_cases": [
-        "Data distribution",
-        "Parallel analytics"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-flow",
-        "split",
-        "parallel",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Concurrent Runner",
-      "id": "concurrent-runner",
-      "category": "Data Flow",
-      "description": "The Concurrent Runner allows multiple simultaneous executions.",
-      "when_to_use": [
-        "Parallel execution",
-        "Improve throughput"
-      ],
-      "benefits": [
-        "Better performance",
-        "Handles concurrency"
-      ],
-      "drawbacks": [
-        "Resource contention",
-        "Complexity"
-      ],
-      "use_cases": [
-        "High-throughput pipelines",
-        "Concurrent processing"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-flow",
-        "runner",
-        "concurrent",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Vertical Partitioner (Data Removal)",
-      "id": "vertical-partitioner-removal",
-      "category": "Data Security",
-      "description": "The Vertical Partitioner organizes data to facilitate secure removal for compliance requirements.",
-      "when_to_use": [
-        "Data removal requirements",
-        "PII handling"
-      ],
-      "benefits": [
-        "Facilitates removal",
-        "Organized data"
-      ],
-      "drawbacks": [
-        "Query complexity",
-        "Polyglot challenges"
-      ],
-      "use_cases": [
-        "GDPR compliance",
-        "Data deletion"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-security",
-        "partitioner",
-        "removal",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Encryptor",
-      "id": "encryptor",
-      "category": "Data Security",
-      "description": "The Encryptor pattern encrypts data to protect it from unauthorized access.",
-      "when_to_use": [
-        "Data encryption needs",
-        "Protect sensitive data"
-      ],
-      "benefits": [
-        "Data protection",
-        "Compliance"
-      ],
-      "drawbacks": [
-        "Performance overhead",
-        "Key management"
-      ],
-      "use_cases": [
-        "Data encryption",
-        "Secure storage"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-security",
-        "encryptor",
-        "encryption",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Anonymizer",
-      "id": "anonymizer",
-      "category": "Data Security",
-      "description": "The Anonymizer pattern removes or modifies identifying information to protect privacy.",
-      "when_to_use": [
-        "PII removal",
-        "Data anonymization"
-      ],
-      "benefits": [
-        "Privacy protection",
-        "Compliance"
-      ],
-      "drawbacks": [
-        "Data utility loss",
-        "Reversibility issues"
-      ],
-      "use_cases": [
-        "Data anonymization",
-        "Privacy protection"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-security",
-        "anonymizer",
-        "privacy",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Horizontal Partitioner",
-      "id": "horizontal-partitioner",
-      "category": "Data Storage",
-      "description": "The Horizontal Partitioner divides data horizontally for better organization and performance.",
-      "when_to_use": [
-        "Large dataset organization",
-        "Performance optimization"
-      ],
-      "benefits": [
-        "Improved performance",
-        "Scalability"
-      ],
-      "drawbacks": [
-        "Partition management",
-        "Query complexity"
-      ],
-      "use_cases": [
-        "Data partitioning",
-        "Storage optimization"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-storage",
-        "partitioner",
-        "horizontal",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Dataset Materializer",
-      "id": "dataset-materializer",
-      "category": "Data Storage",
-      "description": "The Dataset Materializer pre-computes and stores results for faster access.",
-      "when_to_use": [
-        "Frequent queries",
-        "Performance optimization"
-      ],
-      "benefits": [
-        "Faster access",
-        "Pre-computed results"
-      ],
-      "drawbacks": [
-        "Storage overhead",
-        "Update complexity"
-      ],
-      "use_cases": [
-        "Materialized views",
-        "Caching"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-storage",
-        "materializer",
-        "performance",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Denormalizer",
-      "id": "denormalizer",
-      "category": "Data Storage",
-      "description": "The Denormalizer pattern optimizes read performance by denormalizing data.",
-      "when_to_use": [
-        "Read performance",
-        "Query optimization"
-      ],
-      "benefits": [
-        "Faster reads",
-        "Simplified queries"
-      ],
-      "drawbacks": [
-        "Update complexity",
-        "Redundancy"
-      ],
-      "use_cases": [
-        "Read optimization",
-        "Data warehousing"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-storage",
-        "denormalizer",
-        "performance",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Audit-Write-Audit-Publish",
-      "id": "audit-write-audit-publish",
-      "category": "Data Quality",
-      "description": "The Audit-Write-Audit-Publish pattern ensures data quality through auditing at multiple stages.",
-      "when_to_use": [
-        "Data quality enforcement",
-        "Audit requirements"
-      ],
-      "benefits": [
-        "Quality assurance",
-        "Auditable process"
-      ],
-      "drawbacks": [
-        "Performance overhead",
-        "Complexity"
-      ],
-      "use_cases": [
-        "Quality pipelines",
-        "Audited data processing"
-      ],
-      "complexity": "High",
-      "tags": [
-        "data-quality",
-        "audit",
-        "enforcement",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Constraints Enforcer",
-      "id": "constraints-enforcer",
-      "category": "Data Quality",
-      "description": "The Constraints Enforcer applies data constraints to ensure quality.",
-      "when_to_use": [
-        "Data validation",
-        "Constraint enforcement"
-      ],
-      "benefits": [
-        "Data validation",
-        "Quality enforcement"
-      ],
-      "drawbacks": [
-        "Constraint management",
-        "Error handling"
-      ],
-      "use_cases": [
-        "Data validation",
-        "Quality checks"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-quality",
-        "constraints",
-        "enforcer",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Online Observer",
-      "id": "online-observer",
-      "category": "Data Quality",
-      "description": "The Online Observer provides real-time data quality monitoring.",
-      "when_to_use": [
-        "Real-time quality monitoring",
-        "Streaming data"
-      ],
-      "benefits": [
-        "Real-time monitoring",
-        "Immediate feedback"
-      ],
-      "drawbacks": [
-        "Performance impact",
-        "Complexity"
-      ],
-      "use_cases": [
-        "Streaming quality",
-        "Real-time alerts"
-      ],
-      "complexity": "High",
-      "tags": [
-        "data-quality",
-        "observer",
-        "online",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Flow Interruption Detector",
-      "id": "flow-interruption-detector",
-      "category": "Data Observability",
-      "description": "The Flow Interruption Detector identifies interruptions in data flows.",
-      "when_to_use": [
-        "Flow monitoring",
-        "Interruption detection"
-      ],
-      "benefits": [
-        "Early detection",
-        "Flow monitoring"
-      ],
-      "drawbacks": [
-        "False positives",
-        "Configuration"
-      ],
-      "use_cases": [
-        "Pipeline monitoring",
-        "Flow health"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-observability",
-        "detector",
-        "flow",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Lag Detector",
-      "id": "lag-detector",
-      "category": "Data Observability",
-      "description": "The Lag Detector monitors processing lag in data pipelines.",
-      "when_to_use": [
-        "Lag monitoring",
-        "Performance tracking"
-      ],
-      "benefits": [
-        "Lag identification",
-        "Performance insights"
-      ],
-      "drawbacks": [
-        "Measurement complexity",
-        "Thresholds"
-      ],
-      "use_cases": [
-        "Pipeline performance",
-        "SLA monitoring"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "data-observability",
-        "detector",
-        "lag",
-        "data-engineering"
-      ]
-    },
-    {
-      "name": "Dataset Tracker",
-      "id": "dataset-tracker",
-      "category": "Data Observability",
-      "description": "The Dataset Tracker provides lineage tracking for datasets.",
-      "when_to_use": [
-        "Data lineage",
-        "Dataset tracking"
-      ],
-      "benefits": [
-        "Lineage visibility",
-        "Impact analysis"
-      ],
-      "drawbacks": [
-        "Tracking overhead",
-        "Complexity"
-      ],
-      "use_cases": [
-        "Data lineage",
-        "Impact analysis"
-      ],
-      "complexity": "High",
-      "tags": [
-        "data-observability",
-        "tracker",
-        "dataset",
-        "data-engineering"
-      ]
-    }
-  ]
-}
+[
+  {
+    "name": "Full Loader",
+    "id": "full-loader",
+    "category": "Data Ingestion",
+    "description": "The Full Loader implementation is one of the most straightforward patterns. It uses native data stores commands to export data from one database and import it to another using a two-step construction (extract and load). This EL approach is ideal for homogeneous data stores because it doesn't require any data transformation.",
+    "when_to_use": [
+      "Setting up the Silver layer with slowly evolving datasets",
+      "Database bootstrap",
+      "Reference dataset generation"
+    ],
+    "benefits": [
+      "Simple implementation",
+      "Straightforward two-step process",
+      "No transformation overhead"
+    ],
+    "drawbacks": [
+      "Data volume issues for growing datasets",
+      "Data consistency risks during ingestion",
+      "Not suitable for heterogeneous databases without transformation"
+    ],
+    "use_cases": [
+      "Loading reference data",
+      "Initial data migration",
+      "Static dataset synchronization"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "full-load",
+      "data-ingestion",
+      "el",
+      "etl",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Incremental Loader",
+    "id": "incremental-loader",
+    "category": "Data Ingestion",
+    "description": "The Incremental Loader pattern processes new parts of the dataset since the last run. There are two implementations: one uses a delta column to identify rows added since the last run, and another relies on time-partitioned datasets where the ingestion job uses time-based partitions to detect new records.",
+    "when_to_use": [
+      "Continuously growing datasets",
+      "Need to process only new data since last run",
+      "Large datasets where full reload is inefficient"
+    ],
+    "benefits": [
+      "Reduces ingested data volume",
+      "More efficient for large datasets",
+      "Lower resource consumption"
+    ],
+    "drawbacks": [
+      "Hard deletes handling",
+      "Backfilling issues",
+      "Complexity in tracking delta"
+    ],
+    "use_cases": [
+      "Streaming data ingestion",
+      "Batch processing of incremental data",
+      "Event log processing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "incremental-load",
+      "data-ingestion",
+      "delta-column",
+      "partitioned",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Change Data Capture",
+    "id": "change-data-capture",
+    "category": "Data Ingestion",
+    "description": "The Change Data Capture (CDC) pattern continuously ingests all modified rows directly from the internal database commit log. It allows lower-level and faster access to the records compared to any high-level query or processing task. The CDC consumer streams those changes and sends them to the streaming broker or any other configured output.",
+    "when_to_use": [
+      "Need lower ingestion latency",
+      "Built-in support for physical deletes",
+      "Real-time data changes",
+      "Database replication requirements"
+    ],
+    "benefits": [
+      "Lower latency",
+      "Captures all data changes including deletes",
+      "Real-time ingestion",
+      "Minimal impact on source database"
+    ],
+    "drawbacks": [
+      "Complexity in setup",
+      "Data scope limitations",
+      "Payload includes extra metadata",
+      "Database-specific implementations"
+    ],
+    "use_cases": [
+      "Real-time data synchronization",
+      "Database change streaming",
+      "Event sourcing",
+      "Audit logging"
+    ],
+    "complexity": "High",
+    "tags": [
+      "cdc",
+      "data-ingestion",
+      "commit-log",
+      "real-time",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Passthrough Replicator",
+    "id": "passthrough-replicator",
+    "category": "Data Ingestion",
+    "description": "The compute implementation relies on the EL job, which is a process with only two phases, read and write. Ideally, the EL job will copy files or rows from the input as is (i.e., without any data transformation). The infrastructure part is based on a replication policy document where you configure the input and output location and let your data storage provider replicate the records on your behalf.",
+    "when_to_use": [
+      "Need exact copy of data across environments",
+      "Non-idempotent data providers",
+      "Cross-environment data consistency"
+    ],
+    "benefits": [
+      "Simple replication",
+      "Preserves data integrity",
+      "Infrastructure-based options available"
+    ],
+    "drawbacks": [
+      "Security and isolation risks",
+      "Latency in infrastructure implementations",
+      "Metadata preservation issues"
+    ],
+    "use_cases": [
+      "Environment synchronization",
+      "Backup and recovery"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "replication",
+      "data-ingestion",
+      "passthrough",
+      "el",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Transformation Replicator",
+    "id": "transformation-replicator",
+    "category": "Data Ingestion",
+    "description": "The Transformation Replicator pattern, in addition to the classical read and write parts from the Passthrough Replicator pattern, has a transformation layer in between. This is necessary when replicating data with sensitive information that needs to be anonymized or removed during replication.",
+    "when_to_use": [
+      "Replicating data with sensitive information",
+      "Need to anonymize or remove PII during replication"
+    ],
+    "benefits": [
+      "Handles PII data safely",
+      "Customizable transformation logic"
+    ],
+    "drawbacks": [
+      "Transformation risk for text formats",
+      "Desynchronization risks"
+    ],
+    "use_cases": [
+      "Testing with production-like data",
+      "Data anonymization"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "replication",
+      "data-ingestion",
+      "transformation",
+      "pii",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Compactor",
+    "id": "compactor",
+    "category": "Data Ingestion",
+    "description": "The Compactor pattern helps reduce the storage footprint of growing datasets by combining multiple smaller files into bigger ones, thus reducing the overall I/O overhead on reading. Storing many small files involves longer listing operations and heavier I/O for opening and closing files.",
+    "when_to_use": [
+      "Growing datasets with many small files",
+      "Metadata overhead impacting performance"
+    ],
+    "benefits": [
+      "Reduces I/O overhead",
+      "Improves read performance",
+      "Optimizes storage"
+    ],
+    "drawbacks": [
+      "Cost vs performance trade-offs",
+      "Consistency issues",
+      "Requires cleaning operations"
+    ],
+    "use_cases": [
+      "Data lake optimization",
+      "Batch job performance improvement"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "compaction",
+      "data-ingestion",
+      "file-optimization",
+      "storage",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Readiness Marker",
+    "id": "readiness-marker",
+    "category": "Data Ingestion",
+    "description": "The Readiness Marker is a pattern that helps trigger the ingestion process at the most appropriate moment. Its goal is to guarantee the ingestion of the complete dataset. The first implementation uses an event to signal the dataset's completeness, often implemented with a flag file created after successful data generation.",
+    "when_to_use": [
+      "Need to signal when dataset is complete",
+      "Preventing consumption of incomplete data"
+    ],
+    "benefits": [
+      "Guarantees complete dataset ingestion",
+      "Simple implementation"
+    ],
+    "drawbacks": [
+      "Lack of enforcement",
+      "Reliability issues with late data"
+    ],
+    "use_cases": [
+      "Batch job coordination",
+      "Data pipeline synchronization"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "readiness",
+      "data-ingestion",
+      "marker",
+      "synchronization",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "External Trigger",
+    "id": "external-trigger",
+    "category": "Data Ingestion",
+    "description": "The External Trigger pattern addresses event-driven data availability by allowing external events to trigger the ingestion process. This can be implemented through webhooks, message queues, or other event-driven mechanisms, favoring push semantics over pull semantics.",
+    "when_to_use": [
+      "Event-driven data availability",
+      "Need push-based notifications"
+    ],
+    "benefits": [
+      "Reduces polling overhead",
+      "Real-time responsiveness"
+    ],
+    "drawbacks": [
+      "Increased complexity",
+      "Dependency on external systems"
+    ],
+    "use_cases": [
+      "Real-time data pipelines",
+      "Event-driven architectures"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "trigger",
+      "data-ingestion",
+      "event-driven",
+      "push-semantics",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Dead-Letter",
+    "id": "dead-letter",
+    "category": "Error Management",
+    "description": "The Dead-Letter pattern provides a way to handle unprocessable records by routing them to a separate location for later analysis. It allows the pipeline to continue processing correct records while preserving bad records for investigation.",
+    "when_to_use": [
+      "Unprocessable records in data streams",
+      "Need to continue processing despite errors"
+    ],
+    "benefits": [
+      "Allows pipeline to continue",
+      "Preserves bad records for analysis"
+    ],
+    "drawbacks": [
+      "Potential data loss if not handled",
+      "Additional storage for dead letters"
+    ],
+    "use_cases": [
+      "Fault-tolerant data pipelines",
+      "Error isolation"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "error-management",
+      "dead-letter",
+      "fault-tolerance",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Windowed Deduplicator",
+    "id": "windowed-deduplicator",
+    "category": "Error Management",
+    "description": "The Windowed Deduplicator pattern handles duplicated records by using time windows or dataset scopes to identify and remove duplicates. For streaming jobs, the limits will be time-based windows, while batch jobs will reduce the scope to the currently processed dataset.",
+    "when_to_use": [
+      "At-least-once delivery semantics",
+      "Need to process each record only once"
+    ],
+    "benefits": [
+      "Ensures exactly-once processing",
+      "Handles duplicates in streams"
+    ],
+    "drawbacks": [
+      "State management complexity",
+      "Window configuration challenges"
+    ],
+    "use_cases": [
+      "Streaming deduplication",
+      "Batch data cleaning"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "error-management",
+      "deduplication",
+      "windowing",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Late Data Detector",
+    "id": "late-data-detector",
+    "category": "Error Management",
+    "description": "The Late Data Detector pattern identifies records that arrive after their expected processing time. It helps in completing already processed partitions or controlling the state in stateful jobs.",
+    "when_to_use": [
+      "Event-time processing",
+      "Need to detect out-of-order data"
+    ],
+    "benefits": [
+      "Identifies late arrivals",
+      "Helps maintain data accuracy"
+    ],
+    "drawbacks": [
+      "Watermark management",
+      "Late data handling decisions"
+    ],
+    "use_cases": [
+      "Stream processing",
+      "Real-time analytics"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "error-management",
+      "late-data",
+      "detection",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Static Late Data Integrator",
+    "id": "static-late-data-integrator",
+    "category": "Error Management",
+    "description": "The Static Late Data Integrator provides a fixed tolerance period for including late data. It allows valuable late data to be included in processing with a simple, static configuration.",
+    "when_to_use": [
+      "Late data is valuable",
+      "Fixed tolerance acceptable"
+    ],
+    "benefits": [
+      "Includes valuable late data",
+      "Simple configuration"
+    ],
+    "drawbacks": [
+      "Fixed tolerance may not fit all cases",
+      "Potential delays"
+    ],
+    "use_cases": [
+      "E-commerce order processing",
+      "Financial transactions"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "error-management",
+      "late-data",
+      "integration",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Dynamic Late Data Integrator",
+    "id": "dynamic-late-data-integrator",
+    "category": "Error Management",
+    "description": "The Dynamic Late Data Integrator adjusts the tolerance based on data patterns or external conditions. It provides a more dynamic approach that loads the partitions impacted by the late data instead of relying on fixed time periods.",
+    "when_to_use": [
+      "Variable late data patterns",
+      "Need adaptive tolerance"
+    ],
+    "benefits": [
+      "Adapts to data patterns",
+      "More accurate inclusion"
+    ],
+    "drawbacks": [
+      "Increased complexity",
+      "Requires monitoring"
+    ],
+    "use_cases": [
+      "Variable latency scenarios",
+      "Adaptive systems"
+    ],
+    "complexity": "High",
+    "tags": [
+      "error-management",
+      "late-data",
+      "dynamic",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Filter Interceptor",
+    "id": "filter-interceptor",
+    "category": "Error Management",
+    "description": "The Filter Interceptor pattern provides more insight into filtering operations, allowing you to detect errors due to aggressive and possibly buggy filtering conditions.",
+    "when_to_use": [
+      "Need visibility into filtering effects",
+      "Debugging filter conditions"
+    ],
+    "benefits": [
+      "Provides filtering insights",
+      "Helps detect errors"
+    ],
+    "drawbacks": [
+      "Additional processing overhead",
+      "Storage for filtered data"
+    ],
+    "use_cases": [
+      "Data quality monitoring",
+      "Pipeline debugging"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "error-management",
+      "filtering",
+      "interceptor",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Checkpointer",
+    "id": "checkpointer",
+    "category": "Error Management",
+    "description": "The Checkpointer pattern ensures recoverability for continuous data processing workflows by tracking progress. It is particularly critical in stream processing where applications work on continuously arriving events stored in append-only logs.",
+    "when_to_use": [
+      "Stream processing recovery",
+      "Need to resume from failure"
+    ],
+    "benefits": [
+      "Enables fault recovery",
+      "Tracks processing progress"
+    ],
+    "drawbacks": [
+      "State management",
+      "Potential data reprocessing"
+    ],
+    "use_cases": [
+      "Streaming applications",
+      "Long-running jobs"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "error-management",
+      "checkpointing",
+      "recovery",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Fast Metadata Cleaner",
+    "id": "fast-metadata-cleaner",
+    "category": "Idempotency",
+    "description": "The Fast Metadata Cleaner pattern leverages metadata to enable fast data cleaning for idempotent operations. Metadata operations are often the fastest since they operate on the logical level instead of the physical one.",
+    "when_to_use": [
+      "Need fast data removal",
+      "Metadata-level operations possible"
+    ],
+    "benefits": [
+      "Fast execution",
+      "No data file interaction"
+    ],
+    "drawbacks": [
+      "Limited to metadata operations",
+      "May not handle all cases"
+    ],
+    "use_cases": [
+      "Table truncation",
+      "Dataset reset"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "idempotency",
+      "metadata",
+      "cleaning",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Data Overwrite",
+    "id": "data-overwrite",
+    "category": "Idempotency",
+    "description": "The Data Overwrite pattern handles idempotency by overwriting existing data. Used when metadata operations are not available, such as when working with object stores.",
+    "when_to_use": [
+      "Metadata operations not available",
+      "Need data-level overwrite"
+    ],
+    "benefits": [
+      "Works with object stores",
+      "Ensures clean state"
+    ],
+    "drawbacks": [
+      "More resource intensive",
+      "Potential data loss"
+    ],
+    "use_cases": [
+      "Object store operations",
+      "Full dataset replacement"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "idempotency",
+      "overwrite",
+      "data-operation",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Merger",
+    "id": "merger",
+    "category": "Idempotency",
+    "description": "The Merger pattern combines new data with existing data to handle updates and inserts idempotently when dataset identity is static.",
+    "when_to_use": [
+      "Static dataset identity",
+      "Updates and inserts only"
+    ],
+    "benefits": [
+      "Handles updates efficiently",
+      "Preserves existing data"
+    ],
+    "drawbacks": [
+      "Complexity with identity changes",
+      "Backfilling issues"
+    ],
+    "use_cases": [
+      "Incremental updates",
+      "Change data integration"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "idempotency",
+      "merger",
+      "updates",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Stateful Merger",
+    "id": "stateful-merger",
+    "category": "Idempotency",
+    "description": "The Stateful Merger maintains state to ensure consistent merging operations, providing better consistency during backfills compared to the basic Merger pattern.",
+    "when_to_use": [
+      "Need consistency during backfills",
+      "Stateful operations required"
+    ],
+    "benefits": [
+      "Ensures consistency",
+      "Handles backfills better"
+    ],
+    "drawbacks": [
+      "Increased complexity",
+      "State management overhead"
+    ],
+    "use_cases": [
+      "Consistent data merging",
+      "Backfill operations"
+    ],
+    "complexity": "High",
+    "tags": [
+      "idempotency",
+      "stateful",
+      "merger",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Keyed Idempotency",
+    "id": "keyed-idempotency",
+    "category": "Idempotency",
+    "description": "The Keyed Idempotency pattern ensures operations are idempotent using unique keys with key-based data stores.",
+    "when_to_use": [
+      "Key-based data stores",
+      "Need exactly-once semantics"
+    ],
+    "benefits": [
+      "Guarantees exactly-once",
+      "Simple key-based approach"
+    ],
+    "drawbacks": [
+      "Requires unique key generation",
+      "Key collision risks"
+    ],
+    "use_cases": [
+      "Transactional writes",
+      "Deduplication"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "idempotency",
+      "keyed",
+      "exactly-once",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Transactional Writer",
+    "id": "transactional-writer",
+    "category": "Idempotency",
+    "description": "The Transactional Writer uses database transactions for idempotent writes, providing all-or-nothing semantics.",
+    "when_to_use": [
+      "Transactional databases",
+      "Need atomic operations"
+    ],
+    "benefits": [
+      "All-or-nothing semantics",
+      "Atomic writes"
+    ],
+    "drawbacks": [
+      "Database dependency",
+      "Performance overhead"
+    ],
+    "use_cases": [
+      "Transactional data writing",
+      "Atomic updates"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "idempotency",
+      "transactional",
+      "atomic",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Proxy",
+    "id": "proxy-idempotency",
+    "category": "Idempotency",
+    "description": "The Proxy pattern provides an indirection layer for immutable datasets to achieve idempotency.",
+    "when_to_use": [
+      "Immutable datasets",
+      "Cannot modify existing data"
+    ],
+    "benefits": [
+      "Works with immutable data",
+      "Extra indirection level"
+    ],
+    "drawbacks": [
+      "Added complexity",
+      "Indirection overhead"
+    ],
+    "use_cases": [
+      "Immutable data handling",
+      "Versioned datasets"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "idempotency",
+      "proxy",
+      "indirection",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Static Joiner",
+    "id": "static-joiner",
+    "category": "Data Value",
+    "description": "The Static Joiner performs joins with static reference data.",
+    "when_to_use": [
+      "Static enrichment data",
+      "Reference data joins"
+    ],
+    "benefits": [
+      "Simple implementation",
+      "Efficient for static data"
+    ],
+    "drawbacks": [
+      "Not suitable for dynamic data",
+      "Data freshness issues"
+    ],
+    "use_cases": [
+      "Reference data enrichment",
+      "Static lookups"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "data-value",
+      "joiner",
+      "static",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Dynamic Joiner",
+    "id": "dynamic-joiner",
+    "category": "Data Value",
+    "description": "The Dynamic Joiner handles joins with streaming or frequently changing data.",
+    "when_to_use": [
+      "Streaming data enrichment",
+      "Dynamic reference data"
+    ],
+    "benefits": [
+      "Handles streaming data",
+      "Real-time enrichment"
+    ],
+    "drawbacks": [
+      "Increased complexity",
+      "Latency considerations"
+    ],
+    "use_cases": [
+      "Real-time data enrichment",
+      "Streaming joins"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-value",
+      "joiner",
+      "dynamic",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Distributed Aggregator",
+    "id": "distributed-aggregator",
+    "category": "Data Value",
+    "description": "The Distributed Aggregator performs aggregations across distributed data using distributed data processing frameworks.",
+    "when_to_use": [
+      "Large-scale aggregations",
+      "Distributed data processing"
+    ],
+    "benefits": [
+      "Scalable aggregations",
+      "Handles large datasets"
+    ],
+    "drawbacks": [
+      "Shuffle overhead",
+      "Network costs"
+    ],
+    "use_cases": [
+      "Big data aggregations",
+      "Distributed computing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-value",
+      "aggregator",
+      "distributed",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Local Aggregator",
+    "id": "local-aggregator",
+    "category": "Data Value",
+    "description": "The Local Aggregator performs aggregations locally without network overhead when data is correctly partitioned.",
+    "when_to_use": [
+      "Partitioned data",
+      "Small datasets"
+    ],
+    "benefits": [
+      "No network overhead",
+      "Faster execution"
+    ],
+    "drawbacks": [
+      "Limited to local data",
+      "Scalability constraints"
+    ],
+    "use_cases": [
+      "Partitioned aggregations",
+      "Local processing"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "data-value",
+      "aggregator",
+      "local",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Stateful Sessionizer",
+    "id": "stateful-sessionizer",
+    "category": "Data Value",
+    "description": "The Stateful Sessionizer handles real-time sessionization in stream processing.",
+    "when_to_use": [
+      "Real-time sessions",
+      "Streaming data"
+    ],
+    "benefits": [
+      "Real-time processing",
+      "Fresh data"
+    ],
+    "drawbacks": [
+      "State management",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Real-time analytics",
+      "Live sessions"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-value",
+      "sessionizer",
+      "stateful",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Local Sequencer",
+    "id": "local-sequencer",
+    "category": "Data Flow",
+    "description": "The Local Sequencer manages task sequences within a single job.",
+    "when_to_use": [
+      "Single job orchestration",
+      "Local task dependencies"
+    ],
+    "benefits": [
+      "Simple orchestration",
+      "Local control"
+    ],
+    "drawbacks": [
+      "Limited to single job",
+      "No distributed coordination"
+    ],
+    "use_cases": [
+      "ETL pipelines",
+      "Single-job workflows"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "data-flow",
+      "sequencer",
+      "local",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Parallel Split",
+    "id": "parallel-split",
+    "category": "Data Flow",
+    "description": "The Parallel Split sends one input to multiple parallel outputs.",
+    "when_to_use": [
+      "One-to-many distribution",
+      "Parallel processing"
+    ],
+    "benefits": [
+      "Enables parallelism",
+      "Scales processing"
+    ],
+    "drawbacks": [
+      "Coordination overhead",
+      "Resource management"
+    ],
+    "use_cases": [
+      "Data distribution",
+      "Parallel analytics"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-flow",
+      "split",
+      "parallel",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Concurrent Runner",
+    "id": "concurrent-runner",
+    "category": "Data Flow",
+    "description": "The Concurrent Runner allows multiple simultaneous executions.",
+    "when_to_use": [
+      "Parallel execution",
+      "Improve throughput"
+    ],
+    "benefits": [
+      "Better performance",
+      "Handles concurrency"
+    ],
+    "drawbacks": [
+      "Resource contention",
+      "Complexity"
+    ],
+    "use_cases": [
+      "High-throughput pipelines",
+      "Concurrent processing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-flow",
+      "runner",
+      "concurrent",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Vertical Partitioner (Data Removal)",
+    "id": "vertical-partitioner-removal",
+    "category": "Data Security",
+    "description": "The Vertical Partitioner organizes data to facilitate secure removal for compliance requirements.",
+    "when_to_use": [
+      "Data removal requirements",
+      "PII handling"
+    ],
+    "benefits": [
+      "Facilitates removal",
+      "Organized data"
+    ],
+    "drawbacks": [
+      "Query complexity",
+      "Polyglot challenges"
+    ],
+    "use_cases": [
+      "GDPR compliance",
+      "Data deletion"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-security",
+      "partitioner",
+      "removal",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Encryptor",
+    "id": "encryptor",
+    "category": "Data Security",
+    "description": "The Encryptor pattern encrypts data to protect it from unauthorized access.",
+    "when_to_use": [
+      "Data encryption needs",
+      "Protect sensitive data"
+    ],
+    "benefits": [
+      "Data protection",
+      "Compliance"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Key management"
+    ],
+    "use_cases": [
+      "Data encryption",
+      "Secure storage"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-security",
+      "encryptor",
+      "encryption",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Anonymizer",
+    "id": "anonymizer",
+    "category": "Data Security",
+    "description": "The Anonymizer pattern removes or modifies identifying information to protect privacy.",
+    "when_to_use": [
+      "PII removal",
+      "Data anonymization"
+    ],
+    "benefits": [
+      "Privacy protection",
+      "Compliance"
+    ],
+    "drawbacks": [
+      "Data utility loss",
+      "Reversibility issues"
+    ],
+    "use_cases": [
+      "Data anonymization",
+      "Privacy protection"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-security",
+      "anonymizer",
+      "privacy",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Horizontal Partitioner",
+    "id": "horizontal-partitioner",
+    "category": "Data Storage",
+    "description": "The Horizontal Partitioner divides data horizontally for better organization and performance.",
+    "when_to_use": [
+      "Large dataset organization",
+      "Performance optimization"
+    ],
+    "benefits": [
+      "Improved performance",
+      "Scalability"
+    ],
+    "drawbacks": [
+      "Partition management",
+      "Query complexity"
+    ],
+    "use_cases": [
+      "Data partitioning",
+      "Storage optimization"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-storage",
+      "partitioner",
+      "horizontal",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Dataset Materializer",
+    "id": "dataset-materializer",
+    "category": "Data Storage",
+    "description": "The Dataset Materializer pre-computes and stores results for faster access.",
+    "when_to_use": [
+      "Frequent queries",
+      "Performance optimization"
+    ],
+    "benefits": [
+      "Faster access",
+      "Pre-computed results"
+    ],
+    "drawbacks": [
+      "Storage overhead",
+      "Update complexity"
+    ],
+    "use_cases": [
+      "Materialized views",
+      "Caching"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-storage",
+      "materializer",
+      "performance",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Denormalizer",
+    "id": "denormalizer",
+    "category": "Data Storage",
+    "description": "The Denormalizer pattern optimizes read performance by denormalizing data.",
+    "when_to_use": [
+      "Read performance",
+      "Query optimization"
+    ],
+    "benefits": [
+      "Faster reads",
+      "Simplified queries"
+    ],
+    "drawbacks": [
+      "Update complexity",
+      "Redundancy"
+    ],
+    "use_cases": [
+      "Read optimization",
+      "Data warehousing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-storage",
+      "denormalizer",
+      "performance",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Audit-Write-Audit-Publish",
+    "id": "audit-write-audit-publish",
+    "category": "Data Quality",
+    "description": "The Audit-Write-Audit-Publish pattern ensures data quality through auditing at multiple stages.",
+    "when_to_use": [
+      "Data quality enforcement",
+      "Audit requirements"
+    ],
+    "benefits": [
+      "Quality assurance",
+      "Auditable process"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Quality pipelines",
+      "Audited data processing"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-quality",
+      "audit",
+      "enforcement",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Constraints Enforcer",
+    "id": "constraints-enforcer",
+    "category": "Data Quality",
+    "description": "The Constraints Enforcer applies data constraints to ensure quality.",
+    "when_to_use": [
+      "Data validation",
+      "Constraint enforcement"
+    ],
+    "benefits": [
+      "Data validation",
+      "Quality enforcement"
+    ],
+    "drawbacks": [
+      "Constraint management",
+      "Error handling"
+    ],
+    "use_cases": [
+      "Data validation",
+      "Quality checks"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-quality",
+      "constraints",
+      "enforcer",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Online Observer",
+    "id": "online-observer",
+    "category": "Data Quality",
+    "description": "The Online Observer provides real-time data quality monitoring.",
+    "when_to_use": [
+      "Real-time quality monitoring",
+      "Streaming data"
+    ],
+    "benefits": [
+      "Real-time monitoring",
+      "Immediate feedback"
+    ],
+    "drawbacks": [
+      "Performance impact",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Streaming quality",
+      "Real-time alerts"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-quality",
+      "observer",
+      "online",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Flow Interruption Detector",
+    "id": "flow-interruption-detector",
+    "category": "Data Observability",
+    "description": "The Flow Interruption Detector identifies interruptions in data flows.",
+    "when_to_use": [
+      "Flow monitoring",
+      "Interruption detection"
+    ],
+    "benefits": [
+      "Early detection",
+      "Flow monitoring"
+    ],
+    "drawbacks": [
+      "False positives",
+      "Configuration"
+    ],
+    "use_cases": [
+      "Pipeline monitoring",
+      "Flow health"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-observability",
+      "detector",
+      "flow",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Lag Detector",
+    "id": "lag-detector",
+    "category": "Data Observability",
+    "description": "The Lag Detector monitors processing lag in data pipelines.",
+    "when_to_use": [
+      "Lag monitoring",
+      "Performance tracking"
+    ],
+    "benefits": [
+      "Lag identification",
+      "Performance insights"
+    ],
+    "drawbacks": [
+      "Measurement complexity",
+      "Thresholds"
+    ],
+    "use_cases": [
+      "Pipeline performance",
+      "SLA monitoring"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-observability",
+      "detector",
+      "lag",
+      "data-engineering"
+    ]
+  },
+  {
+    "name": "Dataset Tracker",
+    "id": "dataset-tracker",
+    "category": "Data Observability",
+    "description": "The Dataset Tracker provides lineage tracking for datasets.",
+    "when_to_use": [
+      "Data lineage",
+      "Dataset tracking"
+    ],
+    "benefits": [
+      "Lineage visibility",
+      "Impact analysis"
+    ],
+    "drawbacks": [
+      "Tracking overhead",
+      "Complexity"
+    ],
+    "use_cases": [
+      "Data lineage",
+      "Impact analysis"
+    ],
+    "complexity": "High",
+    "tags": [
+      "data-observability",
+      "tracker",
+      "dataset",
+      "data-engineering"
+    ]
+  }
+]

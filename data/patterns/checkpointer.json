@@ -1,17 +1,19 @@
-{
-  "id": "checkpointer",
-  "name": "Checkpointer",
-  "category": "Error Management",
-  "description": "The Checkpointer pattern ensures recoverability for continuous data processing workflows by tracking progress. It is particularly critical in stream processing where applications work on continuously arriving events stored in append-only logs.",
-  "when_to_use": "[\"Stream processing recovery\",\"Need to resume from failure\"]",
-  "benefits": "[\"Enables fault recovery\",\"Tracks processing progress\"]",
-  "drawbacks": "[\"State management\",\"Potential data reprocessing\"]",
-  "use_cases": "[\"Streaming applications\",\"Long-running jobs\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"error-management\"",
-    "\"checkpointing\"",
-    "\"recovery\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "checkpointer",
+    "name": "Checkpointer",
+    "category": "Error Management",
+    "description": "The Checkpointer pattern ensures recoverability for continuous data processing workflows by tracking progress. It is particularly critical in stream processing where applications work on continuously arriving events stored in append-only logs.",
+    "when_to_use": "[\"Stream processing recovery\",\"Need to resume from failure\"]",
+    "benefits": "[\"Enables fault recovery\",\"Tracks processing progress\"]",
+    "drawbacks": "[\"State management\",\"Potential data reprocessing\"]",
+    "use_cases": "[\"Streaming applications\",\"Long-running jobs\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"error-management\"",
+      "\"checkpointing\"",
+      "\"recovery\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

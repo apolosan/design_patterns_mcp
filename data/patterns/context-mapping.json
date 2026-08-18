@@ -1,16 +1,18 @@
-{
-  "id": "context-mapping",
-  "name": "Context Mapping",
-  "category": "Domain-Driven Design",
-  "description": "Map showing relationships and integration patterns between bounded contexts",
-  "when_to_use": "Multiple contexts\nIntegration planning\nTeam coordination",
-  "benefits": "Clear relationships\nIntegration strategy\nTeam coordination\nRisk identification",
-  "drawbacks": "Maintenance overhead\nComplexity\nDocumentation burden",
-  "use_cases": "System architecture\nIntegration planning\nTeam boundaries",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "strategic",
-    "mapping"
-  ]
-}
+[
+  {
+    "id": "context-mapping",
+    "name": "Context Mapping",
+    "category": "Domain-Driven Design",
+    "description": "Map showing relationships and integration patterns between bounded contexts",
+    "when_to_use": "Multiple contexts\nIntegration planning\nTeam coordination",
+    "benefits": "Clear relationships\nIntegration strategy\nTeam coordination\nRisk identification",
+    "drawbacks": "Maintenance overhead\nComplexity\nDocumentation burden",
+    "use_cases": "System architecture\nIntegration planning\nTeam boundaries",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "mapping"
+    ]
+  }
+]

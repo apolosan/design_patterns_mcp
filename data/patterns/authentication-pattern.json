@@ -1,16 +1,18 @@
-{
-  "id": "authentication-pattern",
-  "name": "Authentication Pattern",
-  "category": "Security",
-  "description": "Verifies identity of users or systems before granting access",
-  "when_to_use": "User verification\nSystem access control\nIdentity management",
-  "benefits": "Identity verification\nAccess control\nSecurity enforcement",
-  "drawbacks": "User experience impact\nImplementation complexity\nCredential management",
-  "use_cases": "User login systems\nAPI authentication\nSystem access",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "authentication",
-    "identity"
-  ]
-}
+[
+  {
+    "id": "authentication-pattern",
+    "name": "Authentication Pattern",
+    "category": "Security",
+    "description": "Verifies identity of users or systems before granting access",
+    "when_to_use": "User verification\nSystem access control\nIdentity management",
+    "benefits": "Identity verification\nAccess control\nSecurity enforcement",
+    "drawbacks": "User experience impact\nImplementation complexity\nCredential management",
+    "use_cases": "User login systems\nAPI authentication\nSystem access",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "authentication",
+      "identity"
+    ]
+  }
+]

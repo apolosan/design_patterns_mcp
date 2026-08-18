@@ -1,22 +1,24 @@
-{
-  "id": "streaming-processing",
-  "name": "Streaming Processing",
-  "category": "Performance",
-  "description": "Processes data in streams to handle large datasets without loading everything into memory",
-  "when_to_use": "Large datasets\nMemory constraints\nReal-time processing",
-  "benefits": "Memory efficiency\nReal-time processing\nScalable data handling",
-  "drawbacks": "Complex implementation\nState management\nError handling",
-  "use_cases": "Big data processing\nReal-time analytics\nFile processing",
-  "complexity": "High",
-  "tags": [
-    "performance",
-    "streaming",
-    "data"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Streaming: process data incrementally\nclass StreamProcessor<T, R> {\n  private buffer: T[] = [];\n  \n  constructor(\n    private transform: (chunk: T[]) => R[],\n    private chunkSize = 100\n  ) {}\n  \n  async* process(source: AsyncIterable<T>): AsyncGenerator<R> {\n    for await (const item of source) {\n      this.buffer.push(item);\n      \n      if (this.buffer.length >= this.chunkSize) {\n        const results = this.transform(this.buffer);\n        this.buffer = [];\n        yield* results;\n      }\n    }\n    \n    if (this.buffer.length > 0) {\n      yield* this.transform(this.buffer);\n    }\n  }\n}\n\n// Example: Process large file\nasync function* readLines(file: string): AsyncGenerator<string> {\n  const stream = fs.createReadStream(file);\n  for await (const chunk of stream) {\n    yield chunk.toString();\n  }\n}\n\nconst processor = new StreamProcessor(\n  (lines) => lines.filter(l => l.includes('ERROR')),\n  1000\n);\n\nfor await (const errorLine of processor.process(readLines('log.txt'))) {\n  console.log(errorLine);\n}"
+[
+  {
+    "id": "streaming-processing",
+    "name": "Streaming Processing",
+    "category": "Performance",
+    "description": "Processes data in streams to handle large datasets without loading everything into memory",
+    "when_to_use": "Large datasets\nMemory constraints\nReal-time processing",
+    "benefits": "Memory efficiency\nReal-time processing\nScalable data handling",
+    "drawbacks": "Complex implementation\nState management\nError handling",
+    "use_cases": "Big data processing\nReal-time analytics\nFile processing",
+    "complexity": "High",
+    "tags": [
+      "performance",
+      "streaming",
+      "data"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Streaming: process data incrementally\nclass StreamProcessor<T, R> {\n  private buffer: T[] = [];\n  \n  constructor(\n    private transform: (chunk: T[]) => R[],\n    private chunkSize = 100\n  ) {}\n  \n  async* process(source: AsyncIterable<T>): AsyncGenerator<R> {\n    for await (const item of source) {\n      this.buffer.push(item);\n      \n      if (this.buffer.length >= this.chunkSize) {\n        const results = this.transform(this.buffer);\n        this.buffer = [];\n        yield* results;\n      }\n    }\n    \n    if (this.buffer.length > 0) {\n      yield* this.transform(this.buffer);\n    }\n  }\n}\n\n// Example: Process large file\nasync function* readLines(file: string): AsyncGenerator<string> {\n  const stream = fs.createReadStream(file);\n  for await (const chunk of stream) {\n    yield chunk.toString();\n  }\n}\n\nconst processor = new StreamProcessor(\n  (lines) => lines.filter(l => l.includes('ERROR')),\n  1000\n);\n\nfor await (const errorLine of processor.process(readLines('log.txt'))) {\n  console.log(errorLine);\n}"
+      }
     }
   }
-}
+]

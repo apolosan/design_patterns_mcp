@@ -1,26 +1,28 @@
-{
-  "id": "use-reducer-hook",
-  "name": "useReducer Hook Pattern",
-  "category": "React Hooks",
-  "description": "Complex state management with reducer pattern. Alternative to useState for complex state logic.",
-  "when_to_use": "Complex state logic, multiple sub-values, state transitions, Redux-like patterns",
-  "benefits": "Predictable state updates, easier testing, cleaner complex logic, TypeScript-friendly",
-  "drawbacks": "More boilerplate than useState, overkill for simple state",
-  "use_cases": "Form state, shopping cart, multi-step wizards, undo/redo, complex UI state",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "hooks",
-    "useReducer",
-    "reducer",
-    "state-management",
-    "redux-pattern",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { useReducer } from 'react';\n\ntype State = {\n  count: number;\n  history: number[];\n};\n\ntype Action = \n  | { type: 'increment' }\n  | { type: 'decrement' }\n  | { type: 'reset' }\n  | { type: 'undo' };\n\nfunction reducer(state: State, action: Action): State {\n  switch (action.type) {\n    case 'increment':\n      return {\n        count: state.count + 1,\n        history: [...state.history, state.count]\n      };\n    case 'decrement':\n      return {\n        count: state.count - 1,\n        history: [...state.history, state.count]\n      };\n    case 'reset':\n      return { count: 0, history: [] };\n    case 'undo':\n      const previous = state.history[state.history.length - 1];\n      return {\n        count: previous ?? 0,\n        history: state.history.slice(0, -1)\n      };\n    default:\n      return state;\n  }\n}\n\nfunction CounterWithHistory() {\n  const [state, dispatch] = useReducer(reducer, { count: 0, history: [] });\n  \n  return (\n    <div>\n      <h1>Count: {state.count}</h1>\n      <button onClick={() => dispatch({ type: 'increment' })}>+</button>\n      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>\n      <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>\n      <button onClick={() => dispatch({ type: 'undo' })} disabled={!state.history.length}>\n        Undo\n      </button>\n      <p>History: {state.history.join(', ')}</p>\n    </div>\n  );\n}\n\n// Form example\ntype FormState = {\n  name: string;\n  email: string;\n  errors: Record<string, string>;\n};\n\ntype FormAction =\n  | { type: 'SET_FIELD'; field: string; value: string }\n  | { type: 'VALIDATE' }\n  | { type: 'RESET' };\n\nfunction formReducer(state: FormState, action: FormAction): FormState {\n  switch (action.type) {\n    case 'SET_FIELD':\n      return { ...state, [action.field]: action.value };\n    case 'VALIDATE':\n      const errors: Record<string, string> = {};\n      if (!state.name) errors.name = 'Required';\n      if (!state.email.includes('@')) errors.email = 'Invalid';\n      return { ...state, errors };\n    case 'RESET':\n      return { name: '', email: '', errors: {} };\n    default:\n      return state;\n  }\n}"
+[
+  {
+    "id": "use-reducer-hook",
+    "name": "useReducer Hook Pattern",
+    "category": "React Hooks",
+    "description": "Complex state management with reducer pattern. Alternative to useState for complex state logic.",
+    "when_to_use": "Complex state logic, multiple sub-values, state transitions, Redux-like patterns",
+    "benefits": "Predictable state updates, easier testing, cleaner complex logic, TypeScript-friendly",
+    "drawbacks": "More boilerplate than useState, overkill for simple state",
+    "use_cases": "Form state, shopping cart, multi-step wizards, undo/redo, complex UI state",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "hooks",
+      "useReducer",
+      "reducer",
+      "state-management",
+      "redux-pattern",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { useReducer } from 'react';\n\ntype State = {\n  count: number;\n  history: number[];\n};\n\ntype Action = \n  | { type: 'increment' }\n  | { type: 'decrement' }\n  | { type: 'reset' }\n  | { type: 'undo' };\n\nfunction reducer(state: State, action: Action): State {\n  switch (action.type) {\n    case 'increment':\n      return {\n        count: state.count + 1,\n        history: [...state.history, state.count]\n      };\n    case 'decrement':\n      return {\n        count: state.count - 1,\n        history: [...state.history, state.count]\n      };\n    case 'reset':\n      return { count: 0, history: [] };\n    case 'undo':\n      const previous = state.history[state.history.length - 1];\n      return {\n        count: previous ?? 0,\n        history: state.history.slice(0, -1)\n      };\n    default:\n      return state;\n  }\n}\n\nfunction CounterWithHistory() {\n  const [state, dispatch] = useReducer(reducer, { count: 0, history: [] });\n  \n  return (\n    <div>\n      <h1>Count: {state.count}</h1>\n      <button onClick={() => dispatch({ type: 'increment' })}>+</button>\n      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>\n      <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>\n      <button onClick={() => dispatch({ type: 'undo' })} disabled={!state.history.length}>\n        Undo\n      </button>\n      <p>History: {state.history.join(', ')}</p>\n    </div>\n  );\n}\n\n// Form example\ntype FormState = {\n  name: string;\n  email: string;\n  errors: Record<string, string>;\n};\n\ntype FormAction =\n  | { type: 'SET_FIELD'; field: string; value: string }\n  | { type: 'VALIDATE' }\n  | { type: 'RESET' };\n\nfunction formReducer(state: FormState, action: FormAction): FormState {\n  switch (action.type) {\n    case 'SET_FIELD':\n      return { ...state, [action.field]: action.value };\n    case 'VALIDATE':\n      const errors: Record<string, string> = {};\n      if (!state.name) errors.name = 'Required';\n      if (!state.email.includes('@')) errors.email = 'Invalid';\n      return { ...state, errors };\n    case 'RESET':\n      return { name: '', email: '', errors: {} };\n    default:\n      return state;\n  }\n}"
+      }
     }
   }
-}
+]

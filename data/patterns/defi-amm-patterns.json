@@ -1,244 +1,240 @@
-{
-  "category": "DeFi AMM",
-  "description": "DeFi AMM design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "concentrated-liquidity",
-      "name": "Concentrated Liquidity (Uniswap V3)",
-      "category": "DeFi AMM",
-      "description": "Capital-efficient liquidity provision with price ranges. 4000x more efficient than V2 for certain ranges.",
-      "when_to_use": [
-        "Stablecoin pairs",
-        "active market making",
-        "high-fee environments"
-      ],
-      "benefits": [
-        "4000x capital efficiency",
-        "higher LP fees",
-        "flexible ranges"
-      ],
-      "drawbacks": [
-        "Complex",
-        "requires active management",
-        "amplified impermanent loss"
-      ],
-      "use_cases": [
-        "DEX liquidity",
-        "market making",
-        "capital efficiency"
-      ],
-      "complexity": "High",
-      "tags": [
-        "defi",
-        "amm",
-        "uniswap-v3",
-        "capital-efficiency",
-        "liquidity"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Concentrated Liquidity: tick-based positions\nstruct Position {\n    uint128 liquidity;\n    int24 tickLower;\n    int24 tickUpper;\n}\n\nfunction mint(int24 tickLower, int24 tickUpper, uint128 amount) external {\n    require(tickLower < tickUpper);\n    // Add liquidity to specific price range\n}"
-        }
-      }
-    },
-    {
-      "id": "constant-product-amm",
-      "name": "Constant Product AMM",
-      "category": "DeFi AMM",
-      "description": "Uniswap V2 x * y = k formula for DEX Problem: Decentralized exchange without order books",
-      "when_to_use": [
-        "Constant product maintains liquidity invariant"
-      ],
-      "benefits": [
-        "Simple",
-        "always liquid",
-        "permissionless",
-        "proven"
-      ],
-      "drawbacks": [
-        "Impermanent loss",
-        "slippage",
-        "capital inefficiency"
-      ],
-      "use_cases": [
-        "Token swaps",
-        "price discovery",
-        "DEX",
-        "liquidity pools"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "defi",
-        "amm",
-        "dex",
-        "uniswap",
-        "liquidity"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "function swap(uint256 amountIn) external {\n    uint256 amountInWithFee = amountIn * 997; // 0.3% fee\n    uint256 numerator = amountInWithFee * reserveOut;\n    uint256 denominator = (reserveIn * 1000) + amountInWithFee;\n    uint256 amountOut = numerator / denominator;\n}"
-        }
-      }
-    },
-    {
-      "id": "flash-swap",
-      "name": "Flash Swap",
-      "category": "DeFi AMM",
-      "description": "Borrow tokens from pool, use them, repay in same transaction",
-      "when_to_use": [
-        "Arbitrage",
-        "collateral swaps",
-        "liquidations without capital"
-      ],
-      "benefits": [
-        "No capital required",
-        "atomic",
-        "flexible"
-      ],
-      "drawbacks": [
-        "Complex callback logic",
-        "gas intensive"
-      ],
-      "use_cases": [
-        "DEX arbitrage",
-        "collateral replacement",
-        "flash minting"
-      ],
-      "complexity": "High",
-      "tags": [
-        "defi",
-        "flash-swap",
-        "uniswap",
-        "arbitrage",
-        "atomic"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Flash Swap: Uniswap callback\nfunction uniswapV2Call(\n    address sender,\n    uint256 amount0,\n    uint256 amount1,\n    bytes calldata data\n) external {\n    // Use borrowed tokens\n    // Must repay amount + fee before end\n    require(token.transfer(msg.sender, amountToRepay));\n}"
-        }
-      }
-    },
-    {
-      "id": "options-vault-ribbon",
-      "name": "Options Vault (Ribbon Finance)",
-      "category": "DeFi AMM",
-      "description": "Automated options strategies (covered calls, cash-secured puts). Weekly options selling for yield.",
-      "when_to_use": [
-        "Automated options strategies",
-        "yield generation from volatility"
-      ],
-      "benefits": [
-        "Automated professional strategies",
-        "consistent yield",
-        "risk-defined"
-      ],
-      "drawbacks": [
-        "Capped upside (covered calls)",
-        "strategy risk",
-        "options complexity"
-      ],
-      "use_cases": [
-        "Ribbon Finance vaults",
-        "covered call strategies",
-        "options yield"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "defi",
-        "options",
-        "ribbon",
-        "covered-call",
-        "derivatives"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract CoveredCallVault {\n    function rollover() external onlyKeeper {\n        // 1. Settle previous week's options\n        settleOptions();\n        \n        // 2. Select strike price (e.g., 10% OTM)\n        uint256 strike = (spotPrice * 110) / 100;\n        \n        // 3. Sell covered calls for next week\n        uint256 premium = optionsProtocol.sellCall(\n            totalAssets(), \n            strike, \n            block.timestamp + 7 days\n        );\n        \n        // 4. Distribute premium to vault\n        premiumEarned += premium;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "perpetual-futures",
-      "name": "Perpetual Futures Pattern",
-      "category": "DeFi AMM",
-      "description": "Leveraged futures without expiry. Funding rate mechanism keeps price anchored to spot.",
-      "when_to_use": [
-        "Derivatives trading",
-        "leveraged exposure",
-        "perpetual contracts"
-      ],
-      "benefits": [
-        "No expiry",
-        "high leverage (10-100x)",
-        "capital efficient"
-      ],
-      "drawbacks": [
-        "Funding rate risk",
-        "liquidation risk",
-        "complexity"
-      ],
-      "use_cases": [
-        "dYdX",
-        "GMX",
-        "Perpetual Protocol",
-        "leveraged trading"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "defi",
-        "derivatives",
-        "perpetual",
-        "futures",
-        "leverage"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Funding rate to anchor to spot\nfunction calculateFundingRate() public view returns (int256) {\n    int256 priceDiff = int256(perpetualPrice) - int256(spotPrice);\n    return (priceDiff * FUNDING_RATE_MULTIPLIER) / int256(spotPrice);\n}\n\nfunction applyFunding(address trader) external {\n    int256 fundingRate = calculateFundingRate();\n    int256 payment = (positions[trader].size * fundingRate) / 1e18;\n    \n    if (payment > 0) { // Long pays short\n        balances[trader] -= uint256(payment);\n    } else { // Short pays long\n        balances[trader] += uint256(-payment);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "stable-swap-curve",
-      "name": "Stable Swap (Curve)",
-      "category": "DeFi AMM",
-      "description": "Low-slippage AMM for pegged assets using hybrid formula",
-      "when_to_use": [
-        "Stablecoin swaps",
-        "wrapped asset exchanges",
-        "correlated pairs"
-      ],
-      "benefits": [
-        "Minimal slippage",
-        "efficient for pegged assets",
-        "low IL"
-      ],
-      "drawbacks": [
-        "Only for correlated assets",
-        "complex math"
-      ],
-      "use_cases": [
-        "USDC/USDT",
-        "wBTC/renBTC",
-        "stablecoin pools"
-      ],
-      "complexity": "High",
-      "tags": [
-        "defi",
-        "amm",
-        "curve",
-        "stableswap",
-        "stablecoin"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Stable Swap: hybrid constant product + sum\nfunction get_dy(uint256 i, uint256 j, uint256 dx) external view returns (uint256) {\n    // Hybrid formula: efficient near peg\n    uint256 amp = A * n**(n-1);\n    return calculateSwap(balances, amp, i, j, dx);\n}"
-        }
+[
+  {
+    "id": "concentrated-liquidity",
+    "name": "Concentrated Liquidity (Uniswap V3)",
+    "category": "DeFi AMM",
+    "description": "Capital-efficient liquidity provision with price ranges. 4000x more efficient than V2 for certain ranges.",
+    "when_to_use": [
+      "Stablecoin pairs",
+      "active market making",
+      "high-fee environments"
+    ],
+    "benefits": [
+      "4000x capital efficiency",
+      "higher LP fees",
+      "flexible ranges"
+    ],
+    "drawbacks": [
+      "Complex",
+      "requires active management",
+      "amplified impermanent loss"
+    ],
+    "use_cases": [
+      "DEX liquidity",
+      "market making",
+      "capital efficiency"
+    ],
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "amm",
+      "uniswap-v3",
+      "capital-efficiency",
+      "liquidity"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Concentrated Liquidity: tick-based positions\nstruct Position {\n    uint128 liquidity;\n    int24 tickLower;\n    int24 tickUpper;\n}\n\nfunction mint(int24 tickLower, int24 tickUpper, uint128 amount) external {\n    require(tickLower < tickUpper);\n    // Add liquidity to specific price range\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "constant-product-amm",
+    "name": "Constant Product AMM",
+    "category": "DeFi AMM",
+    "description": "Uniswap V2 x * y = k formula for DEX Problem: Decentralized exchange without order books",
+    "when_to_use": [
+      "Constant product maintains liquidity invariant"
+    ],
+    "benefits": [
+      "Simple",
+      "always liquid",
+      "permissionless",
+      "proven"
+    ],
+    "drawbacks": [
+      "Impermanent loss",
+      "slippage",
+      "capital inefficiency"
+    ],
+    "use_cases": [
+      "Token swaps",
+      "price discovery",
+      "DEX",
+      "liquidity pools"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "amm",
+      "dex",
+      "uniswap",
+      "liquidity"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "function swap(uint256 amountIn) external {\n    uint256 amountInWithFee = amountIn * 997; // 0.3% fee\n    uint256 numerator = amountInWithFee * reserveOut;\n    uint256 denominator = (reserveIn * 1000) + amountInWithFee;\n    uint256 amountOut = numerator / denominator;\n}"
+      }
+    }
+  },
+  {
+    "id": "flash-swap",
+    "name": "Flash Swap",
+    "category": "DeFi AMM",
+    "description": "Borrow tokens from pool, use them, repay in same transaction",
+    "when_to_use": [
+      "Arbitrage",
+      "collateral swaps",
+      "liquidations without capital"
+    ],
+    "benefits": [
+      "No capital required",
+      "atomic",
+      "flexible"
+    ],
+    "drawbacks": [
+      "Complex callback logic",
+      "gas intensive"
+    ],
+    "use_cases": [
+      "DEX arbitrage",
+      "collateral replacement",
+      "flash minting"
+    ],
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "flash-swap",
+      "uniswap",
+      "arbitrage",
+      "atomic"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Flash Swap: Uniswap callback\nfunction uniswapV2Call(\n    address sender,\n    uint256 amount0,\n    uint256 amount1,\n    bytes calldata data\n) external {\n    // Use borrowed tokens\n    // Must repay amount + fee before end\n    require(token.transfer(msg.sender, amountToRepay));\n}"
+      }
+    }
+  },
+  {
+    "id": "options-vault-ribbon",
+    "name": "Options Vault (Ribbon Finance)",
+    "category": "DeFi AMM",
+    "description": "Automated options strategies (covered calls, cash-secured puts). Weekly options selling for yield.",
+    "when_to_use": [
+      "Automated options strategies",
+      "yield generation from volatility"
+    ],
+    "benefits": [
+      "Automated professional strategies",
+      "consistent yield",
+      "risk-defined"
+    ],
+    "drawbacks": [
+      "Capped upside (covered calls)",
+      "strategy risk",
+      "options complexity"
+    ],
+    "use_cases": [
+      "Ribbon Finance vaults",
+      "covered call strategies",
+      "options yield"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "defi",
+      "options",
+      "ribbon",
+      "covered-call",
+      "derivatives"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract CoveredCallVault {\n    function rollover() external onlyKeeper {\n        // 1. Settle previous week's options\n        settleOptions();\n        \n        // 2. Select strike price (e.g., 10% OTM)\n        uint256 strike = (spotPrice * 110) / 100;\n        \n        // 3. Sell covered calls for next week\n        uint256 premium = optionsProtocol.sellCall(\n            totalAssets(), \n            strike, \n            block.timestamp + 7 days\n        );\n        \n        // 4. Distribute premium to vault\n        premiumEarned += premium;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "perpetual-futures",
+    "name": "Perpetual Futures Pattern",
+    "category": "DeFi AMM",
+    "description": "Leveraged futures without expiry. Funding rate mechanism keeps price anchored to spot.",
+    "when_to_use": [
+      "Derivatives trading",
+      "leveraged exposure",
+      "perpetual contracts"
+    ],
+    "benefits": [
+      "No expiry",
+      "high leverage (10-100x)",
+      "capital efficient"
+    ],
+    "drawbacks": [
+      "Funding rate risk",
+      "liquidation risk",
+      "complexity"
+    ],
+    "use_cases": [
+      "dYdX",
+      "GMX",
+      "Perpetual Protocol",
+      "leveraged trading"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "defi",
+      "derivatives",
+      "perpetual",
+      "futures",
+      "leverage"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Funding rate to anchor to spot\nfunction calculateFundingRate() public view returns (int256) {\n    int256 priceDiff = int256(perpetualPrice) - int256(spotPrice);\n    return (priceDiff * FUNDING_RATE_MULTIPLIER) / int256(spotPrice);\n}\n\nfunction applyFunding(address trader) external {\n    int256 fundingRate = calculateFundingRate();\n    int256 payment = (positions[trader].size * fundingRate) / 1e18;\n    \n    if (payment > 0) { // Long pays short\n        balances[trader] -= uint256(payment);\n    } else { // Short pays long\n        balances[trader] += uint256(-payment);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "stable-swap-curve",
+    "name": "Stable Swap (Curve)",
+    "category": "DeFi AMM",
+    "description": "Low-slippage AMM for pegged assets using hybrid formula",
+    "when_to_use": [
+      "Stablecoin swaps",
+      "wrapped asset exchanges",
+      "correlated pairs"
+    ],
+    "benefits": [
+      "Minimal slippage",
+      "efficient for pegged assets",
+      "low IL"
+    ],
+    "drawbacks": [
+      "Only for correlated assets",
+      "complex math"
+    ],
+    "use_cases": [
+      "USDC/USDT",
+      "wBTC/renBTC",
+      "stablecoin pools"
+    ],
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "amm",
+      "curve",
+      "stableswap",
+      "stablecoin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Stable Swap: hybrid constant product + sum\nfunction get_dy(uint256 i, uint256 j, uint256 dx) external view returns (uint256) {\n    // Hybrid formula: efficient near peg\n    uint256 amp = A * n**(n-1);\n    return calculateSwap(balances, amp, i, j, dx);\n}"
+      }
+    }
+  }
+]

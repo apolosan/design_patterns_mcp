@@ -1,16 +1,18 @@
-{
-  "id": "digital-twin",
-  "name": "Digital Twin Pattern",
-  "category": "IoT",
-  "description": "Digital replica of physical device that mirrors its state and behavior",
-  "when_to_use": "Simulation\nPredictive maintenance\nSystem optimization",
-  "benefits": "Simulation capability\nPredictive analytics\nSystem optimization",
-  "drawbacks": "Model complexity\nSynchronization overhead\nComputational requirements",
-  "use_cases": "Manufacturing\nSmart buildings\nPredictive maintenance",
-  "complexity": "High",
-  "tags": [
-    "iot",
-    "twin",
-    "simulation"
-  ]
-}
+[
+  {
+    "id": "digital-twin",
+    "name": "Digital Twin Pattern",
+    "category": "IoT",
+    "description": "Digital replica of physical device that mirrors its state and behavior",
+    "when_to_use": "Simulation\nPredictive maintenance\nSystem optimization",
+    "benefits": "Simulation capability\nPredictive analytics\nSystem optimization",
+    "drawbacks": "Model complexity\nSynchronization overhead\nComputational requirements",
+    "use_cases": "Manufacturing\nSmart buildings\nPredictive maintenance",
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "twin",
+      "simulation"
+    ]
+  }
+]

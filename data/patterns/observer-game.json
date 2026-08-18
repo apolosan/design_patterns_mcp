@@ -1,16 +1,18 @@
-{
-  "id": "observer-game",
-  "name": "Observer Pattern (Game)",
-  "category": "Game Development",
-  "description": "Notifies multiple objects about events in the game without tight coupling",
-  "when_to_use": "Event systems\nAchievement systems\nUI updates",
-  "benefits": "Loose coupling\nEvent-driven architecture\nExtensible systems",
-  "drawbacks": "Performance overhead\nDebugging difficulty\nMemory leaks",
-  "use_cases": "Achievement systems\nSound triggers\nUI notifications",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "observer",
-    "events"
-  ]
-}
+[
+  {
+    "id": "observer-game",
+    "name": "Observer Pattern (Game)",
+    "category": "Game Development",
+    "description": "Notifies multiple objects about events in the game without tight coupling",
+    "when_to_use": "Event systems\nAchievement systems\nUI updates",
+    "benefits": "Loose coupling\nEvent-driven architecture\nExtensible systems",
+    "drawbacks": "Performance overhead\nDebugging difficulty\nMemory leaks",
+    "use_cases": "Achievement systems\nSound triggers\nUI notifications",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "observer",
+      "events"
+    ]
+  }
+]

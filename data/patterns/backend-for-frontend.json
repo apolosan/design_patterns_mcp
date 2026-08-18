@@ -1,22 +1,24 @@
-{
-  "id": "backend-for-frontend",
-  "name": "Backend for Frontend (BFF)",
-  "category": "Microservices",
-  "description": "Separate API gateway for each type of client application",
-  "when_to_use": "Different client needs\nClient optimization\nTeam ownership",
-  "benefits": "Client optimization\nTeam autonomy\nTailored APIs\nIndependent deployment",
-  "drawbacks": "Code duplication\nMultiple backends\nCoordination complexity",
-  "use_cases": "Mobile vs web apps\nPartner APIs\nClient-specific backends",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "frontend",
-    "optimization"
-  ],
-  "examples": {
-    "cross-reference": {
-      "language": "cross-reference",
-      "code": "// See Backends for Frontends (BFF) pattern for implementation example\n// Reference pattern: backends-for-frontends"
+[
+  {
+    "id": "backend-for-frontend",
+    "name": "Backend for Frontend (BFF)",
+    "category": "Microservices",
+    "description": "Separate API gateway for each type of client application",
+    "when_to_use": "Different client needs\nClient optimization\nTeam ownership",
+    "benefits": "Client optimization\nTeam autonomy\nTailored APIs\nIndependent deployment",
+    "drawbacks": "Code duplication\nMultiple backends\nCoordination complexity",
+    "use_cases": "Mobile vs web apps\nPartner APIs\nClient-specific backends",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "frontend",
+      "optimization"
+    ],
+    "examples": {
+      "cross-reference": {
+        "language": "cross-reference",
+        "code": "// See Backends for Frontends (BFF) pattern for implementation example\n// Reference pattern: backends-for-frontends"
+      }
     }
   }
-}
+]

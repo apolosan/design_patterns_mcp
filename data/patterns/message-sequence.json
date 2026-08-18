@@ -1,16 +1,18 @@
-{
-  "id": "message-sequence",
-  "name": "Message Sequence",
-  "category": "Integration",
-  "description": "Ensures messages are processed in correct order",
-  "when_to_use": "Order dependencies\nSequential processing\nState consistency",
-  "benefits": "Order preservation\nConsistency\nPredictable processing",
-  "drawbacks": "Performance bottleneck\nSingle-threaded processing\nComplexity",
-  "use_cases": "Financial transactions\nState machines\nOrdered processing",
-  "complexity": "High",
-  "tags": [
-    "integration",
-    "ordering",
-    "sequence"
-  ]
-}
+[
+  {
+    "id": "message-sequence",
+    "name": "Message Sequence",
+    "category": "Integration",
+    "description": "Ensures messages are processed in correct order",
+    "when_to_use": "Order dependencies\nSequential processing\nState consistency",
+    "benefits": "Order preservation\nConsistency\nPredictable processing",
+    "drawbacks": "Performance bottleneck\nSingle-threaded processing\nComplexity",
+    "use_cases": "Financial transactions\nState machines\nOrdered processing",
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "ordering",
+      "sequence"
+    ]
+  }
+]

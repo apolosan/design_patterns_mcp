@@ -1,19 +1,21 @@
-{
-  "id": "routing-pattern",
-  "name": "Routing Pattern",
-  "category": "AI/ML",
-  "description": "Introduces conditional logic into an agent's operational framework, enabling dynamic evaluation of criteria to select from a set of possible subsequent actions, moving beyond fixed execution paths.",
-  "when_to_use": "[\"Adaptive responses required\",\"Classifying and directing queries\",\"Multiple potential actions based on input\",\"Dynamic decision-making\"]",
-  "benefits": "[\"Flexibility\",\"Context-aware behavior\",\"Dynamic decision-making\",\"Better handling of diverse inputs\"]",
-  "drawbacks": "[\"Implementation complexity\",\"Potential for misrouting if criteria are not well-defined\"]",
-  "use_cases": "[\"Virtual assistants\",\"AI-driven tutors\",\"Automated data processing pipelines\",\"Multi-agent systems\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"routing\"",
-    "\"conditional-logic\"",
-    "\"delegation\"",
-    "\"dynamic\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "routing-pattern",
+    "name": "Routing Pattern",
+    "category": "AI/ML",
+    "description": "Introduces conditional logic into an agent's operational framework, enabling dynamic evaluation of criteria to select from a set of possible subsequent actions, moving beyond fixed execution paths.",
+    "when_to_use": "[\"Adaptive responses required\",\"Classifying and directing queries\",\"Multiple potential actions based on input\",\"Dynamic decision-making\"]",
+    "benefits": "[\"Flexibility\",\"Context-aware behavior\",\"Dynamic decision-making\",\"Better handling of diverse inputs\"]",
+    "drawbacks": "[\"Implementation complexity\",\"Potential for misrouting if criteria are not well-defined\"]",
+    "use_cases": "[\"Virtual assistants\",\"AI-driven tutors\",\"Automated data processing pipelines\",\"Multi-agent systems\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"routing\"",
+      "\"conditional-logic\"",
+      "\"delegation\"",
+      "\"dynamic\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

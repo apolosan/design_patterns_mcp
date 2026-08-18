@@ -1,23 +1,25 @@
-{
-  "id": "transparent-proxy",
-  "name": "Transparent Proxy",
-  "category": "Smart Contract Upgradeability",
-  "description": "Proxy with admin/user separation for upgrades Problem: Need upgradeable contracts preserving state and address",
-  "when_to_use": "Separate proxy and admin, delegatecall to implementation",
-  "benefits": "Preserves address, maintains state, clear separation, standard",
-  "drawbacks": "Higher gas, storage collision risk, complexity, audit needs",
-  "use_cases": "Long-lived contracts, iterative protocols, DeFi",
-  "complexity": "High",
-  "tags": [
-    "upgradeability",
-    "proxy",
-    "delegatecall",
-    "openzeppelin"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract TransparentProxy {\n    address immutable admin;\n    address public implementation;\n    \n    function upgrade(address newImpl) external {\n        require(msg.sender == admin);\n        implementation = newImpl;\n    }\n    \n    fallback() external payable {\n        _delegate(implementation);\n    }\n}"
+[
+  {
+    "id": "transparent-proxy",
+    "name": "Transparent Proxy",
+    "category": "Smart Contract Upgradeability",
+    "description": "Proxy with admin/user separation for upgrades Problem: Need upgradeable contracts preserving state and address",
+    "when_to_use": "Separate proxy and admin, delegatecall to implementation",
+    "benefits": "Preserves address, maintains state, clear separation, standard",
+    "drawbacks": "Higher gas, storage collision risk, complexity, audit needs",
+    "use_cases": "Long-lived contracts, iterative protocols, DeFi",
+    "complexity": "High",
+    "tags": [
+      "upgradeability",
+      "proxy",
+      "delegatecall",
+      "openzeppelin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract TransparentProxy {\n    address immutable admin;\n    address public implementation;\n    \n    function upgrade(address newImpl) external {\n        require(msg.sender == admin);\n        implementation = newImpl;\n    }\n    \n    fallback() external payable {\n        _delegate(implementation);\n    }\n}"
+      }
     }
   }
-}
+]

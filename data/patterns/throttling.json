@@ -1,22 +1,24 @@
-{
-  "id": "throttling",
-  "name": "Throttling Pattern",
-  "category": "Cloud-Native",
-  "description": "Controls resource consumption by limiting request rates",
-  "when_to_use": "Rate limiting\nResource protection\nFair usage",
-  "benefits": "Resource protection\nFair usage\nCost control\nStability",
-  "drawbacks": "User experience impact\nConfiguration complexity\nBypass attempts",
-  "use_cases": "API rate limiting\nResource quotas\nCost control",
-  "complexity": "Medium",
-  "tags": [
-    "rate-limiting",
-    "resource-protection",
-    "control"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Throttling: limit request rate\nclass Throttle {\n  private requests = new Map<string, number[]>();\n  \n  constructor(\n    private maxRequests: number,\n    private windowMs: number\n  ) {}\n  \n  async execute<T>(clientId: string, fn: () => Promise<T>): Promise<T> {\n    if (!this.allow(clientId)) {\n      throw new Error('Rate limit exceeded');\n    }\n    this.record(clientId);\n    return fn();\n  }\n  \n  private allow(clientId: string): boolean {\n    const now = Date.now();\n    const requests = this.requests.get(clientId) || [];\n    const valid = requests.filter(t => now - t < this.windowMs);\n    this.requests.set(clientId, valid);\n    return valid.length < this.maxRequests;\n  }\n  \n  private record(clientId: string) {\n    const requests = this.requests.get(clientId) || [];\n    requests.push(Date.now());\n    this.requests.set(clientId, requests);\n  }\n}\n\nconst throttle = new Throttle(100, 60000);\nawait throttle.execute(clientId, async () => {});"
+[
+  {
+    "id": "throttling",
+    "name": "Throttling Pattern",
+    "category": "Cloud-Native",
+    "description": "Controls resource consumption by limiting request rates",
+    "when_to_use": "Rate limiting\nResource protection\nFair usage",
+    "benefits": "Resource protection\nFair usage\nCost control\nStability",
+    "drawbacks": "User experience impact\nConfiguration complexity\nBypass attempts",
+    "use_cases": "API rate limiting\nResource quotas\nCost control",
+    "complexity": "Medium",
+    "tags": [
+      "rate-limiting",
+      "resource-protection",
+      "control"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Throttling: limit request rate\nclass Throttle {\n  private requests = new Map<string, number[]>();\n  \n  constructor(\n    private maxRequests: number,\n    private windowMs: number\n  ) {}\n  \n  async execute<T>(clientId: string, fn: () => Promise<T>): Promise<T> {\n    if (!this.allow(clientId)) {\n      throw new Error('Rate limit exceeded');\n    }\n    this.record(clientId);\n    return fn();\n  }\n  \n  private allow(clientId: string): boolean {\n    const now = Date.now();\n    const requests = this.requests.get(clientId) || [];\n    const valid = requests.filter(t => now - t < this.windowMs);\n    this.requests.set(clientId, valid);\n    return valid.length < this.maxRequests;\n  }\n  \n  private record(clientId: string) {\n    const requests = this.requests.get(clientId) || [];\n    requests.push(Date.now());\n    this.requests.set(clientId, requests);\n  }\n}\n\nconst throttle = new Throttle(100, 60000);\nawait throttle.execute(clientId, async () => {});"
+      }
     }
   }
-}
+]

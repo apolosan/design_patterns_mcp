@@ -1,24 +1,26 @@
-{
-  "id": "rage-quit",
-  "name": "Rage Quit",
-  "category": "DAO Governance",
-  "description": "Exit with proportional treasury share during grace period",
-  "when_to_use": "Moloch DAOs, investment DAOs, minority protection",
-  "benefits": "Exit option, prevents tyranny, minority rights",
-  "drawbacks": "Treasury drain risk, coordination overhead",
-  "use_cases": "Moloch, LAO, investment club DAOs",
-  "complexity": "High",
-  "tags": [
-    "governance",
-    "dao",
-    "rage-quit",
-    "moloch",
-    "exit"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Rage Quit: burn shares for assets\nfunction ragequit(uint256 sharesToBurn) external {\n    require(block.timestamp <= proposal.gracePeriodEnd);\n    uint256 proportion = sharesToBurn * 1e18 / totalShares;\n    \n    for (uint256 i = 0; i < tokens.length; i++) {\n        uint256 amount = balance[tokens[i]] * proportion / 1e18;\n        tokens[i].transfer(msg.sender, amount);\n    }\n    _burn(msg.sender, sharesToBurn);\n}"
+[
+  {
+    "id": "rage-quit",
+    "name": "Rage Quit",
+    "category": "DAO Governance",
+    "description": "Exit with proportional treasury share during grace period",
+    "when_to_use": "Moloch DAOs, investment DAOs, minority protection",
+    "benefits": "Exit option, prevents tyranny, minority rights",
+    "drawbacks": "Treasury drain risk, coordination overhead",
+    "use_cases": "Moloch, LAO, investment club DAOs",
+    "complexity": "High",
+    "tags": [
+      "governance",
+      "dao",
+      "rage-quit",
+      "moloch",
+      "exit"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Rage Quit: burn shares for assets\nfunction ragequit(uint256 sharesToBurn) external {\n    require(block.timestamp <= proposal.gracePeriodEnd);\n    uint256 proportion = sharesToBurn * 1e18 / totalShares;\n    \n    for (uint256 i = 0; i < tokens.length; i++) {\n        uint256 amount = balance[tokens[i]] * proportion / 1e18;\n        tokens[i].transfer(msg.sender, amount);\n    }\n    _burn(msg.sender, sharesToBurn);\n}"
+      }
     }
   }
-}
+]

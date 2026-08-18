@@ -1,17 +1,19 @@
-{
-  "id": "anonymizer",
-  "name": "Anonymizer",
-  "category": "Data Security",
-  "description": "The Anonymizer pattern removes or modifies identifying information to protect privacy.",
-  "when_to_use": "[\"PII removal\",\"Data anonymization\"]",
-  "benefits": "[\"Privacy protection\",\"Compliance\"]",
-  "drawbacks": "[\"Data utility loss\",\"Reversibility issues\"]",
-  "use_cases": "[\"Data anonymization\",\"Privacy protection\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-security\"",
-    "\"anonymizer\"",
-    "\"privacy\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "anonymizer",
+    "name": "Anonymizer",
+    "category": "Data Security",
+    "description": "The Anonymizer pattern removes or modifies identifying information to protect privacy.",
+    "when_to_use": "[\"PII removal\",\"Data anonymization\"]",
+    "benefits": "[\"Privacy protection\",\"Compliance\"]",
+    "drawbacks": "[\"Data utility loss\",\"Reversibility issues\"]",
+    "use_cases": "[\"Data anonymization\",\"Privacy protection\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-security\"",
+      "\"anonymizer\"",
+      "\"privacy\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

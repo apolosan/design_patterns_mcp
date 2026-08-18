@@ -1,19 +1,21 @@
-{
-  "id": "exploration-discovery-pattern",
-  "name": "Exploration and Discovery Pattern",
-  "category": "AI/ML",
-  "description": "Allows agents to explore new possibilities, discover patterns, or generate novel solutions through curiosity-driven or systematic exploration.",
-  "when_to_use": "[\"Innovation needed\",\"Unknown domains\",\"Creative problem-solving\"]",
-  "benefits": "[\"Novel solutions\",\"Adaptation to new scenarios\",\"Knowledge expansion\"]",
-  "drawbacks": "[\"Unpredictability\",\"Resource consumption\",\"Evaluation challenges\"]",
-  "use_cases": "[\"Research agents\",\"Creative systems\",\"Adaptive learning\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"exploration\"",
-    "\"discovery\"",
-    "\"innovation\"",
-    "\"creativity\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "exploration-discovery-pattern",
+    "name": "Exploration and Discovery Pattern",
+    "category": "AI/ML",
+    "description": "Allows agents to explore new possibilities, discover patterns, or generate novel solutions through curiosity-driven or systematic exploration.",
+    "when_to_use": "[\"Innovation needed\",\"Unknown domains\",\"Creative problem-solving\"]",
+    "benefits": "[\"Novel solutions\",\"Adaptation to new scenarios\",\"Knowledge expansion\"]",
+    "drawbacks": "[\"Unpredictability\",\"Resource consumption\",\"Evaluation challenges\"]",
+    "use_cases": "[\"Research agents\",\"Creative systems\",\"Adaptive learning\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"exploration\"",
+      "\"discovery\"",
+      "\"innovation\"",
+      "\"creativity\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

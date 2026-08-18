@@ -1,16 +1,18 @@
-{
-  "id": "api-composition",
-  "name": "API Composition",
-  "category": "Microservices",
-  "description": "Composes data from multiple services to fulfill client requests",
-  "when_to_use": "Cross-service queries\nClient simplification\nData aggregation",
-  "benefits": "Client simplification\nData aggregation\nService encapsulation",
-  "drawbacks": "Performance overhead\nComplexity\nError handling",
-  "use_cases": "Product catalogs\nUser dashboards\nReport generation",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "composition",
-    "aggregation"
-  ]
-}
+[
+  {
+    "id": "api-composition",
+    "name": "API Composition",
+    "category": "Microservices",
+    "description": "Composes data from multiple services to fulfill client requests",
+    "when_to_use": "Cross-service queries\nClient simplification\nData aggregation",
+    "benefits": "Client simplification\nData aggregation\nService encapsulation",
+    "drawbacks": "Performance overhead\nComplexity\nError handling",
+    "use_cases": "Product catalogs\nUser dashboards\nReport generation",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "composition",
+      "aggregation"
+    ]
+  }
+]

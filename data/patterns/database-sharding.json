@@ -1,22 +1,24 @@
-{
-  "id": "database-sharding",
-  "name": "Database Sharding",
-  "category": "Data Access",
-  "description": "Horizontal partitioning of data across multiple databases",
-  "when_to_use": "Large datasets\nScalability requirements\nPerformance optimization",
-  "benefits": "Horizontal scaling\nPerformance improvement\nLoad distribution",
-  "drawbacks": "Complex queries\nData consistency\nOperational complexity",
-  "use_cases": "Large-scale applications\nBig data systems\nGlobal applications",
-  "complexity": "High",
-  "tags": [
-    "data-access",
-    "scaling",
-    "partitioning"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Database Sharding: horizontal partitioning\nclass ShardingStrategy {\n  constructor(private shards: Database[]) {}\n  \n  getShard(key: string): Database {\n    const hash = this.hash(key);\n    const shardIndex = hash % this.shards.length;\n    return this.shards[shardIndex];\n  }\n  \n  private hash(key: string): number {\n    let hash = 0;\n    for (let i = 0; i < key.length; i++) {\n      hash = ((hash << 5) - hash) + key.charCodeAt(i);\n    }\n    return Math.abs(hash);\n  }\n}\n\nclass ShardedUserRepository {\n  constructor(private sharding: ShardingStrategy) {}\n  \n  async findById(userId: string): Promise<User | null> {\n    const shard = this.sharding.getShard(userId);\n    const row = await shard.query('SELECT * FROM users WHERE id = $1', [userId]);\n    return row ? this.mapToUser(row) : null;\n  }\n  \n  async save(user: User): Promise<void> {\n    const shard = this.sharding.getShard(user.id);\n    await shard.query('INSERT INTO users (...) VALUES (...)', [user.id, user.email]);\n  }\n  \n  private mapToUser(row: any): User {\n    return { id: row.id, email: row.email };\n  }\n}\n\nconst sharding = new ShardingStrategy([shard1, shard2, shard3]);\nconst repo = new ShardedUserRepository(sharding);"
+[
+  {
+    "id": "database-sharding",
+    "name": "Database Sharding",
+    "category": "Data Access",
+    "description": "Horizontal partitioning of data across multiple databases",
+    "when_to_use": "Large datasets\nScalability requirements\nPerformance optimization",
+    "benefits": "Horizontal scaling\nPerformance improvement\nLoad distribution",
+    "drawbacks": "Complex queries\nData consistency\nOperational complexity",
+    "use_cases": "Large-scale applications\nBig data systems\nGlobal applications",
+    "complexity": "High",
+    "tags": [
+      "data-access",
+      "scaling",
+      "partitioning"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Database Sharding: horizontal partitioning\nclass ShardingStrategy {\n  constructor(private shards: Database[]) {}\n  \n  getShard(key: string): Database {\n    const hash = this.hash(key);\n    const shardIndex = hash % this.shards.length;\n    return this.shards[shardIndex];\n  }\n  \n  private hash(key: string): number {\n    let hash = 0;\n    for (let i = 0; i < key.length; i++) {\n      hash = ((hash << 5) - hash) + key.charCodeAt(i);\n    }\n    return Math.abs(hash);\n  }\n}\n\nclass ShardedUserRepository {\n  constructor(private sharding: ShardingStrategy) {}\n  \n  async findById(userId: string): Promise<User | null> {\n    const shard = this.sharding.getShard(userId);\n    const row = await shard.query('SELECT * FROM users WHERE id = $1', [userId]);\n    return row ? this.mapToUser(row) : null;\n  }\n  \n  async save(user: User): Promise<void> {\n    const shard = this.sharding.getShard(user.id);\n    await shard.query('INSERT INTO users (...) VALUES (...)', [user.id, user.email]);\n  }\n  \n  private mapToUser(row: any): User {\n    return { id: row.id, email: row.email };\n  }\n}\n\nconst sharding = new ShardingStrategy([shard1, shard2, shard3]);\nconst repo = new ShardedUserRepository(sharding);"
+      }
     }
   }
-}
+]

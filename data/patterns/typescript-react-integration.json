@@ -1,24 +1,26 @@
-{
-  "id": "typescript-react-integration",
-  "name": "TypeScript Integration Pattern",
-  "category": "React Fundamentals",
-  "description": "Type-safe React development with TypeScript. Define prop types, state types, and component contracts.",
-  "when_to_use": "Large React applications, team projects, type safety requirements",
-  "benefits": "Type safety, better IDE support, catch errors at compile time, self-documenting",
-  "drawbacks": "Additional setup, learning curve, verbose for simple components",
-  "use_cases": "Component props validation, state typing, event handlers, custom hooks",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "typescript",
-    "types",
-    "props",
-    "interfaces"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import React, { useState, ReactNode } from 'react';\n\n// Interface for component props\ninterface ButtonProps {\n  variant?: 'primary' | 'secondary';\n  children: ReactNode;\n  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;\n  disabled?: boolean;\n}\n\n// Typed functional component\nconst Button: React.FC<ButtonProps> = ({ \n  variant = 'primary', \n  children, \n  onClick,\n  disabled = false \n}) => {\n  return (\n    <button \n      className={`btn btn-${variant}`}\n      onClick={onClick}\n      disabled={disabled}\n    >\n      {children}\n    </button>\n  );\n};\n\n// Using the typed component\nfunction App() {\n  const [count, setCount] = useState<number>(0);\n  \n  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {\n    setCount(prev => prev + 1);\n  };\n  \n  return (\n    <div>\n      <Button variant=\"primary\" onClick={handleClick}>\n        Count: {count}\n      </Button>\n    </div>\n  );\n}"
+[
+  {
+    "id": "typescript-react-integration",
+    "name": "TypeScript Integration Pattern",
+    "category": "React Fundamentals",
+    "description": "Type-safe React development with TypeScript. Define prop types, state types, and component contracts.",
+    "when_to_use": "Large React applications, team projects, type safety requirements",
+    "benefits": "Type safety, better IDE support, catch errors at compile time, self-documenting",
+    "drawbacks": "Additional setup, learning curve, verbose for simple components",
+    "use_cases": "Component props validation, state typing, event handlers, custom hooks",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "typescript",
+      "types",
+      "props",
+      "interfaces"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import React, { useState, ReactNode } from 'react';\n\n// Interface for component props\ninterface ButtonProps {\n  variant?: 'primary' | 'secondary';\n  children: ReactNode;\n  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;\n  disabled?: boolean;\n}\n\n// Typed functional component\nconst Button: React.FC<ButtonProps> = ({ \n  variant = 'primary', \n  children, \n  onClick,\n  disabled = false \n}) => {\n  return (\n    <button \n      className={`btn btn-${variant}`}\n      onClick={onClick}\n      disabled={disabled}\n    >\n      {children}\n    </button>\n  );\n};\n\n// Using the typed component\nfunction App() {\n  const [count, setCount] = useState<number>(0);\n  \n  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {\n    setCount(prev => prev + 1);\n  };\n  \n  return (\n    <div>\n      <Button variant=\"primary\" onClick={handleClick}>\n        Count: {count}\n      </Button>\n    </div>\n  );\n}"
+      }
     }
   }
-}
+]

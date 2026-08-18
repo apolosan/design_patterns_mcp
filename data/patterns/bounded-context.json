@@ -1,16 +1,18 @@
-{
-  "id": "bounded-context",
-  "name": "Bounded Context",
-  "category": "Domain-Driven Design",
-  "description": "Explicit boundary within which a domain model applies and has specific meaning",
-  "when_to_use": "Large domains\nMultiple teams\nContext separation",
-  "benefits": "Clear boundaries\nTeam autonomy\nModel clarity\nReduced complexity",
-  "drawbacks": "Integration complexity\nData duplication\nCoordination overhead",
-  "use_cases": "Microservices boundaries\nTeam organization\nDomain separation",
-  "complexity": "High",
-  "tags": [
-    "ddd",
-    "strategic",
-    "boundary"
-  ]
-}
+[
+  {
+    "id": "bounded-context",
+    "name": "Bounded Context",
+    "category": "Domain-Driven Design",
+    "description": "Explicit boundary within which a domain model applies and has specific meaning",
+    "when_to_use": "Large domains\nMultiple teams\nContext separation",
+    "benefits": "Clear boundaries\nTeam autonomy\nModel clarity\nReduced complexity",
+    "drawbacks": "Integration complexity\nData duplication\nCoordination overhead",
+    "use_cases": "Microservices boundaries\nTeam organization\nDomain separation",
+    "complexity": "High",
+    "tags": [
+      "ddd",
+      "strategic",
+      "boundary"
+    ]
+  }
+]

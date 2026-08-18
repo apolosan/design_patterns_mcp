@@ -1,24 +1,26 @@
-{
-  "id": "erc998-composable",
-  "name": "ERC-998 Composable NFTs",
-  "category": "NFT",
-  "description": "NFTs that own other tokens (NFTs or fungibles). Parent-child hierarchy.",
-  "when_to_use": "Gaming characters with equipment, bundled assets, NFT portfolios",
-  "benefits": "Composable hierarchies, transfer bundles atomically, rich metadata",
-  "drawbacks": "High complexity, limited adoption, gas costs",
-  "use_cases": "Game characters owning items, crypto kitties with accessories, asset bundles",
-  "complexity": "Very High",
-  "tags": [
-    "nft",
-    "erc998",
-    "composable",
-    "gaming",
-    "hierarchy"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract ComposableNFT is ERC998 {\n    // Parent NFT owns child tokens\n    mapping(uint256 => address[]) public childContracts;\n    mapping(uint256 => mapping(address => uint256[])) public childTokens;\n    \n    function safeTransferChild(\n        uint256 fromTokenId,\n        address to,\n        address childContract,\n        uint256 childTokenId\n    ) external {\n        require(ownerOf(fromTokenId) == msg.sender);\n        IERC721(childContract).safeTransferFrom(address(this), to, childTokenId);\n        _removeChild(fromTokenId, childContract, childTokenId);\n    }\n}"
+[
+  {
+    "id": "erc998-composable",
+    "name": "ERC-998 Composable NFTs",
+    "category": "NFT",
+    "description": "NFTs that own other tokens (NFTs or fungibles). Parent-child hierarchy.",
+    "when_to_use": "Gaming characters with equipment, bundled assets, NFT portfolios",
+    "benefits": "Composable hierarchies, transfer bundles atomically, rich metadata",
+    "drawbacks": "High complexity, limited adoption, gas costs",
+    "use_cases": "Game characters owning items, crypto kitties with accessories, asset bundles",
+    "complexity": "Very High",
+    "tags": [
+      "nft",
+      "erc998",
+      "composable",
+      "gaming",
+      "hierarchy"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract ComposableNFT is ERC998 {\n    // Parent NFT owns child tokens\n    mapping(uint256 => address[]) public childContracts;\n    mapping(uint256 => mapping(address => uint256[])) public childTokens;\n    \n    function safeTransferChild(\n        uint256 fromTokenId,\n        address to,\n        address childContract,\n        uint256 childTokenId\n    ) external {\n        require(ownerOf(fromTokenId) == msg.sender);\n        IERC721(childContract).safeTransferFrom(address(this), to, childTokenId);\n        _removeChild(fromTokenId, childContract, childTokenId);\n    }\n}"
+      }
     }
   }
-}
+]

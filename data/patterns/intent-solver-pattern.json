@@ -1,24 +1,26 @@
-{
-  "id": "intent-solver-pattern",
-  "name": "Intent Solver Pattern",
-  "category": "Intent-Based Architecture",
-  "description": "Users specify outcome, not execution path. Solvers compete to fulfill intents optimally.",
-  "when_to_use": "Complex multi-step operations, optimal execution, cross-chain",
-  "benefits": "Simplified UX, optimal execution, solver competition",
-  "drawbacks": "Requires solver network, execution uncertainty, new paradigm",
-  "use_cases": "UniswapX, CoW Protocol, cross-chain swaps, complex DeFi",
-  "complexity": "Very High",
-  "tags": [
-    "intent",
-    "solver",
-    "uniswapx",
-    "cow-protocol",
-    "architecture"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Intent: \"Swap 1 ETH for USDC, any path\"\nstruct Intent {\n    address user;\n    address tokenIn;\n    address tokenOut;\n    uint256 amountIn;\n    uint256 minAmountOut;\n    uint256 deadline;\n    bytes signature;\n}\n\n// Solver fulfills intent\ncontract IntentSettlement {\n    function settleIntent(Intent calldata intent, bytes calldata path) external {\n        // Verify signature\n        require(verifyIntent(intent));\n        \n        // Execute optimal path found by solver\n        uint256 amountOut = executeSwap(intent.tokenIn, intent.tokenOut, path);\n        require(amountOut >= intent.minAmountOut);\n        \n        // Transfer to user\n        IERC20(intent.tokenOut).transfer(intent.user, amountOut);\n    }\n}"
+[
+  {
+    "id": "intent-solver-pattern",
+    "name": "Intent Solver Pattern",
+    "category": "Intent-Based Architecture",
+    "description": "Users specify outcome, not execution path. Solvers compete to fulfill intents optimally.",
+    "when_to_use": "Complex multi-step operations, optimal execution, cross-chain",
+    "benefits": "Simplified UX, optimal execution, solver competition",
+    "drawbacks": "Requires solver network, execution uncertainty, new paradigm",
+    "use_cases": "UniswapX, CoW Protocol, cross-chain swaps, complex DeFi",
+    "complexity": "Very High",
+    "tags": [
+      "intent",
+      "solver",
+      "uniswapx",
+      "cow-protocol",
+      "architecture"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Intent: \"Swap 1 ETH for USDC, any path\"\nstruct Intent {\n    address user;\n    address tokenIn;\n    address tokenOut;\n    uint256 amountIn;\n    uint256 minAmountOut;\n    uint256 deadline;\n    bytes signature;\n}\n\n// Solver fulfills intent\ncontract IntentSettlement {\n    function settleIntent(Intent calldata intent, bytes calldata path) external {\n        // Verify signature\n        require(verifyIntent(intent));\n        \n        // Execute optimal path found by solver\n        uint256 amountOut = executeSwap(intent.tokenIn, intent.tokenOut, path);\n        require(amountOut >= intent.minAmountOut);\n        \n        // Transfer to user\n        IERC20(intent.tokenOut).transfer(intent.user, amountOut);\n    }\n}"
+      }
     }
   }
-}
+]

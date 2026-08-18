@@ -1,22 +1,24 @@
-{
-  "id": "event-driven-architecture",
-  "name": "Event-Driven Architecture",
-  "category": "Architectural",
-  "description": "Uses events to trigger and communicate between decoupled services",
-  "when_to_use": "Microservices\nReal-time systems\nScalable applications",
-  "benefits": "Loose coupling\nScalability\nFlexibility\nReal-time processing",
-  "drawbacks": "Complexity\nEventual consistency\nDebugging difficulty",
-  "use_cases": "E-commerce platforms\nIoT systems\nReactive applications",
-  "complexity": "High",
-  "tags": [
-    "events",
-    "decoupling",
-    "reactive"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Event-Driven Architecture: components communicate via events\n\n// Event Bus\nclass EventBus {\n  private handlers = new Map<string, Function[]>();\n  \n  subscribe(eventType: string, handler: Function) {\n    if (!this.handlers.has(eventType)) {\n      this.handlers.set(eventType, []);\n    }\n    this.handlers.get(eventType)!.push(handler);\n  }\n  \n  async publish(eventType: string, data: any) {\n    const handlers = this.handlers.get(eventType) || [];\n    await Promise.all(handlers.map(h => h(data)));\n  }\n}\n\nconst eventBus = new EventBus();\n\n// Producer\nclass OrderService {\n  async createOrder(orderId: string, total: number) {\n    // Create order\n    console.log(`Order ${orderId} created`);\n    \n    // Publish event\n    await eventBus.publish('OrderCreated', { orderId, total });\n  }\n}\n\n// Consumers (react to events)\nclass InventoryService {\n  constructor() {\n    eventBus.subscribe('OrderCreated', this.handleOrderCreated.bind(this));\n  }\n  \n  async handleOrderCreated(data: any) {\n    console.log(`Inventory: Reserve items for order ${data.orderId}`);\n  }\n}\n\nclass NotificationService {\n  constructor() {\n    eventBus.subscribe('OrderCreated', this.handleOrderCreated.bind(this));\n  }\n  \n  async handleOrderCreated(data: any) {\n    console.log(`Notification: Email sent for order ${data.orderId}`);\n  }\n}\n\n// Usage: loosely coupled services\nnew InventoryService();\nnew NotificationService();\n\nconst orderService = new OrderService();\nawait orderService.createOrder('order-1', 99.99);"
+[
+  {
+    "id": "event-driven-architecture",
+    "name": "Event-Driven Architecture",
+    "category": "Architectural",
+    "description": "Uses events to trigger and communicate between decoupled services",
+    "when_to_use": "Microservices\nReal-time systems\nScalable applications",
+    "benefits": "Loose coupling\nScalability\nFlexibility\nReal-time processing",
+    "drawbacks": "Complexity\nEventual consistency\nDebugging difficulty",
+    "use_cases": "E-commerce platforms\nIoT systems\nReactive applications",
+    "complexity": "High",
+    "tags": [
+      "events",
+      "decoupling",
+      "reactive"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Event-Driven Architecture: components communicate via events\n\n// Event Bus\nclass EventBus {\n  private handlers = new Map<string, Function[]>();\n  \n  subscribe(eventType: string, handler: Function) {\n    if (!this.handlers.has(eventType)) {\n      this.handlers.set(eventType, []);\n    }\n    this.handlers.get(eventType)!.push(handler);\n  }\n  \n  async publish(eventType: string, data: any) {\n    const handlers = this.handlers.get(eventType) || [];\n    await Promise.all(handlers.map(h => h(data)));\n  }\n}\n\nconst eventBus = new EventBus();\n\n// Producer\nclass OrderService {\n  async createOrder(orderId: string, total: number) {\n    // Create order\n    console.log(`Order ${orderId} created`);\n    \n    // Publish event\n    await eventBus.publish('OrderCreated', { orderId, total });\n  }\n}\n\n// Consumers (react to events)\nclass InventoryService {\n  constructor() {\n    eventBus.subscribe('OrderCreated', this.handleOrderCreated.bind(this));\n  }\n  \n  async handleOrderCreated(data: any) {\n    console.log(`Inventory: Reserve items for order ${data.orderId}`);\n  }\n}\n\nclass NotificationService {\n  constructor() {\n    eventBus.subscribe('OrderCreated', this.handleOrderCreated.bind(this));\n  }\n  \n  async handleOrderCreated(data: any) {\n    console.log(`Notification: Email sent for order ${data.orderId}`);\n  }\n}\n\n// Usage: loosely coupled services\nnew InventoryService();\nnew NotificationService();\n\nconst orderService = new OrderService();\nawait orderService.createOrder('order-1', 99.99);"
+      }
     }
   }
-}
+]

@@ -1,16 +1,18 @@
-{
-  "id": "partial-application",
-  "name": "Partial Application Pattern",
-  "category": "Functional",
-  "description": "Fixes some arguments of function to produce new function with fewer parameters",
-  "when_to_use": "Code reuse\nConfiguration\nSpecialization",
-  "benefits": "Code reuse\nSpecialization\nCleaner interfaces\nConfiguration",
-  "drawbacks": "Memory overhead\nDebugging complexity\nPerformance cost",
-  "use_cases": "Database queries\nValidators\nEvent handlers",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "partial",
-    "specialization"
-  ]
-}
+[
+  {
+    "id": "partial-application",
+    "name": "Partial Application Pattern",
+    "category": "Functional",
+    "description": "Fixes some arguments of function to produce new function with fewer parameters",
+    "when_to_use": "Code reuse\nConfiguration\nSpecialization",
+    "benefits": "Code reuse\nSpecialization\nCleaner interfaces\nConfiguration",
+    "drawbacks": "Memory overhead\nDebugging complexity\nPerformance cost",
+    "use_cases": "Database queries\nValidators\nEvent handlers",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "partial",
+      "specialization"
+    ]
+  }
+]

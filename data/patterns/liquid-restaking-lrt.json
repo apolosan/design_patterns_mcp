@@ -1,24 +1,26 @@
-{
-  "id": "liquid-restaking-lrt",
-  "name": "Liquid Restaking Token (LRT)",
-  "category": "Restaking",
-  "description": "Liquidity for restaked positions via wrapped tokens. Composable restaking, DeFi integration.",
-  "when_to_use": "Liquidity while restaking, DeFi composability, yield optimization",
-  "benefits": "Liquidity while restaking, composable in DeFi, additional yield layers",
-  "drawbacks": "Smart contract risk, de-pegging risk, complexity stacking",
-  "use_cases": "ether.fi eETH, Puffer Finance, Renzo ezETH",
-  "complexity": "Very High",
-  "tags": [
-    "restaking",
-    "lrt",
-    "liquidity",
-    "defi",
-    "eigenlayer"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract LiquidRestakingToken is ERC20 {\n    IEigenLayer public eigenLayer;\n    \n    function deposit() external payable {\n        // 1. Stake ETH to beacon chain\n        beaconChain.stake{value: msg.value}();\n        \n        // 2. Restake via EigenLayer\n        eigenLayer.depositBeaconChainETH(msg.sender, msg.value);\n        \n        // 3. Mint liquid token (eETH, ezETH, etc.)\n        uint256 shares = (msg.value * totalSupply()) / getTotalPooledEther();\n        _mint(msg.sender, shares);\n    }\n    \n    // Users can use LRT in DeFi while earning:\n    // - Beacon chain rewards\n    // - EigenLayer restaking rewards  \n    // - AVS rewards\n}"
+[
+  {
+    "id": "liquid-restaking-lrt",
+    "name": "Liquid Restaking Token (LRT)",
+    "category": "Restaking",
+    "description": "Liquidity for restaked positions via wrapped tokens. Composable restaking, DeFi integration.",
+    "when_to_use": "Liquidity while restaking, DeFi composability, yield optimization",
+    "benefits": "Liquidity while restaking, composable in DeFi, additional yield layers",
+    "drawbacks": "Smart contract risk, de-pegging risk, complexity stacking",
+    "use_cases": "ether.fi eETH, Puffer Finance, Renzo ezETH",
+    "complexity": "Very High",
+    "tags": [
+      "restaking",
+      "lrt",
+      "liquidity",
+      "defi",
+      "eigenlayer"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract LiquidRestakingToken is ERC20 {\n    IEigenLayer public eigenLayer;\n    \n    function deposit() external payable {\n        // 1. Stake ETH to beacon chain\n        beaconChain.stake{value: msg.value}();\n        \n        // 2. Restake via EigenLayer\n        eigenLayer.depositBeaconChainETH(msg.sender, msg.value);\n        \n        // 3. Mint liquid token (eETH, ezETH, etc.)\n        uint256 shares = (msg.value * totalSupply()) / getTotalPooledEther();\n        _mint(msg.sender, shares);\n    }\n    \n    // Users can use LRT in DeFi while earning:\n    // - Beacon chain rewards\n    // - EigenLayer restaking rewards  \n    // - AVS rewards\n}"
+      }
     }
   }
-}
+]

@@ -1,16 +1,18 @@
-{
-  "id": "property-based-testing",
-  "name": "Property-Based Testing",
-  "category": "Testing",
-  "description": "Tests properties that should hold for all valid inputs rather than specific examples",
-  "when_to_use": "Algorithm testing\nInvariant verification\nEdge case discovery",
-  "benefits": "Edge case discovery\nComprehensive testing\nProperty verification",
-  "drawbacks": "Complex property definition\nDebugging difficulty\nTool requirements",
-  "use_cases": "Algorithm validation\nInvariant testing\nMathematical functions",
-  "complexity": "High",
-  "tags": [
-    "testing",
-    "property-based",
-    "algorithms"
-  ]
-}
+[
+  {
+    "id": "property-based-testing",
+    "name": "Property-Based Testing",
+    "category": "Testing",
+    "description": "Tests properties that should hold for all valid inputs rather than specific examples",
+    "when_to_use": "Algorithm testing\nInvariant verification\nEdge case discovery",
+    "benefits": "Edge case discovery\nComprehensive testing\nProperty verification",
+    "drawbacks": "Complex property definition\nDebugging difficulty\nTool requirements",
+    "use_cases": "Algorithm validation\nInvariant testing\nMathematical functions",
+    "complexity": "High",
+    "tags": [
+      "testing",
+      "property-based",
+      "algorithms"
+    ]
+  }
+]

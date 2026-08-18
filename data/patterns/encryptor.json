@@ -1,17 +1,19 @@
-{
-  "id": "encryptor",
-  "name": "Encryptor",
-  "category": "Data Security",
-  "description": "The Encryptor pattern encrypts data to protect it from unauthorized access.",
-  "when_to_use": "[\"Data encryption needs\",\"Protect sensitive data\"]",
-  "benefits": "[\"Data protection\",\"Compliance\"]",
-  "drawbacks": "[\"Performance overhead\",\"Key management\"]",
-  "use_cases": "[\"Data encryption\",\"Secure storage\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-security\"",
-    "\"encryptor\"",
-    "\"encryption\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "encryptor",
+    "name": "Encryptor",
+    "category": "Data Security",
+    "description": "The Encryptor pattern encrypts data to protect it from unauthorized access.",
+    "when_to_use": "[\"Data encryption needs\",\"Protect sensitive data\"]",
+    "benefits": "[\"Data protection\",\"Compliance\"]",
+    "drawbacks": "[\"Performance overhead\",\"Key management\"]",
+    "use_cases": "[\"Data encryption\",\"Secure storage\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-security\"",
+      "\"encryptor\"",
+      "\"encryption\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

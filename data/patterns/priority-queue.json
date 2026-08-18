@@ -1,16 +1,18 @@
-{
-  "id": "priority-queue",
-  "name": "Priority Queue Pattern",
-  "category": "Messaging",
-  "description": "Processes messages based on priority rather than arrival order",
-  "when_to_use": "Prioritized processing\nSLA requirements\nCritical tasks",
-  "benefits": "Priority handling\nSLA compliance\nResource optimization",
-  "drawbacks": "Starvation risk\nComplexity\nQueue management",
-  "use_cases": "Critical alerts\nVIP customers\nSystem maintenance",
-  "complexity": "Medium",
-  "tags": [
-    "messaging",
-    "priority",
-    "queuing"
-  ]
-}
+[
+  {
+    "id": "priority-queue",
+    "name": "Priority Queue Pattern",
+    "category": "Messaging",
+    "description": "Processes messages based on priority rather than arrival order",
+    "when_to_use": "Prioritized processing\nSLA requirements\nCritical tasks",
+    "benefits": "Priority handling\nSLA compliance\nResource optimization",
+    "drawbacks": "Starvation risk\nComplexity\nQueue management",
+    "use_cases": "Critical alerts\nVIP customers\nSystem maintenance",
+    "complexity": "Medium",
+    "tags": [
+      "messaging",
+      "priority",
+      "queuing"
+    ]
+  }
+]

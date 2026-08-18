@@ -1,16 +1,18 @@
-{
-  "id": "conformist",
-  "name": "Conformist",
-  "category": "Domain-Driven Design",
-  "description": "Downstream team conforms to upstream team's model without translation",
-  "when_to_use": "Power imbalance\nStandard compliance\nSimple integration",
-  "benefits": "Simple integration\nNo translation layer\nAlignment",
-  "drawbacks": "Model contamination\nLost autonomy\nDependency",
-  "use_cases": "Standard protocols\nVendor APIs\nLegacy systems",
-  "complexity": "Low",
-  "tags": [
-    "ddd",
-    "strategic",
-    "conformity"
-  ]
-}
+[
+  {
+    "id": "conformist",
+    "name": "Conformist",
+    "category": "Domain-Driven Design",
+    "description": "Downstream team conforms to upstream team's model without translation",
+    "when_to_use": "Power imbalance\nStandard compliance\nSimple integration",
+    "benefits": "Simple integration\nNo translation layer\nAlignment",
+    "drawbacks": "Model contamination\nLost autonomy\nDependency",
+    "use_cases": "Standard protocols\nVendor APIs\nLegacy systems",
+    "complexity": "Low",
+    "tags": [
+      "ddd",
+      "strategic",
+      "conformity"
+    ]
+  }
+]

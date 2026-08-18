@@ -1,251 +1,661 @@
-{
-  "patterns": [
-    {
-      "id": "thread-pool",
-      "name": "Thread Pool",
-      "category": "Concurrency",
-      "description": "Maintains multiple threads waiting for tasks to be allocated for concurrent execution",
-      "when_to_use": ["Multiple tasks", "Resource management", "Performance optimization"],
-      "benefits": ["Resource control", "Performance", "Task management", "Overhead reduction"],
-      "drawbacks": ["Memory overhead", "Complex configuration", "Resource contention"],
-      "use_cases": ["Web servers", "Task processing", "Parallel computation"],
-      "complexity": "Medium",
-      "tags": ["concurrency", "threading", "pooling"]
-    },
-    {
-      "id": "producer-consumer",
-      "name": "Producer-Consumer",
-      "category": "Concurrency",
-      "description": "Decouples production and consumption of data through shared buffer",
-      "when_to_use": ["Data streaming", "Rate matching", "Buffering"],
-      "benefits": ["Decoupling", "Rate matching", "Buffering", "Scalability"],
-      "drawbacks": ["Buffer management", "Synchronization complexity", "Memory overhead"],
-      "use_cases": ["Data pipelines", "Event processing", "Streaming systems"],
-      "complexity": "Medium",
-      "tags": ["concurrency", "buffering", "streaming"],
-      "relationships": [
-        {
-          "target_pattern_id": "channels",
-          "type": "enhances",
-          "description": "Channels provide a more type-safe and coroutine-aware implementation of the Producer-Consumer pattern with built-in backpressure"
-        }
-      ]
-    },
-    {
-      "id": "monitor-object",
-      "name": "Monitor Object",
-      "category": "Concurrency",
-      "description": "Synchronizes concurrent method execution to ensure only one method runs at a time",
-      "when_to_use": ["Thread-safe objects", "Method synchronization", "Critical sections"],
-      "benefits": ["Thread safety", "Simplicity", "Encapsulation", "Data integrity"],
-      "drawbacks": ["Performance bottleneck", "Deadlock risk", "Limited concurrency"],
-      "use_cases": ["Shared resources", "Critical sections", "State management"],
-      "complexity": "Medium",
-      "tags": ["concurrency", "synchronization", "monitor"]
-    },
-    {
-      "id": "active-object",
-      "name": "Active Object",
-      "category": "Concurrency",
-      "description": "Decouples method execution from method invocation using asynchronous messaging",
-      "when_to_use": ["Asynchronous execution", "Request queuing", "Concurrent services"],
-      "benefits": ["Asynchronous execution", "Decoupling", "Request queuing", "Concurrency"],
-      "drawbacks": ["Complex implementation", "Memory overhead", "Debugging difficulty"],
-      "use_cases": ["Concurrent services", "Asynchronous APIs", "Message processing"],
-      "complexity": "High",
-      "tags": ["concurrency", "asynchronous", "messaging"]
-    },
-    {
-      "id": "balking",
-      "name": "Balking Pattern",
-      "category": "Concurrency",
-      "description": "Prevents object from executing if it's in inappropriate state",
-      "when_to_use": ["State checking", "Resource availability", "Conditional execution"],
-      "benefits": ["State safety", "Resource protection", "Simple logic", "Error prevention"],
-      "drawbacks": ["Lost operations", "State management", "Timing issues"],
-      "use_cases": ["Resource management", "State machines", "Service availability"],
-      "complexity": "Low",
-      "tags": ["concurrency", "state", "protection"]
-    },
-    {
-      "id": "double-checked-locking",
-      "name": "Double-Checked Locking",
-      "category": "Concurrency",
-      "description": "Reduces locking overhead when implementing lazy initialization",
-      "when_to_use": ["Lazy initialization", "Performance optimization", "Singleton pattern"],
-      "benefits": ["Performance optimization", "Lazy initialization", "Reduced locking"],
-      "drawbacks": ["Complex implementation", "Memory model issues", "Error-prone"],
-      "use_cases": ["Singleton pattern", "Lazy loading", "Resource initialization"],
-      "complexity": "High",
-      "tags": ["concurrency", "initialization", "optimization"]
-    },
-    {
-      "id": "read-write-lock",
-      "name": "Read-Write Lock",
-      "category": "Concurrency",
-      "description": "Allows concurrent read access while ensuring exclusive write access",
-      "when_to_use": ["Read-heavy workloads", "Shared data", "Performance optimization"],
-      "benefits": ["Concurrent reads", "Data consistency", "Performance", "Scalability"],
-      "drawbacks": ["Complex implementation", "Writer starvation", "Overhead"],
-      "use_cases": ["Caching systems", "Configuration data", "Shared databases"],
-      "complexity": "Medium",
-      "tags": ["concurrency", "locking", "read-write"]
-    },
-    {
-      "id": "thread-specific-storage",
-      "name": "Thread-Specific Storage",
-      "category": "Concurrency",
-      "description": "Provides separate instance of data for each thread",
-      "when_to_use": ["Thread isolation", "Context preservation", "Legacy code"],
-      "benefits": ["Thread isolation", "No synchronization", "Context preservation"],
-      "drawbacks": ["Memory overhead", "Cleanup complexity", "Hidden dependencies"],
-      "use_cases": ["User contexts", "Transaction state", "Error handling"],
-      "complexity": "Medium",
-      "tags": ["concurrency", "isolation", "thread-local"]
-    },
-    {
-      "id": "guarded-suspension",
-      "name": "Guarded Suspension",
-      "category": "Concurrency",
-      "description": "Suspends threads until condition becomes true",
-      "when_to_use": ["Condition waiting", "Resource availability", "State changes"],
-      "benefits": ["Condition waiting", "Resource efficiency", "State synchronization"],
-      "drawbacks": ["Blocking behavior", "Complex conditions", "Performance impact"],
-      "use_cases": ["Resource pools", "Condition variables", "State machines"],
-      "complexity": "Medium",
-      "tags": ["concurrency", "waiting", "suspension"]
-    },
-    {
-      "id": "two-phase-termination",
-      "name": "Two-Phase Termination",
-      "category": "Concurrency",
-      "description": "Gracefully terminates threads in two phases: request and cleanup",
-      "when_to_use": ["Graceful shutdown", "Resource cleanup", "Thread termination"],
-      "benefits": ["Graceful shutdown", "Resource cleanup", "State consistency"],
-      "drawbacks": ["Complex implementation", "Timing issues", "Cleanup overhead"],
-      "use_cases": ["Server shutdown", "Service termination", "Resource cleanup"],
-      "complexity": "High",
-      "tags": ["concurrency", "termination", "cleanup"]
-    },
-    {
-      "id": "thread-safe-interface",
-      "name": "Thread-Safe Interface",
-      "category": "Concurrency",
-      "description": "Provides thread-safe operations through careful interface design",
-      "when_to_use": ["Shared objects", "Concurrent access", "Safety requirements"],
-      "benefits": ["Thread safety", "Clear contracts", "Safe operations"],
-      "drawbacks": ["Performance overhead", "Design complexity", "Limited flexibility"],
-      "use_cases": ["Shared data structures", "Concurrent collections", "Thread-safe APIs"],
-      "complexity": "Medium",
-      "tags": ["concurrency", "interface", "safety"]
-    },
-    {
-      "id": "immutable-object",
-      "name": "Immutable Object",
-      "category": "Concurrency",
-      "description": "Objects that cannot be modified after creation, inherently thread-safe",
-      "when_to_use": ["Thread safety", "Functional programming", "Value objects"],
-      "benefits": ["Thread safety", "No synchronization", "Simple reasoning", "Cacheable"],
-      "drawbacks": ["Memory overhead", "Creation cost", "Limited mutability"],
-      "use_cases": ["Value objects", "Configuration", "Functional programming"],
-      "complexity": "Low",
-      "tags": ["concurrency", "immutability", "safety"]
-    },
-    {
-      "id": "future-promise",
-      "name": "Future/Promise",
-      "category": "Concurrency",
-      "description": "Represents result of asynchronous computation that may not be available yet",
-      "when_to_use": ["Asynchronous operations", "Non-blocking calls", "Parallel execution"],
-      "benefits": ["Non-blocking", "Composable", "Error handling", "Parallel execution"],
-      "drawbacks": ["Complex error handling", "Memory overhead", "Callback complexity"],
-      "use_cases": ["Async APIs", "Parallel computation", "I/O operations"],
-      "complexity": "Medium",
-      "tags": ["concurrency", "asynchronous", "futures"]
-    },
-    {
-      "id": "actor-model",
-      "name": "Actor Model",
-      "category": "Concurrency",
-      "description": "Concurrent computation based on isolated actors communicating via messages",
-      "when_to_use": ["Distributed systems", "Fault tolerance", "Scalable concurrency"],
-      "benefits": ["Isolation", "Fault tolerance", "Scalability", "No shared state"],
-      "drawbacks": ["Learning curve", "Message overhead", "Complex debugging"],
-      "use_cases": ["Distributed systems", "Real-time systems", "IoT applications"],
-      "complexity": "High",
-      "tags": ["concurrency", "actors", "messaging"]
-    },
-    {
-      "id": "software-transactional-memory",
-      "name": "Software Transactional Memory",
-      "category": "Concurrency",
-      "description": "Manages concurrent access to shared memory using transactions",
-      "when_to_use": ["Complex synchronization", "Deadlock avoidance", "Composable operations"],
-      "benefits": ["Deadlock avoidance", "Composability", "Simplified reasoning"],
-      "drawbacks": ["Performance overhead", "Complex implementation", "Memory usage"],
-      "use_cases": ["Complex data structures", "Financial systems", "Database systems"],
-      "complexity": "High",
-      "tags": ["concurrency", "transactions", "memory"]
-    },
-    {
-      "id": "fork-join",
-      "name": "Fork-Join",
-      "category": "Concurrency",
-      "description": "Divides task into subtasks, processes in parallel, then combines results",
-      "when_to_use": ["Parallel computation", "Divide-and-conquer", "CPU-intensive tasks"],
-      "benefits": ["Parallel execution", "Work stealing", "Scalability", "Load balancing"],
-      "drawbacks": ["Overhead for small tasks", "Complex implementation", "Debugging difficulty"],
-      "use_cases": ["Mathematical computations", "Data processing", "Parallel algorithms"],
-      "complexity": "High",
-      "tags": ["concurrency", "parallel", "divide-conquer"]
-    },
-    {
-      "id": "map-reduce",
-      "name": "Map-Reduce",
-      "category": "Concurrency",
-      "description": "Processes large datasets by mapping operations and reducing results",
-      "when_to_use": ["Big data processing", "Distributed computation", "Batch processing"],
-      "benefits": ["Scalability", "Fault tolerance", "Distributed processing"],
-      "drawbacks": ["Overhead", "Network communication", "Framework dependency"],
-      "use_cases": ["Big data analytics", "Log processing", "Machine learning"],
-      "complexity": "High",
-      "tags": ["concurrency", "distributed", "big-data"]
-    },
-    {
-      "id": "pipeline-concurrency",
-      "name": "Pipeline (Concurrency)",
-      "category": "Concurrency",
-      "description": "Processes data through sequence of concurrent stages",
-      "when_to_use": ["Stream processing", "Assembly line processing", "Data transformation"],
-      "benefits": ["Throughput", "Parallelism", "Modularity", "Scalability"],
-      "drawbacks": ["Latency", "Synchronization", "Buffer management"],
-      "use_cases": ["Data processing", "Image processing", "Network protocols"],
-      "complexity": "Medium",
-      "tags": ["concurrency", "pipeline", "streaming"]
-    },
-    {
-      "id": "parallel-loops",
-      "name": "Parallel Loops",
-      "category": "Concurrency",
-      "description": "Executes loop iterations concurrently across multiple threads",
-      "when_to_use": ["Independent iterations", "CPU-intensive loops", "Data parallelism"],
-      "benefits": ["Performance improvement", "Simple implementation", "Scalability"],
-      "drawbacks": ["Load balancing", "Overhead for small loops", "Shared data issues"],
-      "use_cases": ["Array processing", "Mathematical computations", "Image processing"],
-      "complexity": "Low",
-      "tags": ["concurrency", "loops", "parallelism"]
-    },
-    {
-      "id": "lock-free-programming",
-      "name": "Lock-Free Programming",
-      "category": "Concurrency",
-      "description": "Concurrent programming without using locks, using atomic operations",
-      "when_to_use": ["High performance", "Real-time systems", "Lock contention issues"],
-      "benefits": ["No deadlocks", "High performance", "Scalability", "Real-time suitability"],
-      "drawbacks": ["Complex implementation", "Platform dependent", "ABA problem"],
-      "use_cases": ["High-frequency trading", "Real-time systems", "Performance-critical code"],
-      "complexity": "High",
-      "tags": ["concurrency", "lock-free", "atomic"]
-    }
-  ]
-}
+[
+  {
+    "id": "thread-pool",
+    "name": "Thread Pool",
+    "category": "Concurrency",
+    "description": "Maintains multiple threads waiting for tasks to be allocated for concurrent execution",
+    "when_to_use": [
+      "Multiple tasks",
+      "Resource management",
+      "Performance optimization"
+    ],
+    "benefits": [
+      "Resource control",
+      "Performance",
+      "Task management",
+      "Overhead reduction"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "Complex configuration",
+      "Resource contention"
+    ],
+    "use_cases": [
+      "Web servers",
+      "Task processing",
+      "Parallel computation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "threading",
+      "pooling"
+    ]
+  },
+  {
+    "id": "producer-consumer",
+    "name": "Producer-Consumer",
+    "category": "Concurrency",
+    "description": "Decouples production and consumption of data through shared buffer",
+    "when_to_use": [
+      "Data streaming",
+      "Rate matching",
+      "Buffering"
+    ],
+    "benefits": [
+      "Decoupling",
+      "Rate matching",
+      "Buffering",
+      "Scalability"
+    ],
+    "drawbacks": [
+      "Buffer management",
+      "Synchronization complexity",
+      "Memory overhead"
+    ],
+    "use_cases": [
+      "Data pipelines",
+      "Event processing",
+      "Streaming systems"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "buffering",
+      "streaming"
+    ],
+    "relationships": [
+      {
+        "target_pattern_id": "channels",
+        "type": "enhances",
+        "description": "Channels provide a more type-safe and coroutine-aware implementation of the Producer-Consumer pattern with built-in backpressure"
+      }
+    ]
+  },
+  {
+    "id": "monitor-object",
+    "name": "Monitor Object",
+    "category": "Concurrency",
+    "description": "Synchronizes concurrent method execution to ensure only one method runs at a time",
+    "when_to_use": [
+      "Thread-safe objects",
+      "Method synchronization",
+      "Critical sections"
+    ],
+    "benefits": [
+      "Thread safety",
+      "Simplicity",
+      "Encapsulation",
+      "Data integrity"
+    ],
+    "drawbacks": [
+      "Performance bottleneck",
+      "Deadlock risk",
+      "Limited concurrency"
+    ],
+    "use_cases": [
+      "Shared resources",
+      "Critical sections",
+      "State management"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "synchronization",
+      "monitor"
+    ]
+  },
+  {
+    "id": "active-object",
+    "name": "Active Object",
+    "category": "Concurrency",
+    "description": "Decouples method execution from method invocation using asynchronous messaging",
+    "when_to_use": [
+      "Asynchronous execution",
+      "Request queuing",
+      "Concurrent services"
+    ],
+    "benefits": [
+      "Asynchronous execution",
+      "Decoupling",
+      "Request queuing",
+      "Concurrency"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Memory overhead",
+      "Debugging difficulty"
+    ],
+    "use_cases": [
+      "Concurrent services",
+      "Asynchronous APIs",
+      "Message processing"
+    ],
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "asynchronous",
+      "messaging"
+    ]
+  },
+  {
+    "id": "balking",
+    "name": "Balking Pattern",
+    "category": "Concurrency",
+    "description": "Prevents object from executing if it's in inappropriate state",
+    "when_to_use": [
+      "State checking",
+      "Resource availability",
+      "Conditional execution"
+    ],
+    "benefits": [
+      "State safety",
+      "Resource protection",
+      "Simple logic",
+      "Error prevention"
+    ],
+    "drawbacks": [
+      "Lost operations",
+      "State management",
+      "Timing issues"
+    ],
+    "use_cases": [
+      "Resource management",
+      "State machines",
+      "Service availability"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "concurrency",
+      "state",
+      "protection"
+    ]
+  },
+  {
+    "id": "double-checked-locking",
+    "name": "Double-Checked Locking",
+    "category": "Concurrency",
+    "description": "Reduces locking overhead when implementing lazy initialization",
+    "when_to_use": [
+      "Lazy initialization",
+      "Performance optimization",
+      "Singleton pattern"
+    ],
+    "benefits": [
+      "Performance optimization",
+      "Lazy initialization",
+      "Reduced locking"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Memory model issues",
+      "Error-prone"
+    ],
+    "use_cases": [
+      "Singleton pattern",
+      "Lazy loading",
+      "Resource initialization"
+    ],
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "initialization",
+      "optimization"
+    ]
+  },
+  {
+    "id": "read-write-lock",
+    "name": "Read-Write Lock",
+    "category": "Concurrency",
+    "description": "Allows concurrent read access while ensuring exclusive write access",
+    "when_to_use": [
+      "Read-heavy workloads",
+      "Shared data",
+      "Performance optimization"
+    ],
+    "benefits": [
+      "Concurrent reads",
+      "Data consistency",
+      "Performance",
+      "Scalability"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Writer starvation",
+      "Overhead"
+    ],
+    "use_cases": [
+      "Caching systems",
+      "Configuration data",
+      "Shared databases"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "locking",
+      "read-write"
+    ]
+  },
+  {
+    "id": "thread-specific-storage",
+    "name": "Thread-Specific Storage",
+    "category": "Concurrency",
+    "description": "Provides separate instance of data for each thread",
+    "when_to_use": [
+      "Thread isolation",
+      "Context preservation",
+      "Legacy code"
+    ],
+    "benefits": [
+      "Thread isolation",
+      "No synchronization",
+      "Context preservation"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "Cleanup complexity",
+      "Hidden dependencies"
+    ],
+    "use_cases": [
+      "User contexts",
+      "Transaction state",
+      "Error handling"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "isolation",
+      "thread-local"
+    ]
+  },
+  {
+    "id": "guarded-suspension",
+    "name": "Guarded Suspension",
+    "category": "Concurrency",
+    "description": "Suspends threads until condition becomes true",
+    "when_to_use": [
+      "Condition waiting",
+      "Resource availability",
+      "State changes"
+    ],
+    "benefits": [
+      "Condition waiting",
+      "Resource efficiency",
+      "State synchronization"
+    ],
+    "drawbacks": [
+      "Blocking behavior",
+      "Complex conditions",
+      "Performance impact"
+    ],
+    "use_cases": [
+      "Resource pools",
+      "Condition variables",
+      "State machines"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "waiting",
+      "suspension"
+    ]
+  },
+  {
+    "id": "two-phase-termination",
+    "name": "Two-Phase Termination",
+    "category": "Concurrency",
+    "description": "Gracefully terminates threads in two phases: request and cleanup",
+    "when_to_use": [
+      "Graceful shutdown",
+      "Resource cleanup",
+      "Thread termination"
+    ],
+    "benefits": [
+      "Graceful shutdown",
+      "Resource cleanup",
+      "State consistency"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Timing issues",
+      "Cleanup overhead"
+    ],
+    "use_cases": [
+      "Server shutdown",
+      "Service termination",
+      "Resource cleanup"
+    ],
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "termination",
+      "cleanup"
+    ]
+  },
+  {
+    "id": "thread-safe-interface",
+    "name": "Thread-Safe Interface",
+    "category": "Concurrency",
+    "description": "Provides thread-safe operations through careful interface design",
+    "when_to_use": [
+      "Shared objects",
+      "Concurrent access",
+      "Safety requirements"
+    ],
+    "benefits": [
+      "Thread safety",
+      "Clear contracts",
+      "Safe operations"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Design complexity",
+      "Limited flexibility"
+    ],
+    "use_cases": [
+      "Shared data structures",
+      "Concurrent collections",
+      "Thread-safe APIs"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "interface",
+      "safety"
+    ]
+  },
+  {
+    "id": "immutable-object",
+    "name": "Immutable Object",
+    "category": "Concurrency",
+    "description": "Objects that cannot be modified after creation, inherently thread-safe",
+    "when_to_use": [
+      "Thread safety",
+      "Functional programming",
+      "Value objects"
+    ],
+    "benefits": [
+      "Thread safety",
+      "No synchronization",
+      "Simple reasoning",
+      "Cacheable"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "Creation cost",
+      "Limited mutability"
+    ],
+    "use_cases": [
+      "Value objects",
+      "Configuration",
+      "Functional programming"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "concurrency",
+      "immutability",
+      "safety"
+    ]
+  },
+  {
+    "id": "future-promise",
+    "name": "Future/Promise",
+    "category": "Concurrency",
+    "description": "Represents result of asynchronous computation that may not be available yet",
+    "when_to_use": [
+      "Asynchronous operations",
+      "Non-blocking calls",
+      "Parallel execution"
+    ],
+    "benefits": [
+      "Non-blocking",
+      "Composable",
+      "Error handling",
+      "Parallel execution"
+    ],
+    "drawbacks": [
+      "Complex error handling",
+      "Memory overhead",
+      "Callback complexity"
+    ],
+    "use_cases": [
+      "Async APIs",
+      "Parallel computation",
+      "I/O operations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "asynchronous",
+      "futures"
+    ]
+  },
+  {
+    "id": "actor-model",
+    "name": "Actor Model",
+    "category": "Concurrency",
+    "description": "Concurrent computation based on isolated actors communicating via messages",
+    "when_to_use": [
+      "Distributed systems",
+      "Fault tolerance",
+      "Scalable concurrency"
+    ],
+    "benefits": [
+      "Isolation",
+      "Fault tolerance",
+      "Scalability",
+      "No shared state"
+    ],
+    "drawbacks": [
+      "Learning curve",
+      "Message overhead",
+      "Complex debugging"
+    ],
+    "use_cases": [
+      "Distributed systems",
+      "Real-time systems",
+      "IoT applications"
+    ],
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "actors",
+      "messaging"
+    ]
+  },
+  {
+    "id": "software-transactional-memory",
+    "name": "Software Transactional Memory",
+    "category": "Concurrency",
+    "description": "Manages concurrent access to shared memory using transactions",
+    "when_to_use": [
+      "Complex synchronization",
+      "Deadlock avoidance",
+      "Composable operations"
+    ],
+    "benefits": [
+      "Deadlock avoidance",
+      "Composability",
+      "Simplified reasoning"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Complex implementation",
+      "Memory usage"
+    ],
+    "use_cases": [
+      "Complex data structures",
+      "Financial systems",
+      "Database systems"
+    ],
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "transactions",
+      "memory"
+    ]
+  },
+  {
+    "id": "fork-join",
+    "name": "Fork-Join",
+    "category": "Concurrency",
+    "description": "Divides task into subtasks, processes in parallel, then combines results",
+    "when_to_use": [
+      "Parallel computation",
+      "Divide-and-conquer",
+      "CPU-intensive tasks"
+    ],
+    "benefits": [
+      "Parallel execution",
+      "Work stealing",
+      "Scalability",
+      "Load balancing"
+    ],
+    "drawbacks": [
+      "Overhead for small tasks",
+      "Complex implementation",
+      "Debugging difficulty"
+    ],
+    "use_cases": [
+      "Mathematical computations",
+      "Data processing",
+      "Parallel algorithms"
+    ],
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "parallel",
+      "divide-conquer"
+    ]
+  },
+  {
+    "id": "map-reduce",
+    "name": "Map-Reduce",
+    "category": "Concurrency",
+    "description": "Processes large datasets by mapping operations and reducing results",
+    "when_to_use": [
+      "Big data processing",
+      "Distributed computation",
+      "Batch processing"
+    ],
+    "benefits": [
+      "Scalability",
+      "Fault tolerance",
+      "Distributed processing"
+    ],
+    "drawbacks": [
+      "Overhead",
+      "Network communication",
+      "Framework dependency"
+    ],
+    "use_cases": [
+      "Big data analytics",
+      "Log processing",
+      "Machine learning"
+    ],
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "distributed",
+      "big-data"
+    ]
+  },
+  {
+    "id": "pipeline-concurrency",
+    "name": "Pipeline (Concurrency)",
+    "category": "Concurrency",
+    "description": "Processes data through sequence of concurrent stages",
+    "when_to_use": [
+      "Stream processing",
+      "Assembly line processing",
+      "Data transformation"
+    ],
+    "benefits": [
+      "Throughput",
+      "Parallelism",
+      "Modularity",
+      "Scalability"
+    ],
+    "drawbacks": [
+      "Latency",
+      "Synchronization",
+      "Buffer management"
+    ],
+    "use_cases": [
+      "Data processing",
+      "Image processing",
+      "Network protocols"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "pipeline",
+      "streaming"
+    ]
+  },
+  {
+    "id": "parallel-loops",
+    "name": "Parallel Loops",
+    "category": "Concurrency",
+    "description": "Executes loop iterations concurrently across multiple threads",
+    "when_to_use": [
+      "Independent iterations",
+      "CPU-intensive loops",
+      "Data parallelism"
+    ],
+    "benefits": [
+      "Performance improvement",
+      "Simple implementation",
+      "Scalability"
+    ],
+    "drawbacks": [
+      "Load balancing",
+      "Overhead for small loops",
+      "Shared data issues"
+    ],
+    "use_cases": [
+      "Array processing",
+      "Mathematical computations",
+      "Image processing"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "concurrency",
+      "loops",
+      "parallelism"
+    ]
+  },
+  {
+    "id": "lock-free-programming",
+    "name": "Lock-Free Programming",
+    "category": "Concurrency",
+    "description": "Concurrent programming without using locks, using atomic operations",
+    "when_to_use": [
+      "High performance",
+      "Real-time systems",
+      "Lock contention issues"
+    ],
+    "benefits": [
+      "No deadlocks",
+      "High performance",
+      "Scalability",
+      "Real-time suitability"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Platform dependent",
+      "ABA problem"
+    ],
+    "use_cases": [
+      "High-frequency trading",
+      "Real-time systems",
+      "Performance-critical code"
+    ],
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "lock-free",
+      "atomic"
+    ]
+  }
+]

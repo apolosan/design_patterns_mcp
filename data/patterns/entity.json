@@ -1,16 +1,18 @@
-{
-  "id": "entity",
-  "name": "Entity",
-  "category": "Domain-Driven Design",
-  "description": "Object with distinct identity that persists over time and changes",
-  "when_to_use": "Distinct identity\nLifecycle management\nIdentity tracking",
-  "benefits": "Identity clarity\nLifecycle management\nState tracking",
-  "drawbacks": "Identity management\nEquality complexity\nPersistence complexity",
-  "use_cases": "Users\nOrders\nProducts\nAccounts",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "tactical",
-    "identity"
-  ]
-}
+[
+  {
+    "id": "entity",
+    "name": "Entity",
+    "category": "Domain-Driven Design",
+    "description": "Object with distinct identity that persists over time and changes",
+    "when_to_use": "Distinct identity\nLifecycle management\nIdentity tracking",
+    "benefits": "Identity clarity\nLifecycle management\nState tracking",
+    "drawbacks": "Identity management\nEquality complexity\nPersistence complexity",
+    "use_cases": "Users\nOrders\nProducts\nAccounts",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "tactical",
+      "identity"
+    ]
+  }
+]

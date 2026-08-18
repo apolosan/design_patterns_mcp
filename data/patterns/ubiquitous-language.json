@@ -1,16 +1,18 @@
-{
-  "id": "ubiquitous-language",
-  "name": "Ubiquitous Language",
-  "category": "Domain-Driven Design",
-  "description": "Common language shared by domain experts and developers within bounded context",
-  "when_to_use": "Domain modeling\nTeam communication\nKnowledge sharing",
-  "benefits": "Clear communication\nShared understanding\nAccurate modeling\nReduced ambiguity",
-  "drawbacks": "Establishment effort\nMaintenance overhead\nCultural resistance",
-  "use_cases": "Domain modeling\nDocumentation\nCode naming",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "strategic",
-    "language"
-  ]
-}
+[
+  {
+    "id": "ubiquitous-language",
+    "name": "Ubiquitous Language",
+    "category": "Domain-Driven Design",
+    "description": "Common language shared by domain experts and developers within bounded context",
+    "when_to_use": "Domain modeling\nTeam communication\nKnowledge sharing",
+    "benefits": "Clear communication\nShared understanding\nAccurate modeling\nReduced ambiguity",
+    "drawbacks": "Establishment effort\nMaintenance overhead\nCultural resistance",
+    "use_cases": "Domain modeling\nDocumentation\nCode naming",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "language"
+    ]
+  }
+]

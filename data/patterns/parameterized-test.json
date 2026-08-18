@@ -1,16 +1,18 @@
-{
-  "id": "parameterized-test",
-  "name": "Parameterized Test",
-  "category": "Testing",
-  "description": "Runs same test logic with different input parameters and expected results",
-  "when_to_use": "Multiple test cases\nData-driven testing\nBoundary testing",
-  "benefits": "Reduced duplication\nComprehensive coverage\nEasy data addition",
-  "drawbacks": "Complex debugging\nShared test logic\nParameter management",
-  "use_cases": "Boundary testing\nData validation\nAlgorithm testing",
-  "complexity": "Medium",
-  "tags": [
-    "testing",
-    "parameterized",
-    "data-driven"
-  ]
-}
+[
+  {
+    "id": "parameterized-test",
+    "name": "Parameterized Test",
+    "category": "Testing",
+    "description": "Runs same test logic with different input parameters and expected results",
+    "when_to_use": "Multiple test cases\nData-driven testing\nBoundary testing",
+    "benefits": "Reduced duplication\nComprehensive coverage\nEasy data addition",
+    "drawbacks": "Complex debugging\nShared test logic\nParameter management",
+    "use_cases": "Boundary testing\nData validation\nAlgorithm testing",
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "parameterized",
+      "data-driven"
+    ]
+  }
+]

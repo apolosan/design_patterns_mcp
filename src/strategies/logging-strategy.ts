@@ -44,8 +44,12 @@ export class ConsoleLoggingStrategy implements LoggingStrategy {
 
   log(entry: LogEntry): void {
     const formatted = this.formatEntry(entry);
-    const stream = entry.level >= LogLevel.ERROR ? process.stderr : process.stdout;
-    stream.write(`${this.getColorForLevel(entry.level)}${formatted}\x1b[0m\n`);
+    // MCP stdio protocol: stdout is reserved EXCLUSIVELY for JSON-RPC frames.
+    const stream = process.stderr;
+    const useColor = process.stderr.isTTY === true;
+    stream.write(useColor
+      ? `${this.getColorForLevel(entry.level)}${formatted}\x1b[0m\n`
+      : `${formatted}\n`);
     this.entriesLogged++;
   }
 
@@ -183,9 +187,10 @@ export class StructuredLoggingStrategy implements LoggingStrategy {
 
   log(entry: LogEntry): void {
     // In a real implementation, this would send to monitoring service
-    // For now, just format as structured JSON to console
+    // For now, just format as structured JSON to stderr — stdout is reserved
+    // EXCLUSIVELY for JSON-RPC frames in the MCP stdio transport.
     const structured = this.formatStructured(entry);
-    console.log(JSON.stringify(structured));
+    process.stderr.write(`${JSON.stringify(structured)}\n`);
     this.entriesLogged++;
   }
 

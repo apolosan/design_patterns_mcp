@@ -1,22 +1,24 @@
-{
-  "id": "database-per-service",
-  "name": "Database per Service",
-  "category": "Microservices",
-  "description": "Each service has its own private database",
-  "when_to_use": "Service autonomy\nTechnology diversity\nScaling independence",
-  "benefits": "Service autonomy\nTechnology choice\nIndependent scaling",
-  "drawbacks": "Data consistency\nComplex queries\nData duplication",
-  "use_cases": "Bounded contexts\nTeam ownership\nTechnology optimization",
-  "complexity": "High",
-  "tags": [
-    "microservices",
-    "data",
-    "autonomy"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Database per Service: each service owns its data\nclass UserService {\n  private db: Database;\n  \n  async createUser(email: string): Promise<User> {\n    const user = await this.db.insert('users', { email });\n    await eventBus.publish('user.created', { userId: user.id, email });\n    return user;\n  }\n}\n\nclass OrderService {\n  private db: Database;\n  \n  async createOrder(userId: string, items: Item[]): Promise<Order> {\n    return this.db.insert('orders', { userId, items });\n  }\n  \n  async onUserCreated(event: { userId: string; email: string }) {\n    await this.db.insert('user_cache', { \n      userId: event.userId, \n      email: event.email \n    });\n  }\n}\n\nconst userService = new UserService('postgres://users-db');\nconst orderService = new OrderService('postgres://orders-db');"
+[
+  {
+    "id": "database-per-service",
+    "name": "Database per Service",
+    "category": "Microservices",
+    "description": "Each service has its own private database",
+    "when_to_use": "Service autonomy\nTechnology diversity\nScaling independence",
+    "benefits": "Service autonomy\nTechnology choice\nIndependent scaling",
+    "drawbacks": "Data consistency\nComplex queries\nData duplication",
+    "use_cases": "Bounded contexts\nTeam ownership\nTechnology optimization",
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "data",
+      "autonomy"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Database per Service: each service owns its data\nclass UserService {\n  private db: Database;\n  \n  async createUser(email: string): Promise<User> {\n    const user = await this.db.insert('users', { email });\n    await eventBus.publish('user.created', { userId: user.id, email });\n    return user;\n  }\n}\n\nclass OrderService {\n  private db: Database;\n  \n  async createOrder(userId: string, items: Item[]): Promise<Order> {\n    return this.db.insert('orders', { userId, items });\n  }\n  \n  async onUserCreated(event: { userId: string; email: string }) {\n    await this.db.insert('user_cache', { \n      userId: event.userId, \n      email: event.email \n    });\n  }\n}\n\nconst userService = new UserService('postgres://users-db');\nconst orderService = new OrderService('postgres://orders-db');"
+      }
     }
   }
-}
+]

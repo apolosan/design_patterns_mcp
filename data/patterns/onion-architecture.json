@@ -1,22 +1,24 @@
-{
-  "id": "onion-architecture",
-  "name": "Onion Architecture",
-  "category": "Architectural",
-  "description": "Organizes code in concentric layers with domain at the center",
-  "when_to_use": "Domain-driven design\nComplex business rules\nLong-term evolution",
-  "benefits": "Domain focus\nDependency inversion\nTestability\nFlexibility",
-  "drawbacks": "Learning curve\nInitial complexity\nOver-engineering risk",
-  "use_cases": "Domain-rich applications\nBusiness-critical systems\nComplex workflows",
-  "complexity": "High",
-  "tags": [
-    "domain-centric",
-    "layers",
-    "ddd"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Onion Architecture: dependencies point inward to core\n\n// Core Domain (innermost - no dependencies)\nclass Order {\n  constructor(\n    public id: string,\n    public items: string[],\n    public total: number\n  ) {}\n  \n  addItem(item: string, price: number) {\n    this.items.push(item);\n    this.total += price;\n  }\n}\n\n// Domain Services (use domain entities)\ninterface IOrderRepository {\n  save(order: Order): Promise<void>;\n  findById(id: string): Promise<Order | null>;\n}\n\n// Application Services (orchestrate use cases)\nclass OrderApplicationService {\n  constructor(private orderRepo: IOrderRepository) {}\n  \n  async createOrder(items: string[], total: number): Promise<Order> {\n    const order = new Order(crypto.randomUUID(), items, total);\n    await this.orderRepo.save(order);\n    return order;\n  }\n}\n\n// Infrastructure (outermost - implements interfaces)\nclass SQLOrderRepository implements IOrderRepository {\n  async save(order: Order) {\n    // SQL implementation\n  }\n  async findById(id: string) {\n    // SQL query\n    return null;\n  }\n}\n\n// UI Layer (outermost)\nclass OrderController {\n  constructor(private service: OrderApplicationService) {}\n  \n  async createOrder(req: any) {\n    return this.service.createOrder(req.body.items, req.body.total);\n  }\n}\n\n// Dependencies flow inward: UI -> App -> Domain\nconst repo = new SQLOrderRepository();\nconst service = new OrderApplicationService(repo);\nconst controller = new OrderController(service);"
+[
+  {
+    "id": "onion-architecture",
+    "name": "Onion Architecture",
+    "category": "Architectural",
+    "description": "Organizes code in concentric layers with domain at the center",
+    "when_to_use": "Domain-driven design\nComplex business rules\nLong-term evolution",
+    "benefits": "Domain focus\nDependency inversion\nTestability\nFlexibility",
+    "drawbacks": "Learning curve\nInitial complexity\nOver-engineering risk",
+    "use_cases": "Domain-rich applications\nBusiness-critical systems\nComplex workflows",
+    "complexity": "High",
+    "tags": [
+      "domain-centric",
+      "layers",
+      "ddd"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Onion Architecture: dependencies point inward to core\n\n// Core Domain (innermost - no dependencies)\nclass Order {\n  constructor(\n    public id: string,\n    public items: string[],\n    public total: number\n  ) {}\n  \n  addItem(item: string, price: number) {\n    this.items.push(item);\n    this.total += price;\n  }\n}\n\n// Domain Services (use domain entities)\ninterface IOrderRepository {\n  save(order: Order): Promise<void>;\n  findById(id: string): Promise<Order | null>;\n}\n\n// Application Services (orchestrate use cases)\nclass OrderApplicationService {\n  constructor(private orderRepo: IOrderRepository) {}\n  \n  async createOrder(items: string[], total: number): Promise<Order> {\n    const order = new Order(crypto.randomUUID(), items, total);\n    await this.orderRepo.save(order);\n    return order;\n  }\n}\n\n// Infrastructure (outermost - implements interfaces)\nclass SQLOrderRepository implements IOrderRepository {\n  async save(order: Order) {\n    // SQL implementation\n  }\n  async findById(id: string) {\n    // SQL query\n    return null;\n  }\n}\n\n// UI Layer (outermost)\nclass OrderController {\n  constructor(private service: OrderApplicationService) {}\n  \n  async createOrder(req: any) {\n    return this.service.createOrder(req.body.items, req.body.total);\n  }\n}\n\n// Dependencies flow inward: UI -> App -> Domain\nconst repo = new SQLOrderRepository();\nconst service = new OrderApplicationService(repo);\nconst controller = new OrderController(service);"
+      }
     }
   }
-}
+]

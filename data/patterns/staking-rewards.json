@@ -1,24 +1,26 @@
-{
-  "id": "staking-rewards",
-  "name": "Staking Rewards",
-  "category": "DeFi Yield",
-  "description": "Proportional rewards for token staking Problem: Incentivize token locking and participation",
-  "when_to_use": "Rewards proportional to stake and time",
-  "benefits": "Simple incentive, effective for bootstrapping",
-  "drawbacks": "Sell pressure, complex reward math, sustainability",
-  "use_cases": "Governance, liquidity mining, yield farming",
-  "complexity": "Medium",
-  "tags": [
-    "defi",
-    "staking",
-    "rewards",
-    "yield",
-    "liquidity-mining"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "uint256 public rewardPerTokenStored;\nmapping(address => uint256) public userRewardPerTokenPaid;\n\nfunction earned(address account) public view returns (uint256) {\n    return balances[account] * \n        (rewardPerTokenStored - userRewardPerTokenPaid[account]);\n}"
+[
+  {
+    "id": "staking-rewards",
+    "name": "Staking Rewards",
+    "category": "DeFi Yield",
+    "description": "Proportional rewards for token staking Problem: Incentivize token locking and participation",
+    "when_to_use": "Rewards proportional to stake and time",
+    "benefits": "Simple incentive, effective for bootstrapping",
+    "drawbacks": "Sell pressure, complex reward math, sustainability",
+    "use_cases": "Governance, liquidity mining, yield farming",
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "staking",
+      "rewards",
+      "yield",
+      "liquidity-mining"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "uint256 public rewardPerTokenStored;\nmapping(address => uint256) public userRewardPerTokenPaid;\n\nfunction earned(address account) public view returns (uint256) {\n    return balances[account] * \n        (rewardPerTokenStored - userRewardPerTokenPaid[account]);\n}"
+      }
     }
   }
-}
+]

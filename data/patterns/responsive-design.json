@@ -1,16 +1,18 @@
-{
-  "id": "responsive-design",
-  "name": "Responsive Design Pattern",
-  "category": "Mobile",
-  "description": "Adapts user interface to different screen sizes and orientations",
-  "when_to_use": "Multi-device support\nDifferent screen sizes\nUniversal apps",
-  "benefits": "Device flexibility\nConsistent experience\nSingle codebase",
-  "drawbacks": "Design complexity\nPerformance considerations\nTesting overhead",
-  "use_cases": "Cross-platform apps\nWeb applications\nUniversal interfaces",
-  "complexity": "Medium",
-  "tags": [
-    "mobile",
-    "responsive",
-    "ui"
-  ]
-}
+[
+  {
+    "id": "responsive-design",
+    "name": "Responsive Design Pattern",
+    "category": "Mobile",
+    "description": "Adapts user interface to different screen sizes and orientations",
+    "when_to_use": "Multi-device support\nDifferent screen sizes\nUniversal apps",
+    "benefits": "Device flexibility\nConsistent experience\nSingle codebase",
+    "drawbacks": "Design complexity\nPerformance considerations\nTesting overhead",
+    "use_cases": "Cross-platform apps\nWeb applications\nUniversal interfaces",
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "responsive",
+      "ui"
+    ]
+  }
+]

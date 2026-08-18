@@ -1,16 +1,18 @@
-{
-  "id": "currying",
-  "name": "Currying Pattern",
-  "category": "Functional",
-  "description": "Transforms function with multiple arguments into sequence of single-argument functions",
-  "when_to_use": "Partial application\nFunction composition\nConfiguration",
-  "benefits": "Partial application\nReusable\nComposable\nFlexible",
-  "drawbacks": "Performance overhead\nDebugging complexity\nMemory usage",
-  "use_cases": "Event handlers\nConfiguration functions\nAPI builders",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "currying",
-    "partial-application"
-  ]
-}
+[
+  {
+    "id": "currying",
+    "name": "Currying Pattern",
+    "category": "Functional",
+    "description": "Transforms function with multiple arguments into sequence of single-argument functions",
+    "when_to_use": "Partial application\nFunction composition\nConfiguration",
+    "benefits": "Partial application\nReusable\nComposable\nFlexible",
+    "drawbacks": "Performance overhead\nDebugging complexity\nMemory usage",
+    "use_cases": "Event handlers\nConfiguration functions\nAPI builders",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "currying",
+      "partial-application"
+    ]
+  }
+]

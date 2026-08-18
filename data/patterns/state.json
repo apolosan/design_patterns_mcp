@@ -1,22 +1,24 @@
-{
-  "id": "state",
-  "name": "State",
-  "category": "Behavioral",
-  "description": "Allows object to alter behavior when internal state changes",
-  "when_to_use": "State-dependent behavior\nReplace conditionals\nState machines",
-  "benefits": "Single Responsibility\nOpen/Closed\nExplicit states",
-  "drawbacks": "Increased classes\nState transition complexity",
-  "use_cases": "TCP connections\nUI components\nGame character states",
-  "complexity": "Medium",
-  "tags": [
-    "behavioral",
-    "state-machine",
-    "polymorphism"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface State {\n  handle(context: Context): void;\n}\n\nclass Context {\n  constructor(private state: State) {}\n  setState(state: State) { this.state = state; }\n  request() { this.state.handle(this); }\n}\n\nclass StateA implements State {\n  handle(context: Context) {\n    console.log('State A');\n    context.setState(new StateB());\n  }\n}\n\nclass StateB implements State {\n  handle(context: Context) {\n    console.log('State B');\n  }\n}\n\n// Usage: change behavior based on state\nconst context = new Context(new StateA());\ncontext.request(); // State A\ncontext.request(); // State B"
+[
+  {
+    "id": "state",
+    "name": "State",
+    "category": "Behavioral",
+    "description": "Allows object to alter behavior when internal state changes",
+    "when_to_use": "State-dependent behavior\nReplace conditionals\nState machines",
+    "benefits": "Single Responsibility\nOpen/Closed\nExplicit states",
+    "drawbacks": "Increased classes\nState transition complexity",
+    "use_cases": "TCP connections\nUI components\nGame character states",
+    "complexity": "Medium",
+    "tags": [
+      "behavioral",
+      "state-machine",
+      "polymorphism"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface State {\n  handle(context: Context): void;\n}\n\nclass Context {\n  constructor(private state: State) {}\n  setState(state: State) { this.state = state; }\n  request() { this.state.handle(this); }\n}\n\nclass StateA implements State {\n  handle(context: Context) {\n    console.log('State A');\n    context.setState(new StateB());\n  }\n}\n\nclass StateB implements State {\n  handle(context: Context) {\n    console.log('State B');\n  }\n}\n\n// Usage: change behavior based on state\nconst context = new Context(new StateA());\ncontext.request(); // State A\ncontext.request(); // State B"
+      }
     }
   }
-}
+]

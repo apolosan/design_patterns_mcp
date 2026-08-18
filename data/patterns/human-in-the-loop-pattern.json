@@ -1,19 +1,21 @@
-{
-  "id": "human-in-the-loop-pattern",
-  "name": "Human-in-the-Loop Pattern",
-  "category": "AI/ML",
-  "description": "Incorporates human oversight, intervention, or feedback into the agent's decision-making process to improve accuracy and trust.",
-  "when_to_use": "[\"High-stakes decisions\",\"Complex judgments\",\"Trust and accuracy critical\"]",
-  "benefits": "[\"Improved accuracy\",\"Human oversight\",\"Better handling of edge cases\"]",
-  "drawbacks": "[\"Latency from human involvement\",\"Scalability issues\",\"Dependency on humans\"]",
-  "use_cases": "[\"Medical diagnosis\",\"Legal analysis\",\"Quality control\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"human-in-loop\"",
-    "\"oversight\"",
-    "\"feedback\"",
-    "\"trust\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "human-in-the-loop-pattern",
+    "name": "Human-in-the-Loop Pattern",
+    "category": "AI/ML",
+    "description": "Incorporates human oversight, intervention, or feedback into the agent's decision-making process to improve accuracy and trust.",
+    "when_to_use": "[\"High-stakes decisions\",\"Complex judgments\",\"Trust and accuracy critical\"]",
+    "benefits": "[\"Improved accuracy\",\"Human oversight\",\"Better handling of edge cases\"]",
+    "drawbacks": "[\"Latency from human involvement\",\"Scalability issues\",\"Dependency on humans\"]",
+    "use_cases": "[\"Medical diagnosis\",\"Legal analysis\",\"Quality control\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"human-in-loop\"",
+      "\"oversight\"",
+      "\"feedback\"",
+      "\"trust\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

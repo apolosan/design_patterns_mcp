@@ -1,22 +1,24 @@
-{
-  "id": "map-reduce",
-  "name": "Map-Reduce",
-  "category": "Concurrency",
-  "description": "Processes large datasets by mapping operations and reducing results",
-  "when_to_use": "Big data processing\nDistributed computation\nBatch processing",
-  "benefits": "Scalability\nFault tolerance\nDistributed processing",
-  "drawbacks": "Overhead\nNetwork communication\nFramework dependency",
-  "use_cases": "Big data analytics\nLog processing\nMachine learning",
-  "complexity": "High",
-  "tags": [
-    "concurrency",
-    "distributed",
-    "big-data"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Map-Reduce: parallel data processing\nclass MapReduce<T, K, V> {\n  async execute(\n    data: T[],\n    mapper: (item: T) => [K, V][],\n    reducer: (key: K, values: V[]) => V\n  ): Promise<Map<K, V>> {\n    // Map phase: parallel processing\n    const mapped = await Promise.all(\n      data.map(async item => mapper(item))\n    );\n    \n    // Flatten and group by key\n    const grouped = new Map<K, V[]>();\n    for (const pairs of mapped) {\n      for (const [key, value] of pairs) {\n        if (!grouped.has(key)) {\n          grouped.set(key, []);\n        }\n        grouped.get(key)!.push(value);\n      }\n    }\n    \n    // Reduce phase: parallel reduction\n    const reduced = new Map<K, V>();\n    await Promise.all(\n      Array.from(grouped.entries()).map(async ([key, values]) => {\n        const result = reducer(key, values);\n        reduced.set(key, result);\n      })\n    );\n    \n    return reduced;\n  }\n}\n\n// Word count example\nconst documents = [\n  'hello world',\n  'hello mapreduce',\n  'world of patterns'\n];\n\nconst mr = new MapReduce<string, string, number>();\n\nconst wordCounts = await mr.execute(\n  documents,\n  (doc) => doc.split(' ').map(word => [word, 1]),\n  (word, counts) => counts.reduce((a, b) => a + b, 0)\n);\n\nconsole.log(wordCounts); // Map { 'hello' => 2, 'world' => 2, ... }"
+[
+  {
+    "id": "map-reduce",
+    "name": "Map-Reduce",
+    "category": "Concurrency",
+    "description": "Processes large datasets by mapping operations and reducing results",
+    "when_to_use": "Big data processing\nDistributed computation\nBatch processing",
+    "benefits": "Scalability\nFault tolerance\nDistributed processing",
+    "drawbacks": "Overhead\nNetwork communication\nFramework dependency",
+    "use_cases": "Big data analytics\nLog processing\nMachine learning",
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "distributed",
+      "big-data"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Map-Reduce: parallel data processing\nclass MapReduce<T, K, V> {\n  async execute(\n    data: T[],\n    mapper: (item: T) => [K, V][],\n    reducer: (key: K, values: V[]) => V\n  ): Promise<Map<K, V>> {\n    // Map phase: parallel processing\n    const mapped = await Promise.all(\n      data.map(async item => mapper(item))\n    );\n    \n    // Flatten and group by key\n    const grouped = new Map<K, V[]>();\n    for (const pairs of mapped) {\n      for (const [key, value] of pairs) {\n        if (!grouped.has(key)) {\n          grouped.set(key, []);\n        }\n        grouped.get(key)!.push(value);\n      }\n    }\n    \n    // Reduce phase: parallel reduction\n    const reduced = new Map<K, V>();\n    await Promise.all(\n      Array.from(grouped.entries()).map(async ([key, values]) => {\n        const result = reducer(key, values);\n        reduced.set(key, result);\n      })\n    );\n    \n    return reduced;\n  }\n}\n\n// Word count example\nconst documents = [\n  'hello world',\n  'hello mapreduce',\n  'world of patterns'\n];\n\nconst mr = new MapReduce<string, string, number>();\n\nconst wordCounts = await mr.execute(\n  documents,\n  (doc) => doc.split(' ').map(word => [word, 1]),\n  (word, counts) => counts.reduce((a, b) => a + b, 0)\n);\n\nconsole.log(wordCounts); // Map { 'hello' => 2, 'world' => 2, ... }"
+      }
     }
   }
-}
+]

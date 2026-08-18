@@ -1,22 +1,24 @@
-{
-  "id": "template-method",
-  "name": "Template Method",
-  "category": "Behavioral",
-  "description": "Defines skeleton of algorithm in base class, subclasses override specific steps",
-  "when_to_use": "Common algorithm structure\nInvariant parts\nCode reuse",
-  "benefits": "Code reuse\nControl inversion\nFlexibility",
-  "drawbacks": "Limited by inheritance\nMaintenance issues",
-  "use_cases": "Data processing pipelines\nGame loops\nFramework hooks",
-  "complexity": "Low",
-  "tags": [
-    "behavioral",
-    "inheritance",
-    "algorithm"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "abstract class DataParser {\n  parse(data: string) {\n    this.openFile(data);\n    const raw = this.extractData(data);\n    const parsed = this.parseData(raw);\n    this.closeFile();\n    return parsed;\n  }\n  \n  openFile(path: string) { console.log(`Open ${path}`); }\n  closeFile() { console.log('Close'); }\n  protected abstract extractData(data: string): string;\n  protected abstract parseData(data: string): any;\n}\n\nclass CSVParser extends DataParser {\n  protected extractData(data: string) { return data; }\n  protected parseData(data: string) { return data.split(','); }\n}\n\n// Usage: define skeleton\nnew CSVParser().parse('a,b,c');"
+[
+  {
+    "id": "template-method",
+    "name": "Template Method",
+    "category": "Behavioral",
+    "description": "Defines skeleton of algorithm in base class, subclasses override specific steps",
+    "when_to_use": "Common algorithm structure\nInvariant parts\nCode reuse",
+    "benefits": "Code reuse\nControl inversion\nFlexibility",
+    "drawbacks": "Limited by inheritance\nMaintenance issues",
+    "use_cases": "Data processing pipelines\nGame loops\nFramework hooks",
+    "complexity": "Low",
+    "tags": [
+      "behavioral",
+      "inheritance",
+      "algorithm"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "abstract class DataParser {\n  parse(data: string) {\n    this.openFile(data);\n    const raw = this.extractData(data);\n    const parsed = this.parseData(raw);\n    this.closeFile();\n    return parsed;\n  }\n  \n  openFile(path: string) { console.log(`Open ${path}`); }\n  closeFile() { console.log('Close'); }\n  protected abstract extractData(data: string): string;\n  protected abstract parseData(data: string): any;\n}\n\nclass CSVParser extends DataParser {\n  protected extractData(data: string) { return data; }\n  protected parseData(data: string) { return data.split(','); }\n}\n\n// Usage: define skeleton\nnew CSVParser().parse('a,b,c');"
+      }
     }
   }
-}
+]

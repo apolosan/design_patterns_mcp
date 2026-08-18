@@ -1,25 +1,27 @@
-{
-  "id": "streaming-payments-sablier",
-  "name": "Streaming Payments (Sablier)",
-  "category": "DAO Treasury",
-  "description": "Continuous payment streams for contributors. Real-time payment by the second, cancelable.",
-  "when_to_use": "Contributor payroll, vesting schedules, grants, continuous funding",
-  "benefits": "Continuous payment, reduced trust, cancelable, fair for both parties",
-  "drawbacks": "Upfront capital lock, gas costs for withdrawals, complexity",
-  "use_cases": "DAO contributor salaries, team vesting, grant disbursement",
-  "complexity": "Medium",
-  "tags": [
-    "dao",
-    "treasury",
-    "streaming",
-    "sablier",
-    "vesting",
-    "payroll"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@sablier/v2-core/src/interfaces/ISablierV2LockupLinear.sol\";\n\n// Create linear stream\nfunction createStream(address recipient, uint256 totalAmount, uint256 duration) external {\n    LockupLinear.CreateWithDurations memory params = LockupLinear.CreateWithDurations({\n        sender: msg.sender,\n        recipient: recipient,\n        totalAmount: totalAmount,\n        asset: IERC20(dai),\n        cancelable: true,\n        durations: LockupLinear.Durations({cliff: 0, total: duration}),\n        broker: Broker(address(0), ud60x18(0))\n    });\n    \n    sablier.createWithDurations(params);\n}"
+[
+  {
+    "id": "streaming-payments-sablier",
+    "name": "Streaming Payments (Sablier)",
+    "category": "DAO Treasury",
+    "description": "Continuous payment streams for contributors. Real-time payment by the second, cancelable.",
+    "when_to_use": "Contributor payroll, vesting schedules, grants, continuous funding",
+    "benefits": "Continuous payment, reduced trust, cancelable, fair for both parties",
+    "drawbacks": "Upfront capital lock, gas costs for withdrawals, complexity",
+    "use_cases": "DAO contributor salaries, team vesting, grant disbursement",
+    "complexity": "Medium",
+    "tags": [
+      "dao",
+      "treasury",
+      "streaming",
+      "sablier",
+      "vesting",
+      "payroll"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@sablier/v2-core/src/interfaces/ISablierV2LockupLinear.sol\";\n\n// Create linear stream\nfunction createStream(address recipient, uint256 totalAmount, uint256 duration) external {\n    LockupLinear.CreateWithDurations memory params = LockupLinear.CreateWithDurations({\n        sender: msg.sender,\n        recipient: recipient,\n        totalAmount: totalAmount,\n        asset: IERC20(dai),\n        cancelable: true,\n        durations: LockupLinear.Durations({cliff: 0, total: duration}),\n        broker: Broker(address(0), ud60x18(0))\n    });\n    \n    sablier.createWithDurations(params);\n}"
+      }
     }
   }
-}
+]

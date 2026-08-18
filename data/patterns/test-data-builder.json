@@ -1,16 +1,18 @@
-{
-  "id": "test-data-builder",
-  "name": "Test Data Builder",
-  "category": "Testing",
-  "description": "Builds test data objects using fluent interface for readable test setup",
-  "when_to_use": "Complex object creation\nTest data setup\nReadable tests",
-  "benefits": "Readable tests\nFlexible data creation\nReusable builders",
-  "drawbacks": "Additional code\nMaintenance overhead\nOver-engineering",
-  "use_cases": "Object creation\nTest setup\nData variation",
-  "complexity": "Medium",
-  "tags": [
-    "testing",
-    "builder",
-    "data"
-  ]
-}
+[
+  {
+    "id": "test-data-builder",
+    "name": "Test Data Builder",
+    "category": "Testing",
+    "description": "Builds test data objects using fluent interface for readable test setup",
+    "when_to_use": "Complex object creation\nTest data setup\nReadable tests",
+    "benefits": "Readable tests\nFlexible data creation\nReusable builders",
+    "drawbacks": "Additional code\nMaintenance overhead\nOver-engineering",
+    "use_cases": "Object creation\nTest setup\nData variation",
+    "complexity": "Medium",
+    "tags": [
+      "testing",
+      "builder",
+      "data"
+    ]
+  }
+]

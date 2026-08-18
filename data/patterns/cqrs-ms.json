@@ -1,16 +1,18 @@
-{
-  "id": "cqrs-ms",
-  "name": "CQRS (Microservices)",
-  "category": "Microservices",
-  "description": "Separates read and write models in distributed systems",
-  "when_to_use": "Different read/write patterns\nPerformance optimization\nScalability",
-  "benefits": "Performance optimization\nIndependent scaling\nModel optimization",
-  "drawbacks": "Complexity\nEventual consistency\nCode duplication",
-  "use_cases": "High-read systems\nReporting services\nEvent sourcing",
-  "complexity": "High",
-  "tags": [
-    "microservices",
-    "cqrs",
-    "separation"
-  ]
-}
+[
+  {
+    "id": "cqrs-ms",
+    "name": "CQRS (Microservices)",
+    "category": "Microservices",
+    "description": "Separates read and write models in distributed systems",
+    "when_to_use": "Different read/write patterns\nPerformance optimization\nScalability",
+    "benefits": "Performance optimization\nIndependent scaling\nModel optimization",
+    "drawbacks": "Complexity\nEventual consistency\nCode duplication",
+    "use_cases": "High-read systems\nReporting services\nEvent sourcing",
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "cqrs",
+      "separation"
+    ]
+  }
+]

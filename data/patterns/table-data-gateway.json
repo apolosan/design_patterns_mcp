@@ -1,22 +1,24 @@
-{
-  "id": "table-data-gateway",
-  "name": "Table Data Gateway",
-  "category": "Enterprise",
-  "description": "Object that acts as gateway to database table with one instance handling all rows",
-  "when_to_use": "Table-based operations\nCentralized access\nSimple queries",
-  "benefits": "Centralized access\nSimple implementation\nClear responsibility",
-  "drawbacks": "Limited flexibility\nScaling issues\nTight coupling",
-  "use_cases": "Table operations\nData access objects\nSimple databases",
-  "complexity": "Low",
-  "tags": [
-    "enterprise",
-    "data-source",
-    "table"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Table Data Gateway: gateway for entire table\nclass UserTableGateway {\n  constructor(private db: Database) {}\n  \n  async findById(id: string): Promise<UserRecord | null> {\n    const row = await this.db.query('SELECT * FROM users WHERE id = ?', [id]);\n    return row as UserRecord;\n  }\n  \n  async findAll(): Promise<UserRecord[]> {\n    const rows = await this.db.query('SELECT * FROM users');\n    return rows as UserRecord[];\n  }\n  \n  async findByEmail(email: string): Promise<UserRecord | null> {\n    const row = await this.db.query('SELECT * FROM users WHERE email = ?', [email]);\n    return row as UserRecord;\n  }\n  \n  async insert(email: string, name: string): Promise<string> {\n    const result = await this.db.query(\n      'INSERT INTO users (email, name) VALUES (?, ?)',\n      [email, name]\n    );\n    return result.insertId;\n  }\n  \n  async update(id: string, email: string, name: string): Promise<void> {\n    await this.db.query(\n      'UPDATE users SET email = ?, name = ? WHERE id = ?',\n      [email, name, id]\n    );\n  }\n  \n  async delete(id: string): Promise<void> {\n    await this.db.query('DELETE FROM users WHERE id = ?', [id]);\n  }\n}\n\n// Usage: All table operations in one place\nconst userGateway = new UserTableGateway(db);\nconst userId = await userGateway.insert('user@example.com', 'John');\nconst user = await userGateway.findById(userId);\nawait userGateway.update(userId, 'updated@example.com', 'Jane');"
+[
+  {
+    "id": "table-data-gateway",
+    "name": "Table Data Gateway",
+    "category": "Enterprise",
+    "description": "Object that acts as gateway to database table with one instance handling all rows",
+    "when_to_use": "Table-based operations\nCentralized access\nSimple queries",
+    "benefits": "Centralized access\nSimple implementation\nClear responsibility",
+    "drawbacks": "Limited flexibility\nScaling issues\nTight coupling",
+    "use_cases": "Table operations\nData access objects\nSimple databases",
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "data-source",
+      "table"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Table Data Gateway: gateway for entire table\nclass UserTableGateway {\n  constructor(private db: Database) {}\n  \n  async findById(id: string): Promise<UserRecord | null> {\n    const row = await this.db.query('SELECT * FROM users WHERE id = ?', [id]);\n    return row as UserRecord;\n  }\n  \n  async findAll(): Promise<UserRecord[]> {\n    const rows = await this.db.query('SELECT * FROM users');\n    return rows as UserRecord[];\n  }\n  \n  async findByEmail(email: string): Promise<UserRecord | null> {\n    const row = await this.db.query('SELECT * FROM users WHERE email = ?', [email]);\n    return row as UserRecord;\n  }\n  \n  async insert(email: string, name: string): Promise<string> {\n    const result = await this.db.query(\n      'INSERT INTO users (email, name) VALUES (?, ?)',\n      [email, name]\n    );\n    return result.insertId;\n  }\n  \n  async update(id: string, email: string, name: string): Promise<void> {\n    await this.db.query(\n      'UPDATE users SET email = ?, name = ? WHERE id = ?',\n      [email, name, id]\n    );\n  }\n  \n  async delete(id: string): Promise<void> {\n    await this.db.query('DELETE FROM users WHERE id = ?', [id]);\n  }\n}\n\n// Usage: All table operations in one place\nconst userGateway = new UserTableGateway(db);\nconst userId = await userGateway.insert('user@example.com', 'John');\nconst user = await userGateway.findById(userId);\nawait userGateway.update(userId, 'updated@example.com', 'Jane');"
+      }
     }
   }
-}
+]

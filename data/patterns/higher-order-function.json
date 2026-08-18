@@ -1,16 +1,18 @@
-{
-  "id": "higher-order-function",
-  "name": "Higher-Order Function",
-  "category": "Functional",
-  "description": "Functions that take other functions as arguments or return functions",
-  "when_to_use": "Code reuse\nAbstraction\nFunctional composition",
-  "benefits": "Reusable\nComposable\nAbstract\nFlexible",
-  "drawbacks": "Complexity\nPerformance overhead\nDebugging difficulty",
-  "use_cases": "Array methods\nEvent handlers\nMiddleware",
-  "complexity": "Medium",
-  "tags": [
-    "higher-order",
-    "composition",
-    "abstraction"
-  ]
-}
+[
+  {
+    "id": "higher-order-function",
+    "name": "Higher-Order Function",
+    "category": "Functional",
+    "description": "Functions that take other functions as arguments or return functions",
+    "when_to_use": "Code reuse\nAbstraction\nFunctional composition",
+    "benefits": "Reusable\nComposable\nAbstract\nFlexible",
+    "drawbacks": "Complexity\nPerformance overhead\nDebugging difficulty",
+    "use_cases": "Array methods\nEvent handlers\nMiddleware",
+    "complexity": "Medium",
+    "tags": [
+      "higher-order",
+      "composition",
+      "abstraction"
+    ]
+  }
+]

@@ -1,16 +1,18 @@
-{
-  "id": "event-sourcing-ms",
-  "name": "Event Sourcing (Microservices)",
-  "category": "Microservices",
-  "description": "Stores state changes as sequence of events in distributed systems",
-  "when_to_use": "Audit requirements\nEvent replay\nTemporal queries",
-  "benefits": "Complete audit trail\nEvent replay\nTemporal queries\nScalability",
-  "drawbacks": "Complexity\nStorage overhead\nQuery challenges",
-  "use_cases": "Financial systems\nAudit trails\nEvent-driven architectures",
-  "complexity": "High",
-  "tags": [
-    "microservices",
-    "events",
-    "persistence"
-  ]
-}
+[
+  {
+    "id": "event-sourcing-ms",
+    "name": "Event Sourcing (Microservices)",
+    "category": "Microservices",
+    "description": "Stores state changes as sequence of events in distributed systems",
+    "when_to_use": "Audit requirements\nEvent replay\nTemporal queries",
+    "benefits": "Complete audit trail\nEvent replay\nTemporal queries\nScalability",
+    "drawbacks": "Complexity\nStorage overhead\nQuery challenges",
+    "use_cases": "Financial systems\nAudit trails\nEvent-driven architectures",
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "events",
+      "persistence"
+    ]
+  }
+]

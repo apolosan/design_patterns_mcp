@@ -1,24 +1,26 @@
-{
-  "id": "bonding-curve-pattern",
-  "name": "Bonding Curve Pattern",
-  "category": "Token Economics",
-  "description": "Continuous price discovery via mathematical curve. Price = f(supply). Always liquid.",
-  "when_to_use": "Token launches, continuous offerings, automated market making",
-  "benefits": "Always liquid, algorithmic pricing, fair price discovery",
-  "drawbacks": "Complex mathematics, front-running risk, slippage",
-  "use_cases": "Token sales, continuous funding, automated pricing",
-  "complexity": "High",
-  "tags": [
-    "tokenomics",
-    "bonding-curve",
-    "pricing",
-    "continuous",
-    "amm"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Linear bonding curve: price = m * supply + b\nfunction calculatePrice(uint256 supply) public pure returns (uint256) {\n    return (SLOPE * supply) + BASE_PRICE;\n}\n\nfunction buy(uint256 amount) external payable {\n    uint256 cost = getCost(totalSupply, amount);\n    require(msg.value >= cost);\n    _mint(msg.sender, amount);\n}\n\nfunction getCost(uint256 startSupply, uint256 amount) public pure returns (uint256) {\n    // Integral of price function\n    return (SLOPE * amount * (2 * startSupply + amount)) / 2 + (BASE_PRICE * amount);\n}"
+[
+  {
+    "id": "bonding-curve-pattern",
+    "name": "Bonding Curve Pattern",
+    "category": "Token Economics",
+    "description": "Continuous price discovery via mathematical curve. Price = f(supply). Always liquid.",
+    "when_to_use": "Token launches, continuous offerings, automated market making",
+    "benefits": "Always liquid, algorithmic pricing, fair price discovery",
+    "drawbacks": "Complex mathematics, front-running risk, slippage",
+    "use_cases": "Token sales, continuous funding, automated pricing",
+    "complexity": "High",
+    "tags": [
+      "tokenomics",
+      "bonding-curve",
+      "pricing",
+      "continuous",
+      "amm"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Linear bonding curve: price = m * supply + b\nfunction calculatePrice(uint256 supply) public pure returns (uint256) {\n    return (SLOPE * supply) + BASE_PRICE;\n}\n\nfunction buy(uint256 amount) external payable {\n    uint256 cost = getCost(totalSupply, amount);\n    require(msg.value >= cost);\n    _mint(msg.sender, amount);\n}\n\nfunction getCost(uint256 startSupply, uint256 amount) public pure returns (uint256) {\n    // Integral of price function\n    return (SLOPE * amount * (2 * startSupply + amount)) / 2 + (BASE_PRICE * amount);\n}"
+      }
     }
   }
-}
+]

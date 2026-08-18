@@ -1,16 +1,18 @@
-{
-  "id": "domain-service",
-  "name": "Domain Service",
-  "category": "Domain-Driven Design",
-  "description": "Operation that doesn't naturally belong to any entity or value object",
-  "when_to_use": "Cross-entity operations\nComplex calculations\nDomain logic",
-  "benefits": "Clear responsibility\nDomain logic encapsulation\nReusability",
-  "drawbacks": "Service proliferation\nAnemic domain risk\nDependency complexity",
-  "use_cases": "Complex calculations\nMulti-entity operations\nExternal integrations",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "tactical",
-    "service"
-  ]
-}
+[
+  {
+    "id": "domain-service",
+    "name": "Domain Service",
+    "category": "Domain-Driven Design",
+    "description": "Operation that doesn't naturally belong to any entity or value object",
+    "when_to_use": "Cross-entity operations\nComplex calculations\nDomain logic",
+    "benefits": "Clear responsibility\nDomain logic encapsulation\nReusability",
+    "drawbacks": "Service proliferation\nAnemic domain risk\nDependency complexity",
+    "use_cases": "Complex calculations\nMulti-entity operations\nExternal integrations",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "tactical",
+      "service"
+    ]
+  }
+]

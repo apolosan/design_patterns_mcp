@@ -1,16 +1,18 @@
-{
-  "id": "access-control-list",
-  "name": "Access Control List (ACL)",
-  "category": "Security",
-  "description": "Maintains list of permissions attached to objects specifying which users can access them",
-  "when_to_use": "Fine-grained access control\nResource protection\nPermission management",
-  "benefits": "Fine-grained control\nFlexible permissions\nResource-specific access",
-  "drawbacks": "Management complexity\nPerformance overhead\nScale limitations",
-  "use_cases": "File systems\nDatabase rows\nAPI resources",
-  "complexity": "High",
-  "tags": [
-    "security",
-    "acl",
-    "permissions"
-  ]
-}
+[
+  {
+    "id": "access-control-list",
+    "name": "Access Control List (ACL)",
+    "category": "Security",
+    "description": "Maintains list of permissions attached to objects specifying which users can access them",
+    "when_to_use": "Fine-grained access control\nResource protection\nPermission management",
+    "benefits": "Fine-grained control\nFlexible permissions\nResource-specific access",
+    "drawbacks": "Management complexity\nPerformance overhead\nScale limitations",
+    "use_cases": "File systems\nDatabase rows\nAPI resources",
+    "complexity": "High",
+    "tags": [
+      "security",
+      "acl",
+      "permissions"
+    ]
+  }
+]

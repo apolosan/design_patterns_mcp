@@ -1,16 +1,18 @@
-{
-  "id": "unit-of-work",
-  "name": "Unit of Work",
-  "category": "Enterprise",
-  "description": "Maintains list of objects affected by business transaction and coordinates changes",
-  "when_to_use": "Transaction management\nChange tracking\nBatch operations",
-  "benefits": "Transaction control\nChange tracking\nPerformance optimization\nConsistency",
-  "drawbacks": "Complex implementation\nMemory overhead\nConcurrency issues",
-  "use_cases": "ORM frameworks\nTransaction management\nBatch processing",
-  "complexity": "High",
-  "tags": [
-    "enterprise",
-    "transaction",
-    "tracking"
-  ]
-}
+[
+  {
+    "id": "unit-of-work",
+    "name": "Unit of Work",
+    "category": "Enterprise",
+    "description": "Maintains list of objects affected by business transaction and coordinates changes",
+    "when_to_use": "Transaction management\nChange tracking\nBatch operations",
+    "benefits": "Transaction control\nChange tracking\nPerformance optimization\nConsistency",
+    "drawbacks": "Complex implementation\nMemory overhead\nConcurrency issues",
+    "use_cases": "ORM frameworks\nTransaction management\nBatch processing",
+    "complexity": "High",
+    "tags": [
+      "enterprise",
+      "transaction",
+      "tracking"
+    ]
+  }
+]

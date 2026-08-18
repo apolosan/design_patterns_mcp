@@ -1,24 +1,26 @@
-{
-  "id": "arweave-permanent",
-  "name": "Arweave Permanent Storage",
-  "category": "Storage",
-  "description": "Pay-once permanent storage for critical data. Uses endowment model for perpetual availability.",
-  "when_to_use": "Historical records, legal documents, permanent NFT storage",
-  "benefits": "Permanent storage, one-time fee, immutable",
-  "drawbacks": "Higher upfront cost, limited queryability, centralization risk",
-  "use_cases": "Mirror.xyz, permanent NFTs, archival",
-  "complexity": "Medium",
-  "tags": [
-    "storage",
-    "arweave",
-    "permanent",
-    "nft",
-    "archival"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Arweave transaction ID stored on-chain\ncontract PermanentNFT {\n    mapping(uint256 => string) public arweaveIds;\n    \n    function mint(address to, string memory arweaveTxId) external {\n        uint256 tokenId = _nextTokenId++;\n        _mint(to, tokenId);\n        arweaveIds[tokenId] = arweaveTxId; // e.g., \"ar://abc123...\"\n    }\n}"
+[
+  {
+    "id": "arweave-permanent",
+    "name": "Arweave Permanent Storage",
+    "category": "Storage",
+    "description": "Pay-once permanent storage for critical data. Uses endowment model for perpetual availability.",
+    "when_to_use": "Historical records, legal documents, permanent NFT storage",
+    "benefits": "Permanent storage, one-time fee, immutable",
+    "drawbacks": "Higher upfront cost, limited queryability, centralization risk",
+    "use_cases": "Mirror.xyz, permanent NFTs, archival",
+    "complexity": "Medium",
+    "tags": [
+      "storage",
+      "arweave",
+      "permanent",
+      "nft",
+      "archival"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Arweave transaction ID stored on-chain\ncontract PermanentNFT {\n    mapping(uint256 => string) public arweaveIds;\n    \n    function mint(address to, string memory arweaveTxId) external {\n        uint256 tokenId = _nextTokenId++;\n        _mint(to, tokenId);\n        arweaveIds[tokenId] = arweaveTxId; // e.g., \"ar://abc123...\"\n    }\n}"
+      }
     }
   }
-}
+]

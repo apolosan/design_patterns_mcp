@@ -1,22 +1,24 @@
-{
-  "id": "throttle",
-  "name": "Throttle Pattern",
-  "category": "Reactive",
-  "description": "Limits emissions to at most one value per specified time interval",
-  "when_to_use": "Rate limiting\nPerformance optimization\nEvent control",
-  "benefits": "Rate control\nPerformance protection\nConsistent timing",
-  "drawbacks": "Missed events\nTiming complexity\nResponse delays",
-  "use_cases": "Scroll events\nMouse movements\nAPI calls",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "throttle",
-    "rate-limiting"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Throttle: emit at most once per period\nclass Observable<T> {\n  throttle(dueTime: number): Observable<T> {\n    return new Observable(observer => {\n      let lastEmit = 0;\n      \n      return this.subscribe({\n        next: value => {\n          const now = Date.now();\n          if (now - lastEmit >= dueTime) {\n            observer.next(value);\n            lastEmit = now;\n          }\n        },\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n}\n\n// Usage: Scroll events (limit rate)\nconst scroll = fromEvent(window, 'scroll');\n\nscroll\n  .throttle(200)  // Max once per 200ms\n  .subscribe({\n    next: () => console.log('Scroll position:', window.scrollY),\n    error: () => {},\n    complete: () => {}\n  });"
+[
+  {
+    "id": "throttle",
+    "name": "Throttle Pattern",
+    "category": "Reactive",
+    "description": "Limits emissions to at most one value per specified time interval",
+    "when_to_use": "Rate limiting\nPerformance optimization\nEvent control",
+    "benefits": "Rate control\nPerformance protection\nConsistent timing",
+    "drawbacks": "Missed events\nTiming complexity\nResponse delays",
+    "use_cases": "Scroll events\nMouse movements\nAPI calls",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "throttle",
+      "rate-limiting"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Throttle: emit at most once per period\nclass Observable<T> {\n  throttle(dueTime: number): Observable<T> {\n    return new Observable(observer => {\n      let lastEmit = 0;\n      \n      return this.subscribe({\n        next: value => {\n          const now = Date.now();\n          if (now - lastEmit >= dueTime) {\n            observer.next(value);\n            lastEmit = now;\n          }\n        },\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n}\n\n// Usage: Scroll events (limit rate)\nconst scroll = fromEvent(window, 'scroll');\n\nscroll\n  .throttle(200)  // Max once per 200ms\n  .subscribe({\n    next: () => console.log('Scroll position:', window.scrollY),\n    error: () => {},\n    complete: () => {}\n  });"
+      }
     }
   }
-}
+]

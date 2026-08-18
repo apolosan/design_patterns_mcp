@@ -1,24 +1,26 @@
-{
-  "id": "erc4626-vault",
-  "name": "ERC-4626 Tokenized Vault",
-  "category": "DeFi Vault",
-  "description": "Standard vault interface for yield-bearing tokens",
-  "when_to_use": "Yield vaults, strategy vaults, composable DeFi",
-  "benefits": "Composability, standardization, tooling ecosystem",
-  "drawbacks": "Still evolving, integration overhead",
-  "use_cases": "Yearn vaults, strategy execution, standardized yields",
-  "complexity": "Medium",
-  "tags": [
-    "defi",
-    "vault",
-    "erc4626",
-    "yield",
-    "standard"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// ERC-4626: standard vault\nimport \"@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol\";\n\ncontract YieldVault is ERC4626 {\n    function totalAssets() public view override returns (uint256) {\n        return asset.balanceOf(address(this)) + deployed;\n    }\n}"
+[
+  {
+    "id": "erc4626-vault",
+    "name": "ERC-4626 Tokenized Vault",
+    "category": "DeFi Vault",
+    "description": "Standard vault interface for yield-bearing tokens",
+    "when_to_use": "Yield vaults, strategy vaults, composable DeFi",
+    "benefits": "Composability, standardization, tooling ecosystem",
+    "drawbacks": "Still evolving, integration overhead",
+    "use_cases": "Yearn vaults, strategy execution, standardized yields",
+    "complexity": "Medium",
+    "tags": [
+      "defi",
+      "vault",
+      "erc4626",
+      "yield",
+      "standard"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ERC-4626: standard vault\nimport \"@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol\";\n\ncontract YieldVault is ERC4626 {\n    function totalAssets() public view override returns (uint256) {\n        return asset.balanceOf(address(this)) + deployed;\n    }\n}"
+      }
     }
   }
-}
+]

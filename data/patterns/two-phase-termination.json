@@ -1,22 +1,24 @@
-{
-  "id": "two-phase-termination",
-  "name": "Two-Phase Termination",
-  "category": "Concurrency",
-  "description": "Gracefully terminates threads in two phases: request and cleanup",
-  "when_to_use": "Graceful shutdown\nResource cleanup\nThread termination",
-  "benefits": "Graceful shutdown\nResource cleanup\nState consistency",
-  "drawbacks": "Complex implementation\nTiming issues\nCleanup overhead",
-  "use_cases": "Server shutdown\nService termination\nResource cleanup",
-  "complexity": "High",
-  "tags": [
-    "concurrency",
-    "termination",
-    "cleanup"
-  ],
-  "examples": {
-    "note": {
-      "language": "note",
-      "code": "⚠️ Advanced: Graceful thread termination requiring careful state management and coordination."
+[
+  {
+    "id": "two-phase-termination",
+    "name": "Two-Phase Termination",
+    "category": "Concurrency",
+    "description": "Gracefully terminates threads in two phases: request and cleanup",
+    "when_to_use": "Graceful shutdown\nResource cleanup\nThread termination",
+    "benefits": "Graceful shutdown\nResource cleanup\nState consistency",
+    "drawbacks": "Complex implementation\nTiming issues\nCleanup overhead",
+    "use_cases": "Server shutdown\nService termination\nResource cleanup",
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "termination",
+      "cleanup"
+    ],
+    "examples": {
+      "note": {
+        "language": "note",
+        "code": "⚠️ Advanced: Graceful thread termination requiring careful state management and coordination."
+      }
     }
   }
-}
+]

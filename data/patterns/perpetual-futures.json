@@ -1,24 +1,26 @@
-{
-  "id": "perpetual-futures",
-  "name": "Perpetual Futures Pattern",
-  "category": "DeFi Derivatives",
-  "description": "Leveraged futures without expiry. Funding rate mechanism keeps price anchored to spot.",
-  "when_to_use": "Derivatives trading, leveraged exposure, perpetual contracts",
-  "benefits": "No expiry, high leverage (10-100x), capital efficient",
-  "drawbacks": "Funding rate risk, liquidation risk, complexity",
-  "use_cases": "dYdX, GMX, Perpetual Protocol, leveraged trading",
-  "complexity": "Very High",
-  "tags": [
-    "defi",
-    "derivatives",
-    "perpetual",
-    "futures",
-    "leverage"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Funding rate to anchor to spot\nfunction calculateFundingRate() public view returns (int256) {\n    int256 priceDiff = int256(perpetualPrice) - int256(spotPrice);\n    return (priceDiff * FUNDING_RATE_MULTIPLIER) / int256(spotPrice);\n}\n\nfunction applyFunding(address trader) external {\n    int256 fundingRate = calculateFundingRate();\n    int256 payment = (positions[trader].size * fundingRate) / 1e18;\n    \n    if (payment > 0) { // Long pays short\n        balances[trader] -= uint256(payment);\n    } else { // Short pays long\n        balances[trader] += uint256(-payment);\n    }\n}"
+[
+  {
+    "id": "perpetual-futures",
+    "name": "Perpetual Futures Pattern",
+    "category": "DeFi Derivatives",
+    "description": "Leveraged futures without expiry. Funding rate mechanism keeps price anchored to spot.",
+    "when_to_use": "Derivatives trading, leveraged exposure, perpetual contracts",
+    "benefits": "No expiry, high leverage (10-100x), capital efficient",
+    "drawbacks": "Funding rate risk, liquidation risk, complexity",
+    "use_cases": "dYdX, GMX, Perpetual Protocol, leveraged trading",
+    "complexity": "Very High",
+    "tags": [
+      "defi",
+      "derivatives",
+      "perpetual",
+      "futures",
+      "leverage"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Funding rate to anchor to spot\nfunction calculateFundingRate() public view returns (int256) {\n    int256 priceDiff = int256(perpetualPrice) - int256(spotPrice);\n    return (priceDiff * FUNDING_RATE_MULTIPLIER) / int256(spotPrice);\n}\n\nfunction applyFunding(address trader) external {\n    int256 fundingRate = calculateFundingRate();\n    int256 payment = (positions[trader].size * fundingRate) / 1e18;\n    \n    if (payment > 0) { // Long pays short\n        balances[trader] -= uint256(payment);\n    } else { // Short pays long\n        balances[trader] += uint256(-payment);\n    }\n}"
+      }
     }
   }
-}
+]

@@ -1,16 +1,18 @@
-{
-  "id": "claim-check",
-  "name": "Claim Check Pattern",
-  "category": "Cloud-Native",
-  "description": "Stores large message payloads separately and passes only references",
-  "when_to_use": "Large message payloads\nMessage size limits\nCost optimization",
-  "benefits": "Reduced message size\nLower messaging costs\nBetter performance",
-  "drawbacks": "Additional storage\nComplexity\nReference management",
-  "use_cases": "File processing workflows\nLarge data transfers\nMessage queues",
-  "complexity": "Medium",
-  "tags": [
-    "messaging",
-    "storage",
-    "optimization"
-  ]
-}
+[
+  {
+    "id": "claim-check",
+    "name": "Claim Check Pattern",
+    "category": "Cloud-Native",
+    "description": "Stores large message payloads separately and passes only references",
+    "when_to_use": "Large message payloads\nMessage size limits\nCost optimization",
+    "benefits": "Reduced message size\nLower messaging costs\nBetter performance",
+    "drawbacks": "Additional storage\nComplexity\nReference management",
+    "use_cases": "File processing workflows\nLarge data transfers\nMessage queues",
+    "complexity": "Medium",
+    "tags": [
+      "messaging",
+      "storage",
+      "optimization"
+    ]
+  }
+]

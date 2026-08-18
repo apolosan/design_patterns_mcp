@@ -1,127 +1,123 @@
-{
-  "category": "Intent-Based Architecture",
-  "description": "Intent-Based Architecture design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "cow-protocol-pattern",
-      "name": "CoW Protocol Pattern",
-      "category": "Intent-Based Architecture",
-      "description": "Batch auctions with Coincidence of Wants. Orders matched peer-to-peer before hitting AMM.",
-      "when_to_use": [
-        "MEV-protected trading",
-        "batch settlements",
-        "peer-to-peer matching"
-      ],
-      "benefits": [
-        "MEV protection",
-        "better prices via CoWs",
-        "no front-running"
-      ],
-      "drawbacks": [
-        "Batch delay (few seconds)",
-        "may not fill",
-        "solver dependency"
-      ],
-      "use_cases": [
-        "DEX trading",
-        "MEV protection",
-        "batch execution"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "intent",
-        "cow",
-        "batch-auction",
-        "mev-protection",
-        "dex"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// CoW Protocol: Coincidence of Wants\n// User A: Sell ETH for USDC\n// User B: Sell USDC for ETH\n// → Matched directly, no AMM needed!\n\ncontract CoWSettlement {\n    struct Order {\n        address token;\n        uint256 amount;\n        address recipient;\n        bytes signature;\n    }\n    \n    function settleBatch(Order[] calldata orders) external onlySolver {\n        // 1. Find CoWs (direct matches)\n        (Order[] memory matched, Order[] memory unmatched) = findCoWs(orders);\n        \n        // 2. Settle matched orders peer-to-peer\n        for (uint i = 0; i < matched.length; i += 2) {\n            settleDirectly(matched[i], matched[i+1]);\n        }\n        \n        // 3. Route unmatched to AMM\n        for (uint i = 0; i < unmatched.length; i++) {\n            settleViaAMM(unmatched[i]);\n        }\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "intent-solver-pattern",
-      "name": "Intent Solver Pattern",
-      "category": "Intent-Based Architecture",
-      "description": "Users specify outcome, not execution path. Solvers compete to fulfill intents optimally.",
-      "when_to_use": [
-        "Complex multi-step operations",
-        "optimal execution",
-        "cross-chain"
-      ],
-      "benefits": [
-        "Simplified UX",
-        "optimal execution",
-        "solver competition"
-      ],
-      "drawbacks": [
-        "Requires solver network",
-        "execution uncertainty",
-        "new paradigm"
-      ],
-      "use_cases": [
-        "UniswapX",
-        "CoW Protocol",
-        "cross-chain swaps",
-        "complex DeFi"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "intent",
-        "solver",
-        "uniswapx",
-        "cow-protocol",
-        "architecture"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Intent: \"Swap 1 ETH for USDC, any path\"\nstruct Intent {\n    address user;\n    address tokenIn;\n    address tokenOut;\n    uint256 amountIn;\n    uint256 minAmountOut;\n    uint256 deadline;\n    bytes signature;\n}\n\n// Solver fulfills intent\ncontract IntentSettlement {\n    function settleIntent(Intent calldata intent, bytes calldata path) external {\n        // Verify signature\n        require(verifyIntent(intent));\n        \n        // Execute optimal path found by solver\n        uint256 amountOut = executeSwap(intent.tokenIn, intent.tokenOut, path);\n        require(amountOut >= intent.minAmountOut);\n        \n        // Transfer to user\n        IERC20(intent.tokenOut).transfer(intent.user, amountOut);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "uniswapx-pattern",
-      "name": "UniswapX Pattern",
-      "category": "Intent-Based Architecture",
-      "description": "Intent-based DEX with Dutch auctions. Fillers compete to fill swaps, no gas for swappers.",
-      "when_to_use": [
-        "Gas-free swaps",
-        "cross-chain trading",
-        "MEV protection"
-      ],
-      "benefits": [
-        "No gas for swappers",
-        "MEV protection",
-        "cross-chain capable"
-      ],
-      "drawbacks": [
-        "Newer ecosystem",
-        "filler dependency",
-        "price discovery period"
-      ],
-      "use_cases": [
-        "DEX trading",
-        "cross-chain swaps",
-        "gasless UX"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "intent",
-        "uniswapx",
-        "dutch-auction",
-        "gasless",
-        "cross-chain"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// UniswapX: Dutch auction for best price\nstruct DutchOrder {\n    address tokenIn;\n    address tokenOut;\n    uint256 amountIn;\n    uint256 startPrice;  // Start high\n    uint256 endPrice;    // Decay to low\n    uint256 deadline;\n    address swapper;\n}\n\n// Price decays over time, fillers compete\nfunction getCurrentPrice(DutchOrder memory order) public view returns (uint256) {\n    uint256 elapsed = block.timestamp - order.startTime;\n    uint256 duration = order.deadline - order.startTime;\n    \n    // Linear price decay\n    uint256 priceDecay = (order.startPrice - order.endPrice) * elapsed / duration;\n    return order.startPrice - priceDecay;\n}"
-        }
+[
+  {
+    "id": "cow-protocol-pattern",
+    "name": "CoW Protocol Pattern",
+    "category": "Intent-Based Architecture",
+    "description": "Batch auctions with Coincidence of Wants. Orders matched peer-to-peer before hitting AMM.",
+    "when_to_use": [
+      "MEV-protected trading",
+      "batch settlements",
+      "peer-to-peer matching"
+    ],
+    "benefits": [
+      "MEV protection",
+      "better prices via CoWs",
+      "no front-running"
+    ],
+    "drawbacks": [
+      "Batch delay (few seconds)",
+      "may not fill",
+      "solver dependency"
+    ],
+    "use_cases": [
+      "DEX trading",
+      "MEV protection",
+      "batch execution"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "intent",
+      "cow",
+      "batch-auction",
+      "mev-protection",
+      "dex"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// CoW Protocol: Coincidence of Wants\n// User A: Sell ETH for USDC\n// User B: Sell USDC for ETH\n// → Matched directly, no AMM needed!\n\ncontract CoWSettlement {\n    struct Order {\n        address token;\n        uint256 amount;\n        address recipient;\n        bytes signature;\n    }\n    \n    function settleBatch(Order[] calldata orders) external onlySolver {\n        // 1. Find CoWs (direct matches)\n        (Order[] memory matched, Order[] memory unmatched) = findCoWs(orders);\n        \n        // 2. Settle matched orders peer-to-peer\n        for (uint i = 0; i < matched.length; i += 2) {\n            settleDirectly(matched[i], matched[i+1]);\n        }\n        \n        // 3. Route unmatched to AMM\n        for (uint i = 0; i < unmatched.length; i++) {\n            settleViaAMM(unmatched[i]);\n        }\n    }\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "intent-solver-pattern",
+    "name": "Intent Solver Pattern",
+    "category": "Intent-Based Architecture",
+    "description": "Users specify outcome, not execution path. Solvers compete to fulfill intents optimally.",
+    "when_to_use": [
+      "Complex multi-step operations",
+      "optimal execution",
+      "cross-chain"
+    ],
+    "benefits": [
+      "Simplified UX",
+      "optimal execution",
+      "solver competition"
+    ],
+    "drawbacks": [
+      "Requires solver network",
+      "execution uncertainty",
+      "new paradigm"
+    ],
+    "use_cases": [
+      "UniswapX",
+      "CoW Protocol",
+      "cross-chain swaps",
+      "complex DeFi"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "intent",
+      "solver",
+      "uniswapx",
+      "cow-protocol",
+      "architecture"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Intent: \"Swap 1 ETH for USDC, any path\"\nstruct Intent {\n    address user;\n    address tokenIn;\n    address tokenOut;\n    uint256 amountIn;\n    uint256 minAmountOut;\n    uint256 deadline;\n    bytes signature;\n}\n\n// Solver fulfills intent\ncontract IntentSettlement {\n    function settleIntent(Intent calldata intent, bytes calldata path) external {\n        // Verify signature\n        require(verifyIntent(intent));\n        \n        // Execute optimal path found by solver\n        uint256 amountOut = executeSwap(intent.tokenIn, intent.tokenOut, path);\n        require(amountOut >= intent.minAmountOut);\n        \n        // Transfer to user\n        IERC20(intent.tokenOut).transfer(intent.user, amountOut);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "uniswapx-pattern",
+    "name": "UniswapX Pattern",
+    "category": "Intent-Based Architecture",
+    "description": "Intent-based DEX with Dutch auctions. Fillers compete to fill swaps, no gas for swappers.",
+    "when_to_use": [
+      "Gas-free swaps",
+      "cross-chain trading",
+      "MEV protection"
+    ],
+    "benefits": [
+      "No gas for swappers",
+      "MEV protection",
+      "cross-chain capable"
+    ],
+    "drawbacks": [
+      "Newer ecosystem",
+      "filler dependency",
+      "price discovery period"
+    ],
+    "use_cases": [
+      "DEX trading",
+      "cross-chain swaps",
+      "gasless UX"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "intent",
+      "uniswapx",
+      "dutch-auction",
+      "gasless",
+      "cross-chain"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// UniswapX: Dutch auction for best price\nstruct DutchOrder {\n    address tokenIn;\n    address tokenOut;\n    uint256 amountIn;\n    uint256 startPrice;  // Start high\n    uint256 endPrice;    // Decay to low\n    uint256 deadline;\n    address swapper;\n}\n\n// Price decays over time, fillers compete\nfunction getCurrentPrice(DutchOrder memory order) public view returns (uint256) {\n    uint256 elapsed = block.timestamp - order.startTime;\n    uint256 duration = order.deadline - order.startTime;\n    \n    // Linear price decay\n    uint256 priceDecay = (order.startPrice - order.endPrice) * elapsed / duration;\n    return order.startPrice - priceDecay;\n}"
+      }
+    }
+  }
+]

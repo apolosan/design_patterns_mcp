@@ -1,16 +1,18 @@
-{
-  "id": "lazy-loading-mobile",
-  "name": "Lazy Loading (Mobile)",
-  "category": "Mobile",
-  "description": "Load content only when needed to optimize mobile performance and data usage",
-  "when_to_use": "Large datasets\nLimited bandwidth\nPerformance optimization",
-  "benefits": "Reduced data usage\nFaster initial load\nBetter performance",
-  "drawbacks": "Loading delays\nComplex implementation\nUser experience impact",
-  "use_cases": "Image galleries\nSocial feeds\nLarge lists",
-  "complexity": "Medium",
-  "tags": [
-    "mobile",
-    "performance",
-    "loading"
-  ]
-}
+[
+  {
+    "id": "lazy-loading-mobile",
+    "name": "Lazy Loading (Mobile)",
+    "category": "Mobile",
+    "description": "Load content only when needed to optimize mobile performance and data usage",
+    "when_to_use": "Large datasets\nLimited bandwidth\nPerformance optimization",
+    "benefits": "Reduced data usage\nFaster initial load\nBetter performance",
+    "drawbacks": "Loading delays\nComplex implementation\nUser experience impact",
+    "use_cases": "Image galleries\nSocial feeds\nLarge lists",
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "performance",
+      "loading"
+    ]
+  }
+]

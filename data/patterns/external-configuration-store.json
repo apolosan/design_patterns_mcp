@@ -1,22 +1,24 @@
-{
-  "id": "external-configuration-store",
-  "name": "External Configuration Store",
-  "category": "Cloud-Native",
-  "description": "Centralizes configuration information outside application deployment",
-  "when_to_use": "Dynamic configuration\nMultiple environments\nCentralized management",
-  "benefits": "Dynamic updates\nEnvironment consistency\nCentralized management",
-  "drawbacks": "External dependency\nNetwork calls\nSecurity concerns",
-  "use_cases": "Feature flags\nEnvironment settings\nApplication parameters",
-  "complexity": "Medium",
-  "tags": [
-    "configuration",
-    "management",
-    "deployment"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// External Configuration Store: centralized config\nclass ConfigStore {\n  private cache = new Map<string, any>();\n  \n  constructor(private configUrl: string) {\n    this.startPolling();\n  }\n  \n  async get<T>(key: string, defaultValue?: T): Promise<T> {\n    if (this.cache.has(key)) {\n      return this.cache.get(key);\n    }\n    const value = await this.fetch(key);\n    this.cache.set(key, value || defaultValue);\n    return value || defaultValue;\n  }\n  \n  private async fetch(key: string): Promise<any> {\n    const response = await fetch(this.configUrl + '/config/' + key);\n    const data = await response.json();\n    return data.value;\n  }\n  \n  private startPolling() {\n    setInterval(async () => {\n      for (const key of this.cache.keys()) {\n        const newValue = await this.fetch(key);\n        this.cache.set(key, newValue);\n      }\n    }, 30000);\n  }\n}\n\nconst config = new ConfigStore('https://config.example.com');\nconst dbUrl = await config.get('database.url');"
+[
+  {
+    "id": "external-configuration-store",
+    "name": "External Configuration Store",
+    "category": "Cloud-Native",
+    "description": "Centralizes configuration information outside application deployment",
+    "when_to_use": "Dynamic configuration\nMultiple environments\nCentralized management",
+    "benefits": "Dynamic updates\nEnvironment consistency\nCentralized management",
+    "drawbacks": "External dependency\nNetwork calls\nSecurity concerns",
+    "use_cases": "Feature flags\nEnvironment settings\nApplication parameters",
+    "complexity": "Medium",
+    "tags": [
+      "configuration",
+      "management",
+      "deployment"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// External Configuration Store: centralized config\nclass ConfigStore {\n  private cache = new Map<string, any>();\n  \n  constructor(private configUrl: string) {\n    this.startPolling();\n  }\n  \n  async get<T>(key: string, defaultValue?: T): Promise<T> {\n    if (this.cache.has(key)) {\n      return this.cache.get(key);\n    }\n    const value = await this.fetch(key);\n    this.cache.set(key, value || defaultValue);\n    return value || defaultValue;\n  }\n  \n  private async fetch(key: string): Promise<any> {\n    const response = await fetch(this.configUrl + '/config/' + key);\n    const data = await response.json();\n    return data.value;\n  }\n  \n  private startPolling() {\n    setInterval(async () => {\n      for (const key of this.cache.keys()) {\n        const newValue = await this.fetch(key);\n        this.cache.set(key, newValue);\n      }\n    }, 30000);\n  }\n}\n\nconst config = new ConfigStore('https://config.example.com');\nconst dbUrl = await config.get('database.url');"
+      }
     }
   }
-}
+]

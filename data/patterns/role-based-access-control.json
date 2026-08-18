@@ -1,16 +1,18 @@
-{
-  "id": "role-based-access-control",
-  "name": "Role-Based Access Control (RBAC)",
-  "category": "Security",
-  "description": "Assigns permissions to roles and roles to users for simplified access management",
-  "when_to_use": "User role management\nPermission simplification\nEnterprise systems",
-  "benefits": "Simplified management\nRole-based permissions\nScalable access control",
-  "drawbacks": "Role proliferation\nComplexity in hierarchies\nRole conflicts",
-  "use_cases": "Enterprise applications\nUser management\nSystem administration",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "rbac",
-    "roles"
-  ]
-}
+[
+  {
+    "id": "role-based-access-control",
+    "name": "Role-Based Access Control (RBAC)",
+    "category": "Security",
+    "description": "Assigns permissions to roles and roles to users for simplified access management",
+    "when_to_use": "User role management\nPermission simplification\nEnterprise systems",
+    "benefits": "Simplified management\nRole-based permissions\nScalable access control",
+    "drawbacks": "Role proliferation\nComplexity in hierarchies\nRole conflicts",
+    "use_cases": "Enterprise applications\nUser management\nSystem administration",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "rbac",
+      "roles"
+    ]
+  }
+]

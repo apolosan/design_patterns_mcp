@@ -1,16 +1,18 @@
-{
-  "id": "output-encoding",
-  "name": "Output Encoding Pattern",
-  "category": "Security",
-  "description": "Encodes output data to prevent XSS and other output-based attacks",
-  "when_to_use": "Web output\nDynamic content\nUser-generated content",
-  "benefits": "XSS prevention\nOutput safety\nContent protection",
-  "drawbacks": "Performance overhead\nEncoding complexity\nContent formatting",
-  "use_cases": "Web pages\nAPI responses\nEmail content",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "encoding",
-    "output"
-  ]
-}
+[
+  {
+    "id": "output-encoding",
+    "name": "Output Encoding Pattern",
+    "category": "Security",
+    "description": "Encodes output data to prevent XSS and other output-based attacks",
+    "when_to_use": "Web output\nDynamic content\nUser-generated content",
+    "benefits": "XSS prevention\nOutput safety\nContent protection",
+    "drawbacks": "Performance overhead\nEncoding complexity\nContent formatting",
+    "use_cases": "Web pages\nAPI responses\nEmail content",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "encoding",
+      "output"
+    ]
+  }
+]

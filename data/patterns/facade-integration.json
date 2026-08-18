@@ -1,16 +1,18 @@
-{
-  "id": "facade-integration",
-  "name": "Facade Pattern (Integration)",
-  "category": "Integration",
-  "description": "Provides simplified interface to complex subsystem for integration purposes",
-  "when_to_use": "Complex subsystems\nInterface simplification\nClient protection",
-  "benefits": "Simplified interface\nSubsystem hiding\nReduced coupling",
-  "drawbacks": "Additional layer\nLimited functionality\nMaintenance overhead",
-  "use_cases": "Complex system integration\nAPI simplification\nLegacy wrapping",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "facade",
-    "simplification"
-  ]
-}
+[
+  {
+    "id": "facade-integration",
+    "name": "Facade Pattern (Integration)",
+    "category": "Integration",
+    "description": "Provides simplified interface to complex subsystem for integration purposes",
+    "when_to_use": "Complex subsystems\nInterface simplification\nClient protection",
+    "benefits": "Simplified interface\nSubsystem hiding\nReduced coupling",
+    "drawbacks": "Additional layer\nLimited functionality\nMaintenance overhead",
+    "use_cases": "Complex system integration\nAPI simplification\nLegacy wrapping",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "facade",
+      "simplification"
+    ]
+  }
+]

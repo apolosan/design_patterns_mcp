@@ -1,15 +1,17 @@
-{
-  "id": "shotgun-surgery",
-  "name": "Shotgun Surgery Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Making similar changes across many classes whenever you modify the system",
-  "when_to_use": "Changes require modifications in many places\nSimilar updates scattered across codebase\nRelated functionality poorly organized",
-  "drawbacks": "High maintenance cost\nError-prone changes\nInconsistent updates\nDevelopment bottlenecks",
-  "use_cases": "Configuration changes affecting multiple modules\nAPI changes requiring widespread updates\nBusiness rule changes scattered across layers",
-  "complexity": "High",
-  "tags": [
-    "anti-pattern",
-    "maintainability",
-    "coupling"
-  ]
-}
+[
+  {
+    "id": "shotgun-surgery",
+    "name": "Shotgun Surgery Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Making similar changes across many classes whenever you modify the system",
+    "when_to_use": "Changes require modifications in many places\nSimilar updates scattered across codebase\nRelated functionality poorly organized",
+    "drawbacks": "High maintenance cost\nError-prone changes\nInconsistent updates\nDevelopment bottlenecks",
+    "use_cases": "Configuration changes affecting multiple modules\nAPI changes requiring widespread updates\nBusiness rule changes scattered across layers",
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "maintainability",
+      "coupling"
+    ]
+  }
+]

@@ -1,16 +1,18 @@
-{
-  "id": "gesture-based-interaction",
-  "name": "Gesture-Based Interaction",
-  "category": "Mobile",
-  "description": "User interface patterns based on touch gestures for mobile interaction",
-  "when_to_use": "Touch interfaces\nIntuitive interactions\nMobile-first design",
-  "benefits": "Intuitive interaction\nSpace efficiency\nModern user experience",
-  "drawbacks": "Discoverability issues\nAccessibility concerns\nLearning curve",
-  "use_cases": "Swipe actions\nPinch to zoom\nPull to refresh",
-  "complexity": "Medium",
-  "tags": [
-    "mobile",
-    "gestures",
-    "interaction"
-  ]
-}
+[
+  {
+    "id": "gesture-based-interaction",
+    "name": "Gesture-Based Interaction",
+    "category": "Mobile",
+    "description": "User interface patterns based on touch gestures for mobile interaction",
+    "when_to_use": "Touch interfaces\nIntuitive interactions\nMobile-first design",
+    "benefits": "Intuitive interaction\nSpace efficiency\nModern user experience",
+    "drawbacks": "Discoverability issues\nAccessibility concerns\nLearning curve",
+    "use_cases": "Swipe actions\nPinch to zoom\nPull to refresh",
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "gestures",
+      "interaction"
+    ]
+  }
+]

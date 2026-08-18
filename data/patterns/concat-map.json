@@ -1,22 +1,24 @@
-{
-  "id": "concat-map",
-  "name": "ConcatMap Pattern",
-  "category": "Reactive",
-  "description": "Projects emissions to inner observables and concatenates results in order",
-  "when_to_use": "Sequential processing\nOrder preservation\nDependent operations",
-  "benefits": "Order preservation\nSequential processing\nPredictable results",
-  "drawbacks": "Slower execution\nHead-of-line blocking\nResource queueing",
-  "use_cases": "Sequential API calls\nFile uploads\nOrdered processing",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "concat",
-    "sequential"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// ConcatMap: sequential inner observables\nclass Observable<T> {\n  concatMap<R>(project: (value: T) => Observable<R>): Observable<R> {\n    return new Observable(observer => {\n      const queue: Array<() => void> = [];\n      let activeInner = false;\n      let outerCompleted = false;\n      \n      const processNext = () => {\n        if (activeInner || queue.length === 0) {\n          if (outerCompleted && queue.length === 0) {\n            observer.complete();\n          }\n          return;\n        }\n        \n        activeInner = true;\n        queue.shift()!();\n      };\n      \n      return this.subscribe({\n        next: value => {\n          queue.push(() => {\n            project(value).subscribe({\n              next: inner => observer.next(inner),\n              error: err => observer.error(err),\n              complete: () => {\n                activeInner = false;\n                processNext();\n              }\n            });\n          });\n          processNext();\n        },\n        error: err => observer.error(err),\n        complete: () => {\n          outerCompleted = true;\n          processNext();\n        }\n      });\n    });\n  }\n}\n\n// Usage: Sequential async operations\nconst urls = from(['url1', 'url2', 'url3']);\n\nurls\n  .concatMap(url => fetch(url))  // Wait for each to complete\n  .subscribe({\n    next: response => console.log('Response:', response),\n    error: () => {},\n    complete: () => {}\n  });"
+[
+  {
+    "id": "concat-map",
+    "name": "ConcatMap Pattern",
+    "category": "Reactive",
+    "description": "Projects emissions to inner observables and concatenates results in order",
+    "when_to_use": "Sequential processing\nOrder preservation\nDependent operations",
+    "benefits": "Order preservation\nSequential processing\nPredictable results",
+    "drawbacks": "Slower execution\nHead-of-line blocking\nResource queueing",
+    "use_cases": "Sequential API calls\nFile uploads\nOrdered processing",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "concat",
+      "sequential"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// ConcatMap: sequential inner observables\nclass Observable<T> {\n  concatMap<R>(project: (value: T) => Observable<R>): Observable<R> {\n    return new Observable(observer => {\n      const queue: Array<() => void> = [];\n      let activeInner = false;\n      let outerCompleted = false;\n      \n      const processNext = () => {\n        if (activeInner || queue.length === 0) {\n          if (outerCompleted && queue.length === 0) {\n            observer.complete();\n          }\n          return;\n        }\n        \n        activeInner = true;\n        queue.shift()!();\n      };\n      \n      return this.subscribe({\n        next: value => {\n          queue.push(() => {\n            project(value).subscribe({\n              next: inner => observer.next(inner),\n              error: err => observer.error(err),\n              complete: () => {\n                activeInner = false;\n                processNext();\n              }\n            });\n          });\n          processNext();\n        },\n        error: err => observer.error(err),\n        complete: () => {\n          outerCompleted = true;\n          processNext();\n        }\n      });\n    });\n  }\n}\n\n// Usage: Sequential async operations\nconst urls = from(['url1', 'url2', 'url3']);\n\nurls\n  .concatMap(url => fetch(url))  // Wait for each to complete\n  .subscribe({\n    next: response => console.log('Response:', response),\n    error: () => {},\n    complete: () => {}\n  });"
+      }
     }
   }
-}
+]

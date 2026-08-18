@@ -1,16 +1,18 @@
-{
-  "id": "test-containerization",
-  "name": "Test Containerization",
-  "category": "Testing",
-  "description": "Uses containers to create isolated, reproducible test environments",
-  "when_to_use": "Integration testing\nEnvironment consistency\nCI/CD pipelines",
-  "benefits": "Environment consistency\nIsolation\nReproducibility",
-  "drawbacks": "Resource overhead\nSetup complexity\nContainer management",
-  "use_cases": "Database testing\nService integration\nEnd-to-end testing",
-  "complexity": "High",
-  "tags": [
-    "testing",
-    "containers",
-    "environment"
-  ]
-}
+[
+  {
+    "id": "test-containerization",
+    "name": "Test Containerization",
+    "category": "Testing",
+    "description": "Uses containers to create isolated, reproducible test environments",
+    "when_to_use": "Integration testing\nEnvironment consistency\nCI/CD pipelines",
+    "benefits": "Environment consistency\nIsolation\nReproducibility",
+    "drawbacks": "Resource overhead\nSetup complexity\nContainer management",
+    "use_cases": "Database testing\nService integration\nEnd-to-end testing",
+    "complexity": "High",
+    "tags": [
+      "testing",
+      "containers",
+      "environment"
+    ]
+  }
+]

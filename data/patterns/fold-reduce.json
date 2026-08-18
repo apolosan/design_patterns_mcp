@@ -1,16 +1,18 @@
-{
-  "id": "fold-reduce",
-  "name": "Fold/Reduce Pattern",
-  "category": "Functional",
-  "description": "Reduces collection to single value using accumulator function",
-  "when_to_use": "Collection processing\nAggregation\nTransformation",
-  "benefits": "Single pass processing\nMemory efficient\nFlexible\nComposable",
-  "drawbacks": "Sequential processing\nAccumulator management\nComplexity",
-  "use_cases": "Sum calculations\nString building\nObject transformation",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "reduction",
-    "aggregation"
-  ]
-}
+[
+  {
+    "id": "fold-reduce",
+    "name": "Fold/Reduce Pattern",
+    "category": "Functional",
+    "description": "Reduces collection to single value using accumulator function",
+    "when_to_use": "Collection processing\nAggregation\nTransformation",
+    "benefits": "Single pass processing\nMemory efficient\nFlexible\nComposable",
+    "drawbacks": "Sequential processing\nAccumulator management\nComplexity",
+    "use_cases": "Sum calculations\nString building\nObject transformation",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "reduction",
+      "aggregation"
+    ]
+  }
+]

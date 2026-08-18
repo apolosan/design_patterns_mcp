@@ -1,22 +1,24 @@
-{
-  "id": "page-controller",
-  "name": "Page Controller",
-  "category": "Enterprise",
-  "description": "Object that acts as an interface to page system for specific page or action",
-  "when_to_use": "Simple web applications\nPage-specific logic\nDirect mapping",
-  "benefits": "Simple implementation\nDirect mapping\nEasy to understand",
-  "drawbacks": "Code duplication\nLimited reuse\nMaintenance overhead",
-  "use_cases": "Simple web pages\nForm handling\nPage-specific operations",
-  "complexity": "Low",
-  "tags": [
-    "enterprise",
-    "web",
-    "page"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Page Controller: one controller per logical page\nclass UserListController {\n  constructor(\n    private userService: UserService,\n    private viewRenderer: ViewRenderer\n  ) {}\n  \n  async handleRequest(request: Request): Promise<Response> {\n    const page = parseInt(request.query.page || '1');\n    const pageSize = 20;\n    \n    const users = await this.userService.getUsers(page, pageSize);\n    const totalUsers = await this.userService.getTotalUsers();\n    \n    return this.viewRenderer.render('user-list', {\n      users,\n      page,\n      totalPages: Math.ceil(totalUsers / pageSize)\n    });\n  }\n}\n\nclass UserDetailController {\n  constructor(\n    private userService: UserService,\n    private viewRenderer: ViewRenderer\n  ) {}\n  \n  async handleRequest(request: Request): Promise<Response> {\n    const userId = request.params.id;\n    const user = await this.userService.getUserById(userId);\n    \n    if (!user) {\n      return { status: 404, body: 'User not found' };\n    }\n    \n    return this.viewRenderer.render('user-detail', { user });\n  }\n}\n\n// Router maps URLs to page controllers\nrouter.get('/users', new UserListController(userService, renderer));\nrouter.get('/users/:id', new UserDetailController(userService, renderer));"
+[
+  {
+    "id": "page-controller",
+    "name": "Page Controller",
+    "category": "Enterprise",
+    "description": "Object that acts as an interface to page system for specific page or action",
+    "when_to_use": "Simple web applications\nPage-specific logic\nDirect mapping",
+    "benefits": "Simple implementation\nDirect mapping\nEasy to understand",
+    "drawbacks": "Code duplication\nLimited reuse\nMaintenance overhead",
+    "use_cases": "Simple web pages\nForm handling\nPage-specific operations",
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "web",
+      "page"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Page Controller: one controller per logical page\nclass UserListController {\n  constructor(\n    private userService: UserService,\n    private viewRenderer: ViewRenderer\n  ) {}\n  \n  async handleRequest(request: Request): Promise<Response> {\n    const page = parseInt(request.query.page || '1');\n    const pageSize = 20;\n    \n    const users = await this.userService.getUsers(page, pageSize);\n    const totalUsers = await this.userService.getTotalUsers();\n    \n    return this.viewRenderer.render('user-list', {\n      users,\n      page,\n      totalPages: Math.ceil(totalUsers / pageSize)\n    });\n  }\n}\n\nclass UserDetailController {\n  constructor(\n    private userService: UserService,\n    private viewRenderer: ViewRenderer\n  ) {}\n  \n  async handleRequest(request: Request): Promise<Response> {\n    const userId = request.params.id;\n    const user = await this.userService.getUserById(userId);\n    \n    if (!user) {\n      return { status: 404, body: 'User not found' };\n    }\n    \n    return this.viewRenderer.render('user-detail', { user });\n  }\n}\n\n// Router maps URLs to page controllers\nrouter.get('/users', new UserListController(userService, renderer));\nrouter.get('/users/:id', new UserDetailController(userService, renderer));"
+      }
     }
   }
-}
+]

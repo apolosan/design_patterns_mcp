@@ -1,16 +1,18 @@
-{
-  "id": "enterprise-service-bus",
-  "name": "Enterprise Service Bus (ESB)",
-  "category": "Integration",
-  "description": "Middleware infrastructure for integrating applications across enterprise",
-  "when_to_use": "Enterprise integration\nMultiple systems\nComplex routing",
-  "benefits": "Centralized integration\nProtocol mediation\nService orchestration",
-  "drawbacks": "Complex configuration\nPerformance bottleneck\nVendor lock-in",
-  "use_cases": "Enterprise integration\nLegacy modernization\nService orchestration",
-  "complexity": "High",
-  "tags": [
-    "integration",
-    "esb",
-    "enterprise"
-  ]
-}
+[
+  {
+    "id": "enterprise-service-bus",
+    "name": "Enterprise Service Bus (ESB)",
+    "category": "Integration",
+    "description": "Middleware infrastructure for integrating applications across enterprise",
+    "when_to_use": "Enterprise integration\nMultiple systems\nComplex routing",
+    "benefits": "Centralized integration\nProtocol mediation\nService orchestration",
+    "drawbacks": "Complex configuration\nPerformance bottleneck\nVendor lock-in",
+    "use_cases": "Enterprise integration\nLegacy modernization\nService orchestration",
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "esb",
+      "enterprise"
+    ]
+  }
+]

@@ -1,22 +1,24 @@
-{
-  "id": "bulkhead-ms",
-  "name": "Bulkhead (Microservices)",
-  "category": "Microservices",
-  "description": "Isolates resources to prevent total system failure",
-  "when_to_use": "Resource isolation\nFault containment\nPerformance isolation",
-  "benefits": "Fault isolation\nResource protection\nPerformance isolation",
-  "drawbacks": "Resource overhead\nComplexity\nManagement burden",
-  "use_cases": "Thread pools\nConnection pools\nService isolation",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "resilience",
-    "isolation"
-  ],
-  "examples": {
-    "cross-reference": {
-      "language": "cross-reference",
-      "code": "// See Bulkhead pattern for implementation example (applies to microservices)\n// Reference pattern: bulkhead"
+[
+  {
+    "id": "bulkhead-ms",
+    "name": "Bulkhead (Microservices)",
+    "category": "Microservices",
+    "description": "Isolates resources to prevent total system failure",
+    "when_to_use": "Resource isolation\nFault containment\nPerformance isolation",
+    "benefits": "Fault isolation\nResource protection\nPerformance isolation",
+    "drawbacks": "Resource overhead\nComplexity\nManagement burden",
+    "use_cases": "Thread pools\nConnection pools\nService isolation",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "resilience",
+      "isolation"
+    ],
+    "examples": {
+      "cross-reference": {
+        "language": "cross-reference",
+        "code": "// See Bulkhead pattern for implementation example (applies to microservices)\n// Reference pattern: bulkhead"
+      }
     }
   }
-}
+]

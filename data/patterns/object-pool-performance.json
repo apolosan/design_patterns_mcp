@@ -1,22 +1,24 @@
-{
-  "id": "object-pool-performance",
-  "name": "Object Pool (Performance)",
-  "category": "Performance",
-  "description": "Reuses expensive objects to avoid creation and garbage collection overhead",
-  "when_to_use": "Expensive object creation\nHigh-frequency allocation\nMemory optimization",
-  "benefits": "Reduced allocation\nBetter memory usage\nPredictable performance",
-  "drawbacks": "Pool management overhead\nMemory waste\nLifecycle complexity",
-  "use_cases": "Database connections\nThread pools\nGraphics objects",
-  "complexity": "Medium",
-  "tags": [
-    "performance",
-    "pool",
-    "memory"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Object Pool: reuse expensive objects\nclass ObjectPool<T> {\n  private available: T[] = [];\n  private inUse = new Set<T>();\n  \n  constructor(\n    private factory: () => T,\n    private reset: (obj: T) => void,\n    initialSize = 5\n  ) {\n    for (let i = 0; i < initialSize; i++) {\n      this.available.push(factory());\n    }\n  }\n  \n  acquire(): T {\n    let obj = this.available.pop();\n    \n    if (!obj) {\n      obj = this.factory();\n    }\n    \n    this.inUse.add(obj);\n    return obj;\n  }\n  \n  release(obj: T): void {\n    this.inUse.delete(obj);\n    this.reset(obj);\n    this.available.push(obj);\n  }\n  \n  getStats() {\n    return {\n      available: this.available.length,\n      inUse: this.inUse.size\n    };\n  }\n}\n\n// Example: Buffer pool\nconst bufferPool = new ObjectPool(\n  () => Buffer.allocUnsafe(1024),\n  (buf) => buf.fill(0),\n  10\n);\n\nconst buffer = bufferPool.acquire();\n// Use buffer...\nbufferPool.release(buffer);"
+[
+  {
+    "id": "object-pool-performance",
+    "name": "Object Pool (Performance)",
+    "category": "Performance",
+    "description": "Reuses expensive objects to avoid creation and garbage collection overhead",
+    "when_to_use": "Expensive object creation\nHigh-frequency allocation\nMemory optimization",
+    "benefits": "Reduced allocation\nBetter memory usage\nPredictable performance",
+    "drawbacks": "Pool management overhead\nMemory waste\nLifecycle complexity",
+    "use_cases": "Database connections\nThread pools\nGraphics objects",
+    "complexity": "Medium",
+    "tags": [
+      "performance",
+      "pool",
+      "memory"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Object Pool: reuse expensive objects\nclass ObjectPool<T> {\n  private available: T[] = [];\n  private inUse = new Set<T>();\n  \n  constructor(\n    private factory: () => T,\n    private reset: (obj: T) => void,\n    initialSize = 5\n  ) {\n    for (let i = 0; i < initialSize; i++) {\n      this.available.push(factory());\n    }\n  }\n  \n  acquire(): T {\n    let obj = this.available.pop();\n    \n    if (!obj) {\n      obj = this.factory();\n    }\n    \n    this.inUse.add(obj);\n    return obj;\n  }\n  \n  release(obj: T): void {\n    this.inUse.delete(obj);\n    this.reset(obj);\n    this.available.push(obj);\n  }\n  \n  getStats() {\n    return {\n      available: this.available.length,\n      inUse: this.inUse.size\n    };\n  }\n}\n\n// Example: Buffer pool\nconst bufferPool = new ObjectPool(\n  () => Buffer.allocUnsafe(1024),\n  (buf) => buf.fill(0),\n  10\n);\n\nconst buffer = bufferPool.acquire();\n// Use buffer...\nbufferPool.release(buffer);"
+      }
     }
   }
-}
+]

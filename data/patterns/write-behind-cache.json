@@ -1,16 +1,18 @@
-{
-  "id": "write-behind-cache",
-  "name": "Write-Behind Cache",
-  "category": "Caching",
-  "description": "Writes to cache immediately, persists to store asynchronously",
-  "when_to_use": "High write performance\nAcceptable eventual consistency\nBatch processing",
-  "benefits": "High write performance\nReduced database load\nBatching opportunities",
-  "drawbacks": "Data loss risk\nComplexity\nEventual consistency",
-  "use_cases": "Analytics data\nLogging systems\nGaming leaderboards",
-  "complexity": "High",
-  "tags": [
-    "caching",
-    "performance",
-    "async"
-  ]
-}
+[
+  {
+    "id": "write-behind-cache",
+    "name": "Write-Behind Cache",
+    "category": "Caching",
+    "description": "Writes to cache immediately, persists to store asynchronously",
+    "when_to_use": "High write performance\nAcceptable eventual consistency\nBatch processing",
+    "benefits": "High write performance\nReduced database load\nBatching opportunities",
+    "drawbacks": "Data loss risk\nComplexity\nEventual consistency",
+    "use_cases": "Analytics data\nLogging systems\nGaming leaderboards",
+    "complexity": "High",
+    "tags": [
+      "caching",
+      "performance",
+      "async"
+    ]
+  }
+]

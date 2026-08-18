@@ -1,22 +1,24 @@
-{
-  "id": "software-transactional-memory",
-  "name": "Software Transactional Memory",
-  "category": "Concurrency",
-  "description": "Manages concurrent access to shared memory using transactions",
-  "when_to_use": "Complex synchronization\nDeadlock avoidance\nComposable operations",
-  "benefits": "Deadlock avoidance\nComposability\nSimplified reasoning",
-  "drawbacks": "Performance overhead\nComplex implementation\nMemory usage",
-  "use_cases": "Complex data structures\nFinancial systems\nDatabase systems",
-  "complexity": "High",
-  "tags": [
-    "concurrency",
-    "transactions",
-    "memory"
-  ],
-  "examples": {
-    "note": {
-      "language": "note",
-      "code": "⚠️ Advanced: Requires STM support (Haskell, Clojure, Scala). Provides atomic composable transactions for shared memory."
+[
+  {
+    "id": "software-transactional-memory",
+    "name": "Software Transactional Memory",
+    "category": "Concurrency",
+    "description": "Manages concurrent access to shared memory using transactions",
+    "when_to_use": "Complex synchronization\nDeadlock avoidance\nComposable operations",
+    "benefits": "Deadlock avoidance\nComposability\nSimplified reasoning",
+    "drawbacks": "Performance overhead\nComplex implementation\nMemory usage",
+    "use_cases": "Complex data structures\nFinancial systems\nDatabase systems",
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "transactions",
+      "memory"
+    ],
+    "examples": {
+      "note": {
+        "language": "note",
+        "code": "⚠️ Advanced: Requires STM support (Haskell, Clojure, Scala). Provides atomic composable transactions for shared memory."
+      }
     }
   }
-}
+]

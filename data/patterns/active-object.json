@@ -1,22 +1,24 @@
-{
-  "id": "active-object",
-  "name": "Active Object",
-  "category": "Concurrency",
-  "description": "Decouples method execution from method invocation using asynchronous messaging",
-  "when_to_use": "Asynchronous execution\nRequest queuing\nConcurrent services",
-  "benefits": "Asynchronous execution\nDecoupling\nRequest queuing\nConcurrency",
-  "drawbacks": "Complex implementation\nMemory overhead\nDebugging difficulty",
-  "use_cases": "Concurrent services\nAsynchronous APIs\nMessage processing",
-  "complexity": "High",
-  "tags": [
-    "concurrency",
-    "asynchronous",
-    "messaging"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Active Object: async method invocation with own thread\ntype MethodRequest = {\n  execute: () => Promise<any>;\n  future: Promise<any>;\n  resolve: (value: any) => void;\n};\n\nclass ActiveObject {\n  private queue: MethodRequest[] = [];\n  private running = false;\n  \n  protected async invoke<T>(method: () => Promise<T>): Promise<T> {\n    const request = this.createRequest(method);\n    this.queue.push(request);\n    \n    if (!this.running) {\n      this.scheduler();\n    }\n    \n    return request.future;\n  }\n  \n  private createRequest<T>(method: () => Promise<T>): MethodRequest {\n    let resolve!: (value: T) => void;\n    const future = new Promise<T>(r => resolve = r);\n    \n    return {\n      execute: method,\n      future,\n      resolve\n    };\n  }\n  \n  private async scheduler() {\n    this.running = true;\n    \n    while (this.queue.length > 0) {\n      const request = this.queue.shift()!;\n      const result = await request.execute();\n      request.resolve(result);\n    }\n    \n    this.running = false;\n  }\n}\n\nclass AsyncLogger extends ActiveObject {\n  async log(message: string): Promise<void> {\n    return this.invoke(async () => {\n      console.log('[' + new Date().toISOString() + ']', message);\n      await new Promise(resolve => setTimeout(resolve, 100));\n    });\n  }\n}\n\nconst logger = new AsyncLogger();\nlogger.log('Message 1'); // Non-blocking\nlogger.log('Message 2'); // Queued\nlogger.log('Message 3'); // Queued"
+[
+  {
+    "id": "active-object",
+    "name": "Active Object",
+    "category": "Concurrency",
+    "description": "Decouples method execution from method invocation using asynchronous messaging",
+    "when_to_use": "Asynchronous execution\nRequest queuing\nConcurrent services",
+    "benefits": "Asynchronous execution\nDecoupling\nRequest queuing\nConcurrency",
+    "drawbacks": "Complex implementation\nMemory overhead\nDebugging difficulty",
+    "use_cases": "Concurrent services\nAsynchronous APIs\nMessage processing",
+    "complexity": "High",
+    "tags": [
+      "concurrency",
+      "asynchronous",
+      "messaging"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Active Object: async method invocation with own thread\ntype MethodRequest = {\n  execute: () => Promise<any>;\n  future: Promise<any>;\n  resolve: (value: any) => void;\n};\n\nclass ActiveObject {\n  private queue: MethodRequest[] = [];\n  private running = false;\n  \n  protected async invoke<T>(method: () => Promise<T>): Promise<T> {\n    const request = this.createRequest(method);\n    this.queue.push(request);\n    \n    if (!this.running) {\n      this.scheduler();\n    }\n    \n    return request.future;\n  }\n  \n  private createRequest<T>(method: () => Promise<T>): MethodRequest {\n    let resolve!: (value: T) => void;\n    const future = new Promise<T>(r => resolve = r);\n    \n    return {\n      execute: method,\n      future,\n      resolve\n    };\n  }\n  \n  private async scheduler() {\n    this.running = true;\n    \n    while (this.queue.length > 0) {\n      const request = this.queue.shift()!;\n      const result = await request.execute();\n      request.resolve(result);\n    }\n    \n    this.running = false;\n  }\n}\n\nclass AsyncLogger extends ActiveObject {\n  async log(message: string): Promise<void> {\n    return this.invoke(async () => {\n      console.log('[' + new Date().toISOString() + ']', message);\n      await new Promise(resolve => setTimeout(resolve, 100));\n    });\n  }\n}\n\nconst logger = new AsyncLogger();\nlogger.log('Message 1'); // Non-blocking\nlogger.log('Message 2'); // Queued\nlogger.log('Message 3'); // Queued"
+      }
     }
   }
-}
+]

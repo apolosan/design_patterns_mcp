@@ -1,16 +1,18 @@
-{
-  "id": "orm-pattern",
-  "name": "Object-Relational Mapping (ORM)",
-  "category": "Data Access",
-  "description": "Technique for converting data between incompatible type systems in OOP languages and relational databases",
-  "when_to_use": "Object-oriented applications\nComplex domain models\nDatabase abstraction",
-  "benefits": "Object-oriented data access\nDatabase independence\nAutomatic mapping",
-  "drawbacks": "Performance overhead\nComplex queries\nLearning curve",
-  "use_cases": "Enterprise applications\nDomain-driven design\nRapid development",
-  "complexity": "High",
-  "tags": [
-    "data-access",
-    "mapping",
-    "orm"
-  ]
-}
+[
+  {
+    "id": "orm-pattern",
+    "name": "Object-Relational Mapping (ORM)",
+    "category": "Data Access",
+    "description": "Technique for converting data between incompatible type systems in OOP languages and relational databases",
+    "when_to_use": "Object-oriented applications\nComplex domain models\nDatabase abstraction",
+    "benefits": "Object-oriented data access\nDatabase independence\nAutomatic mapping",
+    "drawbacks": "Performance overhead\nComplex queries\nLearning curve",
+    "use_cases": "Enterprise applications\nDomain-driven design\nRapid development",
+    "complexity": "High",
+    "tags": [
+      "data-access",
+      "mapping",
+      "orm"
+    ]
+  }
+]

@@ -1,624 +1,620 @@
-{
-  "category": "NFT",
-  "description": "NFT design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "reveal-mechanism",
-      "name": "Delayed Reveal Mechanism",
-      "category": "NFT",
-      "description": "Mint first, reveal metadata later to prevent sniping",
-      "when_to_use": [
-        "Fair launches",
-        "prevent rarity sniping",
-        "random reveals"
-      ],
-      "benefits": [
-        "Fair launch",
-        "prevents sniping",
-        "builds anticipation"
-      ],
-      "drawbacks": [
-        "Two-phase process",
-        "trust in reveal"
-      ],
-      "use_cases": [
-        "PFP collections",
-        "blind box mechanics",
-        "fair distribution"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "nft",
-        "reveal",
-        "fairness",
-        "vrf",
-        "random"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Delayed Reveal: placeholder → real metadata\ncontract RevealableNFT is ERC721 {\n    bool public revealed;\n    string public placeholderURI;\n    string public revealedBaseURI;\n    \n    function tokenURI(uint256 tokenId) public view override returns (string memory) {\n        if (!revealed) return placeholderURI;\n        return string(abi.encodePacked(revealedBaseURI, tokenId.toString()));\n    }\n    \n    function reveal(string memory uri) external onlyOwner {\n        revealedBaseURI = uri;\n        revealed = true;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "dynamic-nft",
-      "name": "Dynamic NFT",
-      "category": "NFT",
-      "description": "Metadata that changes based on external data or time",
-      "when_to_use": [
-        "Interactive art",
-        "game progression",
-        "oracle-fed NFTs"
-      ],
-      "benefits": [
-        "Interactive",
-        "increased utility",
-        "engagement"
-      ],
-      "drawbacks": [
-        "Oracle dependency",
-        "complexity",
-        "gas costs"
-      ],
-      "use_cases": [
-        "Weather-reactive art",
-        "leveling systems",
-        "evolving metadata"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "nft",
-        "dynamic",
-        "oracle",
-        "chainlink",
-        "metadata"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Dynamic NFT: Chainlink oracle updates\ncontract DynamicNFT is ERC721, ChainlinkClient {\n    mapping(uint256 => uint256) public level;\n    \n    function updateLevel(uint256 tokenId) external {\n        Chainlink.Request memory req = buildChainlinkRequest(...);\n        sendChainlinkRequest(req, fee);\n    }\n    \n    function fulfill(bytes32 requestId, uint256 data) public {\n        level[tokenId] = data;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "eip2981-royalties",
-      "name": "EIP-2981 Standard Royalties",
-      "category": "NFT",
-      "description": "Standard interface for NFT royalty information. Marketplaces can query royalty receiver and amount.",
-      "when_to_use": [
-        "All NFTs wanting creator royalties with marketplace support"
-      ],
-      "benefits": [
-        "Standard interface",
-        "transparent",
-        "marketplace compatible"
-      ],
-      "drawbacks": [
-        "Not enforceable (voluntary compliance)",
-        "marketplaces can ignore"
-      ],
-      "use_cases": [
-        "NFT collections with creator royalties",
-        "artist platforms"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "nft",
-        "royalty",
-        "eip-2981",
-        "standard",
-        "creator"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/token/common/ERC2981.sol\";\n\ncontract RoyaltyNFT is ERC721, ERC2981 {\n    constructor() {\n        _setDefaultRoyalty(creator, 500); // 5% royalty\n    }\n    \n    function royaltyInfo(uint256 tokenId, uint256 salePrice)\n        public view override returns (address, uint256)\n    {\n        return super.royaltyInfo(tokenId, salePrice);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "erc1155",
-      "name": "ERC-1155 Multi-Token",
-      "category": "NFT",
-      "description": "Multi-token standard for fungible and non-fungible Problem: Efficient multi-token management",
-      "when_to_use": [
-        "Single contract for multiple token types"
-      ],
-      "benefits": [
-        "Batch operations",
-        "gas-efficient",
-        "flexible"
-      ],
-      "drawbacks": [
-        "More complex",
-        "less marketplace support"
-      ],
-      "use_cases": [
-        "Gaming items",
-        "batch operations",
-        "mixed tokens"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "nft",
-        "erc1155",
-        "multi-token",
-        "gaming",
-        "batch"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/token/ERC1155/ERC1155.sol\";\n\ncontract GameItems is ERC1155 {\n    uint256 public constant SWORD = 0;\n    uint256 public constant SHIELD = 1;\n    \n    function mintBatch(address to) public {\n        uint256[] memory ids = new uint256[](2);\n        ids[0] = SWORD; ids[1] = SHIELD;\n        uint256[] memory amounts = new uint256[](2);\n        amounts[0] = 1; amounts[1] = 1;\n        _mintBatch(to, ids, amounts, \"\");\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "erc6551-tba",
-      "name": "ERC-6551 Token Bound Accounts",
-      "category": "NFT",
-      "description": "NFTs as smart contract wallets that own assets",
-      "when_to_use": [
-        "Gaming with inventory",
-        "composable NFTs",
-        "NFT portfolios"
-      ],
-      "benefits": [
-        "NFTs own assets",
-        "full wallet functionality",
-        "composability"
-      ],
-      "drawbacks": [
-        "Complexity",
-        "security considerations",
-        "wallet loss"
-      ],
-      "use_cases": [
-        "Game characters",
-        "NFT art with royalties",
-        "bundled assets"
-      ],
-      "complexity": "High",
-      "tags": [
-        "nft",
-        "erc6551",
-        "token-bound-account",
-        "composability",
-        "gaming"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// ERC-6551: NFT as smart wallet\ncontract TokenBoundAccount {\n    function token() public view returns (uint256, address, uint256) {\n        return abi.decode(footer(), (uint256, address, uint256));\n    }\n    \n    function executeCall(address to, uint256 value, bytes calldata data)\n        external payable returns (bytes memory) {\n        require(msg.sender == owner());\n        (bool success, bytes memory result) = to.call{value: value}(data);\n        require(success);\n        return result;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "erc721-burnable",
-      "name": "ERC-721 Burnable",
-      "category": "NFT",
-      "description": "NFTs that can be permanently destroyed. Reduces supply, enables deflationary mechanics.",
-      "when_to_use": [
-        "Deflationary NFTs",
-        "redemption mechanisms",
-        "gamification"
-      ],
-      "benefits": [
-        "Reduces supply",
-        "creates scarcity",
-        "enables redemption mechanics"
-      ],
-      "drawbacks": [
-        "Irreversible",
-        "requires access control",
-        "potential loss"
-      ],
-      "use_cases": [
-        "Burn-to-redeem",
-        "deflationary collections",
-        "game item consumption"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "nft",
-        "erc721",
-        "burnable",
-        "deflationary",
-        "redemption"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol\";\n\ncontract BurnableNFT is ERC721Burnable {\n    function burn(uint256 tokenId) public override {\n        require(_isApprovedOrOwner(msg.sender, tokenId));\n        _burn(tokenId);\n        emit NFTBurned(tokenId, msg.sender);\n    }\n    \n    function burnToRedeem(uint256 tokenId) external {\n        burn(tokenId);\n        // Mint new item, grant access, etc.\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "erc721-enumerable",
-      "name": "ERC-721 Enumerable",
-      "category": "NFT",
-      "description": "Full on-chain enumeration of tokens",
-      "when_to_use": [
-        "Portfolio displays",
-        "marketplace listings",
-        "on-chain queries"
-      ],
-      "benefits": [
-        "Full enumeration capability",
-        "query all tokens"
-      ],
-      "drawbacks": [
-        "Significantly higher gas (+30-50%)",
-        "storage overhead"
-      ],
-      "use_cases": [
-        "Token galleries",
-        "ownership tracking",
-        "full enumeration"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "nft",
-        "erc721",
-        "enumerable",
-        "on-chain",
-        "tracking"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// ERC-721 Enumerable\nimport \"@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol\";\n\ncontract NFT is ERC721Enumerable {\n    function tokensOfOwner(address owner) external view returns (uint256[] memory) {\n        uint256 count = balanceOf(owner);\n        uint256[] memory ids = new uint256[](count);\n        for (uint256 i = 0; i < count; i++) {\n            ids[i] = tokenOfOwnerByIndex(owner, i);\n        }\n        return ids;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "erc721",
-      "name": "ERC-721 NFT Standard",
-      "category": "NFT",
-      "description": "Standard for non-fungible tokens Problem: Need standard for unique tokens",
-      "when_to_use": [
-        "ERC-721 interface with ownerOf",
-        "transfer",
-        "approve"
-      ],
-      "benefits": [
-        "Industry standard",
-        "wide support",
-        "proven",
-        "marketplace compatible"
-      ],
-      "drawbacks": [
-        "Higher gas than ERC-1155",
-        "expensive individual operations"
-      ],
-      "use_cases": [
-        "Art",
-        "collectibles",
-        "gaming",
-        "real estate",
-        "tickets"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "nft",
-        "erc721",
-        "token-standard",
-        "collectibles"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/token/ERC721/ERC721.sol\";\n\ncontract MyNFT is ERC721 {\n    function mint(address to, uint256 tokenId) public {\n        _mint(to, tokenId);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "erc721a",
-      "name": "ERC-721A (Azuki)",
-      "category": "NFT",
-      "description": "Gas-optimized ERC-721 for batch minting",
-      "when_to_use": [
-        "NFT collections with batch minting",
-        "gas optimization"
-      ],
-      "benefits": [
-        "87% gas savings on batch mint",
-        "sequential IDs"
-      ],
-      "drawbacks": [
-        "More complex",
-        "slight overhead on transfers"
-      ],
-      "use_cases": [
-        "10k PFP collections",
-        "batch mint optimization"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "nft",
-        "erc721a",
-        "gas-optimization",
-        "batch-mint",
-        "azuki"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// ERC-721A: efficient batch mint\nimport \"erc721a/contracts/ERC721A.sol\";\n\ncontract NFT is ERC721A {\n    function mint(uint256 quantity) external payable {\n        require(msg.value >= PRICE * quantity);\n        _mint(msg.sender, quantity); // Gas-efficient batch\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "erc998-composable",
-      "name": "ERC-998 Composable NFTs",
-      "category": "NFT",
-      "description": "NFTs that own other tokens (NFTs or fungibles). Parent-child hierarchy.",
-      "when_to_use": [
-        "Gaming characters with equipment",
-        "bundled assets",
-        "NFT portfolios"
-      ],
-      "benefits": [
-        "Composable hierarchies",
-        "transfer bundles atomically",
-        "rich metadata"
-      ],
-      "drawbacks": [
-        "High complexity",
-        "limited adoption",
-        "gas costs"
-      ],
-      "use_cases": [
-        "Game characters owning items",
-        "crypto kitties with accessories",
-        "asset bundles"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "nft",
-        "erc998",
-        "composable",
-        "gaming",
-        "hierarchy"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract ComposableNFT is ERC998 {\n    // Parent NFT owns child tokens\n    mapping(uint256 => address[]) public childContracts;\n    mapping(uint256 => mapping(address => uint256[])) public childTokens;\n    \n    function safeTransferChild(\n        uint256 fromTokenId,\n        address to,\n        address childContract,\n        uint256 childTokenId\n    ) external {\n        require(ownerOf(fromTokenId) == msg.sender);\n        IERC721(childContract).safeTransferFrom(address(this), to, childTokenId);\n        _removeChild(fromTokenId, childContract, childTokenId);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "merkle-whitelist",
-      "name": "Merkle Tree Whitelist",
-      "category": "NFT",
-      "description": "Gas-efficient whitelist using Merkle proofs",
-      "when_to_use": [
-        "NFT allowlists",
-        "airdrops",
-        "presale access"
-      ],
-      "benefits": [
-        "O(log n) verification",
-        "gas-efficient",
-        "flexible"
-      ],
-      "drawbacks": [
-        "Proof generation overhead",
-        "root management"
-      ],
-      "use_cases": [
-        "Allowlist minting",
-        "claim verification",
-        "access control"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "nft",
-        "merkle-tree",
-        "whitelist",
-        "allowlist",
-        "airdrop"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Merkle Whitelist: efficient allowlist\nimport \"@openzeppelin/contracts/utils/cryptography/MerkleProof.sol\";\n\ncontract NFT {\n    bytes32 public merkleRoot;\n    \n    function whitelistMint(bytes32[] calldata proof) external {\n        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));\n        require(MerkleProof.verify(proof, merkleRoot, leaf), \"Not whitelisted\");\n        _mint(msg.sender, 1);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "enforceable-royalties",
-      "name": "On-Chain Enforceable Royalties",
-      "category": "NFT",
-      "description": "Restrict transfers to approved marketplaces that honor royalties. Cannot be bypassed.",
-      "when_to_use": [
-        "Creator-focused projects prioritizing royalty enforcement over liquidity"
-      ],
-      "benefits": [
-        "Cannot be bypassed",
-        "guaranteed creator revenue"
-      ],
-      "drawbacks": [
-        "Restricts transferability",
-        "reduces liquidity",
-        "marketplace whitelist required"
-      ],
-      "use_cases": [
-        "Creator-first platforms",
-        "art with mandatory royalties"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "nft",
-        "royalty",
-        "enforceable",
-        "creator-economy",
-        "restriction"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract EnforceableRoyaltyNFT is ERC721 {\n    mapping(address => bool) public approvedMarketplaces;\n    \n    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override {\n        if (from != address(0) && to != address(0)) { // Not mint/burn\n            require(\n                approvedMarketplaces[msg.sender] || \n                msg.sender == from, \n                \"Must use approved marketplace\"\n            );\n        }\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "on-chain-metadata",
-      "name": "On-Chain Metadata Pattern",
-      "category": "NFT",
-      "description": "Store NFT metadata entirely on-chain. Maximum decentralization, no external dependencies.",
-      "when_to_use": [
-        "Fully on-chain art",
-        "critical data",
-        "maximum permanence"
-      ],
-      "benefits": [
-        "No external dependencies",
-        "permanent as blockchain",
-        "maximum decentralization"
-      ],
-      "drawbacks": [
-        "Extremely expensive (SSTORE costs)",
-        "size limited",
-        "complex encoding"
-      ],
-      "use_cases": [
-        "On-chain SVG art",
-        "fully decentralized NFTs",
-        "loot-style projects"
-      ],
-      "complexity": "High",
-      "tags": [
-        "nft",
-        "on-chain",
-        "metadata",
-        "svg",
-        "decentralization"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "function tokenURI(uint256 tokenId) public view override returns (string memory) {\n    string memory svg = generateSVG(tokenId);\n    string memory json = Base64.encode(bytes(string(abi.encodePacked(\n        '{\"name\": \"Token #', tokenId.toString(), '\",',\n        '\"image\": \"data:image/svg+xml;base64,', Base64.encode(bytes(svg)), '\"}'\n    ))));\n    \n    return string(abi.encodePacked('data:application/json;base64,', json));\n}"
-        }
-      }
-    },
-    {
-      "id": "royalty-enforcement",
-      "name": "On-Chain Royalty Enforcement",
-      "category": "NFT",
-      "description": "Enforceable royalties via transfer restrictions",
-      "when_to_use": [
-        "Creator-focused projects",
-        "marketplace control"
-      ],
-      "benefits": [
-        "Cannot be bypassed",
-        "guaranteed creator revenue"
-      ],
-      "drawbacks": [
-        "Restricts transferability",
-        "reduces liquidity",
-        "centralization"
-      ],
-      "use_cases": [
-        "Royalty guarantees",
-        "approved marketplaces only"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "nft",
-        "royalty",
-        "eip2981",
-        "creator-earnings",
-        "enforcement"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Royalty Enforcement: whitelist marketplaces\ncontract EnforcedRoyaltyNFT is ERC721 {\n    mapping(address => bool) public approvedMarketplaces;\n    \n    function _beforeTokenTransfer(address from, address to, uint256 tokenId)\n        internal override {\n        if (from != address(0) && to != address(0)) {\n            require(approvedMarketplaces[msg.sender], \"Marketplace not approved\");\n        }\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "semi-fungible-tokens",
-      "name": "Semi-Fungible Tokens (ERC-1155)",
-      "category": "NFT",
-      "description": "Tokens that transition from fungible to non-fungible. Efficient for items with limited editions.",
-      "when_to_use": [
-        "Event tickets",
-        "limited editions",
-        "gaming items with quantities"
-      ],
-      "benefits": [
-        "Flexible tokenomics",
-        "gas-efficient",
-        "combines fungible and NFT properties"
-      ],
-      "drawbacks": [
-        "Complex state tracking",
-        "less common standard"
-      ],
-      "use_cases": [
-        "Concert tickets (fungible until used)",
-        "game items",
-        "edition NFTs"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "nft",
-        "erc1155",
-        "semi-fungible",
-        "gaming",
-        "tickets"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract SemiFungible is ERC1155 {\n    mapping(uint256 => uint256) public supply;\n    \n    function mint(uint256 id, uint256 amount) external {\n        require(supply[id] + amount <= MAX_SUPPLY[id]);\n        supply[id] += amount;\n        _mint(msg.sender, id, amount, \"\");\n    }\n    \n    // Transition: when supply reaches max, becomes unique NFT\n    function isFungible(uint256 id) public view returns (bool) {\n        return supply[id] < MAX_SUPPLY[id];\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "soulbound-token",
-      "name": "Soulbound Token (SBT)",
-      "category": "NFT",
-      "description": "Non-transferable tokens for credentials",
-      "when_to_use": [
-        "Diplomas",
-        "POAPs",
-        "reputation",
-        "KYC credentials"
-      ],
-      "benefits": [
-        "Cannot be bought/sold",
-        "true merit-based",
-        "decentralized ID"
-      ],
-      "drawbacks": [
-        "Wallet loss = credential loss",
-        "privacy concerns"
-      ],
-      "use_cases": [
-        "Education certificates",
-        "attendance proofs",
-        "identity"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "nft",
-        "soulbound",
-        "sbt",
-        "non-transferable",
-        "identity"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Soulbound: non-transferable\ncontract SoulboundToken is ERC721 {\n    function _beforeTokenTransfer(\n        address from,\n        address to,\n        uint256 tokenId\n    ) internal override {\n        require(from == address(0) || to == address(0), \n            \"Soulbound: transfer not allowed\");\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
-        }
+[
+  {
+    "id": "reveal-mechanism",
+    "name": "Delayed Reveal Mechanism",
+    "category": "NFT",
+    "description": "Mint first, reveal metadata later to prevent sniping",
+    "when_to_use": [
+      "Fair launches",
+      "prevent rarity sniping",
+      "random reveals"
+    ],
+    "benefits": [
+      "Fair launch",
+      "prevents sniping",
+      "builds anticipation"
+    ],
+    "drawbacks": [
+      "Two-phase process",
+      "trust in reveal"
+    ],
+    "use_cases": [
+      "PFP collections",
+      "blind box mechanics",
+      "fair distribution"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "reveal",
+      "fairness",
+      "vrf",
+      "random"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Delayed Reveal: placeholder → real metadata\ncontract RevealableNFT is ERC721 {\n    bool public revealed;\n    string public placeholderURI;\n    string public revealedBaseURI;\n    \n    function tokenURI(uint256 tokenId) public view override returns (string memory) {\n        if (!revealed) return placeholderURI;\n        return string(abi.encodePacked(revealedBaseURI, tokenId.toString()));\n    }\n    \n    function reveal(string memory uri) external onlyOwner {\n        revealedBaseURI = uri;\n        revealed = true;\n    }\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "dynamic-nft",
+    "name": "Dynamic NFT",
+    "category": "NFT",
+    "description": "Metadata that changes based on external data or time",
+    "when_to_use": [
+      "Interactive art",
+      "game progression",
+      "oracle-fed NFTs"
+    ],
+    "benefits": [
+      "Interactive",
+      "increased utility",
+      "engagement"
+    ],
+    "drawbacks": [
+      "Oracle dependency",
+      "complexity",
+      "gas costs"
+    ],
+    "use_cases": [
+      "Weather-reactive art",
+      "leveling systems",
+      "evolving metadata"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "dynamic",
+      "oracle",
+      "chainlink",
+      "metadata"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Dynamic NFT: Chainlink oracle updates\ncontract DynamicNFT is ERC721, ChainlinkClient {\n    mapping(uint256 => uint256) public level;\n    \n    function updateLevel(uint256 tokenId) external {\n        Chainlink.Request memory req = buildChainlinkRequest(...);\n        sendChainlinkRequest(req, fee);\n    }\n    \n    function fulfill(bytes32 requestId, uint256 data) public {\n        level[tokenId] = data;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "eip2981-royalties",
+    "name": "EIP-2981 Standard Royalties",
+    "category": "NFT",
+    "description": "Standard interface for NFT royalty information. Marketplaces can query royalty receiver and amount.",
+    "when_to_use": [
+      "All NFTs wanting creator royalties with marketplace support"
+    ],
+    "benefits": [
+      "Standard interface",
+      "transparent",
+      "marketplace compatible"
+    ],
+    "drawbacks": [
+      "Not enforceable (voluntary compliance)",
+      "marketplaces can ignore"
+    ],
+    "use_cases": [
+      "NFT collections with creator royalties",
+      "artist platforms"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "nft",
+      "royalty",
+      "eip-2981",
+      "standard",
+      "creator"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/common/ERC2981.sol\";\n\ncontract RoyaltyNFT is ERC721, ERC2981 {\n    constructor() {\n        _setDefaultRoyalty(creator, 500); // 5% royalty\n    }\n    \n    function royaltyInfo(uint256 tokenId, uint256 salePrice)\n        public view override returns (address, uint256)\n    {\n        return super.royaltyInfo(tokenId, salePrice);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "erc1155",
+    "name": "ERC-1155 Multi-Token",
+    "category": "NFT",
+    "description": "Multi-token standard for fungible and non-fungible Problem: Efficient multi-token management",
+    "when_to_use": [
+      "Single contract for multiple token types"
+    ],
+    "benefits": [
+      "Batch operations",
+      "gas-efficient",
+      "flexible"
+    ],
+    "drawbacks": [
+      "More complex",
+      "less marketplace support"
+    ],
+    "use_cases": [
+      "Gaming items",
+      "batch operations",
+      "mixed tokens"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "erc1155",
+      "multi-token",
+      "gaming",
+      "batch"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/ERC1155/ERC1155.sol\";\n\ncontract GameItems is ERC1155 {\n    uint256 public constant SWORD = 0;\n    uint256 public constant SHIELD = 1;\n    \n    function mintBatch(address to) public {\n        uint256[] memory ids = new uint256[](2);\n        ids[0] = SWORD; ids[1] = SHIELD;\n        uint256[] memory amounts = new uint256[](2);\n        amounts[0] = 1; amounts[1] = 1;\n        _mintBatch(to, ids, amounts, \"\");\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "erc6551-tba",
+    "name": "ERC-6551 Token Bound Accounts",
+    "category": "NFT",
+    "description": "NFTs as smart contract wallets that own assets",
+    "when_to_use": [
+      "Gaming with inventory",
+      "composable NFTs",
+      "NFT portfolios"
+    ],
+    "benefits": [
+      "NFTs own assets",
+      "full wallet functionality",
+      "composability"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "security considerations",
+      "wallet loss"
+    ],
+    "use_cases": [
+      "Game characters",
+      "NFT art with royalties",
+      "bundled assets"
+    ],
+    "complexity": "High",
+    "tags": [
+      "nft",
+      "erc6551",
+      "token-bound-account",
+      "composability",
+      "gaming"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ERC-6551: NFT as smart wallet\ncontract TokenBoundAccount {\n    function token() public view returns (uint256, address, uint256) {\n        return abi.decode(footer(), (uint256, address, uint256));\n    }\n    \n    function executeCall(address to, uint256 value, bytes calldata data)\n        external payable returns (bytes memory) {\n        require(msg.sender == owner());\n        (bool success, bytes memory result) = to.call{value: value}(data);\n        require(success);\n        return result;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "erc721-burnable",
+    "name": "ERC-721 Burnable",
+    "category": "NFT",
+    "description": "NFTs that can be permanently destroyed. Reduces supply, enables deflationary mechanics.",
+    "when_to_use": [
+      "Deflationary NFTs",
+      "redemption mechanisms",
+      "gamification"
+    ],
+    "benefits": [
+      "Reduces supply",
+      "creates scarcity",
+      "enables redemption mechanics"
+    ],
+    "drawbacks": [
+      "Irreversible",
+      "requires access control",
+      "potential loss"
+    ],
+    "use_cases": [
+      "Burn-to-redeem",
+      "deflationary collections",
+      "game item consumption"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "nft",
+      "erc721",
+      "burnable",
+      "deflationary",
+      "redemption"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol\";\n\ncontract BurnableNFT is ERC721Burnable {\n    function burn(uint256 tokenId) public override {\n        require(_isApprovedOrOwner(msg.sender, tokenId));\n        _burn(tokenId);\n        emit NFTBurned(tokenId, msg.sender);\n    }\n    \n    function burnToRedeem(uint256 tokenId) external {\n        burn(tokenId);\n        // Mint new item, grant access, etc.\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "erc721-enumerable",
+    "name": "ERC-721 Enumerable",
+    "category": "NFT",
+    "description": "Full on-chain enumeration of tokens",
+    "when_to_use": [
+      "Portfolio displays",
+      "marketplace listings",
+      "on-chain queries"
+    ],
+    "benefits": [
+      "Full enumeration capability",
+      "query all tokens"
+    ],
+    "drawbacks": [
+      "Significantly higher gas (+30-50%)",
+      "storage overhead"
+    ],
+    "use_cases": [
+      "Token galleries",
+      "ownership tracking",
+      "full enumeration"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "erc721",
+      "enumerable",
+      "on-chain",
+      "tracking"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ERC-721 Enumerable\nimport \"@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol\";\n\ncontract NFT is ERC721Enumerable {\n    function tokensOfOwner(address owner) external view returns (uint256[] memory) {\n        uint256 count = balanceOf(owner);\n        uint256[] memory ids = new uint256[](count);\n        for (uint256 i = 0; i < count; i++) {\n            ids[i] = tokenOfOwnerByIndex(owner, i);\n        }\n        return ids;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "erc721",
+    "name": "ERC-721 NFT Standard",
+    "category": "NFT",
+    "description": "Standard for non-fungible tokens Problem: Need standard for unique tokens",
+    "when_to_use": [
+      "ERC-721 interface with ownerOf",
+      "transfer",
+      "approve"
+    ],
+    "benefits": [
+      "Industry standard",
+      "wide support",
+      "proven",
+      "marketplace compatible"
+    ],
+    "drawbacks": [
+      "Higher gas than ERC-1155",
+      "expensive individual operations"
+    ],
+    "use_cases": [
+      "Art",
+      "collectibles",
+      "gaming",
+      "real estate",
+      "tickets"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "nft",
+      "erc721",
+      "token-standard",
+      "collectibles"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/ERC721/ERC721.sol\";\n\ncontract MyNFT is ERC721 {\n    function mint(address to, uint256 tokenId) public {\n        _mint(to, tokenId);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "erc721a",
+    "name": "ERC-721A (Azuki)",
+    "category": "NFT",
+    "description": "Gas-optimized ERC-721 for batch minting",
+    "when_to_use": [
+      "NFT collections with batch minting",
+      "gas optimization"
+    ],
+    "benefits": [
+      "87% gas savings on batch mint",
+      "sequential IDs"
+    ],
+    "drawbacks": [
+      "More complex",
+      "slight overhead on transfers"
+    ],
+    "use_cases": [
+      "10k PFP collections",
+      "batch mint optimization"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "erc721a",
+      "gas-optimization",
+      "batch-mint",
+      "azuki"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ERC-721A: efficient batch mint\nimport \"erc721a/contracts/ERC721A.sol\";\n\ncontract NFT is ERC721A {\n    function mint(uint256 quantity) external payable {\n        require(msg.value >= PRICE * quantity);\n        _mint(msg.sender, quantity); // Gas-efficient batch\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "erc998-composable",
+    "name": "ERC-998 Composable NFTs",
+    "category": "NFT",
+    "description": "NFTs that own other tokens (NFTs or fungibles). Parent-child hierarchy.",
+    "when_to_use": [
+      "Gaming characters with equipment",
+      "bundled assets",
+      "NFT portfolios"
+    ],
+    "benefits": [
+      "Composable hierarchies",
+      "transfer bundles atomically",
+      "rich metadata"
+    ],
+    "drawbacks": [
+      "High complexity",
+      "limited adoption",
+      "gas costs"
+    ],
+    "use_cases": [
+      "Game characters owning items",
+      "crypto kitties with accessories",
+      "asset bundles"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "nft",
+      "erc998",
+      "composable",
+      "gaming",
+      "hierarchy"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract ComposableNFT is ERC998 {\n    // Parent NFT owns child tokens\n    mapping(uint256 => address[]) public childContracts;\n    mapping(uint256 => mapping(address => uint256[])) public childTokens;\n    \n    function safeTransferChild(\n        uint256 fromTokenId,\n        address to,\n        address childContract,\n        uint256 childTokenId\n    ) external {\n        require(ownerOf(fromTokenId) == msg.sender);\n        IERC721(childContract).safeTransferFrom(address(this), to, childTokenId);\n        _removeChild(fromTokenId, childContract, childTokenId);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "merkle-whitelist",
+    "name": "Merkle Tree Whitelist",
+    "category": "NFT",
+    "description": "Gas-efficient whitelist using Merkle proofs",
+    "when_to_use": [
+      "NFT allowlists",
+      "airdrops",
+      "presale access"
+    ],
+    "benefits": [
+      "O(log n) verification",
+      "gas-efficient",
+      "flexible"
+    ],
+    "drawbacks": [
+      "Proof generation overhead",
+      "root management"
+    ],
+    "use_cases": [
+      "Allowlist minting",
+      "claim verification",
+      "access control"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "merkle-tree",
+      "whitelist",
+      "allowlist",
+      "airdrop"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Merkle Whitelist: efficient allowlist\nimport \"@openzeppelin/contracts/utils/cryptography/MerkleProof.sol\";\n\ncontract NFT {\n    bytes32 public merkleRoot;\n    \n    function whitelistMint(bytes32[] calldata proof) external {\n        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));\n        require(MerkleProof.verify(proof, merkleRoot, leaf), \"Not whitelisted\");\n        _mint(msg.sender, 1);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "enforceable-royalties",
+    "name": "On-Chain Enforceable Royalties",
+    "category": "NFT",
+    "description": "Restrict transfers to approved marketplaces that honor royalties. Cannot be bypassed.",
+    "when_to_use": [
+      "Creator-focused projects prioritizing royalty enforcement over liquidity"
+    ],
+    "benefits": [
+      "Cannot be bypassed",
+      "guaranteed creator revenue"
+    ],
+    "drawbacks": [
+      "Restricts transferability",
+      "reduces liquidity",
+      "marketplace whitelist required"
+    ],
+    "use_cases": [
+      "Creator-first platforms",
+      "art with mandatory royalties"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "royalty",
+      "enforceable",
+      "creator-economy",
+      "restriction"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract EnforceableRoyaltyNFT is ERC721 {\n    mapping(address => bool) public approvedMarketplaces;\n    \n    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override {\n        if (from != address(0) && to != address(0)) { // Not mint/burn\n            require(\n                approvedMarketplaces[msg.sender] || \n                msg.sender == from, \n                \"Must use approved marketplace\"\n            );\n        }\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "on-chain-metadata",
+    "name": "On-Chain Metadata Pattern",
+    "category": "NFT",
+    "description": "Store NFT metadata entirely on-chain. Maximum decentralization, no external dependencies.",
+    "when_to_use": [
+      "Fully on-chain art",
+      "critical data",
+      "maximum permanence"
+    ],
+    "benefits": [
+      "No external dependencies",
+      "permanent as blockchain",
+      "maximum decentralization"
+    ],
+    "drawbacks": [
+      "Extremely expensive (SSTORE costs)",
+      "size limited",
+      "complex encoding"
+    ],
+    "use_cases": [
+      "On-chain SVG art",
+      "fully decentralized NFTs",
+      "loot-style projects"
+    ],
+    "complexity": "High",
+    "tags": [
+      "nft",
+      "on-chain",
+      "metadata",
+      "svg",
+      "decentralization"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "function tokenURI(uint256 tokenId) public view override returns (string memory) {\n    string memory svg = generateSVG(tokenId);\n    string memory json = Base64.encode(bytes(string(abi.encodePacked(\n        '{\"name\": \"Token #', tokenId.toString(), '\",',\n        '\"image\": \"data:image/svg+xml;base64,', Base64.encode(bytes(svg)), '\"}'\n    ))));\n    \n    return string(abi.encodePacked('data:application/json;base64,', json));\n}"
+      }
+    }
+  },
+  {
+    "id": "royalty-enforcement",
+    "name": "On-Chain Royalty Enforcement",
+    "category": "NFT",
+    "description": "Enforceable royalties via transfer restrictions",
+    "when_to_use": [
+      "Creator-focused projects",
+      "marketplace control"
+    ],
+    "benefits": [
+      "Cannot be bypassed",
+      "guaranteed creator revenue"
+    ],
+    "drawbacks": [
+      "Restricts transferability",
+      "reduces liquidity",
+      "centralization"
+    ],
+    "use_cases": [
+      "Royalty guarantees",
+      "approved marketplaces only"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "royalty",
+      "eip2981",
+      "creator-earnings",
+      "enforcement"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Royalty Enforcement: whitelist marketplaces\ncontract EnforcedRoyaltyNFT is ERC721 {\n    mapping(address => bool) public approvedMarketplaces;\n    \n    function _beforeTokenTransfer(address from, address to, uint256 tokenId)\n        internal override {\n        if (from != address(0) && to != address(0)) {\n            require(approvedMarketplaces[msg.sender], \"Marketplace not approved\");\n        }\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "semi-fungible-tokens",
+    "name": "Semi-Fungible Tokens (ERC-1155)",
+    "category": "NFT",
+    "description": "Tokens that transition from fungible to non-fungible. Efficient for items with limited editions.",
+    "when_to_use": [
+      "Event tickets",
+      "limited editions",
+      "gaming items with quantities"
+    ],
+    "benefits": [
+      "Flexible tokenomics",
+      "gas-efficient",
+      "combines fungible and NFT properties"
+    ],
+    "drawbacks": [
+      "Complex state tracking",
+      "less common standard"
+    ],
+    "use_cases": [
+      "Concert tickets (fungible until used)",
+      "game items",
+      "edition NFTs"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "erc1155",
+      "semi-fungible",
+      "gaming",
+      "tickets"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract SemiFungible is ERC1155 {\n    mapping(uint256 => uint256) public supply;\n    \n    function mint(uint256 id, uint256 amount) external {\n        require(supply[id] + amount <= MAX_SUPPLY[id]);\n        supply[id] += amount;\n        _mint(msg.sender, id, amount, \"\");\n    }\n    \n    // Transition: when supply reaches max, becomes unique NFT\n    function isFungible(uint256 id) public view returns (bool) {\n        return supply[id] < MAX_SUPPLY[id];\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "soulbound-token",
+    "name": "Soulbound Token (SBT)",
+    "category": "NFT",
+    "description": "Non-transferable tokens for credentials",
+    "when_to_use": [
+      "Diplomas",
+      "POAPs",
+      "reputation",
+      "KYC credentials"
+    ],
+    "benefits": [
+      "Cannot be bought/sold",
+      "true merit-based",
+      "decentralized ID"
+    ],
+    "drawbacks": [
+      "Wallet loss = credential loss",
+      "privacy concerns"
+    ],
+    "use_cases": [
+      "Education certificates",
+      "attendance proofs",
+      "identity"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "nft",
+      "soulbound",
+      "sbt",
+      "non-transferable",
+      "identity"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Soulbound: non-transferable\ncontract SoulboundToken is ERC721 {\n    function _beforeTokenTransfer(\n        address from,\n        address to,\n        uint256 tokenId\n    ) internal override {\n        require(from == address(0) || to == address(0), \n            \"Soulbound: transfer not allowed\");\n        super._beforeTokenTransfer(from, to, tokenId);\n    }\n}"
+      }
+    }
+  }
+]

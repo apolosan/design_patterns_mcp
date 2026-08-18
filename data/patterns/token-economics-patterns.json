@@ -1,124 +1,120 @@
-{
-  "category": "Token Economics",
-  "description": "Token Economics design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "bonding-curve-pattern",
-      "name": "Bonding Curve Pattern",
-      "category": "Token Economics",
-      "description": "Continuous price discovery via mathematical curve. Price = f(supply). Always liquid.",
-      "when_to_use": [
-        "Token launches",
-        "continuous offerings",
-        "automated market making"
-      ],
-      "benefits": [
-        "Always liquid",
-        "algorithmic pricing",
-        "fair price discovery"
-      ],
-      "drawbacks": [
-        "Complex mathematics",
-        "front-running risk",
-        "slippage"
-      ],
-      "use_cases": [
-        "Token sales",
-        "continuous funding",
-        "automated pricing"
-      ],
-      "complexity": "High",
-      "tags": [
-        "tokenomics",
-        "bonding-curve",
-        "pricing",
-        "continuous",
-        "amm"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Linear bonding curve: price = m * supply + b\nfunction calculatePrice(uint256 supply) public pure returns (uint256) {\n    return (SLOPE * supply) + BASE_PRICE;\n}\n\nfunction buy(uint256 amount) external payable {\n    uint256 cost = getCost(totalSupply, amount);\n    require(msg.value >= cost);\n    _mint(msg.sender, amount);\n}\n\nfunction getCost(uint256 startSupply, uint256 amount) public pure returns (uint256) {\n    // Integral of price function\n    return (SLOPE * amount * (2 * startSupply + amount)) / 2 + (BASE_PRICE * amount);\n}"
-        }
-      }
-    },
-    {
-      "id": "rebase-mechanism",
-      "name": "Rebase Mechanism",
-      "category": "Token Economics",
-      "description": "Adjust all token balances proportionally to maintain target price. Elastic supply.",
-      "when_to_use": [
-        "Algorithmic stablecoins",
-        "price-stable tokens",
-        "elastic supply models"
-      ],
-      "benefits": [
-        "Maintains target price",
-        "non-dilutive (proportional to all)",
-        "algorithmic"
-      ],
-      "drawbacks": [
-        "Confusing UX (balance changes)",
-        "tax implications",
-        "wallet compatibility"
-      ],
-      "use_cases": [
-        "Ampleforth (AMPL)",
-        "elastic supply tokens",
-        "algorithmic pegs"
-      ],
-      "complexity": "High",
-      "tags": [
-        "tokenomics",
-        "rebase",
-        "elastic-supply",
-        "algorithmic",
-        "stablecoin"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract RebaseToken {\n    uint256 private _totalGons;\n    uint256 private _gonsPerFragment;\n    \n    function rebase(int256 supplyDelta) external onlyOracle {\n        if (supplyDelta == 0) return;\n        \n        uint256 newTotalSupply = uint256(int256(_totalSupply) + supplyDelta);\n        _gonsPerFragment = _totalGons / newTotalSupply;\n        _totalSupply = newTotalSupply;\n        \n        emit Rebase(epoch++, _totalSupply);\n    }\n    \n    function balanceOf(address account) public view returns (uint256) {\n        return _gonBalances[account] / _gonsPerFragment;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "ve-tokenomics",
-      "name": "ve-Tokenomics (Vote-Escrowed)",
-      "category": "Token Economics",
-      "description": "Lock tokens for voting power that decays over time (Curve model)",
-      "when_to_use": [
-        "DeFi governance",
-        "long-term holder incentives"
-      ],
-      "benefits": [
-        "Incentivizes locking",
-        "reduces sell pressure",
-        "long-term alignment"
-      ],
-      "drawbacks": [
-        "Illiquid during lock",
-        "complex mechanisms"
-      ],
-      "use_cases": [
-        "veCRV",
-        "veBAL",
-        "protocol governance with time commitment"
-      ],
-      "complexity": "High",
-      "tags": [
-        "defi",
-        "tokenomics",
-        "governance",
-        "curve",
-        "vote-escrow"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// ve-Tokenomics: lock for voting power\nfunction createLock(uint256 amount, uint256 duration) external {\n    require(duration <= 4 years);\n    uint256 votingPower = amount * duration / MAX_TIME;\n    locks[msg.sender] = Lock({\n        amount: amount,\n        end: block.timestamp + duration,\n        power: votingPower\n    });\n}"
-        }
+[
+  {
+    "id": "bonding-curve-pattern",
+    "name": "Bonding Curve Pattern",
+    "category": "Token Economics",
+    "description": "Continuous price discovery via mathematical curve. Price = f(supply). Always liquid.",
+    "when_to_use": [
+      "Token launches",
+      "continuous offerings",
+      "automated market making"
+    ],
+    "benefits": [
+      "Always liquid",
+      "algorithmic pricing",
+      "fair price discovery"
+    ],
+    "drawbacks": [
+      "Complex mathematics",
+      "front-running risk",
+      "slippage"
+    ],
+    "use_cases": [
+      "Token sales",
+      "continuous funding",
+      "automated pricing"
+    ],
+    "complexity": "High",
+    "tags": [
+      "tokenomics",
+      "bonding-curve",
+      "pricing",
+      "continuous",
+      "amm"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Linear bonding curve: price = m * supply + b\nfunction calculatePrice(uint256 supply) public pure returns (uint256) {\n    return (SLOPE * supply) + BASE_PRICE;\n}\n\nfunction buy(uint256 amount) external payable {\n    uint256 cost = getCost(totalSupply, amount);\n    require(msg.value >= cost);\n    _mint(msg.sender, amount);\n}\n\nfunction getCost(uint256 startSupply, uint256 amount) public pure returns (uint256) {\n    // Integral of price function\n    return (SLOPE * amount * (2 * startSupply + amount)) / 2 + (BASE_PRICE * amount);\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "rebase-mechanism",
+    "name": "Rebase Mechanism",
+    "category": "Token Economics",
+    "description": "Adjust all token balances proportionally to maintain target price. Elastic supply.",
+    "when_to_use": [
+      "Algorithmic stablecoins",
+      "price-stable tokens",
+      "elastic supply models"
+    ],
+    "benefits": [
+      "Maintains target price",
+      "non-dilutive (proportional to all)",
+      "algorithmic"
+    ],
+    "drawbacks": [
+      "Confusing UX (balance changes)",
+      "tax implications",
+      "wallet compatibility"
+    ],
+    "use_cases": [
+      "Ampleforth (AMPL)",
+      "elastic supply tokens",
+      "algorithmic pegs"
+    ],
+    "complexity": "High",
+    "tags": [
+      "tokenomics",
+      "rebase",
+      "elastic-supply",
+      "algorithmic",
+      "stablecoin"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract RebaseToken {\n    uint256 private _totalGons;\n    uint256 private _gonsPerFragment;\n    \n    function rebase(int256 supplyDelta) external onlyOracle {\n        if (supplyDelta == 0) return;\n        \n        uint256 newTotalSupply = uint256(int256(_totalSupply) + supplyDelta);\n        _gonsPerFragment = _totalGons / newTotalSupply;\n        _totalSupply = newTotalSupply;\n        \n        emit Rebase(epoch++, _totalSupply);\n    }\n    \n    function balanceOf(address account) public view returns (uint256) {\n        return _gonBalances[account] / _gonsPerFragment;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "ve-tokenomics",
+    "name": "ve-Tokenomics (Vote-Escrowed)",
+    "category": "Token Economics",
+    "description": "Lock tokens for voting power that decays over time (Curve model)",
+    "when_to_use": [
+      "DeFi governance",
+      "long-term holder incentives"
+    ],
+    "benefits": [
+      "Incentivizes locking",
+      "reduces sell pressure",
+      "long-term alignment"
+    ],
+    "drawbacks": [
+      "Illiquid during lock",
+      "complex mechanisms"
+    ],
+    "use_cases": [
+      "veCRV",
+      "veBAL",
+      "protocol governance with time commitment"
+    ],
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "tokenomics",
+      "governance",
+      "curve",
+      "vote-escrow"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ve-Tokenomics: lock for voting power\nfunction createLock(uint256 amount, uint256 duration) external {\n    require(duration <= 4 years);\n    uint256 votingPower = amount * duration / MAX_TIME;\n    locks[msg.sender] = Lock({\n        amount: amount,\n        end: block.timestamp + duration,\n        power: votingPower\n    });\n}"
+      }
+    }
+  }
+]

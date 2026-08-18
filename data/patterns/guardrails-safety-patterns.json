@@ -1,19 +1,21 @@
-{
-  "id": "guardrails-safety-patterns",
-  "name": "Guardrails/Safety Patterns",
-  "category": "AI/ML",
-  "description": "Implements safety measures, constraints, and guardrails to prevent harmful outputs, ensure ethical behavior, and maintain system security.",
-  "when_to_use": "[\"Safety-critical applications\",\"Ethical concerns\",\"Harm prevention\"]",
-  "benefits": "[\"Enhanced safety\",\"Ethical compliance\",\"Risk reduction\"]",
-  "drawbacks": "[\"Implementation overhead\",\"Potential creativity limits\",\"False positives\"]",
-  "use_cases": "[\"Content moderation\",\"Autonomous systems\",\"Public-facing AI\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"safety\"",
-    "\"guardrails\"",
-    "\"ethics\"",
-    "\"security\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "guardrails-safety-patterns",
+    "name": "Guardrails/Safety Patterns",
+    "category": "AI/ML",
+    "description": "Implements safety measures, constraints, and guardrails to prevent harmful outputs, ensure ethical behavior, and maintain system security.",
+    "when_to_use": "[\"Safety-critical applications\",\"Ethical concerns\",\"Harm prevention\"]",
+    "benefits": "[\"Enhanced safety\",\"Ethical compliance\",\"Risk reduction\"]",
+    "drawbacks": "[\"Implementation overhead\",\"Potential creativity limits\",\"False positives\"]",
+    "use_cases": "[\"Content moderation\",\"Autonomous systems\",\"Public-facing AI\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"safety\"",
+      "\"guardrails\"",
+      "\"ethics\"",
+      "\"security\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

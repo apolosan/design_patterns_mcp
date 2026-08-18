@@ -1,22 +1,24 @@
-{
-  "id": "abstract-factory",
-  "name": "Abstract Factory",
-  "category": "Creational",
-  "description": "Creates families of related objects without specifying their concrete classes",
-  "when_to_use": "Multiple product families\nPlatform-specific implementations\nRelated object creation",
-  "benefits": "Product consistency\nEasy product family exchange\nIsolation of concrete classes",
-  "drawbacks": "Complex to implement\nDifficult to extend",
-  "use_cases": "Cross-platform UI\nDatabase abstraction layers\nGame engine renderers",
-  "complexity": "High",
-  "tags": [
-    "creational",
-    "factory",
-    "families"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface GUIFactory {\n  createButton(): Button;\n  createCheckbox(): Checkbox;\n}\n\nclass WindowsFactory implements GUIFactory {\n  createButton() { return { render: () => console.log('Win Button') }; }\n  createCheckbox() { return { render: () => console.log('Win Checkbox') }; }\n}\n\nclass MacFactory implements GUIFactory {\n  createButton() { return { render: () => console.log('Mac Button') }; }\n  createCheckbox() { return { render: () => console.log('Mac Checkbox') }; }\n}\n\n// Usage: create family of related objects\nfunction createUI(factory: GUIFactory) {\n  factory.createButton().render();\n  factory.createCheckbox().render();\n}\n\ncreateUI(new MacFactory());"
+[
+  {
+    "id": "abstract-factory",
+    "name": "Abstract Factory",
+    "category": "Creational",
+    "description": "Creates families of related objects without specifying their concrete classes",
+    "when_to_use": "Multiple product families\nPlatform-specific implementations\nRelated object creation",
+    "benefits": "Product consistency\nEasy product family exchange\nIsolation of concrete classes",
+    "drawbacks": "Complex to implement\nDifficult to extend",
+    "use_cases": "Cross-platform UI\nDatabase abstraction layers\nGame engine renderers",
+    "complexity": "High",
+    "tags": [
+      "creational",
+      "factory",
+      "families"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface GUIFactory {\n  createButton(): Button;\n  createCheckbox(): Checkbox;\n}\n\nclass WindowsFactory implements GUIFactory {\n  createButton() { return { render: () => console.log('Win Button') }; }\n  createCheckbox() { return { render: () => console.log('Win Checkbox') }; }\n}\n\nclass MacFactory implements GUIFactory {\n  createButton() { return { render: () => console.log('Mac Button') }; }\n  createCheckbox() { return { render: () => console.log('Mac Checkbox') }; }\n}\n\n// Usage: create family of related objects\nfunction createUI(factory: GUIFactory) {\n  factory.createButton().render();\n  factory.createCheckbox().render();\n}\n\ncreateUI(new MacFactory());"
+      }
     }
   }
-}
+]

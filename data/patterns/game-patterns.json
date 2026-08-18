@@ -1,196 +1,518 @@
-{
-  "patterns": [
-    {
-      "id": "game-loop",
-      "name": "Game Loop Pattern",
-      "category": "Game Development",
-      "description": "Central loop that continuously updates game state and renders graphics",
-      "when_to_use": ["Real-time games", "Interactive applications", "Simulation systems"],
-      "benefits": ["Consistent timing", "Frame rate control", "Input responsiveness"],
-      "drawbacks": ["CPU intensive", "Timing complexity", "Platform dependencies"],
-      "use_cases": ["Video games", "Simulations", "Interactive applications"],
-      "complexity": "Medium",
-      "tags": ["game", "loop", "timing"]
-    },
-    {
-      "id": "entity-component-system",
-      "name": "Entity-Component-System (ECS)",
-      "category": "Game Development",
-      "description": "Architectural pattern that favors composition over inheritance for game entities",
-      "when_to_use": ["Complex game entities", "Performance optimization", "Flexible systems"],
-      "benefits": ["Performance", "Flexibility", "Composition over inheritance", "Data-driven"],
-      "drawbacks": ["Complex architecture", "Learning curve", "Memory management"],
-      "use_cases": ["Game engines", "Large-scale games", "Performance-critical applications"],
-      "complexity": "High",
-      "tags": ["game", "ecs", "architecture"]
-    },
-    {
-      "id": "state-machine-game",
-      "name": "State Machine (Game)",
-      "category": "Game Development",
-      "description": "Manages different states of game entities and game flow",
-      "when_to_use": ["Character AI", "Game states", "Animation systems"],
-      "benefits": ["Clear state management", "Predictable behavior", "Easy debugging"],
-      "drawbacks": ["State explosion", "Complex transitions", "Rigid structure"],
-      "use_cases": ["Character AI", "Menu systems", "Game modes"],
-      "complexity": "Medium",
-      "tags": ["game", "state", "ai"]
-    },
-    {
-      "id": "object-pool-game",
-      "name": "Object Pool (Game)",
-      "category": "Game Development",
-      "description": "Reuses objects to avoid expensive allocation/deallocation in games",
-      "when_to_use": ["Frequent object creation", "Performance optimization", "Memory management"],
-      "benefits": ["Performance improvement", "Reduced garbage collection", "Memory efficiency"],
-      "drawbacks": ["Memory overhead", "Pool management", "Object lifecycle"],
-      "use_cases": ["Bullets", "Particles", "Enemies"],
-      "complexity": "Medium",
-      "tags": ["game", "pool", "performance"]
-    },
-    {
-      "id": "command-game",
-      "name": "Command Pattern (Game)",
-      "category": "Game Development",
-      "description": "Encapsulates game actions as objects for input handling and undo systems",
-      "when_to_use": ["Input handling", "Undo systems", "Replay functionality"],
-      "benefits": ["Flexible input", "Undo/redo support", "Action queuing", "Replay systems"],
-      "drawbacks": ["Object proliferation", "Memory overhead", "Complex command chains"],
-      "use_cases": ["Input systems", "Turn-based games", "Action replay"],
-      "complexity": "Medium",
-      "tags": ["game", "command", "input"]
-    },
-    {
-      "id": "observer-game",
-      "name": "Observer Pattern (Game)",
-      "category": "Game Development",
-      "description": "Notifies multiple objects about events in the game without tight coupling",
-      "when_to_use": ["Event systems", "Achievement systems", "UI updates"],
-      "benefits": ["Loose coupling", "Event-driven architecture", "Extensible systems"],
-      "drawbacks": ["Performance overhead", "Debugging difficulty", "Memory leaks"],
-      "use_cases": ["Achievement systems", "Sound triggers", "UI notifications"],
-      "complexity": "Medium",
-      "tags": ["game", "observer", "events"]
-    },
-    {
-      "id": "flyweight-game",
-      "name": "Flyweight Pattern (Game)",
-      "category": "Game Development",
-      "description": "Shares common data between similar game objects to reduce memory usage",
-      "when_to_use": ["Large numbers of similar objects", "Memory constraints", "Tile-based games"],
-      "benefits": ["Memory efficiency", "Performance improvement", "Shared resources"],
-      "drawbacks": ["Complex implementation", "Limited mutability", "Context management"],
-      "use_cases": ["Tile maps", "Particle systems", "Forest of trees"],
-      "complexity": "High",
-      "tags": ["game", "flyweight", "memory"]
-    },
-    {
-      "id": "spatial-partitioning",
-      "name": "Spatial Partitioning",
-      "category": "Game Development",
-      "description": "Divides game world into regions to optimize collision detection and rendering",
-      "when_to_use": ["Large game worlds", "Collision detection", "Rendering optimization"],
-      "benefits": ["Performance improvement", "Scalability", "Efficient queries"],
-      "drawbacks": ["Implementation complexity", "Memory overhead", "Dynamic object handling"],
-      "use_cases": ["Collision detection", "Culling systems", "Neighbor finding"],
-      "complexity": "High",
-      "tags": ["game", "spatial", "optimization"]
-    },
-    {
-      "id": "behavior-tree",
-      "name": "Behavior Tree",
-      "category": "Game Development",
-      "description": "Hierarchical structure for AI decision making in games",
-      "when_to_use": ["Complex AI behavior", "Decision systems", "NPC behavior"],
-      "benefits": ["Modular AI", "Reusable behaviors", "Visual editing", "Hierarchical decisions"],
-      "drawbacks": ["Complex implementation", "Performance overhead", "Learning curve"],
-      "use_cases": ["NPC AI", "Enemy behavior", "Decision systems"],
-      "complexity": "High",
-      "tags": ["game", "ai", "behavior"]
-    },
-    {
-      "id": "component-game",
-      "name": "Component Pattern (Game)",
-      "category": "Game Development",
-      "description": "Breaks game objects into modular components for flexible composition",
-      "when_to_use": ["Flexible objects", "Code reuse", "Modular systems"],
-      "benefits": ["Flexibility", "Code reuse", "Composition", "Easy maintenance"],
-      "drawbacks": ["Communication complexity", "Performance overhead", "Design complexity"],
-      "use_cases": ["Game entities", "Modular systems", "Plugin architectures"],
-      "complexity": "Medium",
-      "tags": ["game", "component", "composition"]
-    },
-    {
-      "id": "event-queue-game",
-      "name": "Event Queue (Game)",
-      "category": "Game Development",
-      "description": "Queues events for processing to decouple game systems and manage timing",
-      "when_to_use": ["Decoupled systems", "Event management", "Audio systems"],
-      "benefits": ["System decoupling", "Event ordering", "Performance control"],
-      "drawbacks": ["Memory usage", "Event management", "Processing delays"],
-      "use_cases": ["Audio systems", "Animation triggers", "Game events"],
-      "complexity": "Medium",
-      "tags": ["game", "events", "queue"]
-    },
-    {
-      "id": "service-locator-game",
-      "name": "Service Locator (Game)",
-      "category": "Game Development",
-      "description": "Provides global access to services without coupling to their concrete classes",
-      "when_to_use": ["Service access", "Dependency management", "System communication"],
-      "benefits": ["Service abstraction", "Global access", "Flexible implementation"],
-      "drawbacks": ["Hidden dependencies", "Testing difficulties", "Service management"],
-      "use_cases": ["Audio systems", "Rendering services", "Input managers"],
-      "complexity": "Medium",
-      "tags": ["game", "service", "locator"]
-    },
-    {
-      "id": "dirty-flag",
-      "name": "Dirty Flag Pattern",
-      "category": "Game Development",
-      "description": "Avoids unnecessary work by tracking when objects need to be updated",
-      "when_to_use": ["Expensive calculations", "Transform hierarchies", "Rendering optimization"],
-      "benefits": ["Performance optimization", "Lazy evaluation", "Resource efficiency"],
-      "drawbacks": ["State tracking", "Complex invalidation", "Memory overhead"],
-      "use_cases": ["Transform matrices", "Physics updates", "Rendering systems"],
-      "complexity": "Medium",
-      "tags": ["game", "optimization", "caching"]
-    },
-    {
-      "id": "double-buffer",
-      "name": "Double Buffer",
-      "category": "Game Development",
-      "description": "Uses two buffers to provide smooth rendering by eliminating flicker",
-      "when_to_use": ["Smooth rendering", "Animation systems", "Graphics programming"],
-      "benefits": ["Smooth rendering", "No flicker", "Better user experience"],
-      "drawbacks": ["Memory overhead", "Implementation complexity", "Synchronization"],
-      "use_cases": ["Graphics rendering", "Animation", "Screen updates"],
-      "complexity": "Medium",
-      "tags": ["game", "rendering", "graphics"]
-    },
-    {
-      "id": "subclass-sandbox",
-      "name": "Subclass Sandbox",
-      "category": "Game Development",
-      "description": "Provides set of operations that subclass can combine to define behavior",
-      "when_to_use": ["Power-up systems", "Spell systems", "Ability frameworks"],
-      "benefits": ["Code reuse", "Flexible combinations", "Safe operations"],
-      "drawbacks": ["Limited flexibility", "Base class complexity", "Tight coupling"],
-      "use_cases": ["Power-ups", "Spells", "Character abilities"],
-      "complexity": "Medium",
-      "tags": ["game", "inheritance", "framework"]
-    },
-    {
-      "id": "type-object",
-      "name": "Type Object Pattern",
-      "category": "Game Development",
-      "description": "Creates breed objects to define behavior and properties of game entities",
-      "when_to_use": ["Data-driven design", "Entity types", "Configuration systems"],
-      "benefits": ["Data-driven", "Runtime configuration", "Easy modifications"],
-      "drawbacks": ["Indirection overhead", "Complex relationships", "Runtime dependencies"],
-      "use_cases": ["Monster breeds", "Weapon types", "Character classes"],
-      "complexity": "High",
-      "tags": ["game", "data-driven", "types"]
-    }
-  ]
-}
+[
+  {
+    "id": "game-loop",
+    "name": "Game Loop Pattern",
+    "category": "Game Development",
+    "description": "Central loop that continuously updates game state and renders graphics",
+    "when_to_use": [
+      "Real-time games",
+      "Interactive applications",
+      "Simulation systems"
+    ],
+    "benefits": [
+      "Consistent timing",
+      "Frame rate control",
+      "Input responsiveness"
+    ],
+    "drawbacks": [
+      "CPU intensive",
+      "Timing complexity",
+      "Platform dependencies"
+    ],
+    "use_cases": [
+      "Video games",
+      "Simulations",
+      "Interactive applications"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "loop",
+      "timing"
+    ]
+  },
+  {
+    "id": "entity-component-system",
+    "name": "Entity-Component-System (ECS)",
+    "category": "Game Development",
+    "description": "Architectural pattern that favors composition over inheritance for game entities",
+    "when_to_use": [
+      "Complex game entities",
+      "Performance optimization",
+      "Flexible systems"
+    ],
+    "benefits": [
+      "Performance",
+      "Flexibility",
+      "Composition over inheritance",
+      "Data-driven"
+    ],
+    "drawbacks": [
+      "Complex architecture",
+      "Learning curve",
+      "Memory management"
+    ],
+    "use_cases": [
+      "Game engines",
+      "Large-scale games",
+      "Performance-critical applications"
+    ],
+    "complexity": "High",
+    "tags": [
+      "game",
+      "ecs",
+      "architecture"
+    ]
+  },
+  {
+    "id": "state-machine-game",
+    "name": "State Machine (Game)",
+    "category": "Game Development",
+    "description": "Manages different states of game entities and game flow",
+    "when_to_use": [
+      "Character AI",
+      "Game states",
+      "Animation systems"
+    ],
+    "benefits": [
+      "Clear state management",
+      "Predictable behavior",
+      "Easy debugging"
+    ],
+    "drawbacks": [
+      "State explosion",
+      "Complex transitions",
+      "Rigid structure"
+    ],
+    "use_cases": [
+      "Character AI",
+      "Menu systems",
+      "Game modes"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "state",
+      "ai"
+    ]
+  },
+  {
+    "id": "object-pool-game",
+    "name": "Object Pool (Game)",
+    "category": "Game Development",
+    "description": "Reuses objects to avoid expensive allocation/deallocation in games",
+    "when_to_use": [
+      "Frequent object creation",
+      "Performance optimization",
+      "Memory management"
+    ],
+    "benefits": [
+      "Performance improvement",
+      "Reduced garbage collection",
+      "Memory efficiency"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "Pool management",
+      "Object lifecycle"
+    ],
+    "use_cases": [
+      "Bullets",
+      "Particles",
+      "Enemies"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "pool",
+      "performance"
+    ]
+  },
+  {
+    "id": "command-game",
+    "name": "Command Pattern (Game)",
+    "category": "Game Development",
+    "description": "Encapsulates game actions as objects for input handling and undo systems",
+    "when_to_use": [
+      "Input handling",
+      "Undo systems",
+      "Replay functionality"
+    ],
+    "benefits": [
+      "Flexible input",
+      "Undo/redo support",
+      "Action queuing",
+      "Replay systems"
+    ],
+    "drawbacks": [
+      "Object proliferation",
+      "Memory overhead",
+      "Complex command chains"
+    ],
+    "use_cases": [
+      "Input systems",
+      "Turn-based games",
+      "Action replay"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "command",
+      "input"
+    ]
+  },
+  {
+    "id": "observer-game",
+    "name": "Observer Pattern (Game)",
+    "category": "Game Development",
+    "description": "Notifies multiple objects about events in the game without tight coupling",
+    "when_to_use": [
+      "Event systems",
+      "Achievement systems",
+      "UI updates"
+    ],
+    "benefits": [
+      "Loose coupling",
+      "Event-driven architecture",
+      "Extensible systems"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Debugging difficulty",
+      "Memory leaks"
+    ],
+    "use_cases": [
+      "Achievement systems",
+      "Sound triggers",
+      "UI notifications"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "observer",
+      "events"
+    ]
+  },
+  {
+    "id": "flyweight-game",
+    "name": "Flyweight Pattern (Game)",
+    "category": "Game Development",
+    "description": "Shares common data between similar game objects to reduce memory usage",
+    "when_to_use": [
+      "Large numbers of similar objects",
+      "Memory constraints",
+      "Tile-based games"
+    ],
+    "benefits": [
+      "Memory efficiency",
+      "Performance improvement",
+      "Shared resources"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Limited mutability",
+      "Context management"
+    ],
+    "use_cases": [
+      "Tile maps",
+      "Particle systems",
+      "Forest of trees"
+    ],
+    "complexity": "High",
+    "tags": [
+      "game",
+      "flyweight",
+      "memory"
+    ]
+  },
+  {
+    "id": "spatial-partitioning",
+    "name": "Spatial Partitioning",
+    "category": "Game Development",
+    "description": "Divides game world into regions to optimize collision detection and rendering",
+    "when_to_use": [
+      "Large game worlds",
+      "Collision detection",
+      "Rendering optimization"
+    ],
+    "benefits": [
+      "Performance improvement",
+      "Scalability",
+      "Efficient queries"
+    ],
+    "drawbacks": [
+      "Implementation complexity",
+      "Memory overhead",
+      "Dynamic object handling"
+    ],
+    "use_cases": [
+      "Collision detection",
+      "Culling systems",
+      "Neighbor finding"
+    ],
+    "complexity": "High",
+    "tags": [
+      "game",
+      "spatial",
+      "optimization"
+    ]
+  },
+  {
+    "id": "behavior-tree",
+    "name": "Behavior Tree",
+    "category": "Game Development",
+    "description": "Hierarchical structure for AI decision making in games",
+    "when_to_use": [
+      "Complex AI behavior",
+      "Decision systems",
+      "NPC behavior"
+    ],
+    "benefits": [
+      "Modular AI",
+      "Reusable behaviors",
+      "Visual editing",
+      "Hierarchical decisions"
+    ],
+    "drawbacks": [
+      "Complex implementation",
+      "Performance overhead",
+      "Learning curve"
+    ],
+    "use_cases": [
+      "NPC AI",
+      "Enemy behavior",
+      "Decision systems"
+    ],
+    "complexity": "High",
+    "tags": [
+      "game",
+      "ai",
+      "behavior"
+    ]
+  },
+  {
+    "id": "component-game",
+    "name": "Component Pattern (Game)",
+    "category": "Game Development",
+    "description": "Breaks game objects into modular components for flexible composition",
+    "when_to_use": [
+      "Flexible objects",
+      "Code reuse",
+      "Modular systems"
+    ],
+    "benefits": [
+      "Flexibility",
+      "Code reuse",
+      "Composition",
+      "Easy maintenance"
+    ],
+    "drawbacks": [
+      "Communication complexity",
+      "Performance overhead",
+      "Design complexity"
+    ],
+    "use_cases": [
+      "Game entities",
+      "Modular systems",
+      "Plugin architectures"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "component",
+      "composition"
+    ]
+  },
+  {
+    "id": "event-queue-game",
+    "name": "Event Queue (Game)",
+    "category": "Game Development",
+    "description": "Queues events for processing to decouple game systems and manage timing",
+    "when_to_use": [
+      "Decoupled systems",
+      "Event management",
+      "Audio systems"
+    ],
+    "benefits": [
+      "System decoupling",
+      "Event ordering",
+      "Performance control"
+    ],
+    "drawbacks": [
+      "Memory usage",
+      "Event management",
+      "Processing delays"
+    ],
+    "use_cases": [
+      "Audio systems",
+      "Animation triggers",
+      "Game events"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "events",
+      "queue"
+    ]
+  },
+  {
+    "id": "service-locator-game",
+    "name": "Service Locator (Game)",
+    "category": "Game Development",
+    "description": "Provides global access to services without coupling to their concrete classes",
+    "when_to_use": [
+      "Service access",
+      "Dependency management",
+      "System communication"
+    ],
+    "benefits": [
+      "Service abstraction",
+      "Global access",
+      "Flexible implementation"
+    ],
+    "drawbacks": [
+      "Hidden dependencies",
+      "Testing difficulties",
+      "Service management"
+    ],
+    "use_cases": [
+      "Audio systems",
+      "Rendering services",
+      "Input managers"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "service",
+      "locator"
+    ]
+  },
+  {
+    "id": "dirty-flag",
+    "name": "Dirty Flag Pattern",
+    "category": "Game Development",
+    "description": "Avoids unnecessary work by tracking when objects need to be updated",
+    "when_to_use": [
+      "Expensive calculations",
+      "Transform hierarchies",
+      "Rendering optimization"
+    ],
+    "benefits": [
+      "Performance optimization",
+      "Lazy evaluation",
+      "Resource efficiency"
+    ],
+    "drawbacks": [
+      "State tracking",
+      "Complex invalidation",
+      "Memory overhead"
+    ],
+    "use_cases": [
+      "Transform matrices",
+      "Physics updates",
+      "Rendering systems"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "optimization",
+      "caching"
+    ]
+  },
+  {
+    "id": "double-buffer",
+    "name": "Double Buffer",
+    "category": "Game Development",
+    "description": "Uses two buffers to provide smooth rendering by eliminating flicker",
+    "when_to_use": [
+      "Smooth rendering",
+      "Animation systems",
+      "Graphics programming"
+    ],
+    "benefits": [
+      "Smooth rendering",
+      "No flicker",
+      "Better user experience"
+    ],
+    "drawbacks": [
+      "Memory overhead",
+      "Implementation complexity",
+      "Synchronization"
+    ],
+    "use_cases": [
+      "Graphics rendering",
+      "Animation",
+      "Screen updates"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "rendering",
+      "graphics"
+    ]
+  },
+  {
+    "id": "subclass-sandbox",
+    "name": "Subclass Sandbox",
+    "category": "Game Development",
+    "description": "Provides set of operations that subclass can combine to define behavior",
+    "when_to_use": [
+      "Power-up systems",
+      "Spell systems",
+      "Ability frameworks"
+    ],
+    "benefits": [
+      "Code reuse",
+      "Flexible combinations",
+      "Safe operations"
+    ],
+    "drawbacks": [
+      "Limited flexibility",
+      "Base class complexity",
+      "Tight coupling"
+    ],
+    "use_cases": [
+      "Power-ups",
+      "Spells",
+      "Character abilities"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "inheritance",
+      "framework"
+    ]
+  },
+  {
+    "id": "type-object",
+    "name": "Type Object Pattern",
+    "category": "Game Development",
+    "description": "Creates breed objects to define behavior and properties of game entities",
+    "when_to_use": [
+      "Data-driven design",
+      "Entity types",
+      "Configuration systems"
+    ],
+    "benefits": [
+      "Data-driven",
+      "Runtime configuration",
+      "Easy modifications"
+    ],
+    "drawbacks": [
+      "Indirection overhead",
+      "Complex relationships",
+      "Runtime dependencies"
+    ],
+    "use_cases": [
+      "Monster breeds",
+      "Weapon types",
+      "Character classes"
+    ],
+    "complexity": "High",
+    "tags": [
+      "game",
+      "data-driven",
+      "types"
+    ]
+  }
+]

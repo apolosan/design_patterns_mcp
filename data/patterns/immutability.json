@@ -1,16 +1,18 @@
-{
-  "id": "immutability",
-  "name": "Immutability Pattern",
-  "category": "Functional",
-  "description": "Ensures objects cannot be modified after creation",
-  "when_to_use": "Thread safety\nPredictable state\nFunctional programming",
-  "benefits": "Thread safety\nNo side effects\nCacheable\nPredictable",
-  "drawbacks": "Memory overhead\nPerformance cost\nLearning curve",
-  "use_cases": "Value objects\nConfiguration\nShared state",
-  "complexity": "Medium",
-  "tags": [
-    "immutable",
-    "thread-safety",
-    "functional"
-  ]
-}
+[
+  {
+    "id": "immutability",
+    "name": "Immutability Pattern",
+    "category": "Functional",
+    "description": "Ensures objects cannot be modified after creation",
+    "when_to_use": "Thread safety\nPredictable state\nFunctional programming",
+    "benefits": "Thread safety\nNo side effects\nCacheable\nPredictable",
+    "drawbacks": "Memory overhead\nPerformance cost\nLearning curve",
+    "use_cases": "Value objects\nConfiguration\nShared state",
+    "complexity": "Medium",
+    "tags": [
+      "immutable",
+      "thread-safety",
+      "functional"
+    ]
+  }
+]

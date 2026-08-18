@@ -1,22 +1,24 @@
-{
-  "id": "merge-map",
-  "name": "MergeMap Pattern",
-  "category": "Reactive",
-  "description": "Projects emissions to inner observables and merges all results",
-  "when_to_use": "Concurrent operations\nParallel processing\nOrder independence",
-  "benefits": "Concurrency\nParallel execution\nHigh throughput",
-  "drawbacks": "Order loss\nResource consumption\nComplexity",
-  "use_cases": "Parallel API calls\nFile processing\nConcurrent operations",
-  "complexity": "High",
-  "tags": [
-    "reactive",
-    "merge",
-    "concurrency"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// MergeMap (flatMap): map and flatten\nclass Observable<T> {\n  mergeMap<R>(project: (value: T) => Observable<R>): Observable<R> {\n    return new Observable(observer => {\n      return this.subscribe({\n        next: value => {\n          project(value).subscribe({\n            next: inner => observer.next(inner),\n            error: err => observer.error(err),\n            complete: () => {}\n          });\n        },\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n}\n\n// Usage: Load user then posts\nconst userId = new Observable<string>(obs => {\n  obs.next('user-123');\n  obs.complete();\n  return () => {};\n});\n\nuserId\n  .mergeMap(id => fetchUserPosts(id))\n  .subscribe({\n    next: post => console.log('Post:', post),\n    error: () => {},\n    complete: () => {}\n  });"
+[
+  {
+    "id": "merge-map",
+    "name": "MergeMap Pattern",
+    "category": "Reactive",
+    "description": "Projects emissions to inner observables and merges all results",
+    "when_to_use": "Concurrent operations\nParallel processing\nOrder independence",
+    "benefits": "Concurrency\nParallel execution\nHigh throughput",
+    "drawbacks": "Order loss\nResource consumption\nComplexity",
+    "use_cases": "Parallel API calls\nFile processing\nConcurrent operations",
+    "complexity": "High",
+    "tags": [
+      "reactive",
+      "merge",
+      "concurrency"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// MergeMap (flatMap): map and flatten\nclass Observable<T> {\n  mergeMap<R>(project: (value: T) => Observable<R>): Observable<R> {\n    return new Observable(observer => {\n      return this.subscribe({\n        next: value => {\n          project(value).subscribe({\n            next: inner => observer.next(inner),\n            error: err => observer.error(err),\n            complete: () => {}\n          });\n        },\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n}\n\n// Usage: Load user then posts\nconst userId = new Observable<string>(obs => {\n  obs.next('user-123');\n  obs.complete();\n  return () => {};\n});\n\nuserId\n  .mergeMap(id => fetchUserPosts(id))\n  .subscribe({\n    next: post => console.log('Post:', post),\n    error: () => {},\n    complete: () => {}\n  });"
+      }
     }
   }
-}
+]

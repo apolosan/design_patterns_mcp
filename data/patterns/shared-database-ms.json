@@ -1,16 +1,18 @@
-{
-  "id": "shared-database-ms",
-  "name": "Shared Database (Anti-pattern)",
-  "category": "Microservices",
-  "description": "Multiple services share same database - generally an anti-pattern",
-  "when_to_use": "Legacy constraints\nTight coupling acceptable\nSimple scenarios",
-  "benefits": "Simple queries\nData consistency\nReduced complexity",
-  "drawbacks": "Tight coupling\nDeployment dependencies\nScaling limitations",
-  "use_cases": "Legacy systems\nMonolith decomposition\nSimple applications",
-  "complexity": "Low",
-  "tags": [
-    "microservices",
-    "data",
-    "anti-pattern"
-  ]
-}
+[
+  {
+    "id": "shared-database-ms",
+    "name": "Shared Database (Anti-pattern)",
+    "category": "Microservices",
+    "description": "Multiple services share same database - generally an anti-pattern",
+    "when_to_use": "Legacy constraints\nTight coupling acceptable\nSimple scenarios",
+    "benefits": "Simple queries\nData consistency\nReduced complexity",
+    "drawbacks": "Tight coupling\nDeployment dependencies\nScaling limitations",
+    "use_cases": "Legacy systems\nMonolith decomposition\nSimple applications",
+    "complexity": "Low",
+    "tags": [
+      "microservices",
+      "data",
+      "anti-pattern"
+    ]
+  }
+]

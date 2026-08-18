@@ -1,19 +1,21 @@
-{
-  "id": "evaluation-monitoring-pattern",
-  "name": "Evaluation and Monitoring Pattern",
-  "category": "AI/ML",
-  "description": "Continuously evaluates agent performance, monitors behavior, and collects metrics to ensure quality and enable improvements.",
-  "when_to_use": "[\"Performance tracking\",\"Quality assurance\",\"Continuous improvement\"]",
-  "benefits": "[\"Quality assurance\",\"Performance insights\",\"Iterative improvement\"]",
-  "drawbacks": "[\"Monitoring overhead\",\"Metric design complexity\",\"Data collection challenges\"]",
-  "use_cases": "[\"Production systems\",\"Research platforms\",\"Quality control\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"evaluation\"",
-    "\"monitoring\"",
-    "\"metrics\"",
-    "\"quality\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "evaluation-monitoring-pattern",
+    "name": "Evaluation and Monitoring Pattern",
+    "category": "AI/ML",
+    "description": "Continuously evaluates agent performance, monitors behavior, and collects metrics to ensure quality and enable improvements.",
+    "when_to_use": "[\"Performance tracking\",\"Quality assurance\",\"Continuous improvement\"]",
+    "benefits": "[\"Quality assurance\",\"Performance insights\",\"Iterative improvement\"]",
+    "drawbacks": "[\"Monitoring overhead\",\"Metric design complexity\",\"Data collection challenges\"]",
+    "use_cases": "[\"Production systems\",\"Research platforms\",\"Quality control\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"evaluation\"",
+      "\"monitoring\"",
+      "\"metrics\"",
+      "\"quality\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

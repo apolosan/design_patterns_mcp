@@ -1,16 +1,18 @@
-{
-  "id": "arrange-act-assert",
-  "name": "Arrange-Act-Assert (AAA)",
-  "category": "Testing",
-  "description": "Structure for unit tests with clear separation of setup, execution, and verification",
-  "when_to_use": "Unit testing\nTest structure\nClear test organization",
-  "benefits": "Clear test structure\nReadability\nMaintainability\nConsistency",
-  "drawbacks": "Verbose tests\nRepetitive setup\nPotential over-structuring",
-  "use_cases": "Unit tests\nIntegration tests\nAutomated testing",
-  "complexity": "Low",
-  "tags": [
-    "testing",
-    "structure",
-    "unit-test"
-  ]
-}
+[
+  {
+    "id": "arrange-act-assert",
+    "name": "Arrange-Act-Assert (AAA)",
+    "category": "Testing",
+    "description": "Structure for unit tests with clear separation of setup, execution, and verification",
+    "when_to_use": "Unit testing\nTest structure\nClear test organization",
+    "benefits": "Clear test structure\nReadability\nMaintainability\nConsistency",
+    "drawbacks": "Verbose tests\nRepetitive setup\nPotential over-structuring",
+    "use_cases": "Unit tests\nIntegration tests\nAutomated testing",
+    "complexity": "Low",
+    "tags": [
+      "testing",
+      "structure",
+      "unit-test"
+    ]
+  }
+]

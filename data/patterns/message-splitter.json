@@ -1,16 +1,18 @@
-{
-  "id": "message-splitter",
-  "name": "Message Splitter",
-  "category": "Integration",
-  "description": "Breaks composite message into individual messages for separate processing",
-  "when_to_use": "Composite messages\nParallel processing\nDifferent destinations",
-  "benefits": "Parallel processing\nFlexible routing\nIndependent processing",
-  "drawbacks": "Message correlation\nOrdering issues\nComplex routing",
-  "use_cases": "Batch processing\nOrder line items\nMulti-destination routing",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "splitting",
-    "parallel"
-  ]
-}
+[
+  {
+    "id": "message-splitter",
+    "name": "Message Splitter",
+    "category": "Integration",
+    "description": "Breaks composite message into individual messages for separate processing",
+    "when_to_use": "Composite messages\nParallel processing\nDifferent destinations",
+    "benefits": "Parallel processing\nFlexible routing\nIndependent processing",
+    "drawbacks": "Message correlation\nOrdering issues\nComplex routing",
+    "use_cases": "Batch processing\nOrder line items\nMulti-destination routing",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "splitting",
+      "parallel"
+    ]
+  }
+]

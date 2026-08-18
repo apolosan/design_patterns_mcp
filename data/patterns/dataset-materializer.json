@@ -1,17 +1,19 @@
-{
-  "id": "dataset-materializer",
-  "name": "Dataset Materializer",
-  "category": "Data Storage",
-  "description": "The Dataset Materializer pre-computes and stores results for faster access.",
-  "when_to_use": "[\"Frequent queries\",\"Performance optimization\"]",
-  "benefits": "[\"Faster access\",\"Pre-computed results\"]",
-  "drawbacks": "[\"Storage overhead\",\"Update complexity\"]",
-  "use_cases": "[\"Materialized views\",\"Caching\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-storage\"",
-    "\"materializer\"",
-    "\"performance\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "dataset-materializer",
+    "name": "Dataset Materializer",
+    "category": "Data Storage",
+    "description": "The Dataset Materializer pre-computes and stores results for faster access.",
+    "when_to_use": "[\"Frequent queries\",\"Performance optimization\"]",
+    "benefits": "[\"Faster access\",\"Pre-computed results\"]",
+    "drawbacks": "[\"Storage overhead\",\"Update complexity\"]",
+    "use_cases": "[\"Materialized views\",\"Caching\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-storage\"",
+      "\"materializer\"",
+      "\"performance\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

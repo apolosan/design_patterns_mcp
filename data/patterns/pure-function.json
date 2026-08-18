@@ -1,16 +1,18 @@
-{
-  "id": "pure-function",
-  "name": "Pure Function Pattern",
-  "category": "Functional",
-  "description": "Functions with no side effects that always return same output for same input",
-  "when_to_use": "Predictable behavior\nTesting\nParallel processing",
-  "benefits": "Testable\nCacheable\nParallelizable\nNo side effects",
-  "drawbacks": "Limited applicability\nState management complexity\nIO restrictions",
-  "use_cases": "Calculations\nTransformations\nValidation",
-  "complexity": "Low",
-  "tags": [
-    "pure",
-    "functional",
-    "side-effect-free"
-  ]
-}
+[
+  {
+    "id": "pure-function",
+    "name": "Pure Function Pattern",
+    "category": "Functional",
+    "description": "Functions with no side effects that always return same output for same input",
+    "when_to_use": "Predictable behavior\nTesting\nParallel processing",
+    "benefits": "Testable\nCacheable\nParallelizable\nNo side effects",
+    "drawbacks": "Limited applicability\nState management complexity\nIO restrictions",
+    "use_cases": "Calculations\nTransformations\nValidation",
+    "complexity": "Low",
+    "tags": [
+      "pure",
+      "functional",
+      "side-effect-free"
+    ]
+  }
+]

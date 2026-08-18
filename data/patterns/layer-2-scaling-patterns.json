@@ -1,322 +1,318 @@
-{
-  "category": "Layer 2 Scaling",
-  "description": "Layer 2 Scaling design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "eip4844-blobs",
-      "name": "EIP-4844 Blob Transactions",
-      "category": "Layer 2 Scaling",
-      "description": "Temporary data blobs for cheap L2 posting Problem: Expensive rollup data posting to L1",
-      "when_to_use": [
-        "Separate blob space with KZG commitments"
-      ],
-      "benefits": [
-        "10-100x cheaper",
-        "separate fee market",
-        "scalable"
-      ],
-      "drawbacks": [
-        "Temporary storage (~18 days)",
-        "limited blob space"
-      ],
-      "use_cases": [
-        "L2 rollups",
-        "data availability",
-        "post-Dencun"
-      ],
-      "complexity": "High",
-      "tags": [
-        "layer2",
-        "data-availability",
-        "eip4844",
-        "blobs",
-        "dencun"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// EIP-4844: Blob KZG verification\nfunction verifyBlobKZG(\n    bytes32 commitment,\n    bytes memory blob,\n    bytes memory proof\n) external view returns (bool) {\n    return POINT_EVALUATION_PRECOMPILE.staticcall(\n        abi.encode(commitment, blob, proof)\n    );\n}"
-        }
-      }
-    },
-    {
-      "id": "optimistic-rollup",
-      "name": "Optimistic Rollup",
-      "category": "Layer 2 Scaling",
-      "description": "L2 with fraud proofs for dispute resolution Problem: Ethereum low throughput (15-30 TPS)",
-      "when_to_use": [
-        "Execute off-chain",
-        "fraud proofs for disputes"
-      ],
-      "benefits": [
-        "10-100x throughput",
-        "EVM equivalence",
-        "lower fees"
-      ],
-      "drawbacks": [
-        "7-day withdrawal period",
-        "fraud challenge window"
-      ],
-      "use_cases": [
-        "DeFi",
-        "NFTs",
-        "payments",
-        "general L2 scaling"
-      ],
-      "complexity": "High",
-      "tags": [
-        "layer2",
-        "rollup",
-        "optimistic",
-        "scaling",
-        "fraud-proof"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "contract FraudProofVerifier {\n    uint256 constant CHALLENGE_PERIOD = 7 days;\n    mapping(bytes32 => bool) public validBatches;\n    \n    function challengeBatch(bytes32 root, bytes proof) external {\n        require(block.timestamp < submissionTime[root] + CHALLENGE_PERIOD);\n        if (verifyFraudProof(proof)) {\n            validBatches[root] = false;\n        }\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "plasma",
-      "name": "Plasma",
-      "category": "Layer 2 Scaling",
-      "description": "Hierarchical side-chains with fraud proofs and mass exit mechanisms.",
-      "when_to_use": [
-        "Payment channels",
-        "simple token transfers",
-        "predictable state transitions"
-      ],
-      "benefits": [
-        "High throughput",
-        "low fees",
-        "Ethereum security fallback"
-      ],
-      "drawbacks": [
-        "Mass exit challenges",
-        "limited smart contract support",
-        "data availability"
-      ],
-      "use_cases": [
-        "OMG Network (legacy)",
-        "Polygon Plasma",
-        "payment networks"
-      ],
-      "complexity": "High",
-      "tags": [
-        "layer2",
-        "plasma",
-        "fraud-proof",
-        "side-chain"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Plasma exit mechanism\nfunction startExit(uint256 utxoPos, bytes memory txBytes, bytes memory proof) external {\n    require(verifyInclusion(utxoPos, txBytes, proof));\n    exits[utxoPos] = Exit({\n        owner: msg.sender,\n        amount: getAmount(txBytes),\n        exitableAt: block.timestamp + CHALLENGE_PERIOD\n    });\n}"
-        }
-      }
-    },
-    {
-      "id": "rollup-as-a-service",
-      "name": "Rollup-as-a-Service Pattern",
-      "category": "Layer 2 Scaling",
-      "description": "Deploy custom rollups easily via managed platforms. App-specific chains with Ethereum security.",
-      "when_to_use": [
-        "App-specific chains",
-        "custom L2s",
-        "blockchain customization"
-      ],
-      "benefits": [
-        "Easy deployment",
-        "customizable",
-        "base layer security",
-        "no devops"
-      ],
-      "drawbacks": [
-        "Vendor dependency",
-        "fragmentation",
-        "DA solution needed"
-      ],
-      "use_cases": [
-        "Gaming chains",
-        "DeFi-specific rollups",
-        "high-throughput apps"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "layer2",
-        "rollup",
-        "raas",
-        "modular",
-        "app-chain"
-      ],
-      "examples": {
-        "typescript": {
-          "language": "typescript",
-          "code": "// Caldera, Conduit, AltLayer provide RaaS\n// Example config for custom rollup:\n\nconst rollupConfig = {\n  name: 'MyGameRollup',\n  type: 'optimistic', // or 'zk'\n  dataAvailability: 'ethereum', // or 'celestia'\n  executionEnvironment: 'EVM',\n  sequencer: 'centralized', // or 'decentralized'\n  settlement: 'ethereum',\n  gasToken: 'ETH', // or custom token\n  precompiles: ['secp256r1', 'bls12-381'],\n  blockTime: 1, // seconds\n  batchSubmissionInterval: 300 // 5 minutes\n};\n\n// Platform handles: deployment, sequencer, provers, bridges, explorers"
-        }
-      }
-    },
-    {
-      "id": "sidechain-validator",
-      "name": "Sidechain with Validators",
-      "category": "Layer 2 Scaling",
-      "description": "Independent blockchain with own consensus, periodic checkpoints to mainnet.",
-      "when_to_use": [
-        "Custom consensus",
-        "EVM compatibility",
-        "independent chains"
-      ],
-      "benefits": [
-        "Full EVM compatibility",
-        "high throughput",
-        "customizable"
-      ],
-      "drawbacks": [
-        "Separate security model",
-        "validator trust",
-        "bridge risks"
-      ],
-      "use_cases": [
-        "Polygon PoS",
-        "Gnosis Chain",
-        "enterprise chains"
-      ],
-      "complexity": "High",
-      "tags": [
-        "layer2",
-        "sidechain",
-        "validators",
-        "pos",
-        "checkpointing"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Checkpoint submission to mainnet\nfunction submitCheckpoint(bytes32 rootHash, uint256 startBlock, uint256 endBlock) external onlyValidator {\n    require(validatorSet[msg.sender]);\n    checkpoints[checkpointId] = Checkpoint({\n        root: rootHash,\n        start: startBlock,\n        end: endBlock,\n        timestamp: block.timestamp\n    });\n}"
-        }
-      }
-    },
-    {
-      "id": "state-channel",
-      "name": "State Channel",
-      "category": "Layer 2 Scaling",
-      "description": "Off-chain state updates with on-chain settlement. Lock funds, transact off-chain, settle final state.",
-      "when_to_use": [
-        "High-frequency interactions",
-        "known participants",
-        "payment channels"
-      ],
-      "benefits": [
-        "Instant finality",
-        "zero gas costs for updates",
-        "privacy"
-      ],
-      "drawbacks": [
-        "Capital lockup",
-        "liveness requirements",
-        "limited to participants"
-      ],
-      "use_cases": [
-        "Lightning Network",
-        "Raiden",
-        "gaming state"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "layer2",
-        "state-channel",
-        "payment-channel",
-        "off-chain"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// State channel with dispute period\nfunction openChannel(address participant) external payable {\n    channels[channelId] = Channel({\n        participants: [msg.sender, participant],\n        balance: msg.value,\n        nonce: 0\n    });\n}\n\nfunction closeChannel(uint256 nonce, bytes memory signature) external {\n    require(nonce > channels[channelId].nonce);\n    require(verifySignature(signature));\n    // Settle final state\n}"
-        }
-      }
-    },
-    {
-      "id": "validium",
-      "name": "Validium",
-      "category": "Layer 2 Scaling",
-      "description": "ZK-rollup variant with off-chain data availability. Uses validity proofs but stores transaction data off-chain.",
-      "when_to_use": [
-        "Ultra-low cost transactions",
-        "privacy requirements",
-        "trusted data availability"
-      ],
-      "benefits": [
-        "Lowest L2 costs",
-        "instant finality",
-        "privacy"
-      ],
-      "drawbacks": [
-        "Data availability assumptions",
-        "potential censorship",
-        "withdrawal delays if DA fails"
-      ],
-      "use_cases": [
-        "Gaming",
-        "NFT marketplaces",
-        "private payments"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "layer2",
-        "validium",
-        "zk",
-        "data-availability",
-        "privacy"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Validium: off-chain DA with validity proofs\ncontract Validium {\n    struct DataCommitment {\n        bytes32 dataHash;\n        address dataProvider;\n    }\n    \n    function submitBatch(bytes32 stateRoot, DataCommitment calldata commitment, uint256[] calldata proof) external {\n        require(verifyProof(proof, [stateRoot, commitment.dataHash]));\n        commits[batchNum] = commitment;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "zk-rollup",
-      "name": "ZK-Rollup",
-      "category": "Layer 2 Scaling",
-      "description": "Layer 2 scaling using zero-knowledge proofs for state transitions. Validates off-chain computation with succinct on-chain proofs.",
-      "when_to_use": [
-        "High throughput with instant finality",
-        "privacy-preserving transactions",
-        "Ethereum security guarantees"
-      ],
-      "benefits": [
-        "Instant L1 finality",
-        "higher TPS than optimistic rollups",
-        "no fraud proof delay"
-      ],
-      "drawbacks": [
-        "Complex prover circuits",
-        "high proving costs",
-        "limited EVM compatibility"
-      ],
-      "use_cases": [
-        "zkSync",
-        "StarkNet",
-        "Polygon zkEVM",
-        "payment networks"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "layer2",
-        "zk-rollup",
-        "scaling",
-        "zero-knowledge",
-        "privacy"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// ZK-Rollup verifier contract\ncontract ZKRollup {\n    function verifyProof(\n        uint256[] memory proof,\n        uint256[] memory pubInputs\n    ) public view returns (bool) {\n        return Verifier.verify(proof, pubInputs);\n    }\n    \n    function commitBatch(bytes32 newStateRoot, uint256[] calldata proof) external {\n        require(verifyProof(proof, [uint256(prevStateRoot), uint256(newStateRoot)]));\n        stateRoot = newStateRoot;\n    }\n}"
-        }
+[
+  {
+    "id": "eip4844-blobs",
+    "name": "EIP-4844 Blob Transactions",
+    "category": "Layer 2 Scaling",
+    "description": "Temporary data blobs for cheap L2 posting Problem: Expensive rollup data posting to L1",
+    "when_to_use": [
+      "Separate blob space with KZG commitments"
+    ],
+    "benefits": [
+      "10-100x cheaper",
+      "separate fee market",
+      "scalable"
+    ],
+    "drawbacks": [
+      "Temporary storage (~18 days)",
+      "limited blob space"
+    ],
+    "use_cases": [
+      "L2 rollups",
+      "data availability",
+      "post-Dencun"
+    ],
+    "complexity": "High",
+    "tags": [
+      "layer2",
+      "data-availability",
+      "eip4844",
+      "blobs",
+      "dencun"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// EIP-4844: Blob KZG verification\nfunction verifyBlobKZG(\n    bytes32 commitment,\n    bytes memory blob,\n    bytes memory proof\n) external view returns (bool) {\n    return POINT_EVALUATION_PRECOMPILE.staticcall(\n        abi.encode(commitment, blob, proof)\n    );\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "optimistic-rollup",
+    "name": "Optimistic Rollup",
+    "category": "Layer 2 Scaling",
+    "description": "L2 with fraud proofs for dispute resolution Problem: Ethereum low throughput (15-30 TPS)",
+    "when_to_use": [
+      "Execute off-chain",
+      "fraud proofs for disputes"
+    ],
+    "benefits": [
+      "10-100x throughput",
+      "EVM equivalence",
+      "lower fees"
+    ],
+    "drawbacks": [
+      "7-day withdrawal period",
+      "fraud challenge window"
+    ],
+    "use_cases": [
+      "DeFi",
+      "NFTs",
+      "payments",
+      "general L2 scaling"
+    ],
+    "complexity": "High",
+    "tags": [
+      "layer2",
+      "rollup",
+      "optimistic",
+      "scaling",
+      "fraud-proof"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract FraudProofVerifier {\n    uint256 constant CHALLENGE_PERIOD = 7 days;\n    mapping(bytes32 => bool) public validBatches;\n    \n    function challengeBatch(bytes32 root, bytes proof) external {\n        require(block.timestamp < submissionTime[root] + CHALLENGE_PERIOD);\n        if (verifyFraudProof(proof)) {\n            validBatches[root] = false;\n        }\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "plasma",
+    "name": "Plasma",
+    "category": "Layer 2 Scaling",
+    "description": "Hierarchical side-chains with fraud proofs and mass exit mechanisms.",
+    "when_to_use": [
+      "Payment channels",
+      "simple token transfers",
+      "predictable state transitions"
+    ],
+    "benefits": [
+      "High throughput",
+      "low fees",
+      "Ethereum security fallback"
+    ],
+    "drawbacks": [
+      "Mass exit challenges",
+      "limited smart contract support",
+      "data availability"
+    ],
+    "use_cases": [
+      "OMG Network (legacy)",
+      "Polygon Plasma",
+      "payment networks"
+    ],
+    "complexity": "High",
+    "tags": [
+      "layer2",
+      "plasma",
+      "fraud-proof",
+      "side-chain"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Plasma exit mechanism\nfunction startExit(uint256 utxoPos, bytes memory txBytes, bytes memory proof) external {\n    require(verifyInclusion(utxoPos, txBytes, proof));\n    exits[utxoPos] = Exit({\n        owner: msg.sender,\n        amount: getAmount(txBytes),\n        exitableAt: block.timestamp + CHALLENGE_PERIOD\n    });\n}"
+      }
+    }
+  },
+  {
+    "id": "rollup-as-a-service",
+    "name": "Rollup-as-a-Service Pattern",
+    "category": "Layer 2 Scaling",
+    "description": "Deploy custom rollups easily via managed platforms. App-specific chains with Ethereum security.",
+    "when_to_use": [
+      "App-specific chains",
+      "custom L2s",
+      "blockchain customization"
+    ],
+    "benefits": [
+      "Easy deployment",
+      "customizable",
+      "base layer security",
+      "no devops"
+    ],
+    "drawbacks": [
+      "Vendor dependency",
+      "fragmentation",
+      "DA solution needed"
+    ],
+    "use_cases": [
+      "Gaming chains",
+      "DeFi-specific rollups",
+      "high-throughput apps"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "layer2",
+      "rollup",
+      "raas",
+      "modular",
+      "app-chain"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Caldera, Conduit, AltLayer provide RaaS\n// Example config for custom rollup:\n\nconst rollupConfig = {\n  name: 'MyGameRollup',\n  type: 'optimistic', // or 'zk'\n  dataAvailability: 'ethereum', // or 'celestia'\n  executionEnvironment: 'EVM',\n  sequencer: 'centralized', // or 'decentralized'\n  settlement: 'ethereum',\n  gasToken: 'ETH', // or custom token\n  precompiles: ['secp256r1', 'bls12-381'],\n  blockTime: 1, // seconds\n  batchSubmissionInterval: 300 // 5 minutes\n};\n\n// Platform handles: deployment, sequencer, provers, bridges, explorers"
+      }
+    }
+  },
+  {
+    "id": "sidechain-validator",
+    "name": "Sidechain with Validators",
+    "category": "Layer 2 Scaling",
+    "description": "Independent blockchain with own consensus, periodic checkpoints to mainnet.",
+    "when_to_use": [
+      "Custom consensus",
+      "EVM compatibility",
+      "independent chains"
+    ],
+    "benefits": [
+      "Full EVM compatibility",
+      "high throughput",
+      "customizable"
+    ],
+    "drawbacks": [
+      "Separate security model",
+      "validator trust",
+      "bridge risks"
+    ],
+    "use_cases": [
+      "Polygon PoS",
+      "Gnosis Chain",
+      "enterprise chains"
+    ],
+    "complexity": "High",
+    "tags": [
+      "layer2",
+      "sidechain",
+      "validators",
+      "pos",
+      "checkpointing"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Checkpoint submission to mainnet\nfunction submitCheckpoint(bytes32 rootHash, uint256 startBlock, uint256 endBlock) external onlyValidator {\n    require(validatorSet[msg.sender]);\n    checkpoints[checkpointId] = Checkpoint({\n        root: rootHash,\n        start: startBlock,\n        end: endBlock,\n        timestamp: block.timestamp\n    });\n}"
+      }
+    }
+  },
+  {
+    "id": "state-channel",
+    "name": "State Channel",
+    "category": "Layer 2 Scaling",
+    "description": "Off-chain state updates with on-chain settlement. Lock funds, transact off-chain, settle final state.",
+    "when_to_use": [
+      "High-frequency interactions",
+      "known participants",
+      "payment channels"
+    ],
+    "benefits": [
+      "Instant finality",
+      "zero gas costs for updates",
+      "privacy"
+    ],
+    "drawbacks": [
+      "Capital lockup",
+      "liveness requirements",
+      "limited to participants"
+    ],
+    "use_cases": [
+      "Lightning Network",
+      "Raiden",
+      "gaming state"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "layer2",
+      "state-channel",
+      "payment-channel",
+      "off-chain"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// State channel with dispute period\nfunction openChannel(address participant) external payable {\n    channels[channelId] = Channel({\n        participants: [msg.sender, participant],\n        balance: msg.value,\n        nonce: 0\n    });\n}\n\nfunction closeChannel(uint256 nonce, bytes memory signature) external {\n    require(nonce > channels[channelId].nonce);\n    require(verifySignature(signature));\n    // Settle final state\n}"
+      }
+    }
+  },
+  {
+    "id": "validium",
+    "name": "Validium",
+    "category": "Layer 2 Scaling",
+    "description": "ZK-rollup variant with off-chain data availability. Uses validity proofs but stores transaction data off-chain.",
+    "when_to_use": [
+      "Ultra-low cost transactions",
+      "privacy requirements",
+      "trusted data availability"
+    ],
+    "benefits": [
+      "Lowest L2 costs",
+      "instant finality",
+      "privacy"
+    ],
+    "drawbacks": [
+      "Data availability assumptions",
+      "potential censorship",
+      "withdrawal delays if DA fails"
+    ],
+    "use_cases": [
+      "Gaming",
+      "NFT marketplaces",
+      "private payments"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "layer2",
+      "validium",
+      "zk",
+      "data-availability",
+      "privacy"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Validium: off-chain DA with validity proofs\ncontract Validium {\n    struct DataCommitment {\n        bytes32 dataHash;\n        address dataProvider;\n    }\n    \n    function submitBatch(bytes32 stateRoot, DataCommitment calldata commitment, uint256[] calldata proof) external {\n        require(verifyProof(proof, [stateRoot, commitment.dataHash]));\n        commits[batchNum] = commitment;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "zk-rollup",
+    "name": "ZK-Rollup",
+    "category": "Layer 2 Scaling",
+    "description": "Layer 2 scaling using zero-knowledge proofs for state transitions. Validates off-chain computation with succinct on-chain proofs.",
+    "when_to_use": [
+      "High throughput with instant finality",
+      "privacy-preserving transactions",
+      "Ethereum security guarantees"
+    ],
+    "benefits": [
+      "Instant L1 finality",
+      "higher TPS than optimistic rollups",
+      "no fraud proof delay"
+    ],
+    "drawbacks": [
+      "Complex prover circuits",
+      "high proving costs",
+      "limited EVM compatibility"
+    ],
+    "use_cases": [
+      "zkSync",
+      "StarkNet",
+      "Polygon zkEVM",
+      "payment networks"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "layer2",
+      "zk-rollup",
+      "scaling",
+      "zero-knowledge",
+      "privacy"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// ZK-Rollup verifier contract\ncontract ZKRollup {\n    function verifyProof(\n        uint256[] memory proof,\n        uint256[] memory pubInputs\n    ) public view returns (bool) {\n        return Verifier.verify(proof, pubInputs);\n    }\n    \n    function commitBatch(bytes32 newStateRoot, uint256[] calldata proof) external {\n        require(verifyProof(proof, [uint256(prevStateRoot), uint256(newStateRoot)]));\n        stateRoot = newStateRoot;\n    }\n}"
+      }
+    }
+  }
+]

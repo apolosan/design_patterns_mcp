@@ -1,22 +1,24 @@
-{
-  "id": "strangler-fig",
-  "name": "Strangler Fig",
-  "category": "Microservices",
-  "description": "Gradually replaces legacy system by redirecting traffic to new services",
-  "when_to_use": "Legacy migration\nGradual replacement\nRisk mitigation",
-  "benefits": "Gradual migration\nRisk reduction\nParallel operation",
-  "drawbacks": "Complex routing\nExtended timeline\nResource duplication",
-  "use_cases": "Legacy modernization\nSystem migration\nPhased replacements",
-  "complexity": "High",
-  "tags": [
-    "microservices",
-    "migration",
-    "legacy"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Strangler Fig: incrementally migrate from legacy to new system\nclass StranglerFacade {\n  constructor(\n    private legacySystem: LegacySystem,\n    private newSystem: NewSystem,\n    private migrated: Map<string, boolean>\n  ) {}\n  \n  async handle(endpoint: string, data: any): Promise<any> {\n    if (this.migrated.get(endpoint)) {\n      console.log('Routing to NEW system');\n      return this.newSystem.handle(endpoint, data);\n    } else {\n      console.log('Routing to LEGACY system');\n      return this.legacySystem.handle(endpoint, data);\n    }\n  }\n  \n  migrate(endpoint: string) {\n    this.migrated.set(endpoint, true);\n  }\n}\n\nconst facade = new StranglerFacade(\n  legacySystem,\n  newSystem,\n  new Map([['/api/orders', true]])\n);\nfacade.migrate('/api/users');"
+[
+  {
+    "id": "strangler-fig",
+    "name": "Strangler Fig",
+    "category": "Microservices",
+    "description": "Gradually replaces legacy system by redirecting traffic to new services",
+    "when_to_use": "Legacy migration\nGradual replacement\nRisk mitigation",
+    "benefits": "Gradual migration\nRisk reduction\nParallel operation",
+    "drawbacks": "Complex routing\nExtended timeline\nResource duplication",
+    "use_cases": "Legacy modernization\nSystem migration\nPhased replacements",
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "migration",
+      "legacy"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Strangler Fig: incrementally migrate from legacy to new system\nclass StranglerFacade {\n  constructor(\n    private legacySystem: LegacySystem,\n    private newSystem: NewSystem,\n    private migrated: Map<string, boolean>\n  ) {}\n  \n  async handle(endpoint: string, data: any): Promise<any> {\n    if (this.migrated.get(endpoint)) {\n      console.log('Routing to NEW system');\n      return this.newSystem.handle(endpoint, data);\n    } else {\n      console.log('Routing to LEGACY system');\n      return this.legacySystem.handle(endpoint, data);\n    }\n  }\n  \n  migrate(endpoint: string) {\n    this.migrated.set(endpoint, true);\n  }\n}\n\nconst facade = new StranglerFacade(\n  legacySystem,\n  newSystem,\n  new Map([['/api/orders', true]])\n);\nfacade.migrate('/api/users');"
+      }
     }
   }
-}
+]

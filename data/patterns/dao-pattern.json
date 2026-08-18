@@ -1,22 +1,24 @@
-{
-  "id": "dao-pattern",
-  "name": "Data Access Object (DAO)",
-  "category": "Data Access",
-  "description": "Abstract interface to database or persistence mechanism",
-  "when_to_use": "Database abstraction\nLegacy systems\nMultiple data sources",
-  "benefits": "Database independence\nCentralized data access\nCode reusability",
-  "drawbacks": "Additional layer\nComplexity\nPerformance overhead",
-  "use_cases": "Enterprise applications\nLegacy database integration\nMulti-database systems",
-  "complexity": "Medium",
-  "tags": [
-    "data-access",
-    "abstraction",
-    "database"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// DAO: Data Access Object - abstract persistence layer\ninterface User {\n  id: string;\n  email: string;\n  name: string;\n}\n\ninterface UserDAO {\n  findById(id: string): Promise<User | null>;\n  findAll(): Promise<User[]>;\n  save(user: User): Promise<void>;\n  delete(id: string): Promise<void>;\n}\n\nclass PostgresUserDAO implements UserDAO {\n  constructor(private db: Database) {}\n  \n  async findById(id: string): Promise<User | null> {\n    const row = await this.db.query('SELECT * FROM users WHERE id = $1', [id]);\n    return row ? this.mapToUser(row) : null;\n  }\n  \n  async findAll(): Promise<User[]> {\n    const rows = await this.db.query('SELECT * FROM users');\n    return rows.map(this.mapToUser);\n  }\n  \n  async save(user: User): Promise<void> {\n    await this.db.query(\n      'INSERT INTO users (id, email, name) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET email = $2, name = $3',\n      [user.id, user.email, user.name]\n    );\n  }\n  \n  async delete(id: string): Promise<void> {\n    await this.db.query('DELETE FROM users WHERE id = $1', [id]);\n  }\n  \n  private mapToUser(row: any): User {\n    return { id: row.id, email: row.email, name: row.name };\n  }\n}\n\nconst userDAO: UserDAO = new PostgresUserDAO(db);\nconst user = await userDAO.findById('123');"
+[
+  {
+    "id": "dao-pattern",
+    "name": "Data Access Object (DAO)",
+    "category": "Data Access",
+    "description": "Abstract interface to database or persistence mechanism",
+    "when_to_use": "Database abstraction\nLegacy systems\nMultiple data sources",
+    "benefits": "Database independence\nCentralized data access\nCode reusability",
+    "drawbacks": "Additional layer\nComplexity\nPerformance overhead",
+    "use_cases": "Enterprise applications\nLegacy database integration\nMulti-database systems",
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "abstraction",
+      "database"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// DAO: Data Access Object - abstract persistence layer\ninterface User {\n  id: string;\n  email: string;\n  name: string;\n}\n\ninterface UserDAO {\n  findById(id: string): Promise<User | null>;\n  findAll(): Promise<User[]>;\n  save(user: User): Promise<void>;\n  delete(id: string): Promise<void>;\n}\n\nclass PostgresUserDAO implements UserDAO {\n  constructor(private db: Database) {}\n  \n  async findById(id: string): Promise<User | null> {\n    const row = await this.db.query('SELECT * FROM users WHERE id = $1', [id]);\n    return row ? this.mapToUser(row) : null;\n  }\n  \n  async findAll(): Promise<User[]> {\n    const rows = await this.db.query('SELECT * FROM users');\n    return rows.map(this.mapToUser);\n  }\n  \n  async save(user: User): Promise<void> {\n    await this.db.query(\n      'INSERT INTO users (id, email, name) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET email = $2, name = $3',\n      [user.id, user.email, user.name]\n    );\n  }\n  \n  async delete(id: string): Promise<void> {\n    await this.db.query('DELETE FROM users WHERE id = $1', [id]);\n  }\n  \n  private mapToUser(row: any): User {\n    return { id: row.id, email: row.email, name: row.name };\n  }\n}\n\nconst userDAO: UserDAO = new PostgresUserDAO(db);\nconst user = await userDAO.findById('123');"
+      }
     }
   }
-}
+]

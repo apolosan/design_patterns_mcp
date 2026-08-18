@@ -1,22 +1,24 @@
-{
-  "id": "command",
-  "name": "Command",
-  "category": "Behavioral",
-  "description": "Encapsulates requests as objects, allowing parameterization and queuing",
-  "when_to_use": "Undo/redo\nQueuing operations\nLogging",
-  "benefits": "Decoupling\nUndo support\nMacro recording",
-  "drawbacks": "Increased number of classes\nComplexity",
-  "use_cases": "Undo/redo\nMacro recording\nMessage queues",
-  "complexity": "Medium",
-  "tags": [
-    "behavioral",
-    "encapsulation",
-    "request"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Command {\n  execute(): void;\n  undo(): void;\n}\n\nclass Light {\n  on() { console.log('Light on'); }\n  off() { console.log('Light off'); }\n}\n\nclass LightOnCommand implements Command {\n  constructor(private light: Light) {}\n  execute() { this.light.on(); }\n  undo() { this.light.off(); }\n}\n\nclass RemoteControl {\n  private history: Command[] = [];\n  execute(cmd: Command) { cmd.execute(); this.history.push(cmd); }\n  undo() { this.history.pop()?.undo(); }\n}\n\n// Usage: encapsulate requests as objects\nconst remote = new RemoteControl();\nremote.execute(new LightOnCommand(new Light()));"
+[
+  {
+    "id": "command",
+    "name": "Command",
+    "category": "Behavioral",
+    "description": "Encapsulates requests as objects, allowing parameterization and queuing",
+    "when_to_use": "Undo/redo\nQueuing operations\nLogging",
+    "benefits": "Decoupling\nUndo support\nMacro recording",
+    "drawbacks": "Increased number of classes\nComplexity",
+    "use_cases": "Undo/redo\nMacro recording\nMessage queues",
+    "complexity": "Medium",
+    "tags": [
+      "behavioral",
+      "encapsulation",
+      "request"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Command {\n  execute(): void;\n  undo(): void;\n}\n\nclass Light {\n  on() { console.log('Light on'); }\n  off() { console.log('Light off'); }\n}\n\nclass LightOnCommand implements Command {\n  constructor(private light: Light) {}\n  execute() { this.light.on(); }\n  undo() { this.light.off(); }\n}\n\nclass RemoteControl {\n  private history: Command[] = [];\n  execute(cmd: Command) { cmd.execute(); this.history.push(cmd); }\n  undo() { this.history.pop()?.undo(); }\n}\n\n// Usage: encapsulate requests as objects\nconst remote = new RemoteControl();\nremote.execute(new LightOnCommand(new Light()));"
+      }
     }
   }
-}
+]

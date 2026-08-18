@@ -1,16 +1,18 @@
-{
-  "id": "sharding",
-  "name": "Sharding Pattern",
-  "category": "Data Management",
-  "description": "Horizontally partitions data across multiple databases",
-  "when_to_use": "Large datasets\nHorizontal scaling\nPerformance optimization",
-  "benefits": "Improved performance\nHorizontal scaling\nFault isolation",
-  "drawbacks": "Complexity\nCross-shard queries\nRebalancing challenges",
-  "use_cases": "User data\nTime-series data\nGeographic distribution",
-  "complexity": "High",
-  "tags": [
-    "data-management",
-    "scaling",
-    "partitioning"
-  ]
-}
+[
+  {
+    "id": "sharding",
+    "name": "Sharding Pattern",
+    "category": "Data Management",
+    "description": "Horizontally partitions data across multiple databases",
+    "when_to_use": "Large datasets\nHorizontal scaling\nPerformance optimization",
+    "benefits": "Improved performance\nHorizontal scaling\nFault isolation",
+    "drawbacks": "Complexity\nCross-shard queries\nRebalancing challenges",
+    "use_cases": "User data\nTime-series data\nGeographic distribution",
+    "complexity": "High",
+    "tags": [
+      "data-management",
+      "scaling",
+      "partitioning"
+    ]
+  }
+]

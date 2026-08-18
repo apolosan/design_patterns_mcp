@@ -1,24 +1,26 @@
-{
-  "id": "wormhole-messaging",
-  "name": "Wormhole Cross-Chain",
-  "category": "Cross-Chain",
-  "description": "Guardian network for cross-chain messaging and token transfers. 19 validators sign messages.",
-  "when_to_use": "Multi-chain protocols, cross-chain NFTs, Portal token bridge",
-  "benefits": "Wide chain support, fast finality, unified SDK",
-  "drawbacks": "Guardian trust (19 validators), hack history, centralization",
-  "use_cases": "Portal Bridge, cross-chain lending, multi-chain governance",
-  "complexity": "Medium",
-  "tags": [
-    "cross-chain",
-    "wormhole",
-    "guardians",
-    "messaging",
-    "bridge"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Wormhole message sender\nfunction sendMessage(bytes memory payload) external payable {\n    uint64 sequence = wormhole.publishMessage{value: msg.value}(\n        0, // nonce\n        payload,\n        consistencyLevel\n    );\n    emit MessageSent(sequence, payload);\n}\n\n// Receiver verifies VAA (Verified Action Approval)\nfunction receiveMessage(bytes memory vaa) external {\n    (IWormhole.VM memory vm, bool valid, string memory reason) = wormhole.parseAndVerifyVM(vaa);\n    require(valid, reason);\n    _processMessage(vm.payload);\n}"
+[
+  {
+    "id": "wormhole-messaging",
+    "name": "Wormhole Cross-Chain",
+    "category": "Cross-Chain",
+    "description": "Guardian network for cross-chain messaging and token transfers. 19 validators sign messages.",
+    "when_to_use": "Multi-chain protocols, cross-chain NFTs, Portal token bridge",
+    "benefits": "Wide chain support, fast finality, unified SDK",
+    "drawbacks": "Guardian trust (19 validators), hack history, centralization",
+    "use_cases": "Portal Bridge, cross-chain lending, multi-chain governance",
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "wormhole",
+      "guardians",
+      "messaging",
+      "bridge"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Wormhole message sender\nfunction sendMessage(bytes memory payload) external payable {\n    uint64 sequence = wormhole.publishMessage{value: msg.value}(\n        0, // nonce\n        payload,\n        consistencyLevel\n    );\n    emit MessageSent(sequence, payload);\n}\n\n// Receiver verifies VAA (Verified Action Approval)\nfunction receiveMessage(bytes memory vaa) external {\n    (IWormhole.VM memory vm, bool valid, string memory reason) = wormhole.parseAndVerifyVM(vaa);\n    require(valid, reason);\n    _processMessage(vm.payload);\n}"
+      }
     }
   }
-}
+]

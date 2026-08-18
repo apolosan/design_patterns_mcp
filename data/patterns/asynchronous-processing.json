@@ -1,16 +1,18 @@
-{
-  "id": "asynchronous-processing",
-  "name": "Asynchronous Processing",
-  "category": "Performance",
-  "description": "Performs operations asynchronously to avoid blocking and improve responsiveness",
-  "when_to_use": "I/O operations\nLong-running tasks\nUser responsiveness",
-  "benefits": "Non-blocking execution\nBetter responsiveness\nResource utilization",
-  "drawbacks": "Complexity\nError handling\nState management",
-  "use_cases": "File uploads\nAPI calls\nBackground processing",
-  "complexity": "High",
-  "tags": [
-    "performance",
-    "async",
-    "responsiveness"
-  ]
-}
+[
+  {
+    "id": "asynchronous-processing",
+    "name": "Asynchronous Processing",
+    "category": "Performance",
+    "description": "Performs operations asynchronously to avoid blocking and improve responsiveness",
+    "when_to_use": "I/O operations\nLong-running tasks\nUser responsiveness",
+    "benefits": "Non-blocking execution\nBetter responsiveness\nResource utilization",
+    "drawbacks": "Complexity\nError handling\nState management",
+    "use_cases": "File uploads\nAPI calls\nBackground processing",
+    "complexity": "High",
+    "tags": [
+      "performance",
+      "async",
+      "responsiveness"
+    ]
+  }
+]

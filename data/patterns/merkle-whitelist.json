@@ -1,24 +1,26 @@
-{
-  "id": "merkle-whitelist",
-  "name": "Merkle Tree Whitelist",
-  "category": "NFT",
-  "description": "Gas-efficient whitelist using Merkle proofs",
-  "when_to_use": "NFT allowlists, airdrops, presale access",
-  "benefits": "O(log n) verification, gas-efficient, flexible",
-  "drawbacks": "Proof generation overhead, root management",
-  "use_cases": "Allowlist minting, claim verification, access control",
-  "complexity": "Medium",
-  "tags": [
-    "nft",
-    "merkle-tree",
-    "whitelist",
-    "allowlist",
-    "airdrop"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Merkle Whitelist: efficient allowlist\nimport \"@openzeppelin/contracts/utils/cryptography/MerkleProof.sol\";\n\ncontract NFT {\n    bytes32 public merkleRoot;\n    \n    function whitelistMint(bytes32[] calldata proof) external {\n        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));\n        require(MerkleProof.verify(proof, merkleRoot, leaf), \"Not whitelisted\");\n        _mint(msg.sender, 1);\n    }\n}"
+[
+  {
+    "id": "merkle-whitelist",
+    "name": "Merkle Tree Whitelist",
+    "category": "NFT",
+    "description": "Gas-efficient whitelist using Merkle proofs",
+    "when_to_use": "NFT allowlists, airdrops, presale access",
+    "benefits": "O(log n) verification, gas-efficient, flexible",
+    "drawbacks": "Proof generation overhead, root management",
+    "use_cases": "Allowlist minting, claim verification, access control",
+    "complexity": "Medium",
+    "tags": [
+      "nft",
+      "merkle-tree",
+      "whitelist",
+      "allowlist",
+      "airdrop"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Merkle Whitelist: efficient allowlist\nimport \"@openzeppelin/contracts/utils/cryptography/MerkleProof.sol\";\n\ncontract NFT {\n    bytes32 public merkleRoot;\n    \n    function whitelistMint(bytes32[] calldata proof) external {\n        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));\n        require(MerkleProof.verify(proof, merkleRoot, leaf), \"Not whitelisted\");\n        _mint(msg.sender, 1);\n    }\n}"
+      }
     }
   }
-}
+]

@@ -1,22 +1,24 @@
-{
-  "id": "builder",
-  "name": "Builder",
-  "category": "Creational",
-  "description": "Constructs complex objects step by step, separating construction from representation",
-  "when_to_use": "Complex object construction\nMultiple representations\nStep-by-step creation",
-  "benefits": "Fine control over construction\nCode reusability\nImmutable objects",
-  "drawbacks": "Code duplication\nIncreased complexity",
-  "use_cases": "SQL query builders\nUI component builders\nConfiguration builders",
-  "complexity": "Medium",
-  "tags": [
-    "creational",
-    "builder",
-    "fluent-interface"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "class Car {\n  engine?: string;\n  seats?: number;\n  gps?: boolean;\n}\n\nclass CarBuilder {\n  private car = new Car();\n\n  setEngine(engine: string) { this.car.engine = engine; return this; }\n  setSeats(seats: number) { this.car.seats = seats; return this; }\n  setGPS(gps: boolean) { this.car.gps = gps; return this; }\n  build() { return this.car; }\n}\n\n// Usage: construct complex objects step by step\nconst car = new CarBuilder()\n  .setEngine('V8')\n  .setSeats(4)\n  .setGPS(true)\n  .build();"
+[
+  {
+    "id": "builder",
+    "name": "Builder",
+    "category": "Creational",
+    "description": "Constructs complex objects step by step, separating construction from representation",
+    "when_to_use": "Complex object construction\nMultiple representations\nStep-by-step creation",
+    "benefits": "Fine control over construction\nCode reusability\nImmutable objects",
+    "drawbacks": "Code duplication\nIncreased complexity",
+    "use_cases": "SQL query builders\nUI component builders\nConfiguration builders",
+    "complexity": "Medium",
+    "tags": [
+      "creational",
+      "builder",
+      "fluent-interface"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "class Car {\n  engine?: string;\n  seats?: number;\n  gps?: boolean;\n}\n\nclass CarBuilder {\n  private car = new Car();\n\n  setEngine(engine: string) { this.car.engine = engine; return this; }\n  setSeats(seats: number) { this.car.seats = seats; return this; }\n  setGPS(gps: boolean) { this.car.gps = gps; return this; }\n  build() { return this.car; }\n}\n\n// Usage: construct complex objects step by step\nconst car = new CarBuilder()\n  .setEngine('V8')\n  .setSeats(4)\n  .setGPS(true)\n  .build();"
+      }
     }
   }
-}
+]

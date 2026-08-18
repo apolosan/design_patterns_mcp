@@ -1,22 +1,24 @@
-{
-  "id": "chain-of-thought",
-  "name": "Chain-of-Thought Prompting",
-  "category": "AI/ML",
-  "description": "Breaks down complex problems into step-by-step reasoning chains",
-  "when_to_use": "Complex reasoning\nMathematical problems\nMulti-step analysis",
-  "benefits": "Improved reasoning\nTransparency\nBetter accuracy\nDebuggable",
-  "drawbacks": "Longer responses\nHigher token usage\nPotential verbosity",
-  "use_cases": "Math problems\nLogic puzzles\nAnalysis tasks",
-  "complexity": "Low",
-  "tags": [
-    "reasoning",
-    "step-by-step",
-    "prompting"
-  ],
-  "examples": {
-    "python": {
-      "language": "python",
-      "code": "# Chain-of-Thought: break down reasoning into steps\n\ndef solve_math_problem(problem: str, llm) -> str:\n    # Step 1: Understand the problem\n    understanding_prompt = f\"\"\"\n    Problem: {problem}\n    Let's break this down step by step:\n    1. What is being asked?\n    \"\"\"\n    understanding = llm.generate(understanding_prompt)\n    \n    # Step 2: Plan the solution\n    planning_prompt = f\"\"\"\n    Problem: {problem}\n    Understanding: {understanding}\n    2. What steps do we need to solve this?\n    \"\"\"\n    plan = llm.generate(planning_prompt)\n    \n    # Step 3: Execute each step\n    execution_prompt = f\"\"\"\n    Problem: {problem}\n    Plan: {plan}\n    3. Let's execute each step:\n    \"\"\"\n    execution = llm.generate(execution_prompt)\n    \n    # Step 4: Verify answer\n    verification_prompt = f\"\"\"\n    Problem: {problem}\n    Solution: {execution}\n    4. Is this answer correct? Why?\n    \"\"\"\n    return llm.generate(verification_prompt)\n\n# Usage: improved accuracy through reasoning\nresult = solve_math_problem(\"If John has 5 apples...\", llm)"
+[
+  {
+    "id": "chain-of-thought",
+    "name": "Chain-of-Thought Prompting",
+    "category": "AI/ML",
+    "description": "Breaks down complex problems into step-by-step reasoning chains",
+    "when_to_use": "Complex reasoning\nMathematical problems\nMulti-step analysis",
+    "benefits": "Improved reasoning\nTransparency\nBetter accuracy\nDebuggable",
+    "drawbacks": "Longer responses\nHigher token usage\nPotential verbosity",
+    "use_cases": "Math problems\nLogic puzzles\nAnalysis tasks",
+    "complexity": "Low",
+    "tags": [
+      "reasoning",
+      "step-by-step",
+      "prompting"
+    ],
+    "examples": {
+      "python": {
+        "language": "python",
+        "code": "# Chain-of-Thought: break down reasoning into steps\n\ndef solve_math_problem(problem: str, llm) -> str:\n    # Step 1: Understand the problem\n    understanding_prompt = f\"\"\"\n    Problem: {problem}\n    Let's break this down step by step:\n    1. What is being asked?\n    \"\"\"\n    understanding = llm.generate(understanding_prompt)\n    \n    # Step 2: Plan the solution\n    planning_prompt = f\"\"\"\n    Problem: {problem}\n    Understanding: {understanding}\n    2. What steps do we need to solve this?\n    \"\"\"\n    plan = llm.generate(planning_prompt)\n    \n    # Step 3: Execute each step\n    execution_prompt = f\"\"\"\n    Problem: {problem}\n    Plan: {plan}\n    3. Let's execute each step:\n    \"\"\"\n    execution = llm.generate(execution_prompt)\n    \n    # Step 4: Verify answer\n    verification_prompt = f\"\"\"\n    Problem: {problem}\n    Solution: {execution}\n    4. Is this answer correct? Why?\n    \"\"\"\n    return llm.generate(verification_prompt)\n\n# Usage: improved accuracy through reasoning\nresult = solve_math_problem(\"If John has 5 apples...\", llm)"
+      }
     }
   }
-}
+]

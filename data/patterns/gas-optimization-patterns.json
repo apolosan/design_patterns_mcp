@@ -1,183 +1,179 @@
-{
-  "category": "Gas Optimization",
-  "description": "Gas Optimization design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "calldata-over-memory",
-      "name": "Calldata Over Memory",
-      "category": "Gas Optimization",
-      "description": "Use calldata for read-only function parameters Problem: Memory parameters cost more gas",
-      "when_to_use": [
-        "Use calldata for external function array/struct parameters"
-      ],
-      "benefits": [
-        "Cheaper than memory for external functions"
-      ],
-      "drawbacks": [
-        "Read-only",
-        "only for external functions"
-      ],
-      "use_cases": [
-        "External functions with array/struct parameters"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "gas-optimization",
-        "calldata",
-        "memory",
-        "solidity"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "function processBatch(uint256[] calldata ids) external {\n    // calldata is cheaper than memory for external functions\n    for (uint256 i = 0; i < ids.length; i++) {\n        process(ids[i]);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "storage-packing",
-      "name": "Storage Packing",
-      "category": "Gas Optimization",
-      "description": "Pack variables into 256-bit storage slots Problem: Storage operations are expensive (20,000 gas per slot)",
-      "when_to_use": [
-        "Order variables by size to minimize slots used"
-      ],
-      "benefits": [
-        "Significant gas savings (2,100-20,000 per slot)",
-        "efficient"
-      ],
-      "drawbacks": [
-        "Reduced readability",
-        "planning required",
-        "type constraints"
-      ],
-      "use_cases": [
-        "All contracts with state variables",
-        "gas-sensitive apps"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "gas-optimization",
-        "storage",
-        "packing",
-        "solidity"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "struct Packed {\n    uint128 value1;  // 128 bits\n    uint64 timestamp; // 64 bits\n    uint32 count;     // 32 bits\n    uint16 flags;     // 16 bits\n    uint8 status;     // 8 bits\n    uint8 level;      // 8 bits\n    // Total: 256 bits = 1 slot instead of 6\n}"
-        }
-      }
-    },
-    {
-      "id": "storage-packing-pattern",
-      "name": "Storage Packing Pattern",
-      "category": "Gas Optimization",
-      "description": "Pack multiple variables into single storage slots to minimize expensive storage operations. Each slot is 256 bits.",
-      "when_to_use": [
-        "All contracts with multiple state variables",
-        "especially when variables are smaller than 256 bits"
-      ],
-      "benefits": [
-        "Saves 2,100 - 20,000 gas per storage slot avoided",
-        "reduces contract storage footprint"
-      ],
-      "drawbacks": [
-        "Reduced code readability",
-        "requires careful planning",
-        "type size limitations"
-      ],
-      "use_cases": [
-        "Token contracts",
-        "registries",
-        "any contract with multiple small state variables"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "gas-optimization",
-        "storage",
-        "solidity",
-        "evm",
-        "packing"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Packed into single 256-bit slot\nstruct PackedData {\n    uint128 value1;      // 128 bits\n    uint64 timestamp;    // 64 bits  \n    uint32 counter;      // 32 bits\n    uint16 id;           // 16 bits\n    uint8 status;        // 8 bits\n    uint8 flags;         // 8 bits\n    // Total: 256 bits = 1 storage slot\n}"
-        }
-      }
-    },
-    {
-      "id": "unchecked-math",
-      "name": "Unchecked Math",
-      "category": "Gas Optimization",
-      "description": "Skip overflow checks when safe Problem: Overflow checks add gas in Solidity 0.8+",
-      "when_to_use": [
-        "Use unchecked blocks for safe operations"
-      ],
-      "benefits": [
-        "Saves ~20-40 gas per operation",
-        "cumulative in loops"
-      ],
-      "drawbacks": [
-        "Manual overflow verification",
-        "potential security risk"
-      ],
-      "use_cases": [
-        "Loops",
-        "counters",
-        "mathematically safe operations"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "gas-optimization",
-        "math",
-        "unchecked",
-        "solidity-0.8"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "function process(uint256[] calldata items) external {\n    uint256 length = items.length;\n    unchecked {\n        for (uint256 i = 0; i < length; ++i) {\n            // Loop counter cannot overflow\n        }\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "unchecked-math-pattern",
-      "name": "Unchecked Math Pattern",
-      "category": "Gas Optimization",
-      "description": "Skip overflow/underflow checks when mathematically impossible. Saves ~20-40 gas per operation.",
-      "when_to_use": [
-        "Loop counters",
-        "validated math contexts",
-        "post-Solidity 0.8.0"
-      ],
-      "benefits": [
-        "Saves 20-40 gas per arithmetic operation"
-      ],
-      "drawbacks": [
-        "Must manually ensure no overflow/underflow",
-        "security risk if misused"
-      ],
-      "use_cases": [
-        "Loops",
-        "batch operations",
-        "increment operations known to be safe"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "gas-optimization",
-        "solidity",
-        "loops",
-        "arithmetic",
-        "safety"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "unchecked {\n    for (uint256 i = 0; i < length; ++i) {\n        _transfer(recipients[i], amounts[i]);\n        // i cannot overflow: array length limited\n    }\n}"
-        }
+[
+  {
+    "id": "calldata-over-memory",
+    "name": "Calldata Over Memory",
+    "category": "Gas Optimization",
+    "description": "Use calldata for read-only function parameters Problem: Memory parameters cost more gas",
+    "when_to_use": [
+      "Use calldata for external function array/struct parameters"
+    ],
+    "benefits": [
+      "Cheaper than memory for external functions"
+    ],
+    "drawbacks": [
+      "Read-only",
+      "only for external functions"
+    ],
+    "use_cases": [
+      "External functions with array/struct parameters"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "gas-optimization",
+      "calldata",
+      "memory",
+      "solidity"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "function processBatch(uint256[] calldata ids) external {\n    // calldata is cheaper than memory for external functions\n    for (uint256 i = 0; i < ids.length; i++) {\n        process(ids[i]);\n    }\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "storage-packing",
+    "name": "Storage Packing",
+    "category": "Gas Optimization",
+    "description": "Pack variables into 256-bit storage slots Problem: Storage operations are expensive (20,000 gas per slot)",
+    "when_to_use": [
+      "Order variables by size to minimize slots used"
+    ],
+    "benefits": [
+      "Significant gas savings (2,100-20,000 per slot)",
+      "efficient"
+    ],
+    "drawbacks": [
+      "Reduced readability",
+      "planning required",
+      "type constraints"
+    ],
+    "use_cases": [
+      "All contracts with state variables",
+      "gas-sensitive apps"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "gas-optimization",
+      "storage",
+      "packing",
+      "solidity"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "struct Packed {\n    uint128 value1;  // 128 bits\n    uint64 timestamp; // 64 bits\n    uint32 count;     // 32 bits\n    uint16 flags;     // 16 bits\n    uint8 status;     // 8 bits\n    uint8 level;      // 8 bits\n    // Total: 256 bits = 1 slot instead of 6\n}"
+      }
+    }
+  },
+  {
+    "id": "storage-packing-pattern",
+    "name": "Storage Packing Pattern",
+    "category": "Gas Optimization",
+    "description": "Pack multiple variables into single storage slots to minimize expensive storage operations. Each slot is 256 bits.",
+    "when_to_use": [
+      "All contracts with multiple state variables",
+      "especially when variables are smaller than 256 bits"
+    ],
+    "benefits": [
+      "Saves 2,100 - 20,000 gas per storage slot avoided",
+      "reduces contract storage footprint"
+    ],
+    "drawbacks": [
+      "Reduced code readability",
+      "requires careful planning",
+      "type size limitations"
+    ],
+    "use_cases": [
+      "Token contracts",
+      "registries",
+      "any contract with multiple small state variables"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "gas-optimization",
+      "storage",
+      "solidity",
+      "evm",
+      "packing"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Packed into single 256-bit slot\nstruct PackedData {\n    uint128 value1;      // 128 bits\n    uint64 timestamp;    // 64 bits  \n    uint32 counter;      // 32 bits\n    uint16 id;           // 16 bits\n    uint8 status;        // 8 bits\n    uint8 flags;         // 8 bits\n    // Total: 256 bits = 1 storage slot\n}"
+      }
+    }
+  },
+  {
+    "id": "unchecked-math",
+    "name": "Unchecked Math",
+    "category": "Gas Optimization",
+    "description": "Skip overflow checks when safe Problem: Overflow checks add gas in Solidity 0.8+",
+    "when_to_use": [
+      "Use unchecked blocks for safe operations"
+    ],
+    "benefits": [
+      "Saves ~20-40 gas per operation",
+      "cumulative in loops"
+    ],
+    "drawbacks": [
+      "Manual overflow verification",
+      "potential security risk"
+    ],
+    "use_cases": [
+      "Loops",
+      "counters",
+      "mathematically safe operations"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "gas-optimization",
+      "math",
+      "unchecked",
+      "solidity-0.8"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "function process(uint256[] calldata items) external {\n    uint256 length = items.length;\n    unchecked {\n        for (uint256 i = 0; i < length; ++i) {\n            // Loop counter cannot overflow\n        }\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "unchecked-math-pattern",
+    "name": "Unchecked Math Pattern",
+    "category": "Gas Optimization",
+    "description": "Skip overflow/underflow checks when mathematically impossible. Saves ~20-40 gas per operation.",
+    "when_to_use": [
+      "Loop counters",
+      "validated math contexts",
+      "post-Solidity 0.8.0"
+    ],
+    "benefits": [
+      "Saves 20-40 gas per arithmetic operation"
+    ],
+    "drawbacks": [
+      "Must manually ensure no overflow/underflow",
+      "security risk if misused"
+    ],
+    "use_cases": [
+      "Loops",
+      "batch operations",
+      "increment operations known to be safe"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "gas-optimization",
+      "solidity",
+      "loops",
+      "arithmetic",
+      "safety"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "unchecked {\n    for (uint256 i = 0; i < length; ++i) {\n        _transfer(recipients[i], amounts[i]);\n        // i cannot overflow: array length limited\n    }\n}"
+      }
+    }
+  }
+]

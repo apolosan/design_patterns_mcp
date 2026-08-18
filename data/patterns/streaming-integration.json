@@ -1,16 +1,18 @@
-{
-  "id": "streaming-integration",
-  "name": "Streaming Integration",
-  "category": "Integration",
-  "description": "Continuous processing of data streams for real-time integration",
-  "when_to_use": "Real-time processing\nContinuous data\nLow latency",
-  "benefits": "Real-time processing\nLow latency\nContinuous flow",
-  "drawbacks": "Complex implementation\nResource intensive\nError handling",
-  "use_cases": "Real-time analytics\nEvent streaming\nLive data feeds",
-  "complexity": "High",
-  "tags": [
-    "integration",
-    "streaming",
-    "real-time"
-  ]
-}
+[
+  {
+    "id": "streaming-integration",
+    "name": "Streaming Integration",
+    "category": "Integration",
+    "description": "Continuous processing of data streams for real-time integration",
+    "when_to_use": "Real-time processing\nContinuous data\nLow latency",
+    "benefits": "Real-time processing\nLow latency\nContinuous flow",
+    "drawbacks": "Complex implementation\nResource intensive\nError handling",
+    "use_cases": "Real-time analytics\nEvent streaming\nLive data feeds",
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "streaming",
+      "real-time"
+    ]
+  }
+]

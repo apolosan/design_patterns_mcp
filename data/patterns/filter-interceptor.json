@@ -1,17 +1,19 @@
-{
-  "id": "filter-interceptor",
-  "name": "Filter Interceptor",
-  "category": "Error Management",
-  "description": "The Filter Interceptor pattern provides more insight into filtering operations, allowing you to detect errors due to aggressive and possibly buggy filtering conditions.",
-  "when_to_use": "[\"Need visibility into filtering effects\",\"Debugging filter conditions\"]",
-  "benefits": "[\"Provides filtering insights\",\"Helps detect errors\"]",
-  "drawbacks": "[\"Additional processing overhead\",\"Storage for filtered data\"]",
-  "use_cases": "[\"Data quality monitoring\",\"Pipeline debugging\"]",
-  "complexity": "Low",
-  "tags": [
-    "[\"error-management\"",
-    "\"filtering\"",
-    "\"interceptor\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "filter-interceptor",
+    "name": "Filter Interceptor",
+    "category": "Error Management",
+    "description": "The Filter Interceptor pattern provides more insight into filtering operations, allowing you to detect errors due to aggressive and possibly buggy filtering conditions.",
+    "when_to_use": "[\"Need visibility into filtering effects\",\"Debugging filter conditions\"]",
+    "benefits": "[\"Provides filtering insights\",\"Helps detect errors\"]",
+    "drawbacks": "[\"Additional processing overhead\",\"Storage for filtered data\"]",
+    "use_cases": "[\"Data quality monitoring\",\"Pipeline debugging\"]",
+    "complexity": "Low",
+    "tags": [
+      "[\"error-management\"",
+      "\"filtering\"",
+      "\"interceptor\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

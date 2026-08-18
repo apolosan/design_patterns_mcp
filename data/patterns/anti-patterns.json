@@ -1,184 +1,437 @@
-{
-  "patterns": [
-    {
-      "id": "god-object",
-      "name": "God Object Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "A class that knows too much or does too much",
-      "when_to_use": ["You have a class with too many responsibilities", "The class has grown beyond manageable size", "Multiple aspects of the system are controlled by one class"],
-      "benefits": [],
-      "drawbacks": ["Violates single responsibility principle", "Hard to maintain and understand", "High coupling with many parts of the system", "Difficult to test in isolation"],
-      "use_cases": ["Classes that handle both business logic and data persistence", "Controllers that manage multiple unrelated operations", "Utility classes that grow into massive helper classes"],
-      "complexity": "High",
-      "tags": ["anti-pattern", "oop", "solid-violation"]
-    },
-    {
-      "id": "spaghetti-code",
-      "name": "Spaghetti Code Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Code that is difficult to follow due to poor structure and organization",
-      "when_to_use": ["Code lacks proper structure or organization", "Control flow is difficult to follow", "Functions or methods are overly complex"],
-      "benefits": [],
-      "drawbacks": ["Hard to understand and maintain", "Increases the likelihood of bugs", "Makes code refactoring very difficult", "Reduces development team productivity"],
-      "use_cases": ["Legacy codebases with poor initial design", "Code written under extreme time pressure", "Systems that have grown organically without planning"],
-      "complexity": "High",
-      "tags": ["anti-pattern", "code-quality", "maintainability"]
-    },
-    {
-      "id": "microservices-sprawl",
-      "name": "Microservices Sprawl Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Creating too many fine-grained microservices that increase complexity without providing real benefits",
-      "when_to_use": ["When you have excessive microservices", "Services are too small to be meaningful", "Network overhead exceeds processing time"],
-      "benefits": [],
-      "drawbacks": ["Increased network latency", "Complex service orchestration", "Deployment overhead", "Debugging difficulties"],
-      "use_cases": ["Over-decomposed business domains", "Single-purpose services that could be combined", "Services created for organizational rather than technical reasons"],
-      "complexity": "High",
-      "tags": ["anti-pattern", "microservices", "architecture"]
-    },
-    {
-      "id": "copy-paste-programming",
-      "name": "Copy-Paste Programming Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Reusing code by copying and pasting rather than creating reusable abstractions",
-      "when_to_use": ["Similar code appears in multiple places", "Quick fixes are duplicated", "Logic is copied instead of abstracted"],
-      "benefits": [],
-      "drawbacks": ["Code duplication", "Maintenance nightmares", "Inconsistent behavior", "Bug multiplication"],
-      "use_cases": ["Utility functions copied across modules", "Similar UI components without abstraction", "Validation logic repeated in multiple places"],
-      "complexity": "Medium",
-      "tags": ["anti-pattern", "duplication", "maintainability"]
-    },
-    {
-      "id": "premature-optimization",
-      "name": "Premature Optimization Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Optimizing code before understanding actual performance bottlenecks",
-      "when_to_use": ["Optimizing without profiling", "Complex solutions for unproven problems", "Sacrificing readability for theoretical gains"],
-      "benefits": [],
-      "drawbacks": ["Increased complexity", "Reduced readability", "Harder maintenance", "May not address real bottlenecks"],
-      "use_cases": ["Complex caching without evidence of need", "Micro-optimizations in non-critical paths", "Architecture decisions based on assumptions"],
-      "complexity": "Medium",
-      "tags": ["anti-pattern", "optimization", "performance"]
-    },
-    {
-      "id": "golden-hammer",
-      "name": "Golden Hammer Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Using a familiar tool or pattern for every problem, regardless of appropriateness",
-      "when_to_use": ["Same solution applied to different problems", "Forcing unfamiliar problems into familiar solutions", "Resistance to learning new approaches"],
-      "benefits": [],
-      "drawbacks": ["Inappropriate solutions", "Missed opportunities", "System complexity", "Poor performance"],
-      "use_cases": ["Using databases for all storage needs", "Applying OOP to functional problems", "Using same framework for all project types"],
-      "complexity": "Medium",
-      "tags": ["anti-pattern", "tool-selection", "problem-solving"]
-    },
-    {
-      "id": "feature-envy",
-      "name": "Feature Envy Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "A class that uses methods of another class excessively, suggesting misplaced responsibility",
-      "when_to_use": ["Method uses more features of another class than its own", "Excessive delegation to other objects", "Methods that seem to belong elsewhere"],
-      "benefits": [],
-      "drawbacks": ["Poor encapsulation", "Increased coupling", "Confusing object responsibilities", "Maintenance difficulties"],
-      "use_cases": ["Data manipulation methods in wrong classes", "Business logic spread across objects", "Helper methods accessing too many external features"],
-      "complexity": "Medium",
-      "tags": ["anti-pattern", "oop", "encapsulation"]
-    },
-    {
-      "id": "blob-object",
-      "name": "Blob Object Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "An object that holds too much data or has grown too large without proper organization",
-      "when_to_use": ["Objects with excessive data", "Poor data organization", "Single objects handling multiple concerns"],
-      "benefits": [],
-      "drawbacks": ["Memory inefficiency", "Poor performance", "Hard to understand", "Difficult to extend"],
-      "use_cases": ["Configuration objects with all settings", "Data transfer objects with excessive fields", "Cache objects storing unrelated data"],
-      "complexity": "High",
-      "tags": ["anti-pattern", "data-structure", "organization"]
-    },
-    {
-      "id": "shotgun-surgery",
-      "name": "Shotgun Surgery Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Making similar changes across many classes whenever you modify the system",
-      "when_to_use": ["Changes require modifications in many places", "Similar updates scattered across codebase", "Related functionality poorly organized"],
-      "benefits": [],
-      "drawbacks": ["High maintenance cost", "Error-prone changes", "Inconsistent updates", "Development bottlenecks"],
-      "use_cases": ["Configuration changes affecting multiple modules", "API changes requiring widespread updates", "Business rule changes scattered across layers"],
-      "complexity": "High",
-      "tags": ["anti-pattern", "maintainability", "coupling"]
-    },
-    {
-      "id": "lava-flow",
-      "name": "Lava Flow Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Dead code and forgotten design information fossilized in the software",
-      "when_to_use": ["Obsolete code remains in codebase", "Unknown purpose code", "Fear of removing potentially important code"],
-      "benefits": [],
-      "drawbacks": ["Increased codebase size", "Confusion about purpose", "Maintenance overhead", "Security risks"],
-      "use_cases": ["Legacy code with unknown purpose", "Commented-out code left in place", "Unused configuration options"],
-      "complexity": "Medium",
-      "tags": ["anti-pattern", "legacy", "cleanup"]
-    },
-    {
-      "id": "vendor-lock-in",
-      "name": "Vendor Lock-in Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Over-dependence on specific vendor products making migration difficult or impossible",
-      "when_to_use": ["Heavy reliance on proprietary features", "Vendor-specific implementations throughout code", "Lack of abstraction layers"],
-      "benefits": [],
-      "drawbacks": ["Migration difficulty", "Reduced negotiating power", "Technology lock-in", "Innovation constraints"],
-      "use_cases": ["Direct database vendor API usage", "Cloud provider specific services", "Proprietary framework dependencies"],
-      "complexity": "High",
-      "tags": ["anti-pattern", "architecture", "vendor-dependency"]
-    },
-    {
-      "id": "big-ball-of-mud",
-      "name": "Big Ball of Mud Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "A system lacking a perceivable architecture with expedient hacking predominating",
-      "when_to_use": ["No clear architectural patterns", "Haphazard code organization", "Expedient solutions dominate"],
-      "benefits": [],
-      "drawbacks": ["No clear structure", "Unpredictable behavior", "Extremely hard to maintain", "High technical debt"],
-      "use_cases": ["Legacy systems grown organically", "Rapid prototypes turned production", "Systems built under extreme time pressure"],
-      "complexity": "High",
-      "tags": ["anti-pattern", "architecture", "technical-debt"]
-    },
-    {
-      "id": "poltergeist-class",
-      "name": "Poltergeist Class Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Classes with limited responsibilities and short lifecycles that pop up to perform tasks",
-      "when_to_use": ["Classes created just to invoke methods on other classes", "Temporary objects with minimal purpose", "Unnecessary intermediary classes"],
-      "benefits": [],
-      "drawbacks": ["Unnecessary complexity", "Poor object model", "Performance overhead", "Confusing design"],
-      "use_cases": ["Controller classes that just delegate", "Wrapper classes with no added value", "Classes created for single method calls"],
-      "complexity": "Medium",
-      "tags": ["anti-pattern", "oop", "design"]
-    },
-    {
-      "id": "boat-anchor",
-      "name": "Boat Anchor Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Hardware or software that serves no useful purpose but is retained due to cost or politics",
-      "when_to_use": ["Expensive unused components", "Political reasons prevent removal", "Sunk cost fallacy in decisions"],
-      "benefits": [],
-      "drawbacks": ["Wasted resources", "Maintenance overhead", "System complexity", "Opportunity cost"],
-      "use_cases": ["Unused expensive software licenses", "Legacy hardware kept running", "Over-engineered solutions for simple problems"],
-      "complexity": "Medium",
-      "tags": ["anti-pattern", "resources", "politics"]
-    },
-    {
-      "id": "programming-by-exception",
-      "name": "Programming by Exception Anti-Pattern",
-      "category": "Anti-Pattern",
-      "description": "Using exception handling for normal program flow control",
-      "when_to_use": ["Exceptions used for control flow", "Expected conditions handled as exceptions", "Exception catching for normal operations"],
-      "benefits": [],
-      "drawbacks": ["Poor performance", "Unclear program flow", "Debugging difficulties", "Code maintainability issues"],
-      "use_cases": ["Using exceptions to return values", "Exception-based validation", "Flow control through exception handling"],
-      "complexity": "Medium",
-      "tags": ["anti-pattern", "exception-handling", "control-flow"]
-    }
-  ]
-}
+[
+  {
+    "id": "god-object",
+    "name": "God Object Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "A class that knows too much or does too much",
+    "when_to_use": [
+      "You have a class with too many responsibilities",
+      "The class has grown beyond manageable size",
+      "Multiple aspects of the system are controlled by one class"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Violates single responsibility principle",
+      "Hard to maintain and understand",
+      "High coupling with many parts of the system",
+      "Difficult to test in isolation"
+    ],
+    "use_cases": [
+      "Classes that handle both business logic and data persistence",
+      "Controllers that manage multiple unrelated operations",
+      "Utility classes that grow into massive helper classes"
+    ],
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "oop",
+      "solid-violation"
+    ]
+  },
+  {
+    "id": "spaghetti-code",
+    "name": "Spaghetti Code Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Code that is difficult to follow due to poor structure and organization",
+    "when_to_use": [
+      "Code lacks proper structure or organization",
+      "Control flow is difficult to follow",
+      "Functions or methods are overly complex"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Hard to understand and maintain",
+      "Increases the likelihood of bugs",
+      "Makes code refactoring very difficult",
+      "Reduces development team productivity"
+    ],
+    "use_cases": [
+      "Legacy codebases with poor initial design",
+      "Code written under extreme time pressure",
+      "Systems that have grown organically without planning"
+    ],
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "code-quality",
+      "maintainability"
+    ]
+  },
+  {
+    "id": "microservices-sprawl",
+    "name": "Microservices Sprawl Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Creating too many fine-grained microservices that increase complexity without providing real benefits",
+    "when_to_use": [
+      "When you have excessive microservices",
+      "Services are too small to be meaningful",
+      "Network overhead exceeds processing time"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Increased network latency",
+      "Complex service orchestration",
+      "Deployment overhead",
+      "Debugging difficulties"
+    ],
+    "use_cases": [
+      "Over-decomposed business domains",
+      "Single-purpose services that could be combined",
+      "Services created for organizational rather than technical reasons"
+    ],
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "microservices",
+      "architecture"
+    ]
+  },
+  {
+    "id": "copy-paste-programming",
+    "name": "Copy-Paste Programming Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Reusing code by copying and pasting rather than creating reusable abstractions",
+    "when_to_use": [
+      "Similar code appears in multiple places",
+      "Quick fixes are duplicated",
+      "Logic is copied instead of abstracted"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Code duplication",
+      "Maintenance nightmares",
+      "Inconsistent behavior",
+      "Bug multiplication"
+    ],
+    "use_cases": [
+      "Utility functions copied across modules",
+      "Similar UI components without abstraction",
+      "Validation logic repeated in multiple places"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "duplication",
+      "maintainability"
+    ]
+  },
+  {
+    "id": "premature-optimization",
+    "name": "Premature Optimization Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Optimizing code before understanding actual performance bottlenecks",
+    "when_to_use": [
+      "Optimizing without profiling",
+      "Complex solutions for unproven problems",
+      "Sacrificing readability for theoretical gains"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Increased complexity",
+      "Reduced readability",
+      "Harder maintenance",
+      "May not address real bottlenecks"
+    ],
+    "use_cases": [
+      "Complex caching without evidence of need",
+      "Micro-optimizations in non-critical paths",
+      "Architecture decisions based on assumptions"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "optimization",
+      "performance"
+    ]
+  },
+  {
+    "id": "golden-hammer",
+    "name": "Golden Hammer Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Using a familiar tool or pattern for every problem, regardless of appropriateness",
+    "when_to_use": [
+      "Same solution applied to different problems",
+      "Forcing unfamiliar problems into familiar solutions",
+      "Resistance to learning new approaches"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Inappropriate solutions",
+      "Missed opportunities",
+      "System complexity",
+      "Poor performance"
+    ],
+    "use_cases": [
+      "Using databases for all storage needs",
+      "Applying OOP to functional problems",
+      "Using same framework for all project types"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "tool-selection",
+      "problem-solving"
+    ]
+  },
+  {
+    "id": "feature-envy",
+    "name": "Feature Envy Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "A class that uses methods of another class excessively, suggesting misplaced responsibility",
+    "when_to_use": [
+      "Method uses more features of another class than its own",
+      "Excessive delegation to other objects",
+      "Methods that seem to belong elsewhere"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Poor encapsulation",
+      "Increased coupling",
+      "Confusing object responsibilities",
+      "Maintenance difficulties"
+    ],
+    "use_cases": [
+      "Data manipulation methods in wrong classes",
+      "Business logic spread across objects",
+      "Helper methods accessing too many external features"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "oop",
+      "encapsulation"
+    ]
+  },
+  {
+    "id": "blob-object",
+    "name": "Blob Object Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "An object that holds too much data or has grown too large without proper organization",
+    "when_to_use": [
+      "Objects with excessive data",
+      "Poor data organization",
+      "Single objects handling multiple concerns"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Memory inefficiency",
+      "Poor performance",
+      "Hard to understand",
+      "Difficult to extend"
+    ],
+    "use_cases": [
+      "Configuration objects with all settings",
+      "Data transfer objects with excessive fields",
+      "Cache objects storing unrelated data"
+    ],
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "data-structure",
+      "organization"
+    ]
+  },
+  {
+    "id": "shotgun-surgery",
+    "name": "Shotgun Surgery Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Making similar changes across many classes whenever you modify the system",
+    "when_to_use": [
+      "Changes require modifications in many places",
+      "Similar updates scattered across codebase",
+      "Related functionality poorly organized"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "High maintenance cost",
+      "Error-prone changes",
+      "Inconsistent updates",
+      "Development bottlenecks"
+    ],
+    "use_cases": [
+      "Configuration changes affecting multiple modules",
+      "API changes requiring widespread updates",
+      "Business rule changes scattered across layers"
+    ],
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "maintainability",
+      "coupling"
+    ]
+  },
+  {
+    "id": "lava-flow",
+    "name": "Lava Flow Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Dead code and forgotten design information fossilized in the software",
+    "when_to_use": [
+      "Obsolete code remains in codebase",
+      "Unknown purpose code",
+      "Fear of removing potentially important code"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Increased codebase size",
+      "Confusion about purpose",
+      "Maintenance overhead",
+      "Security risks"
+    ],
+    "use_cases": [
+      "Legacy code with unknown purpose",
+      "Commented-out code left in place",
+      "Unused configuration options"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "legacy",
+      "cleanup"
+    ]
+  },
+  {
+    "id": "vendor-lock-in",
+    "name": "Vendor Lock-in Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Over-dependence on specific vendor products making migration difficult or impossible",
+    "when_to_use": [
+      "Heavy reliance on proprietary features",
+      "Vendor-specific implementations throughout code",
+      "Lack of abstraction layers"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Migration difficulty",
+      "Reduced negotiating power",
+      "Technology lock-in",
+      "Innovation constraints"
+    ],
+    "use_cases": [
+      "Direct database vendor API usage",
+      "Cloud provider specific services",
+      "Proprietary framework dependencies"
+    ],
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "architecture",
+      "vendor-dependency"
+    ]
+  },
+  {
+    "id": "big-ball-of-mud",
+    "name": "Big Ball of Mud Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "A system lacking a perceivable architecture with expedient hacking predominating",
+    "when_to_use": [
+      "No clear architectural patterns",
+      "Haphazard code organization",
+      "Expedient solutions dominate"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "No clear structure",
+      "Unpredictable behavior",
+      "Extremely hard to maintain",
+      "High technical debt"
+    ],
+    "use_cases": [
+      "Legacy systems grown organically",
+      "Rapid prototypes turned production",
+      "Systems built under extreme time pressure"
+    ],
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "architecture",
+      "technical-debt"
+    ]
+  },
+  {
+    "id": "poltergeist-class",
+    "name": "Poltergeist Class Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Classes with limited responsibilities and short lifecycles that pop up to perform tasks",
+    "when_to_use": [
+      "Classes created just to invoke methods on other classes",
+      "Temporary objects with minimal purpose",
+      "Unnecessary intermediary classes"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Unnecessary complexity",
+      "Poor object model",
+      "Performance overhead",
+      "Confusing design"
+    ],
+    "use_cases": [
+      "Controller classes that just delegate",
+      "Wrapper classes with no added value",
+      "Classes created for single method calls"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "oop",
+      "design"
+    ]
+  },
+  {
+    "id": "boat-anchor",
+    "name": "Boat Anchor Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Hardware or software that serves no useful purpose but is retained due to cost or politics",
+    "when_to_use": [
+      "Expensive unused components",
+      "Political reasons prevent removal",
+      "Sunk cost fallacy in decisions"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Wasted resources",
+      "Maintenance overhead",
+      "System complexity",
+      "Opportunity cost"
+    ],
+    "use_cases": [
+      "Unused expensive software licenses",
+      "Legacy hardware kept running",
+      "Over-engineered solutions for simple problems"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "resources",
+      "politics"
+    ]
+  },
+  {
+    "id": "programming-by-exception",
+    "name": "Programming by Exception Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Using exception handling for normal program flow control",
+    "when_to_use": [
+      "Exceptions used for control flow",
+      "Expected conditions handled as exceptions",
+      "Exception catching for normal operations"
+    ],
+    "benefits": [],
+    "drawbacks": [
+      "Poor performance",
+      "Unclear program flow",
+      "Debugging difficulties",
+      "Code maintainability issues"
+    ],
+    "use_cases": [
+      "Using exceptions to return values",
+      "Exception-based validation",
+      "Flow control through exception handling"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "anti-pattern",
+      "exception-handling",
+      "control-flow"
+    ]
+  }
+]

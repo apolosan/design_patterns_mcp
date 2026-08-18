@@ -1,19 +1,21 @@
-{
-  "id": "resource-aware-optimization-pattern",
-  "name": "Resource-Aware Optimization Pattern",
-  "category": "AI/ML",
-  "description": "Optimizes agent operations considering resource constraints like compute, memory, and time, ensuring efficient use of available resources.",
-  "when_to_use": "[\"Resource-limited environments\",\"Cost optimization\",\"Performance tuning\"]",
-  "benefits": "[\"Efficient resource use\",\"Cost reduction\",\"Better performance\"]",
-  "drawbacks": "[\"Optimization complexity\",\"Trade-off decisions\",\"Monitoring requirements\"]",
-  "use_cases": "[\"Edge computing\",\"Cloud deployments\",\"Resource-constrained systems\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"resource\"",
-    "\"optimization\"",
-    "\"efficiency\"",
-    "\"constraints\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "resource-aware-optimization-pattern",
+    "name": "Resource-Aware Optimization Pattern",
+    "category": "AI/ML",
+    "description": "Optimizes agent operations considering resource constraints like compute, memory, and time, ensuring efficient use of available resources.",
+    "when_to_use": "[\"Resource-limited environments\",\"Cost optimization\",\"Performance tuning\"]",
+    "benefits": "[\"Efficient resource use\",\"Cost reduction\",\"Better performance\"]",
+    "drawbacks": "[\"Optimization complexity\",\"Trade-off decisions\",\"Monitoring requirements\"]",
+    "use_cases": "[\"Edge computing\",\"Cloud deployments\",\"Resource-constrained systems\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"resource\"",
+      "\"optimization\"",
+      "\"efficiency\"",
+      "\"constraints\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

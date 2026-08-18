@@ -1,17 +1,19 @@
-{
-  "id": "proxy-idempotency",
-  "name": "Proxy",
-  "category": "Idempotency",
-  "description": "The Proxy pattern provides an indirection layer for immutable datasets to achieve idempotency.",
-  "when_to_use": "[\"Immutable datasets\",\"Cannot modify existing data\"]",
-  "benefits": "[\"Works with immutable data\",\"Extra indirection level\"]",
-  "drawbacks": "[\"Added complexity\",\"Indirection overhead\"]",
-  "use_cases": "[\"Immutable data handling\",\"Versioned datasets\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"idempotency\"",
-    "\"proxy\"",
-    "\"indirection\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "proxy-idempotency",
+    "name": "Proxy",
+    "category": "Idempotency",
+    "description": "The Proxy pattern provides an indirection layer for immutable datasets to achieve idempotency.",
+    "when_to_use": "[\"Immutable datasets\",\"Cannot modify existing data\"]",
+    "benefits": "[\"Works with immutable data\",\"Extra indirection level\"]",
+    "drawbacks": "[\"Added complexity\",\"Indirection overhead\"]",
+    "use_cases": "[\"Immutable data handling\",\"Versioned datasets\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"idempotency\"",
+      "\"proxy\"",
+      "\"indirection\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

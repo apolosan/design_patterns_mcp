@@ -1,22 +1,24 @@
-{
-  "id": "query-object",
-  "name": "Query Object",
-  "category": "Enterprise",
-  "description": "Object that represents database query in an object-oriented way",
-  "when_to_use": "Complex queries\nDynamic queries\nQuery reuse",
-  "benefits": "Query reuse\nType safety\nDynamic building\nTestability",
-  "drawbacks": "Complex implementation\nLearning curve\nPerformance overhead",
-  "use_cases": "Complex searches\nDynamic filters\nQuery builders",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "query",
-    "object-oriented"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Query Object: encapsulate database query\nclass QueryObject<T> {\n  private criteria: Array<[string, any]> = [];\n  private orderByField?: string;\n  private limitValue?: number;\n  \n  where(field: string, value: any): this {\n    this.criteria.push([field, value]);\n    return this;\n  }\n  \n  orderBy(field: string): this {\n    this.orderByField = field;\n    return this;\n  }\n  \n  limit(n: number): this {\n    this.limitValue = n;\n    return this;\n  }\n  \n  async execute(db: Database): Promise<T[]> {\n    let sql = 'SELECT * FROM ' + this.getTableName();\n    const params: any[] = [];\n    \n    if (this.criteria.length > 0) {\n      sql += ' WHERE ';\n      sql += this.criteria.map(([field]) => field + ' = ?').join(' AND ');\n      params.push(...this.criteria.map(([, value]) => value));\n    }\n    \n    if (this.orderByField) {\n      sql += ' ORDER BY ' + this.orderByField;\n    }\n    \n    if (this.limitValue) {\n      sql += ' LIMIT ?';\n      params.push(this.limitValue);\n    }\n    \n    const rows = await db.query(sql, params);\n    return rows.map((r: any) => this.createObject(r));\n  }\n  \n  protected getTableName(): string {\n    return 'entities';\n  }\n  \n  protected createObject(row: any): T {\n    return row as T;\n  }\n}\n\nclass UserQuery extends QueryObject<User> {\n  protected getTableName(): string {\n    return 'users';\n  }\n  \n  protected createObject(row: any): User {\n    return new User(row);\n  }\n  \n  withEmail(email: string): this {\n    return this.where('email', email);\n  }\n  \n  active(): this {\n    return this.where('active', true);\n  }\n}\n\n// Usage: Fluent query building\nconst users = await new UserQuery()\n  .active()\n  .orderBy('name')\n  .limit(10)\n  .execute(db);"
+[
+  {
+    "id": "query-object",
+    "name": "Query Object",
+    "category": "Enterprise",
+    "description": "Object that represents database query in an object-oriented way",
+    "when_to_use": "Complex queries\nDynamic queries\nQuery reuse",
+    "benefits": "Query reuse\nType safety\nDynamic building\nTestability",
+    "drawbacks": "Complex implementation\nLearning curve\nPerformance overhead",
+    "use_cases": "Complex searches\nDynamic filters\nQuery builders",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "query",
+      "object-oriented"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Query Object: encapsulate database query\nclass QueryObject<T> {\n  private criteria: Array<[string, any]> = [];\n  private orderByField?: string;\n  private limitValue?: number;\n  \n  where(field: string, value: any): this {\n    this.criteria.push([field, value]);\n    return this;\n  }\n  \n  orderBy(field: string): this {\n    this.orderByField = field;\n    return this;\n  }\n  \n  limit(n: number): this {\n    this.limitValue = n;\n    return this;\n  }\n  \n  async execute(db: Database): Promise<T[]> {\n    let sql = 'SELECT * FROM ' + this.getTableName();\n    const params: any[] = [];\n    \n    if (this.criteria.length > 0) {\n      sql += ' WHERE ';\n      sql += this.criteria.map(([field]) => field + ' = ?').join(' AND ');\n      params.push(...this.criteria.map(([, value]) => value));\n    }\n    \n    if (this.orderByField) {\n      sql += ' ORDER BY ' + this.orderByField;\n    }\n    \n    if (this.limitValue) {\n      sql += ' LIMIT ?';\n      params.push(this.limitValue);\n    }\n    \n    const rows = await db.query(sql, params);\n    return rows.map((r: any) => this.createObject(r));\n  }\n  \n  protected getTableName(): string {\n    return 'entities';\n  }\n  \n  protected createObject(row: any): T {\n    return row as T;\n  }\n}\n\nclass UserQuery extends QueryObject<User> {\n  protected getTableName(): string {\n    return 'users';\n  }\n  \n  protected createObject(row: any): User {\n    return new User(row);\n  }\n  \n  withEmail(email: string): this {\n    return this.where('email', email);\n  }\n  \n  active(): this {\n    return this.where('active', true);\n  }\n}\n\n// Usage: Fluent query building\nconst users = await new UserQuery()\n  .active()\n  .orderBy('name')\n  .limit(10)\n  .execute(db);"
+      }
     }
   }
-}
+]

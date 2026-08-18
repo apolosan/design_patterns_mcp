@@ -1,17 +1,19 @@
-{
-  "id": "lag-detector",
-  "name": "Lag Detector",
-  "category": "Data Observability",
-  "description": "The Lag Detector monitors processing lag in data pipelines.",
-  "when_to_use": "[\"Lag monitoring\",\"Performance tracking\"]",
-  "benefits": "[\"Lag identification\",\"Performance insights\"]",
-  "drawbacks": "[\"Measurement complexity\",\"Thresholds\"]",
-  "use_cases": "[\"Pipeline performance\",\"SLA monitoring\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-observability\"",
-    "\"detector\"",
-    "\"lag\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "lag-detector",
+    "name": "Lag Detector",
+    "category": "Data Observability",
+    "description": "The Lag Detector monitors processing lag in data pipelines.",
+    "when_to_use": "[\"Lag monitoring\",\"Performance tracking\"]",
+    "benefits": "[\"Lag identification\",\"Performance insights\"]",
+    "drawbacks": "[\"Measurement complexity\",\"Thresholds\"]",
+    "use_cases": "[\"Pipeline performance\",\"SLA monitoring\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-observability\"",
+      "\"detector\"",
+      "\"lag\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

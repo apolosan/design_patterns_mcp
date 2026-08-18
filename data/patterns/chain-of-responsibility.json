@@ -1,22 +1,24 @@
-{
-  "id": "chain-of-responsibility",
-  "name": "Chain of Responsibility",
-  "category": "Behavioral",
-  "description": "Passes requests along a chain of handlers until one handles it",
-  "when_to_use": "Multiple handlers\nDynamic handler assignment\nDecoupling",
-  "benefits": "Reduced coupling\nFlexibility\nSingle Responsibility",
-  "drawbacks": "No guarantee of handling\nPerformance concerns",
-  "use_cases": "Event handling\nMiddleware chains\nApproval workflows",
-  "complexity": "Medium",
-  "tags": [
-    "behavioral",
-    "chain",
-    "delegation"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "abstract class Handler {\n  protected next?: Handler;\n  setNext(handler: Handler) { this.next = handler; return handler; }\n  \n  handle(request: string): void {\n    if (this.next) this.next.handle(request);\n  }\n}\n\nclass AuthHandler extends Handler {\n  handle(request: string) {\n    if (request.includes('auth')) {\n      console.log('Authenticated');\n    } else {\n      super.handle(request);\n    }\n  }\n}\n\n// Usage: pass request along chain\nconst chain = new AuthHandler();\nchain.handle('auth:user');"
+[
+  {
+    "id": "chain-of-responsibility",
+    "name": "Chain of Responsibility",
+    "category": "Behavioral",
+    "description": "Passes requests along a chain of handlers until one handles it",
+    "when_to_use": "Multiple handlers\nDynamic handler assignment\nDecoupling",
+    "benefits": "Reduced coupling\nFlexibility\nSingle Responsibility",
+    "drawbacks": "No guarantee of handling\nPerformance concerns",
+    "use_cases": "Event handling\nMiddleware chains\nApproval workflows",
+    "complexity": "Medium",
+    "tags": [
+      "behavioral",
+      "chain",
+      "delegation"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "abstract class Handler {\n  protected next?: Handler;\n  setNext(handler: Handler) { this.next = handler; return handler; }\n  \n  handle(request: string): void {\n    if (this.next) this.next.handle(request);\n  }\n}\n\nclass AuthHandler extends Handler {\n  handle(request: string) {\n    if (request.includes('auth')) {\n      console.log('Authenticated');\n    } else {\n      super.handle(request);\n    }\n  }\n}\n\n// Usage: pass request along chain\nconst chain = new AuthHandler();\nchain.handle('auth:user');"
+      }
     }
   }
-}
+]

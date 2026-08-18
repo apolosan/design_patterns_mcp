@@ -1,16 +1,18 @@
-{
-  "id": "offline-first-iot",
-  "name": "Offline-First (IoT)",
-  "category": "IoT",
-  "description": "Devices operate independently when disconnected and sync when connectivity returns",
-  "when_to_use": "Unreliable connectivity\nRemote locations\nCritical operations",
-  "benefits": "Connectivity independence\nReliability\nLocal operation",
-  "drawbacks": "Data synchronization\nConflict resolution\nStorage requirements",
-  "use_cases": "Remote sensors\nMobile devices\nField equipment",
-  "complexity": "High",
-  "tags": [
-    "iot",
-    "offline",
-    "reliability"
-  ]
-}
+[
+  {
+    "id": "offline-first-iot",
+    "name": "Offline-First (IoT)",
+    "category": "IoT",
+    "description": "Devices operate independently when disconnected and sync when connectivity returns",
+    "when_to_use": "Unreliable connectivity\nRemote locations\nCritical operations",
+    "benefits": "Connectivity independence\nReliability\nLocal operation",
+    "drawbacks": "Data synchronization\nConflict resolution\nStorage requirements",
+    "use_cases": "Remote sensors\nMobile devices\nField equipment",
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "offline",
+      "reliability"
+    ]
+  }
+]

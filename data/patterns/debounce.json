@@ -1,22 +1,24 @@
-{
-  "id": "debounce",
-  "name": "Debounce Pattern",
-  "category": "Reactive",
-  "description": "Delays emission until a specified time has passed without another emission",
-  "when_to_use": "User input\nSearch queries\nAPI rate limiting",
-  "benefits": "Reduces noise\nPerformance optimization\nResource saving",
-  "drawbacks": "Delayed responses\nTiming complexity\nLost events",
-  "use_cases": "Search inputs\nButton clicks\nWindow resize",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "debounce",
-    "timing"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Debounce: emit after silence period\nclass Observable<T> {\n  debounce(dueTime: number): Observable<T> {\n    return new Observable(observer => {\n      let timeout: NodeJS.Timeout | null = null;\n      \n      return this.subscribe({\n        next: value => {\n          if (timeout) clearTimeout(timeout);\n          \n          timeout = setTimeout(() => {\n            observer.next(value);\n          }, dueTime);\n        },\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n}\n\n// Usage: Search input (wait for user to stop typing)\nconst input = new Subject<string>();\n\ninput\n  .debounce(300)  // Wait 300ms after last keystroke\n  .subscribe({\n    next: query => {\n      console.log('Search for:', query);\n      // Only called after user stops typing\n    },\n    error: () => {},\n    complete: () => {}\n  });"
+[
+  {
+    "id": "debounce",
+    "name": "Debounce Pattern",
+    "category": "Reactive",
+    "description": "Delays emission until a specified time has passed without another emission",
+    "when_to_use": "User input\nSearch queries\nAPI rate limiting",
+    "benefits": "Reduces noise\nPerformance optimization\nResource saving",
+    "drawbacks": "Delayed responses\nTiming complexity\nLost events",
+    "use_cases": "Search inputs\nButton clicks\nWindow resize",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "debounce",
+      "timing"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Debounce: emit after silence period\nclass Observable<T> {\n  debounce(dueTime: number): Observable<T> {\n    return new Observable(observer => {\n      let timeout: NodeJS.Timeout | null = null;\n      \n      return this.subscribe({\n        next: value => {\n          if (timeout) clearTimeout(timeout);\n          \n          timeout = setTimeout(() => {\n            observer.next(value);\n          }, dueTime);\n        },\n        error: err => observer.error(err),\n        complete: () => observer.complete()\n      });\n    });\n  }\n}\n\n// Usage: Search input (wait for user to stop typing)\nconst input = new Subject<string>();\n\ninput\n  .debounce(300)  // Wait 300ms after last keystroke\n  .subscribe({\n    next: query => {\n      console.log('Search for:', query);\n      // Only called after user stops typing\n    },\n    error: () => {},\n    complete: () => {}\n  });"
+      }
     }
   }
-}
+]

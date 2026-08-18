@@ -1,16 +1,18 @@
-{
-  "id": "secure-provisioning",
-  "name": "Secure Provisioning Pattern",
-  "category": "IoT",
-  "description": "Securely onboards new devices with proper authentication and authorization",
-  "when_to_use": "Device security\nAuthentication\nTrusted onboarding",
-  "benefits": "Security enforcement\nTrusted devices\nAuthentication",
-  "drawbacks": "Provisioning complexity\nCertificate management\nKey distribution",
-  "use_cases": "Enterprise IoT\nSmart home setup\nIndustrial security",
-  "complexity": "High",
-  "tags": [
-    "iot",
-    "security",
-    "provisioning"
-  ]
-}
+[
+  {
+    "id": "secure-provisioning",
+    "name": "Secure Provisioning Pattern",
+    "category": "IoT",
+    "description": "Securely onboards new devices with proper authentication and authorization",
+    "when_to_use": "Device security\nAuthentication\nTrusted onboarding",
+    "benefits": "Security enforcement\nTrusted devices\nAuthentication",
+    "drawbacks": "Provisioning complexity\nCertificate management\nKey distribution",
+    "use_cases": "Enterprise IoT\nSmart home setup\nIndustrial security",
+    "complexity": "High",
+    "tags": [
+      "iot",
+      "security",
+      "provisioning"
+    ]
+  }
+]

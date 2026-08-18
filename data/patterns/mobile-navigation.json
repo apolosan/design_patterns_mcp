@@ -1,16 +1,18 @@
-{
-  "id": "mobile-navigation",
-  "name": "Mobile Navigation Pattern",
-  "category": "Mobile",
-  "description": "Navigation patterns optimized for touch interfaces and small screens",
-  "when_to_use": "Mobile applications\nTouch interfaces\nLimited screen space",
-  "benefits": "Touch-friendly\nSpace efficient\nIntuitive navigation",
-  "drawbacks": "Design constraints\nLimited visibility\nGesture complexity",
-  "use_cases": "Mobile apps\nTab bars\nDrawer navigation",
-  "complexity": "Medium",
-  "tags": [
-    "mobile",
-    "navigation",
-    "ux"
-  ]
-}
+[
+  {
+    "id": "mobile-navigation",
+    "name": "Mobile Navigation Pattern",
+    "category": "Mobile",
+    "description": "Navigation patterns optimized for touch interfaces and small screens",
+    "when_to_use": "Mobile applications\nTouch interfaces\nLimited screen space",
+    "benefits": "Touch-friendly\nSpace efficient\nIntuitive navigation",
+    "drawbacks": "Design constraints\nLimited visibility\nGesture complexity",
+    "use_cases": "Mobile apps\nTab bars\nDrawer navigation",
+    "complexity": "Medium",
+    "tags": [
+      "mobile",
+      "navigation",
+      "ux"
+    ]
+  }
+]

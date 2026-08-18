@@ -1,16 +1,18 @@
-{
-  "id": "security-token",
-  "name": "Security Token Pattern",
-  "category": "Security",
-  "description": "Uses tokens for secure authentication and authorization without exposing credentials",
-  "when_to_use": "Stateless authentication\nAPI security\nDistributed systems",
-  "benefits": "Stateless authentication\nToken-based security\nDistributed access",
-  "drawbacks": "Token management\nExpiration handling\nStorage security",
-  "use_cases": "JWT tokens\nOAuth tokens\nAPI keys",
-  "complexity": "Medium",
-  "tags": [
-    "security",
-    "tokens",
-    "authentication"
-  ]
-}
+[
+  {
+    "id": "security-token",
+    "name": "Security Token Pattern",
+    "category": "Security",
+    "description": "Uses tokens for secure authentication and authorization without exposing credentials",
+    "when_to_use": "Stateless authentication\nAPI security\nDistributed systems",
+    "benefits": "Stateless authentication\nToken-based security\nDistributed access",
+    "drawbacks": "Token management\nExpiration handling\nStorage security",
+    "use_cases": "JWT tokens\nOAuth tokens\nAPI keys",
+    "complexity": "Medium",
+    "tags": [
+      "security",
+      "tokens",
+      "authentication"
+    ]
+  }
+]

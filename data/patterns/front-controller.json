@@ -1,22 +1,24 @@
-{
-  "id": "front-controller",
-  "name": "Front Controller",
-  "category": "Enterprise",
-  "description": "Controller that handles all requests for a web site coming through a single handler object",
-  "when_to_use": "Web applications\nCentralized control\nSecurity enforcement",
-  "benefits": "Centralized control\nCommon behavior\nSecurity\nRouting",
-  "drawbacks": "Single point of failure\nPerformance bottleneck\nComplexity",
-  "use_cases": "Web frameworks\nSecurity enforcement\nRequest routing",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "web",
-    "controller"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Front Controller: centralized request handling\ninterface Command {\n  execute(request: Request): Promise<Response>;\n}\n\nclass FrontController {\n  private commands = new Map<string, Command>();\n  \n  register(path: string, command: Command): void {\n    this.commands.set(path, command);\n  }\n  \n  async handleRequest(request: Request): Promise<Response> {\n    // Pre-processing\n    const authUser = await this.authenticate(request);\n    if (!authUser) {\n      return { status: 401, body: 'Unauthorized' };\n    }\n    \n    // Route to command\n    const command = this.commands.get(request.path);\n    if (!command) {\n      return { status: 404, body: 'Not Found' };\n    }\n    \n    try {\n      const response = await command.execute(request);\n      \n      // Post-processing\n      this.logRequest(request, response);\n      \n      return response;\n    } catch (error) {\n      return this.handleError(error);\n    }\n  }\n  \n  private async authenticate(req: Request): Promise<User | null> {\n    const token = req.headers.authorization;\n    return token ? verifyToken(token) : null;\n  }\n  \n  private logRequest(req: Request, res: Response): void {\n    console.log(req.method, req.path, res.status);\n  }\n  \n  private handleError(error: any): Response {\n    return { status: 500, body: 'Internal Server Error' };\n  }\n}\n\n// Commands\nclass CreateUserCommand implements Command {\n  async execute(request: Request): Promise<Response> {\n    const user = await userService.create(request.body);\n    return { status: 201, body: user };\n  }\n}\n\nconst controller = new FrontController();\ncontroller.register('/users', new CreateUserCommand());"
+[
+  {
+    "id": "front-controller",
+    "name": "Front Controller",
+    "category": "Enterprise",
+    "description": "Controller that handles all requests for a web site coming through a single handler object",
+    "when_to_use": "Web applications\nCentralized control\nSecurity enforcement",
+    "benefits": "Centralized control\nCommon behavior\nSecurity\nRouting",
+    "drawbacks": "Single point of failure\nPerformance bottleneck\nComplexity",
+    "use_cases": "Web frameworks\nSecurity enforcement\nRequest routing",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "web",
+      "controller"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Front Controller: centralized request handling\ninterface Command {\n  execute(request: Request): Promise<Response>;\n}\n\nclass FrontController {\n  private commands = new Map<string, Command>();\n  \n  register(path: string, command: Command): void {\n    this.commands.set(path, command);\n  }\n  \n  async handleRequest(request: Request): Promise<Response> {\n    // Pre-processing\n    const authUser = await this.authenticate(request);\n    if (!authUser) {\n      return { status: 401, body: 'Unauthorized' };\n    }\n    \n    // Route to command\n    const command = this.commands.get(request.path);\n    if (!command) {\n      return { status: 404, body: 'Not Found' };\n    }\n    \n    try {\n      const response = await command.execute(request);\n      \n      // Post-processing\n      this.logRequest(request, response);\n      \n      return response;\n    } catch (error) {\n      return this.handleError(error);\n    }\n  }\n  \n  private async authenticate(req: Request): Promise<User | null> {\n    const token = req.headers.authorization;\n    return token ? verifyToken(token) : null;\n  }\n  \n  private logRequest(req: Request, res: Response): void {\n    console.log(req.method, req.path, res.status);\n  }\n  \n  private handleError(error: any): Response {\n    return { status: 500, body: 'Internal Server Error' };\n  }\n}\n\n// Commands\nclass CreateUserCommand implements Command {\n  async execute(request: Request): Promise<Response> {\n    const user = await userService.create(request.body);\n    return { status: 201, body: user };\n  }\n}\n\nconst controller = new FrontController();\ncontroller.register('/users', new CreateUserCommand());"
+      }
     }
   }
-}
+]

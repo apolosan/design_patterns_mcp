@@ -1,24 +1,26 @@
-{
-  "id": "jsx-syntax-pattern",
-  "name": "JSX Syntax and Features Pattern",
-  "category": "React Fundamentals",
-  "description": "XML-like syntax extension for JavaScript. JSX provides a concise way to describe UI structure.",
-  "when_to_use": "All React components, UI templates, component composition",
-  "benefits": "Readable, familiar HTML-like syntax, type-safe with TypeScript, tooling support",
-  "drawbacks": "Requires transpilation (Babel), not valid JavaScript, learning curve",
-  "use_cases": "Component rendering, conditional rendering, lists, inline styles",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "jsx",
-    "syntax",
-    "babel",
-    "transpilation"
-  ],
-  "examples": {
-    "jsx": {
-      "language": "jsx",
-      "code": "// JSX Features\nfunction JSXFeatures({ items, isLoggedIn, user }) {\n  return (\n    <div className=\"container\" style={{ padding: '20px' }}>\n      {/* 1. Expressions in braces */}\n      <h1>Hello, {user.name}!</h1>\n      \n      {/* 2. Conditional rendering */}\n      {isLoggedIn ? (\n        <button>Logout</button>\n      ) : (\n        <button>Login</button>\n      )}\n      \n      {/* 3. Lists with .map() */}\n      <ul>\n        {items.map(item => (\n          <li key={item.id}>{item.name}</li>\n        ))}\n      </ul>\n      \n      {/* 4. Fragments (avoid extra divs) */}\n      <>\n        <p>First paragraph</p>\n        <p>Second paragraph</p>\n      </>\n      \n      {/* 5. Self-closing tags */}\n      <img src={user.avatar} alt=\"Avatar\" />\n      <br />\n      \n      {/* 6. Spread attributes */}\n      <Component {...user} />\n    </div>\n  );\n}"
+[
+  {
+    "id": "jsx-syntax-pattern",
+    "name": "JSX Syntax and Features Pattern",
+    "category": "React Fundamentals",
+    "description": "XML-like syntax extension for JavaScript. JSX provides a concise way to describe UI structure.",
+    "when_to_use": "All React components, UI templates, component composition",
+    "benefits": "Readable, familiar HTML-like syntax, type-safe with TypeScript, tooling support",
+    "drawbacks": "Requires transpilation (Babel), not valid JavaScript, learning curve",
+    "use_cases": "Component rendering, conditional rendering, lists, inline styles",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "jsx",
+      "syntax",
+      "babel",
+      "transpilation"
+    ],
+    "examples": {
+      "jsx": {
+        "language": "jsx",
+        "code": "// JSX Features\nfunction JSXFeatures({ items, isLoggedIn, user }) {\n  return (\n    <div className=\"container\" style={{ padding: '20px' }}>\n      {/* 1. Expressions in braces */}\n      <h1>Hello, {user.name}!</h1>\n      \n      {/* 2. Conditional rendering */}\n      {isLoggedIn ? (\n        <button>Logout</button>\n      ) : (\n        <button>Login</button>\n      )}\n      \n      {/* 3. Lists with .map() */}\n      <ul>\n        {items.map(item => (\n          <li key={item.id}>{item.name}</li>\n        ))}\n      </ul>\n      \n      {/* 4. Fragments (avoid extra divs) */}\n      <>\n        <p>First paragraph</p>\n        <p>Second paragraph</p>\n      </>\n      \n      {/* 5. Self-closing tags */}\n      <img src={user.avatar} alt=\"Avatar\" />\n      <br />\n      \n      {/* 6. Spread attributes */}\n      <Component {...user} />\n    </div>\n  );\n}"
+      }
     }
   }
-}
+]

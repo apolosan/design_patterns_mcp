@@ -1,19 +1,21 @@
-{
-  "id": "prompt-chaining",
-  "name": "Prompt Chaining",
-  "category": "AI/ML",
-  "description": "Breaks down complex problems into a sequence of smaller, manageable sub-problems, each addressed through specifically designed prompts where the output of one becomes the input for the next.",
-  "when_to_use": "[\"Tasks too complex for a single prompt\",\"Sequential processing needed\",\"Information processing workflows\",\"Complex query answering\"]",
-  "benefits": "[\"Improved reliability and manageability\",\"Modularity and clarity\",\"Enhanced accuracy\",\"Integration of external tools\"]",
-  "drawbacks": "[\"Increased complexity\",\"Potential for error propagation if not structured properly\"]",
-  "use_cases": "[\"Automated content analysis\",\"AI-driven research assistants\",\"Complex report generation\",\"Multi-step inference\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"prompt-chaining\"",
-    "\"pipeline\"",
-    "\"sequential\"",
-    "\"modularity\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "prompt-chaining",
+    "name": "Prompt Chaining",
+    "category": "AI/ML",
+    "description": "Breaks down complex problems into a sequence of smaller, manageable sub-problems, each addressed through specifically designed prompts where the output of one becomes the input for the next.",
+    "when_to_use": "[\"Tasks too complex for a single prompt\",\"Sequential processing needed\",\"Information processing workflows\",\"Complex query answering\"]",
+    "benefits": "[\"Improved reliability and manageability\",\"Modularity and clarity\",\"Enhanced accuracy\",\"Integration of external tools\"]",
+    "drawbacks": "[\"Increased complexity\",\"Potential for error propagation if not structured properly\"]",
+    "use_cases": "[\"Automated content analysis\",\"AI-driven research assistants\",\"Complex report generation\",\"Multi-step inference\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"prompt-chaining\"",
+      "\"pipeline\"",
+      "\"sequential\"",
+      "\"modularity\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

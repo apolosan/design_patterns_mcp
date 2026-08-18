@@ -1,16 +1,18 @@
-{
-  "id": "time-series-iot",
-  "name": "Time Series Pattern (IoT)",
-  "category": "IoT",
-  "description": "Optimizes storage and querying of time-stamped IoT sensor data",
-  "when_to_use": "Sensor data\nHistorical analysis\nTime-based queries",
-  "benefits": "Efficient storage\nTime-based queries\nAnalytics support",
-  "drawbacks": "Storage growth\nQuery complexity\nData retention",
-  "use_cases": "Environmental monitoring\nPerformance metrics\nTrend analysis",
-  "complexity": "Medium",
-  "tags": [
-    "iot",
-    "time-series",
-    "data"
-  ]
-}
+[
+  {
+    "id": "time-series-iot",
+    "name": "Time Series Pattern (IoT)",
+    "category": "IoT",
+    "description": "Optimizes storage and querying of time-stamped IoT sensor data",
+    "when_to_use": "Sensor data\nHistorical analysis\nTime-based queries",
+    "benefits": "Efficient storage\nTime-based queries\nAnalytics support",
+    "drawbacks": "Storage growth\nQuery complexity\nData retention",
+    "use_cases": "Environmental monitoring\nPerformance metrics\nTrend analysis",
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "time-series",
+      "data"
+    ]
+  }
+]

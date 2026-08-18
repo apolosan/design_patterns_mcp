@@ -1,22 +1,24 @@
-{
-  "id": "pagination",
-  "name": "Pagination Pattern",
-  "category": "Performance",
-  "description": "Divides large datasets into smaller chunks for better performance and user experience",
-  "when_to_use": "Large datasets\nMemory constraints\nUser experience",
-  "benefits": "Memory efficiency\nFaster loading\nBetter user experience",
-  "drawbacks": "Implementation complexity\nState management\nNavigation overhead",
-  "use_cases": "Search results\nData tables\nContent feeds",
-  "complexity": "Medium",
-  "tags": [
-    "performance",
-    "pagination",
-    "data"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Pagination: load data in chunks\ninterface PaginationOptions {\n  page: number;\n  pageSize: number;\n}\n\ninterface PaginatedResult<T> {\n  items: T[];\n  total: number;\n  page: number;\n  pageSize: number;\n  totalPages: number;\n  hasNext: boolean;\n  hasPrevious: boolean;\n}\n\nclass Paginator<T> {\n  async paginate(\n    query: () => Promise<T[]>,\n    countQuery: () => Promise<number>,\n    options: PaginationOptions\n  ): Promise<PaginatedResult<T>> {\n    const { page, pageSize } = options;\n    const offset = (page - 1) * pageSize;\n    \n    const [items, total] = await Promise.all([\n      query(),\n      countQuery()\n    ]);\n    \n    const totalPages = Math.ceil(total / pageSize);\n    \n    return {\n      items: items.slice(offset, offset + pageSize),\n      total,\n      page,\n      pageSize,\n      totalPages,\n      hasNext: page < totalPages,\n      hasPrevious: page > 1\n    };\n  }\n}\n\n// Usage\nconst paginator = new Paginator<User>();\nconst result = await paginator.paginate(\n  () => db.query('SELECT * FROM users ORDER BY name'),\n  () => db.query('SELECT COUNT(*) FROM users').then(r => r.count),\n  { page: 1, pageSize: 20 }\n);\n\nconsole.log('Page 1 of ' + result.totalPages);"
+[
+  {
+    "id": "pagination",
+    "name": "Pagination Pattern",
+    "category": "Performance",
+    "description": "Divides large datasets into smaller chunks for better performance and user experience",
+    "when_to_use": "Large datasets\nMemory constraints\nUser experience",
+    "benefits": "Memory efficiency\nFaster loading\nBetter user experience",
+    "drawbacks": "Implementation complexity\nState management\nNavigation overhead",
+    "use_cases": "Search results\nData tables\nContent feeds",
+    "complexity": "Medium",
+    "tags": [
+      "performance",
+      "pagination",
+      "data"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Pagination: load data in chunks\ninterface PaginationOptions {\n  page: number;\n  pageSize: number;\n}\n\ninterface PaginatedResult<T> {\n  items: T[];\n  total: number;\n  page: number;\n  pageSize: number;\n  totalPages: number;\n  hasNext: boolean;\n  hasPrevious: boolean;\n}\n\nclass Paginator<T> {\n  async paginate(\n    query: () => Promise<T[]>,\n    countQuery: () => Promise<number>,\n    options: PaginationOptions\n  ): Promise<PaginatedResult<T>> {\n    const { page, pageSize } = options;\n    const offset = (page - 1) * pageSize;\n    \n    const [items, total] = await Promise.all([\n      query(),\n      countQuery()\n    ]);\n    \n    const totalPages = Math.ceil(total / pageSize);\n    \n    return {\n      items: items.slice(offset, offset + pageSize),\n      total,\n      page,\n      pageSize,\n      totalPages,\n      hasNext: page < totalPages,\n      hasPrevious: page > 1\n    };\n  }\n}\n\n// Usage\nconst paginator = new Paginator<User>();\nconst result = await paginator.paginate(\n  () => db.query('SELECT * FROM users ORDER BY name'),\n  () => db.query('SELECT COUNT(*) FROM users').then(r => r.count),\n  { page: 1, pageSize: 20 }\n);\n\nconsole.log('Page 1 of ' + result.totalPages);"
+      }
     }
   }
-}
+]

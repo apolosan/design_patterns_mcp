@@ -1,24 +1,26 @@
-{
-  "id": "conviction-voting",
-  "name": "Conviction Voting",
-  "category": "DAO Governance",
-  "description": "Time-weighted voting without quorum",
-  "when_to_use": "Continuous funding, grants, no urgency",
-  "benefits": "No quorum, time-weighted commitment, passive",
-  "drawbacks": "Slow, not for urgent decisions",
-  "use_cases": "1Hive, Aragon, continuous grant allocation",
-  "complexity": "High",
-  "tags": [
-    "governance",
-    "dao",
-    "conviction-voting",
-    "grants",
-    "aragon"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Conviction: voting power grows over time\nfunction calculateConviction(address voter, uint256 proposalId) public view returns (uint256) {\n    uint256 timeStaked = block.timestamp - stakes[voter][proposalId].timestamp;\n    uint256 amount = stakes[voter][proposalId].amount;\n    return amount * timeStaked / DECAY_CONSTANT;\n}"
+[
+  {
+    "id": "conviction-voting",
+    "name": "Conviction Voting",
+    "category": "DAO Governance",
+    "description": "Time-weighted voting without quorum",
+    "when_to_use": "Continuous funding, grants, no urgency",
+    "benefits": "No quorum, time-weighted commitment, passive",
+    "drawbacks": "Slow, not for urgent decisions",
+    "use_cases": "1Hive, Aragon, continuous grant allocation",
+    "complexity": "High",
+    "tags": [
+      "governance",
+      "dao",
+      "conviction-voting",
+      "grants",
+      "aragon"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Conviction: voting power grows over time\nfunction calculateConviction(address voter, uint256 proposalId) public view returns (uint256) {\n    uint256 timeStaked = block.timestamp - stakes[voter][proposalId].timestamp;\n    uint256 amount = stakes[voter][proposalId].amount;\n    return amount * timeStaked / DECAY_CONSTANT;\n}"
+      }
     }
   }
-}
+]

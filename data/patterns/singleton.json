@@ -1,22 +1,24 @@
-{
-  "id": "singleton",
-  "name": "Singleton",
-  "category": "Creational",
-  "description": "Ensures a class has only one instance and provides global access to it",
-  "when_to_use": "Need single instance globally\nDatabase connections\nConfiguration managers\nResource pools",
-  "benefits": "Controlled access\nReduced namespace pollution\nPermits refinement of operations",
-  "drawbacks": "Testing difficulty\nTight coupling\nHidden dependencies\nThread safety concerns",
-  "use_cases": "Database connections\nLogger instances\nConfiguration objects\nThread pools",
-  "complexity": "Low",
-  "tags": [
-    "creational",
-    "single-instance",
-    "global-state"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "class Database {\n  private static instance: Database;\n  private constructor() {}\n\n  static getInstance(): Database {\n    if (!Database.instance) {\n      Database.instance = new Database();\n    }\n    return Database.instance;\n  }\n\n  query(sql: string) { /* execute query */ }\n}\n\n// Usage: always returns same instance\nconst db1 = Database.getInstance();\nconst db2 = Database.getInstance();\nconsole.log(db1 === db2); // true"
+[
+  {
+    "id": "singleton",
+    "name": "Singleton",
+    "category": "Creational",
+    "description": "Ensures a class has only one instance and provides global access to it",
+    "when_to_use": "Need single instance globally\nDatabase connections\nConfiguration managers\nResource pools",
+    "benefits": "Controlled access\nReduced namespace pollution\nPermits refinement of operations",
+    "drawbacks": "Testing difficulty\nTight coupling\nHidden dependencies\nThread safety concerns",
+    "use_cases": "Database connections\nLogger instances\nConfiguration objects\nThread pools",
+    "complexity": "Low",
+    "tags": [
+      "creational",
+      "single-instance",
+      "global-state"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "class Database {\n  private static instance: Database;\n  private constructor() {}\n\n  static getInstance(): Database {\n    if (!Database.instance) {\n      Database.instance = new Database();\n    }\n    return Database.instance;\n  }\n\n  query(sql: string) { /* execute query */ }\n}\n\n// Usage: always returns same instance\nconst db1 = Database.getInstance();\nconst db2 = Database.getInstance();\nconsole.log(db1 === db2); // true"
+      }
     }
   }
-}
+]

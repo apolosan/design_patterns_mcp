@@ -1,441 +1,437 @@
-{
-  "category": "DAO Governance",
-  "description": "DAO Governance design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "conviction-voting",
-      "name": "Conviction Voting",
-      "category": "DAO Governance",
-      "description": "Time-weighted voting without quorum",
-      "when_to_use": [
-        "Continuous funding",
-        "grants",
-        "no urgency"
-      ],
-      "benefits": [
-        "No quorum",
-        "time-weighted commitment",
-        "passive"
-      ],
-      "drawbacks": [
-        "Slow",
-        "not for urgent decisions"
-      ],
-      "use_cases": [
-        "1Hive",
-        "Aragon",
-        "continuous grant allocation"
-      ],
-      "complexity": "High",
-      "tags": [
-        "governance",
-        "dao",
-        "conviction-voting",
-        "grants",
-        "aragon"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Conviction: voting power grows over time\nfunction calculateConviction(address voter, uint256 proposalId) public view returns (uint256) {\n    uint256 timeStaked = block.timestamp - stakes[voter][proposalId].timestamp;\n    uint256 amount = stakes[voter][proposalId].amount;\n    return amount * timeStaked / DECAY_CONSTANT;\n}"
-        }
-      }
-    },
-    {
-      "id": "delegation",
-      "name": "Delegation Pattern",
-      "category": "DAO Governance",
-      "description": "Delegate voting power to representatives",
-      "when_to_use": [
-        "All governance",
-        "reduce voter fatigue",
-        "leverage expertise"
-      ],
-      "benefits": [
-        "Leverages expertise",
-        "reduces fatigue",
-        "flexible"
-      ],
-      "drawbacks": [
-        "Power concentration risk",
-        "delegate quality varies"
-      ],
-      "use_cases": [
-        "Compound Governor",
-        "delegate.cash",
-        "voting markets"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "governance",
-        "dao",
-        "delegation",
-        "voting",
-        "erc20votes"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Delegation: ERC-20 Votes\nimport \"@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol\";\n\ncontract GovernanceToken is ERC20Votes {\n    function delegate(address delegatee) public override {\n        _delegate(msg.sender, delegatee);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "gnosis-safe-treasury",
-      "name": "Multi-Signature Treasury (Gnosis Safe)",
-      "category": "DAO Governance",
-      "description": "M-of-N multisig wallet for DAO funds. Industry standard with extensive integrations.",
-      "when_to_use": [
-        "All DAOs with significant funds",
-        "treasury management"
-      ],
-      "benefits": [
-        "Industry standard",
-        "flexible thresholds (e.g.",
-        "3-of-5)",
-        "extensive integrations",
-        "batching"
-      ],
-      "drawbacks": [
-        "Coordination overhead",
-        "requires active signers",
-        "potential key loss"
-      ],
-      "use_cases": [
-        "DAO treasuries",
-        "protocol funds",
-        "community multisigs"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "dao",
-        "treasury",
-        "multisig",
-        "gnosis-safe",
-        "security"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Gnosis Safe is pre-deployed, but custom module example:\ncontract TreasuryModule {\n    GnosisSafe public safe;\n    \n    function executeFromModule(\n        address to,\n        uint256 value,\n        bytes memory data\n    ) external onlyAuthorized returns (bool) {\n        return safe.execTransactionFromModule(\n            to, value, data, Enum.Operation.Call\n        );\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "snapshot-governance",
-      "name": "Off-Chain Governance (Snapshot)",
-      "category": "DAO Governance",
-      "description": "Gas-free voting using off-chain signatures. Execution via multisig or timelock after vote passes.",
-      "when_to_use": [
-        "Large DAOs",
-        "frequent polls",
-        "gas-free participation"
-      ],
-      "benefits": [
-        "Zero gas fees",
-        "faster voting",
-        "higher participation",
-        "flexible strategies"
-      ],
-      "drawbacks": [
-        "Requires off-chain infrastructure",
-        "manual execution",
-        "centralization risk"
-      ],
-      "use_cases": [
-        "Most major DAOs",
-        "signaling votes",
-        "community polls"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "dao",
-        "governance",
-        "snapshot",
-        "off-chain",
-        "gas-free"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Snapshot is off-chain, but execution happens on-chain\ncontract SnapshotExecutor {\n    mapping(bytes32 => bool) public executed;\n    \n    function executeProposal(\n        bytes32 proposalId,\n        address[] calldata targets,\n        bytes[] calldata calldatas,\n        bytes calldata snapshotProof\n    ) external onlyMultisig {\n        require(!executed[proposalId]);\n        require(verifySnapshotResult(proposalId, snapshotProof));\n        \n        for (uint i = 0; i < targets.length; i++) {\n            targets[i].call(calldatas[i]);\n        }\n        executed[proposalId] = true;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "on-chain-governance",
-      "name": "On-Chain Governance",
-      "category": "DAO Governance",
-      "description": "Trustless governance with automatic on-chain execution. Proposals execute automatically after passing.",
-      "when_to_use": [
-        "Protocol parameters",
-        "upgrades",
-        "trustless execution requirements"
-      ],
-      "benefits": [
-        "Transparent",
-        "automatic execution",
-        "censorship-resistant",
-        "fully trustless"
-      ],
-      "drawbacks": [
-        "Higher gas costs",
-        "slower decisions",
-        "complex implementation"
-      ],
-      "use_cases": [
-        "Compound",
-        "Uniswap governance",
-        "protocol parameter changes"
-      ],
-      "complexity": "High",
-      "tags": [
-        "dao",
-        "governance",
-        "on-chain",
-        "compound",
-        "trustless"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/governance/Governor.sol\";\n\ncontract OnChainGovernor is Governor, GovernorVotes {\n    function propose(\n        address[] memory targets,\n        uint256[] memory values,\n        bytes[] memory calldatas,\n        string memory description\n    ) public override returns (uint256) {\n        return super.propose(targets, values, calldatas, description);\n    }\n    \n    function execute(...) public payable {\n        // Automatically executes if proposal passed\n        super._execute(proposalId, targets, values, calldatas, descriptionHash);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "quadratic-voting",
-      "name": "Quadratic Voting",
-      "category": "DAO Governance",
-      "description": "Vote cost = votes² to reduce whale dominance",
-      "when_to_use": [
-        "Democratic outcomes",
-        "funding decisions",
-        "Gitcoin grants"
-      ],
-      "benefits": [
-        "More democratic",
-        "reduces whale power",
-        "preference intensity"
-      ],
-      "drawbacks": [
-        "Requires Sybil resistance",
-        "complex",
-        "gas intensive"
-      ],
-      "use_cases": [
-        "Public goods funding",
-        "preference intensity signaling"
-      ],
-      "complexity": "High",
-      "tags": [
-        "governance",
-        "dao",
-        "quadratic-voting",
-        "gitcoin",
-        "democracy"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Quadratic Voting: cost = votes²\nfunction vote(uint256 proposalId, uint256 votes) external {\n    uint256 cost = votes * votes;\n    require(votingPower[msg.sender] >= cost);\n    votingPower[msg.sender] -= cost;\n    proposals[proposalId].votesFor += votes;\n}"
-        }
-      }
-    },
-    {
-      "id": "rage-quit",
-      "name": "Rage Quit",
-      "category": "DAO Governance",
-      "description": "Exit with proportional treasury share during grace period",
-      "when_to_use": [
-        "Moloch DAOs",
-        "investment DAOs",
-        "minority protection"
-      ],
-      "benefits": [
-        "Exit option",
-        "prevents tyranny",
-        "minority rights"
-      ],
-      "drawbacks": [
-        "Treasury drain risk",
-        "coordination overhead"
-      ],
-      "use_cases": [
-        "Moloch",
-        "LAO",
-        "investment club DAOs"
-      ],
-      "complexity": "High",
-      "tags": [
-        "governance",
-        "dao",
-        "rage-quit",
-        "moloch",
-        "exit"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Rage Quit: burn shares for assets\nfunction ragequit(uint256 sharesToBurn) external {\n    require(block.timestamp <= proposal.gracePeriodEnd);\n    uint256 proportion = sharesToBurn * 1e18 / totalShares;\n    \n    for (uint256 i = 0; i < tokens.length; i++) {\n        uint256 amount = balance[tokens[i]] * proportion / 1e18;\n        tokens[i].transfer(msg.sender, amount);\n    }\n    _burn(msg.sender, sharesToBurn);\n}"
-        }
-      }
-    },
-    {
-      "id": "streaming-payments-sablier",
-      "name": "Streaming Payments (Sablier)",
-      "category": "DAO Governance",
-      "description": "Continuous payment streams for contributors. Real-time payment by the second, cancelable.",
-      "when_to_use": [
-        "Contributor payroll",
-        "vesting schedules",
-        "grants",
-        "continuous funding"
-      ],
-      "benefits": [
-        "Continuous payment",
-        "reduced trust",
-        "cancelable",
-        "fair for both parties"
-      ],
-      "drawbacks": [
-        "Upfront capital lock",
-        "gas costs for withdrawals",
-        "complexity"
-      ],
-      "use_cases": [
-        "DAO contributor salaries",
-        "team vesting",
-        "grant disbursement"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "dao",
-        "treasury",
-        "streaming",
-        "sablier",
-        "vesting",
-        "payroll"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@sablier/v2-core/src/interfaces/ISablierV2LockupLinear.sol\";\n\n// Create linear stream\nfunction createStream(address recipient, uint256 totalAmount, uint256 duration) external {\n    LockupLinear.CreateWithDurations memory params = LockupLinear.CreateWithDurations({\n        sender: msg.sender,\n        recipient: recipient,\n        totalAmount: totalAmount,\n        asset: IERC20(dai),\n        cancelable: true,\n        durations: LockupLinear.Durations({cliff: 0, total: duration}),\n        broker: Broker(address(0), ud60x18(0))\n    });\n    \n    sablier.createWithDurations(params);\n}"
-        }
-      }
-    },
-    {
-      "id": "timelock",
-      "name": "Timelock Controller",
-      "category": "DAO Governance",
-      "description": "Delay execution to allow exit opportunity",
-      "when_to_use": [
-        "Protocol upgrades",
-        "critical parameter changes"
-      ],
-      "benefits": [
-        "Security buffer",
-        "exit opportunity",
-        "transparency"
-      ],
-      "drawbacks": [
-        "Slows emergency response",
-        "coordination overhead"
-      ],
-      "use_cases": [
-        "All governance systems",
-        "security buffer"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "governance",
-        "dao",
-        "timelock",
-        "security",
-        "delay"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Timelock: delay before execution\nimport \"@openzeppelin/contracts/governance/TimelockController.sol\";\n\ncontract Governance {\n    TimelockController public timelock;\n    uint256 constant DELAY = 2 days;\n    \n    function executeProposal(bytes memory data) external {\n        timelock.schedule(target, 0, data, bytes32(0), bytes32(0), DELAY);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "token-voting",
-      "name": "Token-Weighted Voting",
-      "category": "DAO Governance",
-      "description": "1 token = 1 vote governance Problem: Democratic decisions aligned with stake",
-      "when_to_use": [
-        "Voting power proportional to token holdings"
-      ],
-      "benefits": [
-        "Simple",
-        "Sybil-resistant",
-        "stake-aligned"
-      ],
-      "drawbacks": [
-        "Plutocratic",
-        "whale dominance",
-        "low participation"
-      ],
-      "use_cases": [
-        "DAO governance",
-        "protocol parameters",
-        "treasury"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "governance",
-        "dao",
-        "voting",
-        "erc20-votes"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/governance/Governor.sol\";\n\ncontract MyGovernor is Governor {\n    function castVote(uint256 proposalId, uint8 support) public {\n        uint256 weight = token.getPastVotes(msg.sender, snapshot);\n        _countVote(proposalId, msg.sender, support, weight);\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "erc20-votes",
-      "name": "Token-Weighted Voting (ERC-20Votes)",
-      "category": "DAO Governance",
-      "description": "1 token = 1 vote with snapshot mechanism. Prevents double voting via delegation.",
-      "when_to_use": [
-        "Standard DAO governance",
-        "token-holder voting"
-      ],
-      "benefits": [
-        "Simple",
-        "Sybil-resistant",
-        "economically aligned",
-        "battle-tested"
-      ],
-      "drawbacks": [
-        "Plutocratic (whale dominance)",
-        "can be bought",
-        "governance attacks possible"
-      ],
-      "use_cases": [
-        "Most governance tokens",
-        "protocol voting"
-      ],
-      "complexity": "Low",
-      "tags": [
-        "dao",
-        "governance",
-        "voting",
-        "erc20votes",
-        "token-weighted"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "import \"@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol\";\n\ncontract GovernanceToken is ERC20Votes {\n    function delegate(address delegatee) public override {\n        _delegate(msg.sender, delegatee);\n    }\n    \n    function getPastVotes(address account, uint256 blockNumber) \n        public view returns (uint256) \n    {\n        return super.getPastVotes(account, blockNumber);\n    }\n}"
-        }
+[
+  {
+    "id": "conviction-voting",
+    "name": "Conviction Voting",
+    "category": "DAO Governance",
+    "description": "Time-weighted voting without quorum",
+    "when_to_use": [
+      "Continuous funding",
+      "grants",
+      "no urgency"
+    ],
+    "benefits": [
+      "No quorum",
+      "time-weighted commitment",
+      "passive"
+    ],
+    "drawbacks": [
+      "Slow",
+      "not for urgent decisions"
+    ],
+    "use_cases": [
+      "1Hive",
+      "Aragon",
+      "continuous grant allocation"
+    ],
+    "complexity": "High",
+    "tags": [
+      "governance",
+      "dao",
+      "conviction-voting",
+      "grants",
+      "aragon"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Conviction: voting power grows over time\nfunction calculateConviction(address voter, uint256 proposalId) public view returns (uint256) {\n    uint256 timeStaked = block.timestamp - stakes[voter][proposalId].timestamp;\n    uint256 amount = stakes[voter][proposalId].amount;\n    return amount * timeStaked / DECAY_CONSTANT;\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "delegation",
+    "name": "Delegation Pattern",
+    "category": "DAO Governance",
+    "description": "Delegate voting power to representatives",
+    "when_to_use": [
+      "All governance",
+      "reduce voter fatigue",
+      "leverage expertise"
+    ],
+    "benefits": [
+      "Leverages expertise",
+      "reduces fatigue",
+      "flexible"
+    ],
+    "drawbacks": [
+      "Power concentration risk",
+      "delegate quality varies"
+    ],
+    "use_cases": [
+      "Compound Governor",
+      "delegate.cash",
+      "voting markets"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "governance",
+      "dao",
+      "delegation",
+      "voting",
+      "erc20votes"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Delegation: ERC-20 Votes\nimport \"@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol\";\n\ncontract GovernanceToken is ERC20Votes {\n    function delegate(address delegatee) public override {\n        _delegate(msg.sender, delegatee);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "gnosis-safe-treasury",
+    "name": "Multi-Signature Treasury (Gnosis Safe)",
+    "category": "DAO Governance",
+    "description": "M-of-N multisig wallet for DAO funds. Industry standard with extensive integrations.",
+    "when_to_use": [
+      "All DAOs with significant funds",
+      "treasury management"
+    ],
+    "benefits": [
+      "Industry standard",
+      "flexible thresholds (e.g.",
+      "3-of-5)",
+      "extensive integrations",
+      "batching"
+    ],
+    "drawbacks": [
+      "Coordination overhead",
+      "requires active signers",
+      "potential key loss"
+    ],
+    "use_cases": [
+      "DAO treasuries",
+      "protocol funds",
+      "community multisigs"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "dao",
+      "treasury",
+      "multisig",
+      "gnosis-safe",
+      "security"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Gnosis Safe is pre-deployed, but custom module example:\ncontract TreasuryModule {\n    GnosisSafe public safe;\n    \n    function executeFromModule(\n        address to,\n        uint256 value,\n        bytes memory data\n    ) external onlyAuthorized returns (bool) {\n        return safe.execTransactionFromModule(\n            to, value, data, Enum.Operation.Call\n        );\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "snapshot-governance",
+    "name": "Off-Chain Governance (Snapshot)",
+    "category": "DAO Governance",
+    "description": "Gas-free voting using off-chain signatures. Execution via multisig or timelock after vote passes.",
+    "when_to_use": [
+      "Large DAOs",
+      "frequent polls",
+      "gas-free participation"
+    ],
+    "benefits": [
+      "Zero gas fees",
+      "faster voting",
+      "higher participation",
+      "flexible strategies"
+    ],
+    "drawbacks": [
+      "Requires off-chain infrastructure",
+      "manual execution",
+      "centralization risk"
+    ],
+    "use_cases": [
+      "Most major DAOs",
+      "signaling votes",
+      "community polls"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "dao",
+      "governance",
+      "snapshot",
+      "off-chain",
+      "gas-free"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Snapshot is off-chain, but execution happens on-chain\ncontract SnapshotExecutor {\n    mapping(bytes32 => bool) public executed;\n    \n    function executeProposal(\n        bytes32 proposalId,\n        address[] calldata targets,\n        bytes[] calldata calldatas,\n        bytes calldata snapshotProof\n    ) external onlyMultisig {\n        require(!executed[proposalId]);\n        require(verifySnapshotResult(proposalId, snapshotProof));\n        \n        for (uint i = 0; i < targets.length; i++) {\n            targets[i].call(calldatas[i]);\n        }\n        executed[proposalId] = true;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "on-chain-governance",
+    "name": "On-Chain Governance",
+    "category": "DAO Governance",
+    "description": "Trustless governance with automatic on-chain execution. Proposals execute automatically after passing.",
+    "when_to_use": [
+      "Protocol parameters",
+      "upgrades",
+      "trustless execution requirements"
+    ],
+    "benefits": [
+      "Transparent",
+      "automatic execution",
+      "censorship-resistant",
+      "fully trustless"
+    ],
+    "drawbacks": [
+      "Higher gas costs",
+      "slower decisions",
+      "complex implementation"
+    ],
+    "use_cases": [
+      "Compound",
+      "Uniswap governance",
+      "protocol parameter changes"
+    ],
+    "complexity": "High",
+    "tags": [
+      "dao",
+      "governance",
+      "on-chain",
+      "compound",
+      "trustless"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/governance/Governor.sol\";\n\ncontract OnChainGovernor is Governor, GovernorVotes {\n    function propose(\n        address[] memory targets,\n        uint256[] memory values,\n        bytes[] memory calldatas,\n        string memory description\n    ) public override returns (uint256) {\n        return super.propose(targets, values, calldatas, description);\n    }\n    \n    function execute(...) public payable {\n        // Automatically executes if proposal passed\n        super._execute(proposalId, targets, values, calldatas, descriptionHash);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "quadratic-voting",
+    "name": "Quadratic Voting",
+    "category": "DAO Governance",
+    "description": "Vote cost = votes² to reduce whale dominance",
+    "when_to_use": [
+      "Democratic outcomes",
+      "funding decisions",
+      "Gitcoin grants"
+    ],
+    "benefits": [
+      "More democratic",
+      "reduces whale power",
+      "preference intensity"
+    ],
+    "drawbacks": [
+      "Requires Sybil resistance",
+      "complex",
+      "gas intensive"
+    ],
+    "use_cases": [
+      "Public goods funding",
+      "preference intensity signaling"
+    ],
+    "complexity": "High",
+    "tags": [
+      "governance",
+      "dao",
+      "quadratic-voting",
+      "gitcoin",
+      "democracy"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Quadratic Voting: cost = votes²\nfunction vote(uint256 proposalId, uint256 votes) external {\n    uint256 cost = votes * votes;\n    require(votingPower[msg.sender] >= cost);\n    votingPower[msg.sender] -= cost;\n    proposals[proposalId].votesFor += votes;\n}"
+      }
+    }
+  },
+  {
+    "id": "rage-quit",
+    "name": "Rage Quit",
+    "category": "DAO Governance",
+    "description": "Exit with proportional treasury share during grace period",
+    "when_to_use": [
+      "Moloch DAOs",
+      "investment DAOs",
+      "minority protection"
+    ],
+    "benefits": [
+      "Exit option",
+      "prevents tyranny",
+      "minority rights"
+    ],
+    "drawbacks": [
+      "Treasury drain risk",
+      "coordination overhead"
+    ],
+    "use_cases": [
+      "Moloch",
+      "LAO",
+      "investment club DAOs"
+    ],
+    "complexity": "High",
+    "tags": [
+      "governance",
+      "dao",
+      "rage-quit",
+      "moloch",
+      "exit"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Rage Quit: burn shares for assets\nfunction ragequit(uint256 sharesToBurn) external {\n    require(block.timestamp <= proposal.gracePeriodEnd);\n    uint256 proportion = sharesToBurn * 1e18 / totalShares;\n    \n    for (uint256 i = 0; i < tokens.length; i++) {\n        uint256 amount = balance[tokens[i]] * proportion / 1e18;\n        tokens[i].transfer(msg.sender, amount);\n    }\n    _burn(msg.sender, sharesToBurn);\n}"
+      }
+    }
+  },
+  {
+    "id": "streaming-payments-sablier",
+    "name": "Streaming Payments (Sablier)",
+    "category": "DAO Governance",
+    "description": "Continuous payment streams for contributors. Real-time payment by the second, cancelable.",
+    "when_to_use": [
+      "Contributor payroll",
+      "vesting schedules",
+      "grants",
+      "continuous funding"
+    ],
+    "benefits": [
+      "Continuous payment",
+      "reduced trust",
+      "cancelable",
+      "fair for both parties"
+    ],
+    "drawbacks": [
+      "Upfront capital lock",
+      "gas costs for withdrawals",
+      "complexity"
+    ],
+    "use_cases": [
+      "DAO contributor salaries",
+      "team vesting",
+      "grant disbursement"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "dao",
+      "treasury",
+      "streaming",
+      "sablier",
+      "vesting",
+      "payroll"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@sablier/v2-core/src/interfaces/ISablierV2LockupLinear.sol\";\n\n// Create linear stream\nfunction createStream(address recipient, uint256 totalAmount, uint256 duration) external {\n    LockupLinear.CreateWithDurations memory params = LockupLinear.CreateWithDurations({\n        sender: msg.sender,\n        recipient: recipient,\n        totalAmount: totalAmount,\n        asset: IERC20(dai),\n        cancelable: true,\n        durations: LockupLinear.Durations({cliff: 0, total: duration}),\n        broker: Broker(address(0), ud60x18(0))\n    });\n    \n    sablier.createWithDurations(params);\n}"
+      }
+    }
+  },
+  {
+    "id": "timelock",
+    "name": "Timelock Controller",
+    "category": "DAO Governance",
+    "description": "Delay execution to allow exit opportunity",
+    "when_to_use": [
+      "Protocol upgrades",
+      "critical parameter changes"
+    ],
+    "benefits": [
+      "Security buffer",
+      "exit opportunity",
+      "transparency"
+    ],
+    "drawbacks": [
+      "Slows emergency response",
+      "coordination overhead"
+    ],
+    "use_cases": [
+      "All governance systems",
+      "security buffer"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "governance",
+      "dao",
+      "timelock",
+      "security",
+      "delay"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Timelock: delay before execution\nimport \"@openzeppelin/contracts/governance/TimelockController.sol\";\n\ncontract Governance {\n    TimelockController public timelock;\n    uint256 constant DELAY = 2 days;\n    \n    function executeProposal(bytes memory data) external {\n        timelock.schedule(target, 0, data, bytes32(0), bytes32(0), DELAY);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "token-voting",
+    "name": "Token-Weighted Voting",
+    "category": "DAO Governance",
+    "description": "1 token = 1 vote governance Problem: Democratic decisions aligned with stake",
+    "when_to_use": [
+      "Voting power proportional to token holdings"
+    ],
+    "benefits": [
+      "Simple",
+      "Sybil-resistant",
+      "stake-aligned"
+    ],
+    "drawbacks": [
+      "Plutocratic",
+      "whale dominance",
+      "low participation"
+    ],
+    "use_cases": [
+      "DAO governance",
+      "protocol parameters",
+      "treasury"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "governance",
+      "dao",
+      "voting",
+      "erc20-votes"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/governance/Governor.sol\";\n\ncontract MyGovernor is Governor {\n    function castVote(uint256 proposalId, uint8 support) public {\n        uint256 weight = token.getPastVotes(msg.sender, snapshot);\n        _countVote(proposalId, msg.sender, support, weight);\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "erc20-votes",
+    "name": "Token-Weighted Voting (ERC-20Votes)",
+    "category": "DAO Governance",
+    "description": "1 token = 1 vote with snapshot mechanism. Prevents double voting via delegation.",
+    "when_to_use": [
+      "Standard DAO governance",
+      "token-holder voting"
+    ],
+    "benefits": [
+      "Simple",
+      "Sybil-resistant",
+      "economically aligned",
+      "battle-tested"
+    ],
+    "drawbacks": [
+      "Plutocratic (whale dominance)",
+      "can be bought",
+      "governance attacks possible"
+    ],
+    "use_cases": [
+      "Most governance tokens",
+      "protocol voting"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "dao",
+      "governance",
+      "voting",
+      "erc20votes",
+      "token-weighted"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol\";\n\ncontract GovernanceToken is ERC20Votes {\n    function delegate(address delegatee) public override {\n        _delegate(msg.sender, delegatee);\n    }\n    \n    function getPastVotes(address account, uint256 blockNumber) \n        public view returns (uint256) \n    {\n        return super.getPastVotes(account, blockNumber);\n    }\n}"
+      }
+    }
+  }
+]

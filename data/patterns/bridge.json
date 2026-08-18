@@ -1,22 +1,24 @@
-{
-  "id": "bridge",
-  "name": "Bridge",
-  "category": "Structural",
-  "description": "Separates abstraction from implementation allowing both to vary independently",
-  "when_to_use": "Multiple implementations\nRuntime binding\nAvoid permanent binding",
-  "benefits": "Platform independence\nExtensibility\nHide implementation details",
-  "drawbacks": "Increased complexity\nIndirection",
-  "use_cases": "Graphics rendering\nDatabase drivers\nUI themes",
-  "complexity": "Medium",
-  "tags": [
-    "structural",
-    "decoupling",
-    "abstraction"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Renderer {\n  renderCircle(radius: number): void;\n}\n\nclass VectorRenderer implements Renderer {\n  renderCircle(r: number) { console.log(`Vector circle: ${r}`); }\n}\n\nclass RasterRenderer implements Renderer {\n  renderCircle(r: number) { console.log(`Raster circle: ${r}`); }\n}\n\nclass Shape {\n  constructor(protected renderer: Renderer) {}\n}\n\nclass Circle extends Shape {\n  constructor(renderer: Renderer, private radius: number) {\n    super(renderer);\n  }\n  draw() { this.renderer.renderCircle(this.radius); }\n}\n\n// Usage: decouple abstraction from implementation\nnew Circle(new VectorRenderer(), 5).draw();"
+[
+  {
+    "id": "bridge",
+    "name": "Bridge",
+    "category": "Structural",
+    "description": "Separates abstraction from implementation allowing both to vary independently",
+    "when_to_use": "Multiple implementations\nRuntime binding\nAvoid permanent binding",
+    "benefits": "Platform independence\nExtensibility\nHide implementation details",
+    "drawbacks": "Increased complexity\nIndirection",
+    "use_cases": "Graphics rendering\nDatabase drivers\nUI themes",
+    "complexity": "Medium",
+    "tags": [
+      "structural",
+      "decoupling",
+      "abstraction"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Renderer {\n  renderCircle(radius: number): void;\n}\n\nclass VectorRenderer implements Renderer {\n  renderCircle(r: number) { console.log(`Vector circle: ${r}`); }\n}\n\nclass RasterRenderer implements Renderer {\n  renderCircle(r: number) { console.log(`Raster circle: ${r}`); }\n}\n\nclass Shape {\n  constructor(protected renderer: Renderer) {}\n}\n\nclass Circle extends Shape {\n  constructor(renderer: Renderer, private radius: number) {\n    super(renderer);\n  }\n  draw() { this.renderer.renderCircle(this.radius); }\n}\n\n// Usage: decouple abstraction from implementation\nnew Circle(new VectorRenderer(), 5).draw();"
+      }
     }
   }
-}
+]

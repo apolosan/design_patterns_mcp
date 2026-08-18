@@ -1,16 +1,18 @@
-{
-  "id": "thread-safe-interface",
-  "name": "Thread-Safe Interface",
-  "category": "Concurrency",
-  "description": "Provides thread-safe operations through careful interface design",
-  "when_to_use": "Shared objects\nConcurrent access\nSafety requirements",
-  "benefits": "Thread safety\nClear contracts\nSafe operations",
-  "drawbacks": "Performance overhead\nDesign complexity\nLimited flexibility",
-  "use_cases": "Shared data structures\nConcurrent collections\nThread-safe APIs",
-  "complexity": "Medium",
-  "tags": [
-    "concurrency",
-    "interface",
-    "safety"
-  ]
-}
+[
+  {
+    "id": "thread-safe-interface",
+    "name": "Thread-Safe Interface",
+    "category": "Concurrency",
+    "description": "Provides thread-safe operations through careful interface design",
+    "when_to_use": "Shared objects\nConcurrent access\nSafety requirements",
+    "benefits": "Thread safety\nClear contracts\nSafe operations",
+    "drawbacks": "Performance overhead\nDesign complexity\nLimited flexibility",
+    "use_cases": "Shared data structures\nConcurrent collections\nThread-safe APIs",
+    "complexity": "Medium",
+    "tags": [
+      "concurrency",
+      "interface",
+      "safety"
+    ]
+  }
+]

@@ -1,16 +1,18 @@
-{
-  "id": "state-machine-game",
-  "name": "State Machine (Game)",
-  "category": "Game Development",
-  "description": "Manages different states of game entities and game flow",
-  "when_to_use": "Character AI\nGame states\nAnimation systems",
-  "benefits": "Clear state management\nPredictable behavior\nEasy debugging",
-  "drawbacks": "State explosion\nComplex transitions\nRigid structure",
-  "use_cases": "Character AI\nMenu systems\nGame modes",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "state",
-    "ai"
-  ]
-}
+[
+  {
+    "id": "state-machine-game",
+    "name": "State Machine (Game)",
+    "category": "Game Development",
+    "description": "Manages different states of game entities and game flow",
+    "when_to_use": "Character AI\nGame states\nAnimation systems",
+    "benefits": "Clear state management\nPredictable behavior\nEasy debugging",
+    "drawbacks": "State explosion\nComplex transitions\nRigid structure",
+    "use_cases": "Character AI\nMenu systems\nGame modes",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "state",
+      "ai"
+    ]
+  }
+]

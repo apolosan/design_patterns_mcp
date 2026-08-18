@@ -1,282 +1,716 @@
-{
-  "patterns": [
-    {
-      "id": "api-gateway",
-      "name": "API Gateway",
-      "category": "Microservices",
-      "description": "Single entry point for all clients providing routing, composition, and protocol translation",
-      "when_to_use": ["Multiple microservices", "Client simplification", "Cross-cutting concerns"],
-      "benefits": [
-        "Single entry point",
-        "Request routing",
-        "Protocol translation",
-        "Cross-cutting concerns"
-      ],
-      "drawbacks": ["Single point of failure", "Performance bottleneck", "Development bottleneck"],
-      "use_cases": ["Mobile backends", "Web applications", "Third-party integrations"],
-      "complexity": "Medium",
-      "tags": ["microservices", "communication", "gateway"]
-    },
-    {
-      "id": "service-registry",
-      "name": "Service Registry",
-      "category": "Microservices",
-      "description": "Database of available service instances and their locations",
-      "when_to_use": ["Dynamic service discovery", "Service scaling", "Cloud deployment"],
-      "benefits": ["Dynamic discovery", "Load balancing", "Health monitoring", "Service metadata"],
-      "drawbacks": ["Additional complexity", "Single point of failure", "Consistency challenges"],
-      "use_cases": ["Container orchestration", "Cloud deployments", "Dynamic scaling"],
-      "complexity": "Medium",
-      "tags": ["microservices", "discovery", "registry"]
-    },
-    {
-      "id": "service-discovery",
-      "name": "Service Discovery",
-      "category": "Microservices",
-      "description": "Mechanism for services to find and communicate with each other",
-      "when_to_use": ["Dynamic environments", "Service location", "Load balancing"],
-      "benefits": ["Dynamic location", "Load balancing", "Fault tolerance", "Scalability"],
-      "drawbacks": ["Network complexity", "Discovery overhead", "Failure handling"],
-      "use_cases": ["Client-side discovery", "Server-side discovery", "Service mesh"],
-      "complexity": "Medium",
-      "tags": ["microservices", "discovery", "communication"]
-    },
-    {
-      "id": "backend-for-frontend",
-      "name": "Backend for Frontend (BFF)",
-      "category": "Microservices",
-      "description": "Separate API gateway for each type of client application",
-      "when_to_use": ["Different client needs", "Client optimization", "Team ownership"],
-      "benefits": [
-        "Client optimization",
-        "Team autonomy",
-        "Tailored APIs",
-        "Independent deployment"
-      ],
-      "drawbacks": ["Code duplication", "Multiple backends", "Coordination complexity"],
-      "use_cases": ["Mobile vs web apps", "Partner APIs", "Client-specific backends"],
-      "complexity": "Medium",
-      "tags": ["microservices", "frontend", "optimization"]
-    },
-    {
-      "id": "service-mesh",
-      "name": "Service Mesh",
-      "category": "Microservices",
-      "description": "Infrastructure layer for handling service-to-service communication",
-      "when_to_use": ["Complex service communication", "Security requirements", "Observability"],
-      "benefits": ["Traffic management", "Security", "Observability", "Policy enforcement"],
-      "drawbacks": ["Complexity", "Performance overhead", "Learning curve"],
-      "use_cases": ["Large microservice deployments", "Security compliance", "Traffic control"],
-      "complexity": "High",
-      "tags": ["microservices", "infrastructure", "communication"]
-    },
-    {
-      "id": "circuit-breaker-ms",
-      "name": "Circuit Breaker (Microservices)",
-      "category": "Microservices",
-      "description": "Prevents cascading failures in distributed systems",
-      "when_to_use": ["Service dependencies", "Fault tolerance", "Resilience"],
-      "benefits": ["Failure isolation", "Fast failure", "System stability", "Resource protection"],
-      "drawbacks": ["False positives", "Configuration complexity", "Monitoring overhead"],
-      "use_cases": [
-        "External service calls",
-        "Database connections",
-        "Inter-service communication"
-      ],
-      "complexity": "Medium",
-      "tags": ["microservices", "resilience", "fault-tolerance"]
-    },
-    {
-      "id": "bulkhead-ms",
-      "name": "Bulkhead (Microservices)",
-      "category": "Microservices",
-      "description": "Isolates resources to prevent total system failure",
-      "when_to_use": ["Resource isolation", "Fault containment", "Performance isolation"],
-      "benefits": ["Fault isolation", "Resource protection", "Performance isolation"],
-      "drawbacks": ["Resource overhead", "Complexity", "Management burden"],
-      "use_cases": ["Thread pools", "Connection pools", "Service isolation"],
-      "complexity": "Medium",
-      "tags": ["microservices", "resilience", "isolation"]
-    },
-    {
-      "id": "retry-with-backoff",
-      "name": "Retry with Backoff",
-      "category": "Microservices",
-      "description": "Automatically retries failed operations with increasing delays",
-      "when_to_use": ["Transient failures", "Network issues", "Service unavailability"],
-      "benefits": ["Handles transient failures", "Improves reliability", "Configurable strategy"],
-      "drawbacks": ["Increased latency", "Resource consumption", "Potential cascade"],
-      "use_cases": ["HTTP requests", "Database operations", "Message processing"],
-      "complexity": "Low",
-      "tags": ["microservices", "resilience", "retry"]
-    },
-    {
-      "id": "timeout-ms",
-      "name": "Timeout (Microservices)",
-      "category": "Microservices",
-      "description": "Sets maximum wait time for service operations",
-      "when_to_use": ["Service calls", "Resource protection", "Performance requirements"],
-      "benefits": ["Resource protection", "Predictable performance", "Failure detection"],
-      "drawbacks": ["False failures", "Configuration complexity", "User experience impact"],
-      "use_cases": ["HTTP requests", "Database queries", "Remote calls"],
-      "complexity": "Low",
-      "tags": ["microservices", "resilience", "timeout"]
-    },
-    {
-      "id": "failover",
-      "name": "Failover",
-      "category": "Microservices",
-      "description": "Automatically switches to backup service when primary fails",
-      "when_to_use": ["High availability", "Service redundancy", "Disaster recovery"],
-      "benefits": ["High availability", "Automatic recovery", "Service continuity"],
-      "drawbacks": ["Resource duplication", "Complexity", "Sync challenges"],
-      "use_cases": ["Critical services", "Database replicas", "Load balancers"],
-      "complexity": "High",
-      "tags": ["microservices", "resilience", "availability"]
-    },
-    {
-      "id": "database-per-service",
-      "name": "Database per Service",
-      "category": "Microservices",
-      "description": "Each service has its own private database",
-      "when_to_use": ["Service autonomy", "Technology diversity", "Scaling independence"],
-      "benefits": ["Service autonomy", "Technology choice", "Independent scaling"],
-      "drawbacks": ["Data consistency", "Complex queries", "Data duplication"],
-      "use_cases": ["Bounded contexts", "Team ownership", "Technology optimization"],
-      "complexity": "High",
-      "tags": ["microservices", "data", "autonomy"]
-    },
-    {
-      "id": "shared-database-ms",
-      "name": "Shared Database (Anti-pattern)",
-      "category": "Microservices",
-      "description": "Multiple services share same database - generally an anti-pattern",
-      "when_to_use": ["Legacy constraints", "Tight coupling acceptable", "Simple scenarios"],
-      "benefits": ["Simple queries", "Data consistency", "Reduced complexity"],
-      "drawbacks": ["Tight coupling", "Deployment dependencies", "Scaling limitations"],
-      "use_cases": ["Legacy systems", "Monolith decomposition", "Simple applications"],
-      "complexity": "Low",
-      "tags": ["microservices", "data", "anti-pattern"]
-    },
-    {
-      "id": "saga-choreography",
-      "name": "Saga (Choreography)",
-      "category": "Microservices",
-      "description": "Distributed transaction managed by events without central coordinator",
-      "when_to_use": ["Distributed transactions", "Event-driven architecture", "Loose coupling"],
-      "benefits": ["Loose coupling", "Scalability", "Event-driven", "No central coordinator"],
-      "drawbacks": ["Complex debugging", "Lack of overview", "Error handling complexity"],
-      "use_cases": ["Order processing", "Account transfers", "Multi-step workflows"],
-      "complexity": "High",
-      "tags": ["microservices", "transaction", "choreography"]
-    },
-    {
-      "id": "saga-orchestration",
-      "name": "Saga (Orchestration)",
-      "category": "Microservices",
-      "description": "Distributed transaction managed by central orchestrator",
-      "when_to_use": ["Complex workflows", "Centralized control", "Error handling"],
-      "benefits": ["Centralized control", "Clear workflow", "Error handling", "Monitoring"],
-      "drawbacks": ["Single point of failure", "Complex orchestrator", "Coupling"],
-      "use_cases": ["Complex business processes", "Multi-step transactions", "Workflow management"],
-      "complexity": "High",
-      "tags": ["microservices", "transaction", "orchestration"]
-    },
-    {
-      "id": "api-composition",
-      "name": "API Composition",
-      "category": "Microservices",
-      "description": "Composes data from multiple services to fulfill client requests",
-      "when_to_use": ["Cross-service queries", "Client simplification", "Data aggregation"],
-      "benefits": ["Client simplification", "Data aggregation", "Service encapsulation"],
-      "drawbacks": ["Performance overhead", "Complexity", "Error handling"],
-      "use_cases": ["Product catalogs", "User dashboards", "Report generation"],
-      "complexity": "Medium",
-      "tags": ["microservices", "composition", "aggregation"]
-    },
-    {
-      "id": "cqrs-ms",
-      "name": "CQRS (Microservices)",
-      "category": "Microservices",
-      "description": "Separates read and write models in distributed systems",
-      "when_to_use": ["Different read/write patterns", "Performance optimization", "Scalability"],
-      "benefits": ["Performance optimization", "Independent scaling", "Model optimization"],
-      "drawbacks": ["Complexity", "Eventual consistency", "Code duplication"],
-      "use_cases": ["High-read systems", "Reporting services", "Event sourcing"],
-      "complexity": "High",
-      "tags": ["microservices", "cqrs", "separation"]
-    },
-    {
-      "id": "event-sourcing-ms",
-      "name": "Event Sourcing (Microservices)",
-      "category": "Microservices",
-      "description": "Stores state changes as sequence of events in distributed systems",
-      "when_to_use": ["Audit requirements", "Event replay", "Temporal queries"],
-      "benefits": ["Complete audit trail", "Event replay", "Temporal queries", "Scalability"],
-      "drawbacks": ["Complexity", "Storage overhead", "Query challenges"],
-      "use_cases": ["Financial systems", "Audit trails", "Event-driven architectures"],
-      "complexity": "High",
-      "tags": ["microservices", "events", "persistence"]
-    },
-    {
-      "id": "sidecar",
-      "name": "Sidecar",
-      "category": "Microservices",
-      "description": "Deploys helper processes alongside main service for cross-cutting concerns",
-      "when_to_use": ["Cross-cutting concerns", "Language diversity", "Infrastructure services"],
-      "benefits": ["Language independence", "Separation of concerns", "Reusability"],
-      "drawbacks": ["Resource overhead", "Complexity", "Network hops"],
-      "use_cases": ["Logging", "Monitoring", "Security", "Service mesh"],
-      "complexity": "Medium",
-      "tags": ["microservices", "deployment", "separation"]
-    },
-    {
-      "id": "ambassador",
-      "name": "Ambassador",
-      "category": "Microservices",
-      "description": "Helper service that sends network requests on behalf of main service",
-      "when_to_use": ["Network abstraction", "Protocol translation", "Connection management"],
-      "benefits": ["Network abstraction", "Connection pooling", "Protocol handling"],
-      "drawbacks": ["Network overhead", "Additional complexity", "Latency"],
-      "use_cases": ["Database connections", "External APIs", "Protocol translation"],
-      "complexity": "Medium",
-      "tags": ["microservices", "networking", "proxy"]
-    },
-    {
-      "id": "strangler-fig",
-      "name": "Strangler Fig",
-      "category": "Microservices",
-      "description": "Gradually replaces legacy system by redirecting traffic to new services",
-      "when_to_use": ["Legacy migration", "Gradual replacement", "Risk mitigation"],
-      "benefits": ["Gradual migration", "Risk reduction", "Parallel operation"],
-      "drawbacks": ["Complex routing", "Extended timeline", "Resource duplication"],
-      "use_cases": ["Legacy modernization", "System migration", "Phased replacements"],
-      "complexity": "High",
-      "tags": ["microservices", "migration", "legacy"]
-    },
-    {
-      "id": "blue-green-deployment",
-      "name": "Blue-Green Deployment",
-      "category": "Microservices",
-      "description": "Maintains two identical production environments for zero-downtime deployments",
-      "when_to_use": ["Zero-downtime deployment", "Quick rollbacks", "Production safety"],
-      "benefits": ["Zero downtime", "Quick rollback", "Production testing"],
-      "drawbacks": ["Resource duplication", "Cost overhead", "Database complexity"],
-      "use_cases": ["Critical services", "High availability systems", "Safe deployments"],
-      "complexity": "Medium",
-      "tags": ["microservices", "deployment", "availability"]
-    },
-    {
-      "id": "canary-deployment",
-      "name": "Canary Deployment",
-      "category": "Microservices",
-      "description": "Gradually rolls out changes to subset of users before full deployment",
-      "when_to_use": ["Risk reduction", "Gradual rollout", "A/B testing"],
-      "benefits": ["Risk reduction", "Gradual rollout", "Real-world testing"],
-      "drawbacks": ["Complex routing", "Monitoring overhead", "Partial rollbacks"],
-      "use_cases": ["Feature rollouts", "Risk mitigation", "Performance testing"],
-      "complexity": "Medium",
-      "tags": ["microservices", "deployment", "testing"]
-    }
-  ]
-}
+[
+  {
+    "id": "api-gateway",
+    "name": "API Gateway",
+    "category": "Microservices",
+    "description": "Single entry point for all clients providing routing, composition, and protocol translation",
+    "when_to_use": [
+      "Multiple microservices",
+      "Client simplification",
+      "Cross-cutting concerns"
+    ],
+    "benefits": [
+      "Single entry point",
+      "Request routing",
+      "Protocol translation",
+      "Cross-cutting concerns"
+    ],
+    "drawbacks": [
+      "Single point of failure",
+      "Performance bottleneck",
+      "Development bottleneck"
+    ],
+    "use_cases": [
+      "Mobile backends",
+      "Web applications",
+      "Third-party integrations"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "communication",
+      "gateway"
+    ]
+  },
+  {
+    "id": "service-registry",
+    "name": "Service Registry",
+    "category": "Microservices",
+    "description": "Database of available service instances and their locations",
+    "when_to_use": [
+      "Dynamic service discovery",
+      "Service scaling",
+      "Cloud deployment"
+    ],
+    "benefits": [
+      "Dynamic discovery",
+      "Load balancing",
+      "Health monitoring",
+      "Service metadata"
+    ],
+    "drawbacks": [
+      "Additional complexity",
+      "Single point of failure",
+      "Consistency challenges"
+    ],
+    "use_cases": [
+      "Container orchestration",
+      "Cloud deployments",
+      "Dynamic scaling"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "discovery",
+      "registry"
+    ]
+  },
+  {
+    "id": "service-discovery",
+    "name": "Service Discovery",
+    "category": "Microservices",
+    "description": "Mechanism for services to find and communicate with each other",
+    "when_to_use": [
+      "Dynamic environments",
+      "Service location",
+      "Load balancing"
+    ],
+    "benefits": [
+      "Dynamic location",
+      "Load balancing",
+      "Fault tolerance",
+      "Scalability"
+    ],
+    "drawbacks": [
+      "Network complexity",
+      "Discovery overhead",
+      "Failure handling"
+    ],
+    "use_cases": [
+      "Client-side discovery",
+      "Server-side discovery",
+      "Service mesh"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "discovery",
+      "communication"
+    ]
+  },
+  {
+    "id": "backend-for-frontend",
+    "name": "Backend for Frontend (BFF)",
+    "category": "Microservices",
+    "description": "Separate API gateway for each type of client application",
+    "when_to_use": [
+      "Different client needs",
+      "Client optimization",
+      "Team ownership"
+    ],
+    "benefits": [
+      "Client optimization",
+      "Team autonomy",
+      "Tailored APIs",
+      "Independent deployment"
+    ],
+    "drawbacks": [
+      "Code duplication",
+      "Multiple backends",
+      "Coordination complexity"
+    ],
+    "use_cases": [
+      "Mobile vs web apps",
+      "Partner APIs",
+      "Client-specific backends"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "frontend",
+      "optimization"
+    ]
+  },
+  {
+    "id": "service-mesh",
+    "name": "Service Mesh",
+    "category": "Microservices",
+    "description": "Infrastructure layer for handling service-to-service communication",
+    "when_to_use": [
+      "Complex service communication",
+      "Security requirements",
+      "Observability"
+    ],
+    "benefits": [
+      "Traffic management",
+      "Security",
+      "Observability",
+      "Policy enforcement"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Performance overhead",
+      "Learning curve"
+    ],
+    "use_cases": [
+      "Large microservice deployments",
+      "Security compliance",
+      "Traffic control"
+    ],
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "infrastructure",
+      "communication"
+    ]
+  },
+  {
+    "id": "circuit-breaker-ms",
+    "name": "Circuit Breaker (Microservices)",
+    "category": "Microservices",
+    "description": "Prevents cascading failures in distributed systems",
+    "when_to_use": [
+      "Service dependencies",
+      "Fault tolerance",
+      "Resilience"
+    ],
+    "benefits": [
+      "Failure isolation",
+      "Fast failure",
+      "System stability",
+      "Resource protection"
+    ],
+    "drawbacks": [
+      "False positives",
+      "Configuration complexity",
+      "Monitoring overhead"
+    ],
+    "use_cases": [
+      "External service calls",
+      "Database connections",
+      "Inter-service communication"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "resilience",
+      "fault-tolerance"
+    ]
+  },
+  {
+    "id": "bulkhead-ms",
+    "name": "Bulkhead (Microservices)",
+    "category": "Microservices",
+    "description": "Isolates resources to prevent total system failure",
+    "when_to_use": [
+      "Resource isolation",
+      "Fault containment",
+      "Performance isolation"
+    ],
+    "benefits": [
+      "Fault isolation",
+      "Resource protection",
+      "Performance isolation"
+    ],
+    "drawbacks": [
+      "Resource overhead",
+      "Complexity",
+      "Management burden"
+    ],
+    "use_cases": [
+      "Thread pools",
+      "Connection pools",
+      "Service isolation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "resilience",
+      "isolation"
+    ]
+  },
+  {
+    "id": "retry-with-backoff",
+    "name": "Retry with Backoff",
+    "category": "Microservices",
+    "description": "Automatically retries failed operations with increasing delays",
+    "when_to_use": [
+      "Transient failures",
+      "Network issues",
+      "Service unavailability"
+    ],
+    "benefits": [
+      "Handles transient failures",
+      "Improves reliability",
+      "Configurable strategy"
+    ],
+    "drawbacks": [
+      "Increased latency",
+      "Resource consumption",
+      "Potential cascade"
+    ],
+    "use_cases": [
+      "HTTP requests",
+      "Database operations",
+      "Message processing"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "microservices",
+      "resilience",
+      "retry"
+    ]
+  },
+  {
+    "id": "timeout-ms",
+    "name": "Timeout (Microservices)",
+    "category": "Microservices",
+    "description": "Sets maximum wait time for service operations",
+    "when_to_use": [
+      "Service calls",
+      "Resource protection",
+      "Performance requirements"
+    ],
+    "benefits": [
+      "Resource protection",
+      "Predictable performance",
+      "Failure detection"
+    ],
+    "drawbacks": [
+      "False failures",
+      "Configuration complexity",
+      "User experience impact"
+    ],
+    "use_cases": [
+      "HTTP requests",
+      "Database queries",
+      "Remote calls"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "microservices",
+      "resilience",
+      "timeout"
+    ]
+  },
+  {
+    "id": "failover",
+    "name": "Failover",
+    "category": "Microservices",
+    "description": "Automatically switches to backup service when primary fails",
+    "when_to_use": [
+      "High availability",
+      "Service redundancy",
+      "Disaster recovery"
+    ],
+    "benefits": [
+      "High availability",
+      "Automatic recovery",
+      "Service continuity"
+    ],
+    "drawbacks": [
+      "Resource duplication",
+      "Complexity",
+      "Sync challenges"
+    ],
+    "use_cases": [
+      "Critical services",
+      "Database replicas",
+      "Load balancers"
+    ],
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "resilience",
+      "availability"
+    ]
+  },
+  {
+    "id": "database-per-service",
+    "name": "Database per Service",
+    "category": "Microservices",
+    "description": "Each service has its own private database",
+    "when_to_use": [
+      "Service autonomy",
+      "Technology diversity",
+      "Scaling independence"
+    ],
+    "benefits": [
+      "Service autonomy",
+      "Technology choice",
+      "Independent scaling"
+    ],
+    "drawbacks": [
+      "Data consistency",
+      "Complex queries",
+      "Data duplication"
+    ],
+    "use_cases": [
+      "Bounded contexts",
+      "Team ownership",
+      "Technology optimization"
+    ],
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "data",
+      "autonomy"
+    ]
+  },
+  {
+    "id": "shared-database-ms",
+    "name": "Shared Database (Anti-pattern)",
+    "category": "Microservices",
+    "description": "Multiple services share same database - generally an anti-pattern",
+    "when_to_use": [
+      "Legacy constraints",
+      "Tight coupling acceptable",
+      "Simple scenarios"
+    ],
+    "benefits": [
+      "Simple queries",
+      "Data consistency",
+      "Reduced complexity"
+    ],
+    "drawbacks": [
+      "Tight coupling",
+      "Deployment dependencies",
+      "Scaling limitations"
+    ],
+    "use_cases": [
+      "Legacy systems",
+      "Monolith decomposition",
+      "Simple applications"
+    ],
+    "complexity": "Low",
+    "tags": [
+      "microservices",
+      "data",
+      "anti-pattern"
+    ]
+  },
+  {
+    "id": "saga-choreography",
+    "name": "Saga (Choreography)",
+    "category": "Microservices",
+    "description": "Distributed transaction managed by events without central coordinator",
+    "when_to_use": [
+      "Distributed transactions",
+      "Event-driven architecture",
+      "Loose coupling"
+    ],
+    "benefits": [
+      "Loose coupling",
+      "Scalability",
+      "Event-driven",
+      "No central coordinator"
+    ],
+    "drawbacks": [
+      "Complex debugging",
+      "Lack of overview",
+      "Error handling complexity"
+    ],
+    "use_cases": [
+      "Order processing",
+      "Account transfers",
+      "Multi-step workflows"
+    ],
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "transaction",
+      "choreography"
+    ]
+  },
+  {
+    "id": "saga-orchestration",
+    "name": "Saga (Orchestration)",
+    "category": "Microservices",
+    "description": "Distributed transaction managed by central orchestrator",
+    "when_to_use": [
+      "Complex workflows",
+      "Centralized control",
+      "Error handling"
+    ],
+    "benefits": [
+      "Centralized control",
+      "Clear workflow",
+      "Error handling",
+      "Monitoring"
+    ],
+    "drawbacks": [
+      "Single point of failure",
+      "Complex orchestrator",
+      "Coupling"
+    ],
+    "use_cases": [
+      "Complex business processes",
+      "Multi-step transactions",
+      "Workflow management"
+    ],
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "transaction",
+      "orchestration"
+    ]
+  },
+  {
+    "id": "api-composition",
+    "name": "API Composition",
+    "category": "Microservices",
+    "description": "Composes data from multiple services to fulfill client requests",
+    "when_to_use": [
+      "Cross-service queries",
+      "Client simplification",
+      "Data aggregation"
+    ],
+    "benefits": [
+      "Client simplification",
+      "Data aggregation",
+      "Service encapsulation"
+    ],
+    "drawbacks": [
+      "Performance overhead",
+      "Complexity",
+      "Error handling"
+    ],
+    "use_cases": [
+      "Product catalogs",
+      "User dashboards",
+      "Report generation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "composition",
+      "aggregation"
+    ]
+  },
+  {
+    "id": "cqrs-ms",
+    "name": "CQRS (Microservices)",
+    "category": "Microservices",
+    "description": "Separates read and write models in distributed systems",
+    "when_to_use": [
+      "Different read/write patterns",
+      "Performance optimization",
+      "Scalability"
+    ],
+    "benefits": [
+      "Performance optimization",
+      "Independent scaling",
+      "Model optimization"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Eventual consistency",
+      "Code duplication"
+    ],
+    "use_cases": [
+      "High-read systems",
+      "Reporting services",
+      "Event sourcing"
+    ],
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "cqrs",
+      "separation"
+    ]
+  },
+  {
+    "id": "event-sourcing-ms",
+    "name": "Event Sourcing (Microservices)",
+    "category": "Microservices",
+    "description": "Stores state changes as sequence of events in distributed systems",
+    "when_to_use": [
+      "Audit requirements",
+      "Event replay",
+      "Temporal queries"
+    ],
+    "benefits": [
+      "Complete audit trail",
+      "Event replay",
+      "Temporal queries",
+      "Scalability"
+    ],
+    "drawbacks": [
+      "Complexity",
+      "Storage overhead",
+      "Query challenges"
+    ],
+    "use_cases": [
+      "Financial systems",
+      "Audit trails",
+      "Event-driven architectures"
+    ],
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "events",
+      "persistence"
+    ]
+  },
+  {
+    "id": "sidecar",
+    "name": "Sidecar",
+    "category": "Microservices",
+    "description": "Deploys helper processes alongside main service for cross-cutting concerns",
+    "when_to_use": [
+      "Cross-cutting concerns",
+      "Language diversity",
+      "Infrastructure services"
+    ],
+    "benefits": [
+      "Language independence",
+      "Separation of concerns",
+      "Reusability"
+    ],
+    "drawbacks": [
+      "Resource overhead",
+      "Complexity",
+      "Network hops"
+    ],
+    "use_cases": [
+      "Logging",
+      "Monitoring",
+      "Security",
+      "Service mesh"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "deployment",
+      "separation"
+    ]
+  },
+  {
+    "id": "ambassador",
+    "name": "Ambassador",
+    "category": "Microservices",
+    "description": "Helper service that sends network requests on behalf of main service",
+    "when_to_use": [
+      "Network abstraction",
+      "Protocol translation",
+      "Connection management"
+    ],
+    "benefits": [
+      "Network abstraction",
+      "Connection pooling",
+      "Protocol handling"
+    ],
+    "drawbacks": [
+      "Network overhead",
+      "Additional complexity",
+      "Latency"
+    ],
+    "use_cases": [
+      "Database connections",
+      "External APIs",
+      "Protocol translation"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "networking",
+      "proxy"
+    ]
+  },
+  {
+    "id": "strangler-fig",
+    "name": "Strangler Fig",
+    "category": "Microservices",
+    "description": "Gradually replaces legacy system by redirecting traffic to new services",
+    "when_to_use": [
+      "Legacy migration",
+      "Gradual replacement",
+      "Risk mitigation"
+    ],
+    "benefits": [
+      "Gradual migration",
+      "Risk reduction",
+      "Parallel operation"
+    ],
+    "drawbacks": [
+      "Complex routing",
+      "Extended timeline",
+      "Resource duplication"
+    ],
+    "use_cases": [
+      "Legacy modernization",
+      "System migration",
+      "Phased replacements"
+    ],
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "migration",
+      "legacy"
+    ]
+  },
+  {
+    "id": "blue-green-deployment",
+    "name": "Blue-Green Deployment",
+    "category": "Microservices",
+    "description": "Maintains two identical production environments for zero-downtime deployments",
+    "when_to_use": [
+      "Zero-downtime deployment",
+      "Quick rollbacks",
+      "Production safety"
+    ],
+    "benefits": [
+      "Zero downtime",
+      "Quick rollback",
+      "Production testing"
+    ],
+    "drawbacks": [
+      "Resource duplication",
+      "Cost overhead",
+      "Database complexity"
+    ],
+    "use_cases": [
+      "Critical services",
+      "High availability systems",
+      "Safe deployments"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "deployment",
+      "availability"
+    ]
+  },
+  {
+    "id": "canary-deployment",
+    "name": "Canary Deployment",
+    "category": "Microservices",
+    "description": "Gradually rolls out changes to subset of users before full deployment",
+    "when_to_use": [
+      "Risk reduction",
+      "Gradual rollout",
+      "A/B testing"
+    ],
+    "benefits": [
+      "Risk reduction",
+      "Gradual rollout",
+      "Real-world testing"
+    ],
+    "drawbacks": [
+      "Complex routing",
+      "Monitoring overhead",
+      "Partial rollbacks"
+    ],
+    "use_cases": [
+      "Feature rollouts",
+      "Risk mitigation",
+      "Performance testing"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "deployment",
+      "testing"
+    ]
+  }
+]

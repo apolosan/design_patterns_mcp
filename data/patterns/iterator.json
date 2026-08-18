@@ -1,22 +1,24 @@
-{
-  "id": "iterator",
-  "name": "Iterator",
-  "category": "Behavioral",
-  "description": "Provides sequential access to elements without exposing underlying representation",
-  "when_to_use": "Sequential access\nHide internal structure\nMultiple traversal algorithms",
-  "benefits": "Single Responsibility\nParallel iteration\nSimplified collections",
-  "drawbacks": "Overkill for simple collections\nSynchronization issues",
-  "use_cases": "Collection traversal\nDatabase cursors\nFile reading",
-  "complexity": "Low",
-  "tags": [
-    "behavioral",
-    "traversal",
-    "collection"
-  ],
-  "examples": {
-    "python": {
-      "language": "python",
-      "code": "class BookCollection:\n    def __init__(self):\n        self.books = []\n    \n    def add_book(self, book):\n        self.books.append(book)\n    \n    def __iter__(self):\n        return iter(self.books)\n\n# Usage\ncollection = BookCollection()\ncollection.add_book(\"Book 1\")\ncollection.add_book(\"Book 2\")\n\nfor book in collection:\n    print(book)"
+[
+  {
+    "id": "iterator",
+    "name": "Iterator",
+    "category": "Behavioral",
+    "description": "Provides sequential access to elements without exposing underlying representation",
+    "when_to_use": "Sequential access\nHide internal structure\nMultiple traversal algorithms",
+    "benefits": "Single Responsibility\nParallel iteration\nSimplified collections",
+    "drawbacks": "Overkill for simple collections\nSynchronization issues",
+    "use_cases": "Collection traversal\nDatabase cursors\nFile reading",
+    "complexity": "Low",
+    "tags": [
+      "behavioral",
+      "traversal",
+      "collection"
+    ],
+    "examples": {
+      "python": {
+        "language": "python",
+        "code": "class BookCollection:\n    def __init__(self):\n        self.books = []\n    \n    def add_book(self, book):\n        self.books.append(book)\n    \n    def __iter__(self):\n        return iter(self.books)\n\n# Usage\ncollection = BookCollection()\ncollection.add_book(\"Book 1\")\ncollection.add_book(\"Book 2\")\n\nfor book in collection:\n    print(book)"
+      }
     }
   }
-}
+]

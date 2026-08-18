@@ -1,24 +1,26 @@
-{
-  "id": "liquidation-mechanism",
-  "name": "Liquidation Mechanism",
-  "category": "DeFi Lending",
-  "description": "Automated liquidation to maintain protocol solvency with liquidator incentives",
-  "when_to_use": "All collateralized lending, maintain solvency",
-  "benefits": "Protects lenders, incentivizes liquidators, automatic",
-  "drawbacks": "Can cascade, user loss, gas wars",
-  "use_cases": "Aave liquidations, Compound liquidations, MEV",
-  "complexity": "High",
-  "tags": [
-    "defi",
-    "lending",
-    "liquidation",
-    "mev",
-    "incentives"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Liquidation: discount for liquidators\nfunction liquidate(address borrower, address collateral) external {\n    require(isLiquidatable(borrower));\n    uint256 debt = getUserDebt(borrower);\n    uint256 collateralSeized = debt * LIQUIDATION_BONUS / 100;\n    _transfer(collateral, msg.sender, collateralSeized);\n}"
+[
+  {
+    "id": "liquidation-mechanism",
+    "name": "Liquidation Mechanism",
+    "category": "DeFi Lending",
+    "description": "Automated liquidation to maintain protocol solvency with liquidator incentives",
+    "when_to_use": "All collateralized lending, maintain solvency",
+    "benefits": "Protects lenders, incentivizes liquidators, automatic",
+    "drawbacks": "Can cascade, user loss, gas wars",
+    "use_cases": "Aave liquidations, Compound liquidations, MEV",
+    "complexity": "High",
+    "tags": [
+      "defi",
+      "lending",
+      "liquidation",
+      "mev",
+      "incentives"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Liquidation: discount for liquidators\nfunction liquidate(address borrower, address collateral) external {\n    require(isLiquidatable(borrower));\n    uint256 debt = getUserDebt(borrower);\n    uint256 collateralSeized = debt * LIQUIDATION_BONUS / 100;\n    _transfer(collateral, msg.sender, collateralSeized);\n}"
+      }
     }
   }
-}
+]

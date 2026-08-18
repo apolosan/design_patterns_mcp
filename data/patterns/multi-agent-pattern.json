@@ -1,16 +1,18 @@
-{
-  "id": "multi-agent-pattern",
-  "name": "Multi-Agent Pattern",
-  "category": "AI/ML",
-  "description": "Multiple specialized agents collaborate to solve complex problems",
-  "when_to_use": "Complex workflows\nSpecialized expertise needed\nParallel processing",
-  "benefits": "Specialization\nScalability\nParallel processing\nExpertise distribution",
-  "drawbacks": "Coordination complexity\nCommunication overhead\nConsistency challenges",
-  "use_cases": "Software development\nResearch analysis\nContent creation",
-  "complexity": "Very High",
-  "tags": [
-    "multi-agent",
-    "collaboration",
-    "workflow"
-  ]
-}
+[
+  {
+    "id": "multi-agent-pattern",
+    "name": "Multi-Agent Pattern",
+    "category": "AI/ML",
+    "description": "Multiple specialized agents collaborate to solve complex problems",
+    "when_to_use": "Complex workflows\nSpecialized expertise needed\nParallel processing",
+    "benefits": "Specialization\nScalability\nParallel processing\nExpertise distribution",
+    "drawbacks": "Coordination complexity\nCommunication overhead\nConsistency challenges",
+    "use_cases": "Software development\nResearch analysis\nContent creation",
+    "complexity": "Very High",
+    "tags": [
+      "multi-agent",
+      "collaboration",
+      "workflow"
+    ]
+  }
+]

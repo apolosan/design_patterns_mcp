@@ -1,22 +1,24 @@
-{
-  "id": "tool-use-pattern",
-  "name": "Tool Use Pattern",
-  "category": "AI/ML",
-  "description": "Enables AI agents to use external tools and APIs to extend capabilities",
-  "when_to_use": "Need external data\nCalculations required\nAPI integrations",
-  "benefits": "Extended capabilities\nReal-time data\nSpecialized functions\nAccurate computations",
-  "drawbacks": "Tool reliability dependency\nSecurity concerns\nComplexity",
-  "use_cases": "Code execution\nAPI calls\nData analysis\nWeb search",
-  "complexity": "Medium",
-  "tags": [
-    "tools",
-    "apis",
-    "integration"
-  ],
-  "examples": {
-    "python": {
-      "language": "python",
-      "code": "# Tool Use: LLM decides which tools to use\n\nclass ToolUseAgent:\n    def __init__(self, llm):\n        self.llm = llm\n        self.tools = {\n            'calculator': self.calculator,\n            'search': self.search,\n            'weather': self.get_weather\n        }\n    \n    def solve(self, query: str):\n        # LLM decides which tool to use\n        tool_selection = self.llm.generate(f\"\"\"\n        Query: {query}\n        Available tools: {list(self.tools.keys())}\n        Which tool should we use? Respond with: tool_name(arguments)\n        \"\"\")\n        \n        # Parse tool call\n        tool_name, args = self.parse_tool_call(tool_selection)\n        \n        # Execute tool\n        if tool_name in self.tools:\n            result = self.tools[tool_name](args)\n            \n            # LLM formats final answer\n            answer = self.llm.generate(f\"\"\"\n            Query: {query}\n            Tool result: {result}\n            Format a natural response:\n            \"\"\")\n            return answer\n        \n        return \"Could not determine tool\"\n    \n    def calculator(self, expression: str):\n        return eval(expression)\n    \n    def search(self, query: str):\n        return f\"Search results for: {query}\"\n    \n    def get_weather(self, location: str):\n        return f\"Weather in {location}: Sunny, 72°F\"\n    \n    def parse_tool_call(self, text: str):\n        parts = text.split('(')\n        tool = parts[0].strip()\n        args = parts[1].rstrip(')').strip(\"'\"\")\n        return tool, args\n\n# Usage: agent selects appropriate tool\nagent = ToolUseAgent(llm)\nresponse = agent.solve(\"What is 15 * 23?\")"
+[
+  {
+    "id": "tool-use-pattern",
+    "name": "Tool Use Pattern",
+    "category": "AI/ML",
+    "description": "Enables AI agents to use external tools and APIs to extend capabilities",
+    "when_to_use": "Need external data\nCalculations required\nAPI integrations",
+    "benefits": "Extended capabilities\nReal-time data\nSpecialized functions\nAccurate computations",
+    "drawbacks": "Tool reliability dependency\nSecurity concerns\nComplexity",
+    "use_cases": "Code execution\nAPI calls\nData analysis\nWeb search",
+    "complexity": "Medium",
+    "tags": [
+      "tools",
+      "apis",
+      "integration"
+    ],
+    "examples": {
+      "python": {
+        "language": "python",
+        "code": "# Tool Use: LLM decides which tools to use\n\nclass ToolUseAgent:\n    def __init__(self, llm):\n        self.llm = llm\n        self.tools = {\n            'calculator': self.calculator,\n            'search': self.search,\n            'weather': self.get_weather\n        }\n    \n    def solve(self, query: str):\n        # LLM decides which tool to use\n        tool_selection = self.llm.generate(f\"\"\"\n        Query: {query}\n        Available tools: {list(self.tools.keys())}\n        Which tool should we use? Respond with: tool_name(arguments)\n        \"\"\")\n        \n        # Parse tool call\n        tool_name, args = self.parse_tool_call(tool_selection)\n        \n        # Execute tool\n        if tool_name in self.tools:\n            result = self.tools[tool_name](args)\n            \n            # LLM formats final answer\n            answer = self.llm.generate(f\"\"\"\n            Query: {query}\n            Tool result: {result}\n            Format a natural response:\n            \"\"\")\n            return answer\n        \n        return \"Could not determine tool\"\n    \n    def calculator(self, expression: str):\n        return eval(expression)\n    \n    def search(self, query: str):\n        return f\"Search results for: {query}\"\n    \n    def get_weather(self, location: str):\n        return f\"Weather in {location}: Sunny, 72°F\"\n    \n    def parse_tool_call(self, text: str):\n        parts = text.split('(')\n        tool = parts[0].strip()\n        args = parts[1].rstrip(')').strip(\"'\"\")\n        return tool, args\n\n# Usage: agent selects appropriate tool\nagent = ToolUseAgent(llm)\nresponse = agent.solve(\"What is 15 * 23?\")"
+      }
     }
   }
-}
+]

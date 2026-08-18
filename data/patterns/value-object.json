@@ -1,16 +1,18 @@
-{
-  "id": "value-object",
-  "name": "Value Object",
-  "category": "Enterprise",
-  "description": "Small simple object like money or date range whose equality isn't based on identity",
-  "when_to_use": "Small immutable objects\nEquality by value\nDomain concepts",
-  "benefits": "Immutability\nValue equality\nType safety\nDomain clarity",
-  "drawbacks": "Proliferation\nMemory overhead\nComplex equality",
-  "use_cases": "Money\nDates\nCoordinates\nMeasurements",
-  "complexity": "Low",
-  "tags": [
-    "enterprise",
-    "value",
-    "immutable"
-  ]
-}
+[
+  {
+    "id": "value-object",
+    "name": "Value Object",
+    "category": "Enterprise",
+    "description": "Small simple object like money or date range whose equality isn't based on identity",
+    "when_to_use": "Small immutable objects\nEquality by value\nDomain concepts",
+    "benefits": "Immutability\nValue equality\nType safety\nDomain clarity",
+    "drawbacks": "Proliferation\nMemory overhead\nComplex equality",
+    "use_cases": "Money\nDates\nCoordinates\nMeasurements",
+    "complexity": "Low",
+    "tags": [
+      "enterprise",
+      "value",
+      "immutable"
+    ]
+  }
+]

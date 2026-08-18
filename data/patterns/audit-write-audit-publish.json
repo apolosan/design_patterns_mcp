@@ -1,17 +1,19 @@
-{
-  "id": "audit-write-audit-publish",
-  "name": "Audit-Write-Audit-Publish",
-  "category": "Data Quality",
-  "description": "The Audit-Write-Audit-Publish pattern ensures data quality through auditing at multiple stages.",
-  "when_to_use": "[\"Data quality enforcement\",\"Audit requirements\"]",
-  "benefits": "[\"Quality assurance\",\"Auditable process\"]",
-  "drawbacks": "[\"Performance overhead\",\"Complexity\"]",
-  "use_cases": "[\"Quality pipelines\",\"Audited data processing\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"data-quality\"",
-    "\"audit\"",
-    "\"enforcement\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "audit-write-audit-publish",
+    "name": "Audit-Write-Audit-Publish",
+    "category": "Data Quality",
+    "description": "The Audit-Write-Audit-Publish pattern ensures data quality through auditing at multiple stages.",
+    "when_to_use": "[\"Data quality enforcement\",\"Audit requirements\"]",
+    "benefits": "[\"Quality assurance\",\"Auditable process\"]",
+    "drawbacks": "[\"Performance overhead\",\"Complexity\"]",
+    "use_cases": "[\"Quality pipelines\",\"Audited data processing\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"data-quality\"",
+      "\"audit\"",
+      "\"enforcement\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

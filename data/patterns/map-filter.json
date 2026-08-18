@@ -1,16 +1,18 @@
-{
-  "id": "map-filter",
-  "name": "Map/Filter Pattern",
-  "category": "Functional",
-  "description": "Transforms and filters collections using function composition",
-  "when_to_use": "Data transformation\nCollection processing\nPipeline operations",
-  "benefits": "Composable\nReadable\nImmutable\nChainable",
-  "drawbacks": "Multiple iterations\nMemory overhead\nPerformance cost",
-  "use_cases": "Data processing\nArray transformations\nStream operations",
-  "complexity": "Low",
-  "tags": [
-    "functional",
-    "transformation",
-    "filtering"
-  ]
-}
+[
+  {
+    "id": "map-filter",
+    "name": "Map/Filter Pattern",
+    "category": "Functional",
+    "description": "Transforms and filters collections using function composition",
+    "when_to_use": "Data transformation\nCollection processing\nPipeline operations",
+    "benefits": "Composable\nReadable\nImmutable\nChainable",
+    "drawbacks": "Multiple iterations\nMemory overhead\nPerformance cost",
+    "use_cases": "Data processing\nArray transformations\nStream operations",
+    "complexity": "Low",
+    "tags": [
+      "functional",
+      "transformation",
+      "filtering"
+    ]
+  }
+]

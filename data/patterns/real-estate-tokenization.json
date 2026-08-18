@@ -1,24 +1,26 @@
-{
-  "id": "real-estate-tokenization",
-  "name": "Real Estate Tokenization (RWA)",
-  "category": "Real World Assets",
-  "description": "Fractional property ownership via tokens. Global access, 24/7 liquidity, compliance layers.",
-  "when_to_use": "Property investment, fractional ownership, global real estate access",
-  "benefits": "Global access, 24/7 liquidity, fractional ownership, reduced barriers",
-  "drawbacks": "Complex legal structure, jurisdiction issues, property management",
-  "use_cases": "RealT, Propy, fractional property ownership",
-  "complexity": "Very High",
-  "tags": [
-    "rwa",
-    "real-estate",
-    "tokenization",
-    "fractional",
-    "compliance"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/token/ERC1400/ERC1400.sol\"; // Security token\n\ncontract RealEstateToken is ERC1400 {\n    struct Property {\n        string location;\n        uint256 valuation;\n        uint256 rentalYield; // Annual %\n        bytes32 legalDocHash;\n    }\n    \n    Property public property;\n    mapping(address => bool) public accreditedInvestors;\n    \n    modifier onlyAccredited() {\n        require(accreditedInvestors[msg.sender], \"Must be accredited\");\n        _;\n    }\n    \n    function distributeRent() external onlyOwner {\n        uint256 totalRent = property.valuation * property.rentalYield / 10000;\n        // Distribute proportionally to token holders\n    }\n}"
+[
+  {
+    "id": "real-estate-tokenization",
+    "name": "Real Estate Tokenization (RWA)",
+    "category": "Real World Assets",
+    "description": "Fractional property ownership via tokens. Global access, 24/7 liquidity, compliance layers.",
+    "when_to_use": "Property investment, fractional ownership, global real estate access",
+    "benefits": "Global access, 24/7 liquidity, fractional ownership, reduced barriers",
+    "drawbacks": "Complex legal structure, jurisdiction issues, property management",
+    "use_cases": "RealT, Propy, fractional property ownership",
+    "complexity": "Very High",
+    "tags": [
+      "rwa",
+      "real-estate",
+      "tokenization",
+      "fractional",
+      "compliance"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/ERC1400/ERC1400.sol\"; // Security token\n\ncontract RealEstateToken is ERC1400 {\n    struct Property {\n        string location;\n        uint256 valuation;\n        uint256 rentalYield; // Annual %\n        bytes32 legalDocHash;\n    }\n    \n    Property public property;\n    mapping(address => bool) public accreditedInvestors;\n    \n    modifier onlyAccredited() {\n        require(accreditedInvestors[msg.sender], \"Must be accredited\");\n        _;\n    }\n    \n    function distributeRent() external onlyOwner {\n        uint256 totalRent = property.valuation * property.rentalYield / 10000;\n        // Distribute proportionally to token holders\n    }\n}"
+      }
     }
   }
-}
+]

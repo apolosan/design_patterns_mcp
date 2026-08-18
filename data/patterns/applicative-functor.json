@@ -1,16 +1,18 @@
-{
-  "id": "applicative-functor",
-  "name": "Applicative Functor",
-  "category": "Functional",
-  "description": "Allows applying functions wrapped in context to values in context",
-  "when_to_use": "Multiple parameter functions\nValidation\nParallel computation",
-  "benefits": "Parallel operations\nFunction lifting\nContext preservation",
-  "drawbacks": "Complexity\nLimited error aggregation\nAbstract concepts",
-  "use_cases": "Form validation\nParallel API calls\nConfiguration parsing",
-  "complexity": "High",
-  "tags": [
-    "functional",
-    "applicative",
-    "lifting"
-  ]
-}
+[
+  {
+    "id": "applicative-functor",
+    "name": "Applicative Functor",
+    "category": "Functional",
+    "description": "Allows applying functions wrapped in context to values in context",
+    "when_to_use": "Multiple parameter functions\nValidation\nParallel computation",
+    "benefits": "Parallel operations\nFunction lifting\nContext preservation",
+    "drawbacks": "Complexity\nLimited error aggregation\nAbstract concepts",
+    "use_cases": "Form validation\nParallel API calls\nConfiguration parsing",
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "applicative",
+      "lifting"
+    ]
+  }
+]

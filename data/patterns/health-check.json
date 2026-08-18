@@ -1,22 +1,24 @@
-{
-  "id": "health-check",
-  "name": "Health Check Pattern",
-  "category": "Cloud-Native",
-  "description": "Provides endpoints to monitor service health and availability",
-  "when_to_use": "Service monitoring\nLoad balancer integration\nDeployment validation",
-  "benefits": "Service visibility\nAutomated recovery\nLoad balancer integration",
-  "drawbacks": "Additional endpoints\nHealth check overhead\nFalse positives",
-  "use_cases": "Kubernetes probes\nLoad balancers\nService discovery",
-  "complexity": "Low",
-  "tags": [
-    "monitoring",
-    "health",
-    "observability"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Health Check: expose service health status\ninterface HealthStatus {\n  status: 'healthy' | 'unhealthy';\n  checks: Record<string, boolean>;\n}\n\nclass HealthCheck {\n  private checks = new Map<string, () => Promise<boolean>>();\n  \n  register(name: string, check: () => Promise<boolean>) {\n    this.checks.set(name, check);\n  }\n  \n  async execute(): Promise<HealthStatus> {\n    const results: Record<string, boolean> = {};\n    \n    for (const [name, check] of this.checks) {\n      try {\n        results[name] = await check();\n      } catch {\n        results[name] = false;\n      }\n    }\n    \n    const allPassed = Object.values(results).every(r => r);\n    return {\n      status: allPassed ? 'healthy' : 'unhealthy',\n      checks: results\n    };\n  }\n}\n\nconst health = new HealthCheck();\nhealth.register('database', async () => {\n  const result = await db.query('SELECT 1');\n  return !!result;\n});"
+[
+  {
+    "id": "health-check",
+    "name": "Health Check Pattern",
+    "category": "Cloud-Native",
+    "description": "Provides endpoints to monitor service health and availability",
+    "when_to_use": "Service monitoring\nLoad balancer integration\nDeployment validation",
+    "benefits": "Service visibility\nAutomated recovery\nLoad balancer integration",
+    "drawbacks": "Additional endpoints\nHealth check overhead\nFalse positives",
+    "use_cases": "Kubernetes probes\nLoad balancers\nService discovery",
+    "complexity": "Low",
+    "tags": [
+      "monitoring",
+      "health",
+      "observability"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Health Check: expose service health status\ninterface HealthStatus {\n  status: 'healthy' | 'unhealthy';\n  checks: Record<string, boolean>;\n}\n\nclass HealthCheck {\n  private checks = new Map<string, () => Promise<boolean>>();\n  \n  register(name: string, check: () => Promise<boolean>) {\n    this.checks.set(name, check);\n  }\n  \n  async execute(): Promise<HealthStatus> {\n    const results: Record<string, boolean> = {};\n    \n    for (const [name, check] of this.checks) {\n      try {\n        results[name] = await check();\n      } catch {\n        results[name] = false;\n      }\n    }\n    \n    const allPassed = Object.values(results).every(r => r);\n    return {\n      status: allPassed ? 'healthy' : 'unhealthy',\n      checks: results\n    };\n  }\n}\n\nconst health = new HealthCheck();\nhealth.register('database', async () => {\n  const result = await db.query('SELECT 1');\n  return !!result;\n});"
+      }
     }
   }
-}
+]

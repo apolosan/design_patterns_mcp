@@ -1,39 +1,54 @@
-{
-  "id": "in-place-overwriter",
-  "name": "In-Place Overwriter",
-  "category": "Data Engineering",
-  "description": "Updates existing records in place at their natural key location (e.g., primary key in a row store, partition key in a warehouse) rather than appending a new version. Reduces storage churn and downstream churn when only the latest state matters.",
-  "when_to_use": [
-    "Only the latest value per key is needed downstream",
-    "Storage is partitioned/clustered by natural key",
-    "Append-only systems cannot deliver low-latency reads"
-  ],
-  "benefits": [
-    "Stable per-key row count",
-    "Lower downstream churn",
-    "Faster point lookups"
-  ],
-  "drawbacks": [
-    "Loses history unless paired with change capture",
-    "Hot-partition risk for skewed keys",
-    "Update conflicts under concurrent writers"
-  ],
-  "use_cases": [
-    "Reference data sync (slowly changing dimensions)",
-    "Latest price/quote tables",
-    "Inventory level updates"
-  ],
-  "complexity": "Medium",
-  "tags": ["data-engineering", "update", "merge", "key-driven"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "async function overwriteInPlace<K,V>(store: KVStore<K,V>, key: K, value: V) {\n  const existing = await store.get(key);\n  if (existing) await store.put(key, merge(existing, value));\n  else await store.put(key, value);\n}",
-      "description": "In-place merge-or-write."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "data-overwrite", "type": "similar-to", "strength": 0.7},
-    {"target_pattern_id": "change-data-capture", "type": "complements", "strength": 0.6}
-  ]
-}
+[
+  {
+    "id": "in-place-overwriter",
+    "name": "In-Place Overwriter",
+    "category": "Data Engineering",
+    "description": "Updates existing records in place at their natural key location (e.g., primary key in a row store, partition key in a warehouse) rather than appending a new version. Reduces storage churn and downstream churn when only the latest state matters.",
+    "when_to_use": [
+      "Only the latest value per key is needed downstream",
+      "Storage is partitioned/clustered by natural key",
+      "Append-only systems cannot deliver low-latency reads"
+    ],
+    "benefits": [
+      "Stable per-key row count",
+      "Lower downstream churn",
+      "Faster point lookups"
+    ],
+    "drawbacks": [
+      "Loses history unless paired with change capture",
+      "Hot-partition risk for skewed keys",
+      "Update conflicts under concurrent writers"
+    ],
+    "use_cases": [
+      "Reference data sync (slowly changing dimensions)",
+      "Latest price/quote tables",
+      "Inventory level updates"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-engineering",
+      "update",
+      "merge",
+      "key-driven"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "async function overwriteInPlace<K,V>(store: KVStore<K,V>, key: K, value: V) {\n  const existing = await store.get(key);\n  if (existing) await store.put(key, merge(existing, value));\n  else await store.put(key, value);\n}",
+        "description": "In-place merge-or-write."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "data-overwrite",
+        "type": "similar-to",
+        "strength": 0.7
+      },
+      {
+        "target_pattern_id": "change-data-capture",
+        "type": "complements",
+        "strength": 0.6
+      }
+    ]
+  }
+]

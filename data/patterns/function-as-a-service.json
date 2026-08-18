@@ -1,16 +1,18 @@
-{
-  "id": "function-as-a-service",
-  "name": "Function as a Service (FaaS)",
-  "category": "Serverless",
-  "description": "Event-driven, stateless compute functions that auto-scale",
-  "when_to_use": "Event processing\nStateless operations\nVariable workloads",
-  "benefits": "No server management\nAuto-scaling\nPay-per-execution\nEvent-driven",
-  "drawbacks": "Cold starts\nVendor lock-in\nLimited execution time\nStateless constraints",
-  "use_cases": "API backends\nData processing\nFile uploads\nScheduled tasks",
-  "complexity": "Low",
-  "tags": [
-    "serverless",
-    "event-driven",
-    "auto-scaling"
-  ]
-}
+[
+  {
+    "id": "function-as-a-service",
+    "name": "Function as a Service (FaaS)",
+    "category": "Serverless",
+    "description": "Event-driven, stateless compute functions that auto-scale",
+    "when_to_use": "Event processing\nStateless operations\nVariable workloads",
+    "benefits": "No server management\nAuto-scaling\nPay-per-execution\nEvent-driven",
+    "drawbacks": "Cold starts\nVendor lock-in\nLimited execution time\nStateless constraints",
+    "use_cases": "API backends\nData processing\nFile uploads\nScheduled tasks",
+    "complexity": "Low",
+    "tags": [
+      "serverless",
+      "event-driven",
+      "auto-scaling"
+    ]
+  }
+]

@@ -1,24 +1,26 @@
-{
-  "id": "pos-energy-efficiency",
-  "name": "Proof of Stake Energy Efficiency",
-  "category": "Sustainable Blockchain",
-  "description": "Replace energy-intensive PoW with PoS. 99.95% energy reduction.",
-  "when_to_use": "Sustainable blockchains, energy-efficient consensus",
-  "benefits": "99.95% less energy than PoW, sustainable, lower operating costs",
-  "drawbacks": "Different security model (nothing at stake), wealth concentration",
-  "use_cases": "Ethereum (post-Merge), Cardano, Polkadot, most modern chains",
-  "complexity": "High",
-  "tags": [
-    "sustainable",
-    "pos",
-    "energy",
-    "ethereum",
-    "consensus"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Ethereum PoS: Beacon chain consensus\n// Energy comparison:\n// PoW (Ethereum pre-Merge): ~94 TWh/year (≈ Netherlands)\n// PoS (Ethereum post-Merge): ~0.01 TWh/year (≈ small town)\n\n// PoS validator (conceptual)\ncontract PoSValidator {\n    uint256 public constant MIN_STAKE = 32 ether;\n    \n    function stake() external payable {\n        require(msg.value >= MIN_STAKE);\n        // Validator selected randomly, weighted by stake\n        // No mining, no energy waste\n    }\n    \n    function propose(bytes32 blockRoot) external onlySelected {\n        // Propose block if randomly selected\n        // Attesters vote on validity\n    }\n}"
+[
+  {
+    "id": "pos-energy-efficiency",
+    "name": "Proof of Stake Energy Efficiency",
+    "category": "Sustainable Blockchain",
+    "description": "Replace energy-intensive PoW with PoS. 99.95% energy reduction.",
+    "when_to_use": "Sustainable blockchains, energy-efficient consensus",
+    "benefits": "99.95% less energy than PoW, sustainable, lower operating costs",
+    "drawbacks": "Different security model (nothing at stake), wealth concentration",
+    "use_cases": "Ethereum (post-Merge), Cardano, Polkadot, most modern chains",
+    "complexity": "High",
+    "tags": [
+      "sustainable",
+      "pos",
+      "energy",
+      "ethereum",
+      "consensus"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Ethereum PoS: Beacon chain consensus\n// Energy comparison:\n// PoW (Ethereum pre-Merge): ~94 TWh/year (≈ Netherlands)\n// PoS (Ethereum post-Merge): ~0.01 TWh/year (≈ small town)\n\n// PoS validator (conceptual)\ncontract PoSValidator {\n    uint256 public constant MIN_STAKE = 32 ether;\n    \n    function stake() external payable {\n        require(msg.value >= MIN_STAKE);\n        // Validator selected randomly, weighted by stake\n        // No mining, no energy waste\n    }\n    \n    function propose(bytes32 blockRoot) external onlySelected {\n        // Propose block if randomly selected\n        // Attesters vote on validity\n    }\n}"
+      }
     }
   }
-}
+]

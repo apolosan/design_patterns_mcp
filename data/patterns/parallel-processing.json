@@ -1,16 +1,18 @@
-{
-  "id": "parallel-processing",
-  "name": "Parallel Processing Pattern",
-  "category": "Performance",
-  "description": "Divides work across multiple threads or processes for concurrent execution",
-  "when_to_use": "CPU-intensive tasks\nIndependent operations\nMulti-core systems",
-  "benefits": "Improved throughput\nCPU utilization\nFaster execution",
-  "drawbacks": "Synchronization complexity\nThread overhead\nDebugging difficulty",
-  "use_cases": "Mathematical calculations\nData processing\nImage processing",
-  "complexity": "High",
-  "tags": [
-    "performance",
-    "parallel",
-    "concurrency"
-  ]
-}
+[
+  {
+    "id": "parallel-processing",
+    "name": "Parallel Processing Pattern",
+    "category": "Performance",
+    "description": "Divides work across multiple threads or processes for concurrent execution",
+    "when_to_use": "CPU-intensive tasks\nIndependent operations\nMulti-core systems",
+    "benefits": "Improved throughput\nCPU utilization\nFaster execution",
+    "drawbacks": "Synchronization complexity\nThread overhead\nDebugging difficulty",
+    "use_cases": "Mathematical calculations\nData processing\nImage processing",
+    "complexity": "High",
+    "tags": [
+      "performance",
+      "parallel",
+      "concurrency"
+    ]
+  }
+]

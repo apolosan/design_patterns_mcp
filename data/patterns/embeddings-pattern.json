@@ -1,22 +1,24 @@
-{
-  "id": "embeddings-pattern",
-  "name": "Embeddings Pattern",
-  "category": "AI/ML",
-  "description": "Converts text/data into high-dimensional vectors for similarity and search",
-  "when_to_use": "Semantic search\nSimilarity matching\nClustering",
-  "benefits": "Semantic understanding\nEfficient search\nSimilarity computation\nClustering capability",
-  "drawbacks": "Storage requirements\nDimensionality choice\nQuality dependence",
-  "use_cases": "Search engines\nRecommendation systems\nDocument clustering",
-  "complexity": "Medium",
-  "tags": [
-    "embeddings",
-    "vectors",
-    "similarity"
-  ],
-  "examples": {
-    "python": {
-      "language": "python",
-      "code": "# Embeddings: convert text to semantic vectors\n\nfrom sentence_transformers import SentenceTransformer\nimport numpy as np\n\nclass EmbeddingsSystem:\n    def __init__(self, model_name='all-MiniLM-L6-v2'):\n        self.model = SentenceTransformer(model_name)\n    \n    def embed(self, texts: list[str]):\n        # Convert texts to vectors\n        return self.model.encode(texts)\n    \n    def similarity(self, text1: str, text2: str):\n        emb1, emb2 = self.embed([text1, text2])\n        # Cosine similarity\n        return np.dot(emb1, emb2) / (\n            np.linalg.norm(emb1) * np.linalg.norm(emb2)\n        )\n    \n    def find_similar(self, query: str, documents: list[str], top_k=3):\n        query_emb = self.embed([query])[0]\n        doc_embs = self.embed(documents)\n        \n        # Calculate similarities\n        similarities = [\n            (i, np.dot(query_emb, doc_emb) / (\n                np.linalg.norm(query_emb) * np.linalg.norm(doc_emb)\n            ))\n            for i, doc_emb in enumerate(doc_embs)\n        ]\n        \n        # Return top-k\n        similarities.sort(key=lambda x: x[1], reverse=True)\n        return [(documents[i], score) for i, score in similarities[:top_k]]\n\n# Usage: semantic search and similarity\nembeddings = EmbeddingsSystem()\nsimilar_docs = embeddings.find_similar(\n    \"machine learning\",\n    [\"AI and ML\", \"cooking recipes\", \"neural networks\"]\n)\nprint(similar_docs)  # [(\"AI and ML\", 0.85), (\"neural networks\", 0.72)]"
+[
+  {
+    "id": "embeddings-pattern",
+    "name": "Embeddings Pattern",
+    "category": "AI/ML",
+    "description": "Converts text/data into high-dimensional vectors for similarity and search",
+    "when_to_use": "Semantic search\nSimilarity matching\nClustering",
+    "benefits": "Semantic understanding\nEfficient search\nSimilarity computation\nClustering capability",
+    "drawbacks": "Storage requirements\nDimensionality choice\nQuality dependence",
+    "use_cases": "Search engines\nRecommendation systems\nDocument clustering",
+    "complexity": "Medium",
+    "tags": [
+      "embeddings",
+      "vectors",
+      "similarity"
+    ],
+    "examples": {
+      "python": {
+        "language": "python",
+        "code": "# Embeddings: convert text to semantic vectors\n\nfrom sentence_transformers import SentenceTransformer\nimport numpy as np\n\nclass EmbeddingsSystem:\n    def __init__(self, model_name='all-MiniLM-L6-v2'):\n        self.model = SentenceTransformer(model_name)\n    \n    def embed(self, texts: list[str]):\n        # Convert texts to vectors\n        return self.model.encode(texts)\n    \n    def similarity(self, text1: str, text2: str):\n        emb1, emb2 = self.embed([text1, text2])\n        # Cosine similarity\n        return np.dot(emb1, emb2) / (\n            np.linalg.norm(emb1) * np.linalg.norm(emb2)\n        )\n    \n    def find_similar(self, query: str, documents: list[str], top_k=3):\n        query_emb = self.embed([query])[0]\n        doc_embs = self.embed(documents)\n        \n        # Calculate similarities\n        similarities = [\n            (i, np.dot(query_emb, doc_emb) / (\n                np.linalg.norm(query_emb) * np.linalg.norm(doc_emb)\n            ))\n            for i, doc_emb in enumerate(doc_embs)\n        ]\n        \n        # Return top-k\n        similarities.sort(key=lambda x: x[1], reverse=True)\n        return [(documents[i], score) for i, score in similarities[:top_k]]\n\n# Usage: semantic search and similarity\nembeddings = EmbeddingsSystem()\nsimilar_docs = embeddings.find_similar(\n    \"machine learning\",\n    [\"AI and ML\", \"cooking recipes\", \"neural networks\"]\n)\nprint(similar_docs)  # [(\"AI and ML\", 0.85), (\"neural networks\", 0.72)]"
+      }
     }
   }
-}
+]

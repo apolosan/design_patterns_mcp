@@ -1,16 +1,18 @@
-{
-  "id": "message-translator",
-  "name": "Message Translator",
-  "category": "Integration",
-  "description": "Translates data format between different systems",
-  "when_to_use": "Format differences\nProtocol translation\nLegacy integration",
-  "benefits": "Format compatibility\nSystem independence\nLegacy support",
-  "drawbacks": "Translation overhead\nData loss risk\nMaintenance complexity",
-  "use_cases": "API integration\nLegacy systems\nData format conversion",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "translation",
-    "format"
-  ]
-}
+[
+  {
+    "id": "message-translator",
+    "name": "Message Translator",
+    "category": "Integration",
+    "description": "Translates data format between different systems",
+    "when_to_use": "Format differences\nProtocol translation\nLegacy integration",
+    "benefits": "Format compatibility\nSystem independence\nLegacy support",
+    "drawbacks": "Translation overhead\nData loss risk\nMaintenance complexity",
+    "use_cases": "API integration\nLegacy systems\nData format conversion",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "translation",
+      "format"
+    ]
+  }
+]

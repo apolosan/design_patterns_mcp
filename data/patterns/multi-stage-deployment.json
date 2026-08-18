@@ -1,24 +1,26 @@
-{
-  "id": "multi-stage-deployment",
-  "name": "Multi-Stage Deployment Pattern",
-  "category": "Development & Deployment",
-  "description": "Deploy complex systems in ordered stages with dependencies. Organized, repeatable, auditable.",
-  "when_to_use": "Complex protocols with dependencies, multi-contract systems",
-  "benefits": "Organized, repeatable, auditable, handles dependencies",
-  "drawbacks": "Complex coordination, rollback challenges",
-  "use_cases": "DeFi protocols, DAO deployments, protocol upgrades",
-  "complexity": "High",
-  "tags": [
-    "deployment",
-    "hardhat",
-    "foundry",
-    "automation",
-    "ci-cd"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Hardhat deploy script with staging\nimport { HardhatRuntimeEnvironment } from 'hardhat/types';\n\nmodule.exports = async (hre: HardhatRuntimeEnvironment) => {\n  const { deployments, getNamedAccounts } = hre;\n  const { deploy } = deployments;\n  const { deployer } = await getNamedAccounts();\n  \n  // Stage 1: Core contracts\n  const token = await deploy('GovernanceToken', { from: deployer });\n  const timelock = await deploy('Timelock', { from: deployer });\n  \n  // Stage 2: Governance (depends on stage 1)\n  const governor = await deploy('Governor', {\n    from: deployer,\n    args: [token.address, timelock.address]\n  });\n  \n  // Stage 3: Configure\n  await timelock.grantRole(PROPOSER_ROLE, governor.address);\n};\n\nmodule.exports.tags = ['governance'];\nmodule.exports.dependencies = ['tokens'];"
+[
+  {
+    "id": "multi-stage-deployment",
+    "name": "Multi-Stage Deployment Pattern",
+    "category": "Development & Deployment",
+    "description": "Deploy complex systems in ordered stages with dependencies. Organized, repeatable, auditable.",
+    "when_to_use": "Complex protocols with dependencies, multi-contract systems",
+    "benefits": "Organized, repeatable, auditable, handles dependencies",
+    "drawbacks": "Complex coordination, rollback challenges",
+    "use_cases": "DeFi protocols, DAO deployments, protocol upgrades",
+    "complexity": "High",
+    "tags": [
+      "deployment",
+      "hardhat",
+      "foundry",
+      "automation",
+      "ci-cd"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Hardhat deploy script with staging\nimport { HardhatRuntimeEnvironment } from 'hardhat/types';\n\nmodule.exports = async (hre: HardhatRuntimeEnvironment) => {\n  const { deployments, getNamedAccounts } = hre;\n  const { deploy } = deployments;\n  const { deployer } = await getNamedAccounts();\n  \n  // Stage 1: Core contracts\n  const token = await deploy('GovernanceToken', { from: deployer });\n  const timelock = await deploy('Timelock', { from: deployer });\n  \n  // Stage 2: Governance (depends on stage 1)\n  const governor = await deploy('Governor', {\n    from: deployer,\n    args: [token.address, timelock.address]\n  });\n  \n  // Stage 3: Configure\n  await timelock.grantRole(PROPOSER_ROLE, governor.address);\n};\n\nmodule.exports.tags = ['governance'];\nmodule.exports.dependencies = ['tokens'];"
+      }
     }
   }
-}
+]

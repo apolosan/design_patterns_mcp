@@ -1,22 +1,24 @@
-{
-  "id": "dirty-flag-performance",
-  "name": "Dirty Flag (Performance)",
-  "category": "Performance",
-  "description": "Tracks when data changes to avoid unnecessary recalculations",
-  "when_to_use": "Expensive calculations\nChange detection\nUpdate optimization",
-  "benefits": "Avoids unnecessary work\nPerformance optimization\nResource savings",
-  "drawbacks": "State tracking overhead\nComplexity\nMemory usage",
-  "use_cases": "Graphics rendering\nData processing\nComputed properties",
-  "complexity": "Medium",
-  "tags": [
-    "performance",
-    "dirty",
-    "optimization"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Dirty Flag: avoid unnecessary updates\nclass Transform {\n  private _position = { x: 0, y: 0 };\n  private _rotation = 0;\n  private _scale = { x: 1, y: 1 };\n  private _matrix?: Matrix;\n  private _dirty = true;\n  \n  get position() { return this._position; }\n  set position(value) {\n    this._position = value;\n    this._dirty = true;\n  }\n  \n  get rotation() { return this._rotation; }\n  set rotation(value) {\n    this._rotation = value;\n    this._dirty = true;\n  }\n  \n  getMatrix(): Matrix {\n    if (this._dirty) {\n      this._matrix = this.calculateMatrix();\n      this._dirty = false;\n    }\n    return this._matrix!;\n  }\n  \n  private calculateMatrix(): Matrix {\n    console.log('Recalculating matrix...');\n    return Matrix.compose(this._position, this._rotation, this._scale);\n  }\n}\n\nconst transform = new Transform();\ntransform.position = { x: 10, y: 20 };\ntransform.rotation = 45;\nconst m1 = transform.getMatrix(); // Calculates\nconst m2 = transform.getMatrix(); // Cached\ntransform.position = { x: 15, y: 25 };\nconst m3 = transform.getMatrix(); // Recalculates"
+[
+  {
+    "id": "dirty-flag-performance",
+    "name": "Dirty Flag (Performance)",
+    "category": "Performance",
+    "description": "Tracks when data changes to avoid unnecessary recalculations",
+    "when_to_use": "Expensive calculations\nChange detection\nUpdate optimization",
+    "benefits": "Avoids unnecessary work\nPerformance optimization\nResource savings",
+    "drawbacks": "State tracking overhead\nComplexity\nMemory usage",
+    "use_cases": "Graphics rendering\nData processing\nComputed properties",
+    "complexity": "Medium",
+    "tags": [
+      "performance",
+      "dirty",
+      "optimization"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Dirty Flag: avoid unnecessary updates\nclass Transform {\n  private _position = { x: 0, y: 0 };\n  private _rotation = 0;\n  private _scale = { x: 1, y: 1 };\n  private _matrix?: Matrix;\n  private _dirty = true;\n  \n  get position() { return this._position; }\n  set position(value) {\n    this._position = value;\n    this._dirty = true;\n  }\n  \n  get rotation() { return this._rotation; }\n  set rotation(value) {\n    this._rotation = value;\n    this._dirty = true;\n  }\n  \n  getMatrix(): Matrix {\n    if (this._dirty) {\n      this._matrix = this.calculateMatrix();\n      this._dirty = false;\n    }\n    return this._matrix!;\n  }\n  \n  private calculateMatrix(): Matrix {\n    console.log('Recalculating matrix...');\n    return Matrix.compose(this._position, this._rotation, this._scale);\n  }\n}\n\nconst transform = new Transform();\ntransform.position = { x: 10, y: 20 };\ntransform.rotation = 45;\nconst m1 = transform.getMatrix(); // Calculates\nconst m2 = transform.getMatrix(); // Cached\ntransform.position = { x: 15, y: 25 };\nconst m3 = transform.getMatrix(); // Recalculates"
+      }
     }
   }
-}
+]

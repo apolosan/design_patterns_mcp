@@ -1,23 +1,25 @@
-{
-  "id": "calldata-storage",
-  "name": "Calldata Storage Pattern",
-  "category": "Storage",
-  "description": "Store data in calldata instead of contract storage. Use events/calldata for historical data retrieval.",
-  "when_to_use": "Write-once data, historical logs, gas optimization",
-  "benefits": "Cheapest on-chain storage (16 gas/byte), permanent via archive nodes",
-  "drawbacks": "Not queryable from contracts, requires indexer, historical only",
-  "use_cases": "Order books, historical records, audit trails",
-  "complexity": "Low",
-  "tags": [
-    "storage",
-    "calldata",
-    "gas-optimization",
-    "events"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Store in calldata + emit event\nfunction recordData(bytes calldata data) external {\n    require(data.length > 0);\n    emit DataRecorded(msg.sender, data);\n    // Data is in calldata, retrievable via event logs\n}"
+[
+  {
+    "id": "calldata-storage",
+    "name": "Calldata Storage Pattern",
+    "category": "Storage",
+    "description": "Store data in calldata instead of contract storage. Use events/calldata for historical data retrieval.",
+    "when_to_use": "Write-once data, historical logs, gas optimization",
+    "benefits": "Cheapest on-chain storage (16 gas/byte), permanent via archive nodes",
+    "drawbacks": "Not queryable from contracts, requires indexer, historical only",
+    "use_cases": "Order books, historical records, audit trails",
+    "complexity": "Low",
+    "tags": [
+      "storage",
+      "calldata",
+      "gas-optimization",
+      "events"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Store in calldata + emit event\nfunction recordData(bytes calldata data) external {\n    require(data.length > 0);\n    emit DataRecorded(msg.sender, data);\n    // Data is in calldata, retrievable via event logs\n}"
+      }
     }
   }
-}
+]

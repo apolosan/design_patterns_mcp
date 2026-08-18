@@ -1,15 +1,17 @@
-{
-  "id": "microservices-sprawl",
-  "name": "Microservices Sprawl Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "Creating too many fine-grained microservices that increase complexity without providing real benefits",
-  "when_to_use": "When you have excessive microservices\nServices are too small to be meaningful\nNetwork overhead exceeds processing time",
-  "drawbacks": "Increased network latency\nComplex service orchestration\nDeployment overhead\nDebugging difficulties",
-  "use_cases": "Over-decomposed business domains\nSingle-purpose services that could be combined\nServices created for organizational rather than technical reasons",
-  "complexity": "High",
-  "tags": [
-    "anti-pattern",
-    "microservices",
-    "architecture"
-  ]
-}
+[
+  {
+    "id": "microservices-sprawl",
+    "name": "Microservices Sprawl Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "Creating too many fine-grained microservices that increase complexity without providing real benefits",
+    "when_to_use": "When you have excessive microservices\nServices are too small to be meaningful\nNetwork overhead exceeds processing time",
+    "drawbacks": "Increased network latency\nComplex service orchestration\nDeployment overhead\nDebugging difficulties",
+    "use_cases": "Over-decomposed business domains\nSingle-purpose services that could be combined\nServices created for organizational rather than technical reasons",
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "microservices",
+      "architecture"
+    ]
+  }
+]

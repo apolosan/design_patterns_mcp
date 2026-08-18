@@ -80,7 +80,7 @@ export class PatternSeeder {
         }
 
         const data = loadedData;
-        const patternsList = Array.isArray(data.patterns) ? data.patterns : data.id ? [data] : [];
+        const patternsList = this.extractPatternsList(data);
 
         for (const pattern of patternsList) {
           if (!this.isValidPattern(pattern)) {
@@ -198,6 +198,11 @@ export class PatternSeeder {
    * Type guard for PatternFileData
    */
   private isPatternFileData(data: unknown): data is PatternFileData {
+    // Accept ALL three layouts used by the catalog over time:
+    //   1. Array form (canonical per integrity-check): [{ ...pattern }, ...]
+    //   2. Container form: { "patterns": [ ... ] }
+    //   3. Flat single-object form: { id, name, ... }
+    if (Array.isArray(data)) return true;
     if (!isObject(data)) return false;
 
     // Check if it has patterns array OR an id (single pattern)
@@ -231,6 +236,19 @@ export class PatternSeeder {
   }
 
   /**
+   * Normalize any accepted file layout into a flat list of pattern objects.
+   * Supports array form, container form ({patterns: [...]}) and flat single
+   * object form ({id, name, ...}) — makes seeding ROBUST regardless of the
+   * shape stored on disk.
+   */
+  private extractPatternsList(data: PatternFileData): unknown[] {
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.patterns)) return data.patterns;
+    if (typeof data.id === 'string') return [data];
+    return [];
+  }
+
+  /**
    * Seed patterns from a specific file
    */
   async seedFromFile(filePath: string): Promise<SeederResult> {
@@ -242,7 +260,7 @@ export class PatternSeeder {
       }
 
       const data = loadedData;
-      const patternsList = Array.isArray(data.patterns) ? data.patterns : data.id ? [data] : [];
+      const patternsList = this.extractPatternsList(data);
 
       // Filter valid patterns
       const patterns: Pattern[] = [];

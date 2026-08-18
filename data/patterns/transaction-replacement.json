@@ -1,24 +1,26 @@
-{
-  "id": "transaction-replacement",
-  "name": "Transaction Replacement (RBF)",
-  "category": "Web3 Frontend",
-  "description": "Replace stuck transactions by resubmitting with higher gas and same nonce. Speed up or cancel.",
-  "when_to_use": "Stuck transactions, urgent operations, gas price volatility",
-  "benefits": "User control over stuck txs, prevents frustration, UX improvement",
-  "drawbacks": "Gas costs to replace, RBF complexity, not all providers support",
-  "use_cases": "Speed up transactions, cancel pending transactions, unstuck wallets",
-  "complexity": "Medium",
-  "tags": [
-    "web3",
-    "transaction",
-    "rbf",
-    "gas",
-    "replacement"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "async function speedUpTransaction(originalTx: Transaction) {\n  const newGasPrice = originalTx.gasPrice * 1.2; // 20% increase\n  \n  const replacementTx = {\n    ...originalTx,\n    nonce: originalTx.nonce, // SAME nonce\n    gasPrice: newGasPrice,\n    // or for EIP-1559:\n    maxFeePerGas: originalTx.maxFeePerGas * 1.2,\n    maxPriorityFeePerGas: originalTx.maxPriorityFeePerGas * 1.2\n  };\n  \n  return signer.sendTransaction(replacementTx);\n}"
+[
+  {
+    "id": "transaction-replacement",
+    "name": "Transaction Replacement (RBF)",
+    "category": "Web3 Frontend",
+    "description": "Replace stuck transactions by resubmitting with higher gas and same nonce. Speed up or cancel.",
+    "when_to_use": "Stuck transactions, urgent operations, gas price volatility",
+    "benefits": "User control over stuck txs, prevents frustration, UX improvement",
+    "drawbacks": "Gas costs to replace, RBF complexity, not all providers support",
+    "use_cases": "Speed up transactions, cancel pending transactions, unstuck wallets",
+    "complexity": "Medium",
+    "tags": [
+      "web3",
+      "transaction",
+      "rbf",
+      "gas",
+      "replacement"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "async function speedUpTransaction(originalTx: Transaction) {\n  const newGasPrice = originalTx.gasPrice * 1.2; // 20% increase\n  \n  const replacementTx = {\n    ...originalTx,\n    nonce: originalTx.nonce, // SAME nonce\n    gasPrice: newGasPrice,\n    // or for EIP-1559:\n    maxFeePerGas: originalTx.maxFeePerGas * 1.2,\n    maxPriorityFeePerGas: originalTx.maxPriorityFeePerGas * 1.2\n  };\n  \n  return signer.sendTransaction(replacementTx);\n}"
+      }
     }
   }
-}
+]

@@ -1,16 +1,18 @@
-{
-  "id": "published-language",
-  "name": "Published Language",
-  "category": "Domain-Driven Design",
-  "description": "Well-documented shared language for information exchange",
-  "when_to_use": "Multiple integrations\nPublic APIs\nStandard protocols",
-  "benefits": "Standardization\nMultiple consumers\nClear documentation",
-  "drawbacks": "Documentation overhead\nVersion management\nRigidity",
-  "use_cases": "Public APIs\nData formats\nIntegration protocols",
-  "complexity": "Medium",
-  "tags": [
-    "ddd",
-    "strategic",
-    "protocol"
-  ]
-}
+[
+  {
+    "id": "published-language",
+    "name": "Published Language",
+    "category": "Domain-Driven Design",
+    "description": "Well-documented shared language for information exchange",
+    "when_to_use": "Multiple integrations\nPublic APIs\nStandard protocols",
+    "benefits": "Standardization\nMultiple consumers\nClear documentation",
+    "drawbacks": "Documentation overhead\nVersion management\nRigidity",
+    "use_cases": "Public APIs\nData formats\nIntegration protocols",
+    "complexity": "Medium",
+    "tags": [
+      "ddd",
+      "strategic",
+      "protocol"
+    ]
+  }
+]

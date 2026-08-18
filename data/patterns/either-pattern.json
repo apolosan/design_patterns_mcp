@@ -1,16 +1,18 @@
-{
-  "id": "either-pattern",
-  "name": "Either Pattern",
-  "category": "Functional",
-  "description": "Represents values that can be one of two types, often success or error",
-  "when_to_use": "Error handling\nAlternative values\nValidation",
-  "benefits": "Explicit error handling\nType safety\nComposable\nNo exceptions",
-  "drawbacks": "Verbose syntax\nLearning curve\nComplexity",
-  "use_cases": "Validation results\nError handling\nAlternative computations",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "either",
-    "error-handling"
-  ]
-}
+[
+  {
+    "id": "either-pattern",
+    "name": "Either Pattern",
+    "category": "Functional",
+    "description": "Represents values that can be one of two types, often success or error",
+    "when_to_use": "Error handling\nAlternative values\nValidation",
+    "benefits": "Explicit error handling\nType safety\nComposable\nNo exceptions",
+    "drawbacks": "Verbose syntax\nLearning curve\nComplexity",
+    "use_cases": "Validation results\nError handling\nAlternative computations",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "either",
+      "error-handling"
+    ]
+  }
+]

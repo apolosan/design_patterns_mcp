@@ -1,22 +1,24 @@
-{
-  "id": "memento",
-  "name": "Memento",
-  "category": "Behavioral",
-  "description": "Captures and restores object state without violating encapsulation",
-  "when_to_use": "Undo/redo\nSnapshots\nState rollback",
-  "benefits": "Encapsulation preserved\nSimple undo\nState recovery",
-  "drawbacks": "Memory overhead\nCaretaker complexity",
-  "use_cases": "Text editors\nGame save states\nTransaction rollback",
-  "complexity": "Medium",
-  "tags": [
-    "behavioral",
-    "state",
-    "snapshot"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "class EditorMemento {\n  constructor(private content: string) {}\n  getContent() { return this.content; }\n}\n\nclass Editor {\n  private content = '';\n  type(text: string) { this.content += text; }\n  save() { return new EditorMemento(this.content); }\n  restore(m: EditorMemento) { this.content = m.getContent(); }\n  getContent() { return this.content; }\n}\n\n// Usage: save and restore state\nconst editor = new Editor();\neditor.type('Hello');\nconst saved = editor.save();\neditor.type(' World');\neditor.restore(saved);\nconsole.log(editor.getContent()); // Hello"
+[
+  {
+    "id": "memento",
+    "name": "Memento",
+    "category": "Behavioral",
+    "description": "Captures and restores object state without violating encapsulation",
+    "when_to_use": "Undo/redo\nSnapshots\nState rollback",
+    "benefits": "Encapsulation preserved\nSimple undo\nState recovery",
+    "drawbacks": "Memory overhead\nCaretaker complexity",
+    "use_cases": "Text editors\nGame save states\nTransaction rollback",
+    "complexity": "Medium",
+    "tags": [
+      "behavioral",
+      "state",
+      "snapshot"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "class EditorMemento {\n  constructor(private content: string) {}\n  getContent() { return this.content; }\n}\n\nclass Editor {\n  private content = '';\n  type(text: string) { this.content += text; }\n  save() { return new EditorMemento(this.content); }\n  restore(m: EditorMemento) { this.content = m.getContent(); }\n  getContent() { return this.content; }\n}\n\n// Usage: save and restore state\nconst editor = new Editor();\neditor.type('Hello');\nconst saved = editor.save();\neditor.type(' World');\neditor.restore(saved);\nconsole.log(editor.getContent()); // Hello"
+      }
     }
   }
-}
+]

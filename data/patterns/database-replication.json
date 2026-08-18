@@ -1,16 +1,18 @@
-{
-  "id": "database-replication",
-  "name": "Database Replication",
-  "category": "Data Access",
-  "description": "Maintains copies of data across multiple database instances",
-  "when_to_use": "High availability\nRead scaling\nDisaster recovery",
-  "benefits": "High availability\nRead performance\nFault tolerance",
-  "drawbacks": "Consistency challenges\nReplication lag\nStorage overhead",
-  "use_cases": "High-availability systems\nRead-heavy applications\nGeographic distribution",
-  "complexity": "High",
-  "tags": [
-    "data-access",
-    "replication",
-    "availability"
-  ]
-}
+[
+  {
+    "id": "database-replication",
+    "name": "Database Replication",
+    "category": "Data Access",
+    "description": "Maintains copies of data across multiple database instances",
+    "when_to_use": "High availability\nRead scaling\nDisaster recovery",
+    "benefits": "High availability\nRead performance\nFault tolerance",
+    "drawbacks": "Consistency challenges\nReplication lag\nStorage overhead",
+    "use_cases": "High-availability systems\nRead-heavy applications\nGeographic distribution",
+    "complexity": "High",
+    "tags": [
+      "data-access",
+      "replication",
+      "availability"
+    ]
+  }
+]

@@ -323,10 +323,10 @@ export class StructuredLogger {
    * Format entry as pretty-printed JSON
    */
   private formatPretty(entry: StructuredLogEntry): string {
-    const color = this.getColorForLevel(LogLevel[entry.level as keyof typeof LogLevel]);
-    const reset = '\x1b[0m';
+    // MCP stdio protocol: never embed ANSI colors in the payload emitted by
+    // the logger itself; coloring happens only in writeToConsole on a TTY.
     const jsonStr = JSON.stringify(entry, null, 2);
-    return `${color}${jsonStr}${reset}`;
+    return jsonStr;
   }
 
   /**
@@ -348,12 +348,13 @@ export class StructuredLogger {
    * Write to console with appropriate coloring
    */
   private writeToConsole(entry: StructuredLogEntry, formattedEntry: string): void {
-    const stream =
-      LogLevel[entry.level as keyof typeof LogLevel] >= LogLevel.ERROR
-        ? process.stderr
-        : process.stdout;
+    // MCP stdio protocol: stdout is reserved EXCLUSIVELY for JSON-RPC frames.
+    // ALL diagnostic logs MUST go to stderr, otherwise the stdio transport
+    // corrupts the protocol stream. ANSI colors only when stderr is a TTY.
+    const stream = process.stderr;
+    const useColor = process.stderr.isTTY === true;
 
-    if (this.config.format === 'text') {
+    if (this.config.format === 'text' && useColor) {
       const color = this.getColorForLevel(LogLevel[entry.level as keyof typeof LogLevel]);
       stream.write(`${color}${formattedEntry}\x1b[0m\n`);
     } else {

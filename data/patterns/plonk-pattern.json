@@ -1,23 +1,25 @@
-{
-  "id": "plonk-pattern",
-  "name": "PLONK Pattern",
-  "category": "Zero-Knowledge",
-  "description": "Universal trusted setup for ZK proofs. Reusable setup, supports lookup tables, updatable.",
-  "when_to_use": "Modern ZK systems, universal setup, lookup tables",
-  "benefits": "Reusable setup (one ceremony for all circuits), updatable, custom gates",
-  "drawbacks": "Larger proofs than Groth16 (~800 bytes), more complex",
-  "use_cases": "zkSync Era, Aztec, Polygon Hermez",
-  "complexity": "Very High",
-  "tags": [
-    "zero-knowledge",
-    "plonk",
-    "kzg",
-    "universal-setup"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// PLONK verifier with KZG commitments\ncontract PlonkVerifier {\n    // Universal trusted setup (Powers of Tau)\n    // Reusable for any circuit\n    \n    function verify(\n        bytes memory proof,\n        uint256[] memory publicInputs\n    ) public view returns (bool) {\n        // 1. Verify KZG polynomial commitments\n        // 2. Check PLONK constraints with lookup tables\n        // 3. Pairing check\n        \n        return checkPairing(proof, publicInputs);\n    }\n}\n\n// Supports custom gates and lookup tables\n// ~800 byte proofs, ~500k gas verification"
+[
+  {
+    "id": "plonk-pattern",
+    "name": "PLONK Pattern",
+    "category": "Zero-Knowledge",
+    "description": "Universal trusted setup for ZK proofs. Reusable setup, supports lookup tables, updatable.",
+    "when_to_use": "Modern ZK systems, universal setup, lookup tables",
+    "benefits": "Reusable setup (one ceremony for all circuits), updatable, custom gates",
+    "drawbacks": "Larger proofs than Groth16 (~800 bytes), more complex",
+    "use_cases": "zkSync Era, Aztec, Polygon Hermez",
+    "complexity": "Very High",
+    "tags": [
+      "zero-knowledge",
+      "plonk",
+      "kzg",
+      "universal-setup"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// PLONK verifier with KZG commitments\ncontract PlonkVerifier {\n    // Universal trusted setup (Powers of Tau)\n    // Reusable for any circuit\n    \n    function verify(\n        bytes memory proof,\n        uint256[] memory publicInputs\n    ) public view returns (bool) {\n        // 1. Verify KZG polynomial commitments\n        // 2. Check PLONK constraints with lookup tables\n        // 3. Pairing check\n        \n        return checkPairing(proof, publicInputs);\n    }\n}\n\n// Supports custom gates and lookup tables\n// ~800 byte proofs, ~500k gas verification"
+      }
     }
   }
-}
+]

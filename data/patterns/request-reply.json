@@ -1,16 +1,18 @@
-{
-  "id": "request-reply",
-  "name": "Request-Reply",
-  "category": "Integration",
-  "description": "Two-way messaging pattern where requestor sends message and waits for reply",
-  "when_to_use": "Synchronous communication\nQuery operations\nRemote procedure calls",
-  "benefits": "Synchronous semantics\nClear communication\nRequest correlation",
-  "drawbacks": "Blocking behavior\nTimeout handling\nCoupling",
-  "use_cases": "RPC systems\nAPI calls\nDatabase queries",
-  "complexity": "Low",
-  "tags": [
-    "integration",
-    "messaging",
-    "synchronous"
-  ]
-}
+[
+  {
+    "id": "request-reply",
+    "name": "Request-Reply",
+    "category": "Integration",
+    "description": "Two-way messaging pattern where requestor sends message and waits for reply",
+    "when_to_use": "Synchronous communication\nQuery operations\nRemote procedure calls",
+    "benefits": "Synchronous semantics\nClear communication\nRequest correlation",
+    "drawbacks": "Blocking behavior\nTimeout handling\nCoupling",
+    "use_cases": "RPC systems\nAPI calls\nDatabase queries",
+    "complexity": "Low",
+    "tags": [
+      "integration",
+      "messaging",
+      "synchronous"
+    ]
+  }
+]

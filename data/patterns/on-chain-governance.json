@@ -1,24 +1,26 @@
-{
-  "id": "on-chain-governance",
-  "name": "On-Chain Governance",
-  "category": "DAO Governance",
-  "description": "Trustless governance with automatic on-chain execution. Proposals execute automatically after passing.",
-  "when_to_use": "Protocol parameters, upgrades, trustless execution requirements",
-  "benefits": "Transparent, automatic execution, censorship-resistant, fully trustless",
-  "drawbacks": "Higher gas costs, slower decisions, complex implementation",
-  "use_cases": "Compound, Uniswap governance, protocol parameter changes",
-  "complexity": "High",
-  "tags": [
-    "dao",
-    "governance",
-    "on-chain",
-    "compound",
-    "trustless"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/governance/Governor.sol\";\n\ncontract OnChainGovernor is Governor, GovernorVotes {\n    function propose(\n        address[] memory targets,\n        uint256[] memory values,\n        bytes[] memory calldatas,\n        string memory description\n    ) public override returns (uint256) {\n        return super.propose(targets, values, calldatas, description);\n    }\n    \n    function execute(...) public payable {\n        // Automatically executes if proposal passed\n        super._execute(proposalId, targets, values, calldatas, descriptionHash);\n    }\n}"
+[
+  {
+    "id": "on-chain-governance",
+    "name": "On-Chain Governance",
+    "category": "DAO Governance",
+    "description": "Trustless governance with automatic on-chain execution. Proposals execute automatically after passing.",
+    "when_to_use": "Protocol parameters, upgrades, trustless execution requirements",
+    "benefits": "Transparent, automatic execution, censorship-resistant, fully trustless",
+    "drawbacks": "Higher gas costs, slower decisions, complex implementation",
+    "use_cases": "Compound, Uniswap governance, protocol parameter changes",
+    "complexity": "High",
+    "tags": [
+      "dao",
+      "governance",
+      "on-chain",
+      "compound",
+      "trustless"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/governance/Governor.sol\";\n\ncontract OnChainGovernor is Governor, GovernorVotes {\n    function propose(\n        address[] memory targets,\n        uint256[] memory values,\n        bytes[] memory calldatas,\n        string memory description\n    ) public override returns (uint256) {\n        return super.propose(targets, values, calldatas, description);\n    }\n    \n    function execute(...) public payable {\n        // Automatically executes if proposal passed\n        super._execute(proposalId, targets, values, calldatas, descriptionHash);\n    }\n}"
+      }
     }
   }
-}
+]

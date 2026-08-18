@@ -1,16 +1,18 @@
-{
-  "id": "partnership",
-  "name": "Partnership",
-  "category": "Domain-Driven Design",
-  "description": "Mutual dependency where teams must coordinate development efforts",
-  "when_to_use": "Mutual dependency\nJoint development\nShared goals",
-  "benefits": "Aligned goals\nCoordinated development\nMutual support",
-  "drawbacks": "Coordination overhead\nShared risk\nComplex planning",
-  "use_cases": "Joint features\nShared platforms\nIntegrated systems",
-  "complexity": "High",
-  "tags": [
-    "ddd",
-    "strategic",
-    "partnership"
-  ]
-}
+[
+  {
+    "id": "partnership",
+    "name": "Partnership",
+    "category": "Domain-Driven Design",
+    "description": "Mutual dependency where teams must coordinate development efforts",
+    "when_to_use": "Mutual dependency\nJoint development\nShared goals",
+    "benefits": "Aligned goals\nCoordinated development\nMutual support",
+    "drawbacks": "Coordination overhead\nShared risk\nComplex planning",
+    "use_cases": "Joint features\nShared platforms\nIntegrated systems",
+    "complexity": "High",
+    "tags": [
+      "ddd",
+      "strategic",
+      "partnership"
+    ]
+  }
+]

@@ -1,16 +1,18 @@
-{
-  "id": "immutable-object",
-  "name": "Immutable Object",
-  "category": "Concurrency",
-  "description": "Objects that cannot be modified after creation, inherently thread-safe",
-  "when_to_use": "Thread safety\nFunctional programming\nValue objects",
-  "benefits": "Thread safety\nNo synchronization\nSimple reasoning\nCacheable",
-  "drawbacks": "Memory overhead\nCreation cost\nLimited mutability",
-  "use_cases": "Value objects\nConfiguration\nFunctional programming",
-  "complexity": "Low",
-  "tags": [
-    "concurrency",
-    "immutability",
-    "safety"
-  ]
-}
+[
+  {
+    "id": "immutable-object",
+    "name": "Immutable Object",
+    "category": "Concurrency",
+    "description": "Objects that cannot be modified after creation, inherently thread-safe",
+    "when_to_use": "Thread safety\nFunctional programming\nValue objects",
+    "benefits": "Thread safety\nNo synchronization\nSimple reasoning\nCacheable",
+    "drawbacks": "Memory overhead\nCreation cost\nLimited mutability",
+    "use_cases": "Value objects\nConfiguration\nFunctional programming",
+    "complexity": "Low",
+    "tags": [
+      "concurrency",
+      "immutability",
+      "safety"
+    ]
+  }
+]

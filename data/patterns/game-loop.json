@@ -1,16 +1,18 @@
-{
-  "id": "game-loop",
-  "name": "Game Loop Pattern",
-  "category": "Game Development",
-  "description": "Central loop that continuously updates game state and renders graphics",
-  "when_to_use": "Real-time games\nInteractive applications\nSimulation systems",
-  "benefits": "Consistent timing\nFrame rate control\nInput responsiveness",
-  "drawbacks": "CPU intensive\nTiming complexity\nPlatform dependencies",
-  "use_cases": "Video games\nSimulations\nInteractive applications",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "loop",
-    "timing"
-  ]
-}
+[
+  {
+    "id": "game-loop",
+    "name": "Game Loop Pattern",
+    "category": "Game Development",
+    "description": "Central loop that continuously updates game state and renders graphics",
+    "when_to_use": "Real-time games\nInteractive applications\nSimulation systems",
+    "benefits": "Consistent timing\nFrame rate control\nInput responsiveness",
+    "drawbacks": "CPU intensive\nTiming complexity\nPlatform dependencies",
+    "use_cases": "Video games\nSimulations\nInteractive applications",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "loop",
+      "timing"
+    ]
+  }
+]

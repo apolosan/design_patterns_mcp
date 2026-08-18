@@ -1,22 +1,24 @@
-{
-  "id": "composite",
-  "name": "Composite",
-  "category": "Structural",
-  "description": "Composes objects into tree structures to represent part-whole hierarchies",
-  "when_to_use": "Tree structures\nUniform treatment\nRecursive structures",
-  "benefits": "Simplified client code\nEasy to add new components\nRecursive composition",
-  "drawbacks": "Can make design overly general\nType safety issues",
-  "use_cases": "File systems\nUI component trees\nOrganization charts",
-  "complexity": "Medium",
-  "tags": [
-    "structural",
-    "tree",
-    "hierarchy"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Component {\n  execute(): void;\n}\n\nclass Leaf implements Component {\n  constructor(private name: string) {}\n  execute() { console.log(this.name); }\n}\n\nclass Composite implements Component {\n  private children: Component[] = [];\n  \n  add(c: Component) { this.children.push(c); }\n  execute() { this.children.forEach(c => c.execute()); }\n}\n\n// Usage: treat individual and composite uniformly\nconst tree = new Composite();\ntree.add(new Leaf('Leaf 1'));\ntree.add(new Leaf('Leaf 2'));\ntree.execute();"
+[
+  {
+    "id": "composite",
+    "name": "Composite",
+    "category": "Structural",
+    "description": "Composes objects into tree structures to represent part-whole hierarchies",
+    "when_to_use": "Tree structures\nUniform treatment\nRecursive structures",
+    "benefits": "Simplified client code\nEasy to add new components\nRecursive composition",
+    "drawbacks": "Can make design overly general\nType safety issues",
+    "use_cases": "File systems\nUI component trees\nOrganization charts",
+    "complexity": "Medium",
+    "tags": [
+      "structural",
+      "tree",
+      "hierarchy"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Component {\n  execute(): void;\n}\n\nclass Leaf implements Component {\n  constructor(private name: string) {}\n  execute() { console.log(this.name); }\n}\n\nclass Composite implements Component {\n  private children: Component[] = [];\n  \n  add(c: Component) { this.children.push(c); }\n  execute() { this.children.forEach(c => c.execute()); }\n}\n\n// Usage: treat individual and composite uniformly\nconst tree = new Composite();\ntree.add(new Leaf('Leaf 1'));\ntree.add(new Leaf('Leaf 2'));\ntree.execute();"
+      }
     }
   }
-}
+]

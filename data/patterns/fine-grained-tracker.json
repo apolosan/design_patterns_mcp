@@ -1,39 +1,54 @@
-{
-  "id": "fine-grained-tracker",
-  "name": "Fine-Grained Tracker",
-  "category": "Data Engineering",
-  "description": "Tracks lineage, status, and audit metadata for individual records at row-level granularity through a pipeline. Persists per-record state transitions to enable debugging, replay, and SLA monitoring.",
-  "when_to_use": [
-    "Each record needs traceable history across pipeline stages",
-    "SLA monitoring requires per-record latency visibility",
-    "Audit and replay are regulatory requirements"
-  ],
-  "benefits": [
-    "Enables precise debugging",
-    "Per-record SLA metrics",
-    "Audit-ready trail"
-  ],
-  "drawbacks": [
-    "Storage overhead per record",
-    "Tracker writes add latency",
-    "Schema coupling between tracker and payload"
-  ],
-  "use_cases": [
-    "Financial transaction lineage",
-    "Patient record access logs",
-    "Data quality issue attribution"
-  ],
-  "complexity": "Medium",
-  "tags": ["data-engineering", "lineage", "tracking", "audit"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Trace { recordId: string; stage: string; ts: number; status: string; }\nclass FineGrainedTracker {\n  constructor(private store: KVStore) {}\n  async track(t: Trace) { await this.store.put(`trace:${t.recordId}:${t.ts}`, t); }\n  async history(id: string): Promise<Trace[]> {\n    return (await this.store.scan(`trace:${id}:`)).sort((a,b)=>a.ts-b.ts);\n  }\n}",
-      "description": "Per-record trace store with history scan."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "dataset-tracker", "type": "relates-to", "strength": 0.7},
-    {"target_pattern_id": "fine-grained-accessor-for-resources", "type": "complements", "strength": 0.5}
-  ]
-}
+[
+  {
+    "id": "fine-grained-tracker",
+    "name": "Fine-Grained Tracker",
+    "category": "Data Engineering",
+    "description": "Tracks lineage, status, and audit metadata for individual records at row-level granularity through a pipeline. Persists per-record state transitions to enable debugging, replay, and SLA monitoring.",
+    "when_to_use": [
+      "Each record needs traceable history across pipeline stages",
+      "SLA monitoring requires per-record latency visibility",
+      "Audit and replay are regulatory requirements"
+    ],
+    "benefits": [
+      "Enables precise debugging",
+      "Per-record SLA metrics",
+      "Audit-ready trail"
+    ],
+    "drawbacks": [
+      "Storage overhead per record",
+      "Tracker writes add latency",
+      "Schema coupling between tracker and payload"
+    ],
+    "use_cases": [
+      "Financial transaction lineage",
+      "Patient record access logs",
+      "Data quality issue attribution"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-engineering",
+      "lineage",
+      "tracking",
+      "audit"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Trace { recordId: string; stage: string; ts: number; status: string; }\nclass FineGrainedTracker {\n  constructor(private store: KVStore) {}\n  async track(t: Trace) { await this.store.put(`trace:${t.recordId}:${t.ts}`, t); }\n  async history(id: string): Promise<Trace[]> {\n    return (await this.store.scan(`trace:${id}:`)).sort((a,b)=>a.ts-b.ts);\n  }\n}",
+        "description": "Per-record trace store with history scan."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "dataset-tracker",
+        "type": "relates-to",
+        "strength": 0.7
+      },
+      {
+        "target_pattern_id": "fine-grained-accessor-for-resources",
+        "type": "complements",
+        "strength": 0.5
+      }
+    ]
+  }
+]

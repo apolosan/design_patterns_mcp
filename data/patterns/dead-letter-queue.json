@@ -1,16 +1,18 @@
-{
-  "id": "dead-letter-queue",
-  "name": "Dead Letter Queue",
-  "category": "Integration",
-  "description": "Handles messages that cannot be processed successfully",
-  "when_to_use": "Error handling\nFailed message processing\nSystem reliability",
-  "benefits": "Error handling\nMessage preservation\nSystem stability",
-  "drawbacks": "Storage overhead\nManual intervention\nProcessing delay",
-  "use_cases": "Message systems\nError handling\nReliability patterns",
-  "complexity": "Medium",
-  "tags": [
-    "integration",
-    "error-handling",
-    "reliability"
-  ]
-}
+[
+  {
+    "id": "dead-letter-queue",
+    "name": "Dead Letter Queue",
+    "category": "Integration",
+    "description": "Handles messages that cannot be processed successfully",
+    "when_to_use": "Error handling\nFailed message processing\nSystem reliability",
+    "benefits": "Error handling\nMessage preservation\nSystem stability",
+    "drawbacks": "Storage overhead\nManual intervention\nProcessing delay",
+    "use_cases": "Message systems\nError handling\nReliability patterns",
+    "complexity": "Medium",
+    "tags": [
+      "integration",
+      "error-handling",
+      "reliability"
+    ]
+  }
+]

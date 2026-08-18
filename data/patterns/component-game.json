@@ -1,16 +1,18 @@
-{
-  "id": "component-game",
-  "name": "Component Pattern (Game)",
-  "category": "Game Development",
-  "description": "Breaks game objects into modular components for flexible composition",
-  "when_to_use": "Flexible objects\nCode reuse\nModular systems",
-  "benefits": "Flexibility\nCode reuse\nComposition\nEasy maintenance",
-  "drawbacks": "Communication complexity\nPerformance overhead\nDesign complexity",
-  "use_cases": "Game entities\nModular systems\nPlugin architectures",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "component",
-    "composition"
-  ]
-}
+[
+  {
+    "id": "component-game",
+    "name": "Component Pattern (Game)",
+    "category": "Game Development",
+    "description": "Breaks game objects into modular components for flexible composition",
+    "when_to_use": "Flexible objects\nCode reuse\nModular systems",
+    "benefits": "Flexibility\nCode reuse\nComposition\nEasy maintenance",
+    "drawbacks": "Communication complexity\nPerformance overhead\nDesign complexity",
+    "use_cases": "Game entities\nModular systems\nPlugin architectures",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "component",
+      "composition"
+    ]
+  }
+]

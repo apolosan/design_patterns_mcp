@@ -1,16 +1,18 @@
-{
-  "id": "battery-optimization",
-  "name": "Battery Optimization Pattern",
-  "category": "Mobile",
-  "description": "Optimizes app behavior to minimize battery consumption on mobile devices",
-  "when_to_use": "Mobile applications\nBattery-sensitive operations\nBackground processing",
-  "benefits": "Extended battery life\nBetter user experience\nSystem optimization",
-  "drawbacks": "Feature limitations\nComplex optimization\nPlatform-specific",
-  "use_cases": "Location services\nBackground tasks\nReal-time features",
-  "complexity": "High",
-  "tags": [
-    "mobile",
-    "battery",
-    "optimization"
-  ]
-}
+[
+  {
+    "id": "battery-optimization",
+    "name": "Battery Optimization Pattern",
+    "category": "Mobile",
+    "description": "Optimizes app behavior to minimize battery consumption on mobile devices",
+    "when_to_use": "Mobile applications\nBattery-sensitive operations\nBackground processing",
+    "benefits": "Extended battery life\nBetter user experience\nSystem optimization",
+    "drawbacks": "Feature limitations\nComplex optimization\nPlatform-specific",
+    "use_cases": "Location services\nBackground tasks\nReal-time features",
+    "complexity": "High",
+    "tags": [
+      "mobile",
+      "battery",
+      "optimization"
+    ]
+  }
+]

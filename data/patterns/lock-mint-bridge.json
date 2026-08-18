@@ -1,23 +1,25 @@
-{
-  "id": "lock-mint-bridge",
-  "name": "Lock-and-Mint Bridge",
-  "category": "Cross-Chain",
-  "description": "Lock assets on source chain, mint wrapped version on destination. Burn to unlock.",
-  "when_to_use": "Cross-chain token transfers, wrapped assets, multi-chain protocols",
-  "benefits": "Simple model, preserves total supply, reversible",
-  "drawbacks": "Custodial risk on lock contract, bridge security critical",
-  "use_cases": "WBTC, Polygon bridge, Multichain (Anyswap)",
-  "complexity": "Medium",
-  "tags": [
-    "cross-chain",
-    "bridge",
-    "wrapped-tokens",
-    "lock-mint"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Source chain: lock tokens\nfunction lock(uint256 amount) external {\n    token.transferFrom(msg.sender, address(this), amount);\n    emit Locked(msg.sender, amount, destChainId);\n}\n\n// Destination chain: mint wrapped tokens\nfunction mint(address to, uint256 amount, bytes calldata proof) external onlyRelayer {\n    require(verifyProof(proof));\n    wrappedToken.mint(to, amount);\n}"
+[
+  {
+    "id": "lock-mint-bridge",
+    "name": "Lock-and-Mint Bridge",
+    "category": "Cross-Chain",
+    "description": "Lock assets on source chain, mint wrapped version on destination. Burn to unlock.",
+    "when_to_use": "Cross-chain token transfers, wrapped assets, multi-chain protocols",
+    "benefits": "Simple model, preserves total supply, reversible",
+    "drawbacks": "Custodial risk on lock contract, bridge security critical",
+    "use_cases": "WBTC, Polygon bridge, Multichain (Anyswap)",
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "bridge",
+      "wrapped-tokens",
+      "lock-mint"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Source chain: lock tokens\nfunction lock(uint256 amount) external {\n    token.transferFrom(msg.sender, address(this), amount);\n    emit Locked(msg.sender, amount, destChainId);\n}\n\n// Destination chain: mint wrapped tokens\nfunction mint(address to, uint256 amount, bytes calldata proof) external onlyRelayer {\n    require(verifyProof(proof));\n    wrappedToken.mint(to, amount);\n}"
+      }
     }
   }
-}
+]

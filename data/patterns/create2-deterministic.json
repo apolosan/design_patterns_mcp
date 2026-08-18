@@ -1,24 +1,26 @@
-{
-  "id": "create2-deterministic",
-  "name": "CREATE2 Deterministic Deployment",
-  "category": "Smart Contract Factory",
-  "description": "Deploy contracts to predictable addresses. Same address across chains, counterfactual instantiation.",
-  "when_to_use": "Cross-chain same address, counterfactual contracts, predictable deployment",
-  "benefits": "Address known before deployment, cross-chain consistency, counterfactual",
-  "drawbacks": "Salt management, deployment complexity, address collision risk",
-  "use_cases": "Multi-chain protocols, factory patterns, deterministic addresses",
-  "complexity": "Medium",
-  "tags": [
-    "factory",
-    "create2",
-    "deterministic",
-    "cross-chain",
-    "deployment"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract Factory {\n    function deploy(bytes32 salt, bytes memory bytecode) \n        external returns (address) \n    {\n        address addr;\n        assembly {\n            addr := create2(0, add(bytecode, 0x20), mload(bytecode), salt)\n        }\n        require(addr != address(0), \"Deploy failed\");\n        return addr;\n    }\n    \n    function computeAddress(bytes32 salt, bytes memory bytecode) \n        public view returns (address) \n    {\n        bytes32 hash = keccak256(abi.encodePacked(\n            bytes1(0xff), address(this), salt, keccak256(bytecode)\n        ));\n        return address(uint160(uint256(hash)));\n    }\n}"
+[
+  {
+    "id": "create2-deterministic",
+    "name": "CREATE2 Deterministic Deployment",
+    "category": "Smart Contract Factory",
+    "description": "Deploy contracts to predictable addresses. Same address across chains, counterfactual instantiation.",
+    "when_to_use": "Cross-chain same address, counterfactual contracts, predictable deployment",
+    "benefits": "Address known before deployment, cross-chain consistency, counterfactual",
+    "drawbacks": "Salt management, deployment complexity, address collision risk",
+    "use_cases": "Multi-chain protocols, factory patterns, deterministic addresses",
+    "complexity": "Medium",
+    "tags": [
+      "factory",
+      "create2",
+      "deterministic",
+      "cross-chain",
+      "deployment"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract Factory {\n    function deploy(bytes32 salt, bytes memory bytecode) \n        external returns (address) \n    {\n        address addr;\n        assembly {\n            addr := create2(0, add(bytecode, 0x20), mload(bytecode), salt)\n        }\n        require(addr != address(0), \"Deploy failed\");\n        return addr;\n    }\n    \n    function computeAddress(bytes32 salt, bytes memory bytecode) \n        public view returns (address) \n    {\n        bytes32 hash = keccak256(abi.encodePacked(\n            bytes1(0xff), address(this), salt, keccak256(bytecode)\n        ));\n        return address(uint160(uint256(hash)));\n    }\n}"
+      }
     }
   }
-}
+]

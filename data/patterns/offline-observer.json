@@ -1,39 +1,54 @@
-{
-  "id": "offline-observer",
-  "name": "Offline Observer",
-  "category": "Data Engineering",
-  "description": "Monitors batch jobs and historical data for anomalies, drift, or SLA misses by replaying or scanning offline stores on a schedule. Complements Online Observer by catching issues only visible across long time windows.",
-  "when_to_use": [
-    "Drift or seasonality requires multi-day windows",
-    "Online detectors miss batch-only anomalies",
-    "Backfill quality must be verified post-hoc"
-  ],
-  "benefits": [
-    "Detects long-horizon issues",
-    "Cheap to run on schedule (not on hot path)",
-    "Easier to debug than online signals"
-  ],
-  "drawbacks": [
-    "Detection latency = schedule period",
-    "Batch compute cost",
-    "May overlap with online observer — needs dedup"
-  ],
-  "use_cases": [
-    "Daily data quality dashboards",
-    "Weekly model drift reports",
-    "Backfill reconciliation audits"
-  ],
-  "complexity": "Medium",
-  "tags": ["data-engineering", "observability", "batch", "monitoring"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "async function offlineObserve(window: TimeWindow) {\n  const rows = await scanWarehouse(window);\n  const drift = await computeDrift(rows);\n  if (drift.score > 0.2) await alert({kind:'drift', window, drift});\n}",
-      "description": "Windowed offline drift scanner."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "online-observer", "type": "complements", "strength": 0.9},
-    {"target_pattern_id": "sla-misses-detector", "type": "complements", "strength": 0.6}
-  ]
-}
+[
+  {
+    "id": "offline-observer",
+    "name": "Offline Observer",
+    "category": "Data Engineering",
+    "description": "Monitors batch jobs and historical data for anomalies, drift, or SLA misses by replaying or scanning offline stores on a schedule. Complements Online Observer by catching issues only visible across long time windows.",
+    "when_to_use": [
+      "Drift or seasonality requires multi-day windows",
+      "Online detectors miss batch-only anomalies",
+      "Backfill quality must be verified post-hoc"
+    ],
+    "benefits": [
+      "Detects long-horizon issues",
+      "Cheap to run on schedule (not on hot path)",
+      "Easier to debug than online signals"
+    ],
+    "drawbacks": [
+      "Detection latency = schedule period",
+      "Batch compute cost",
+      "May overlap with online observer — needs dedup"
+    ],
+    "use_cases": [
+      "Daily data quality dashboards",
+      "Weekly model drift reports",
+      "Backfill reconciliation audits"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-engineering",
+      "observability",
+      "batch",
+      "monitoring"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "async function offlineObserve(window: TimeWindow) {\n  const rows = await scanWarehouse(window);\n  const drift = await computeDrift(rows);\n  if (drift.score > 0.2) await alert({kind:'drift', window, drift});\n}",
+        "description": "Windowed offline drift scanner."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "online-observer",
+        "type": "complements",
+        "strength": 0.9
+      },
+      {
+        "target_pattern_id": "sla-misses-detector",
+        "type": "complements",
+        "strength": 0.6
+      }
+    ]
+  }
+]

@@ -1,16 +1,18 @@
-{
-  "id": "message-aggregator",
-  "name": "Message Aggregator",
-  "category": "Integration",
-  "description": "Combines multiple related messages into single composite message",
-  "when_to_use": "Related messages\nBatch processing\nPerformance optimization",
-  "benefits": "Batch processing\nPerformance optimization\nReduced overhead",
-  "drawbacks": "Aggregation complexity\nTiming issues\nMemory usage",
-  "use_cases": "Order processing\nBatch operations\nPerformance optimization",
-  "complexity": "High",
-  "tags": [
-    "integration",
-    "aggregation",
-    "batching"
-  ]
-}
+[
+  {
+    "id": "message-aggregator",
+    "name": "Message Aggregator",
+    "category": "Integration",
+    "description": "Combines multiple related messages into single composite message",
+    "when_to_use": "Related messages\nBatch processing\nPerformance optimization",
+    "benefits": "Batch processing\nPerformance optimization\nReduced overhead",
+    "drawbacks": "Aggregation complexity\nTiming issues\nMemory usage",
+    "use_cases": "Order processing\nBatch operations\nPerformance optimization",
+    "complexity": "High",
+    "tags": [
+      "integration",
+      "aggregation",
+      "batching"
+    ]
+  }
+]

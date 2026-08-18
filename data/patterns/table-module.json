@@ -1,16 +1,18 @@
-{
-  "id": "table-module",
-  "name": "Table Module",
-  "category": "Enterprise",
-  "description": "Single instance that handles business logic for all rows in a database table",
-  "when_to_use": "Record-based processing\nDatabase-centric design\nSimple logic",
-  "benefits": "Simple organization\nDatabase alignment\nEasy to understand",
-  "drawbacks": "Tight coupling\nLimited reusability\nScaling issues",
-  "use_cases": "Report generation\nData processing\nAdministrative interfaces",
-  "complexity": "Medium",
-  "tags": [
-    "enterprise",
-    "domain-logic",
-    "table-oriented"
-  ]
-}
+[
+  {
+    "id": "table-module",
+    "name": "Table Module",
+    "category": "Enterprise",
+    "description": "Single instance that handles business logic for all rows in a database table",
+    "when_to_use": "Record-based processing\nDatabase-centric design\nSimple logic",
+    "benefits": "Simple organization\nDatabase alignment\nEasy to understand",
+    "drawbacks": "Tight coupling\nLimited reusability\nScaling issues",
+    "use_cases": "Report generation\nData processing\nAdministrative interfaces",
+    "complexity": "Medium",
+    "tags": [
+      "enterprise",
+      "domain-logic",
+      "table-oriented"
+    ]
+  }
+]

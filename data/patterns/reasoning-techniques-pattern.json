@@ -1,19 +1,21 @@
-{
-  "id": "reasoning-techniques-pattern",
-  "name": "Reasoning Techniques Pattern",
-  "category": "AI/ML",
-  "description": "Applies various reasoning methods like chain-of-thought, tree-of-thought, or other logical processes to enhance decision-making and problem-solving.",
-  "when_to_use": "[\"Complex reasoning required\",\"Multi-step analysis\",\"Logical problem-solving\"]",
-  "benefits": "[\"Improved reasoning\",\"Better decisions\",\"Transparency\"]",
-  "drawbacks": "[\"Increased computation\",\"Complexity\",\"Potential verbosity\"]",
-  "use_cases": "[\"Mathematical problems\",\"Strategic planning\",\"Analysis tasks\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"reasoning\"",
-    "\"logic\"",
-    "\"decision-making\"",
-    "\"analysis\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "reasoning-techniques-pattern",
+    "name": "Reasoning Techniques Pattern",
+    "category": "AI/ML",
+    "description": "Applies various reasoning methods like chain-of-thought, tree-of-thought, or other logical processes to enhance decision-making and problem-solving.",
+    "when_to_use": "[\"Complex reasoning required\",\"Multi-step analysis\",\"Logical problem-solving\"]",
+    "benefits": "[\"Improved reasoning\",\"Better decisions\",\"Transparency\"]",
+    "drawbacks": "[\"Increased computation\",\"Complexity\",\"Potential verbosity\"]",
+    "use_cases": "[\"Mathematical problems\",\"Strategic planning\",\"Analysis tasks\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"reasoning\"",
+      "\"logic\"",
+      "\"decision-making\"",
+      "\"analysis\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

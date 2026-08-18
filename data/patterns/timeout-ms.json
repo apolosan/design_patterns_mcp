@@ -1,22 +1,24 @@
-{
-  "id": "timeout-ms",
-  "name": "Timeout (Microservices)",
-  "category": "Microservices",
-  "description": "Sets maximum wait time for service operations",
-  "when_to_use": "Service calls\nResource protection\nPerformance requirements",
-  "benefits": "Resource protection\nPredictable performance\nFailure detection",
-  "drawbacks": "False failures\nConfiguration complexity\nUser experience impact",
-  "use_cases": "HTTP requests\nDatabase queries\nRemote calls",
-  "complexity": "Low",
-  "tags": [
-    "microservices",
-    "resilience",
-    "timeout"
-  ],
-  "examples": {
-    "cross-reference": {
-      "language": "cross-reference",
-      "code": "// See Timeout pattern for implementation example (applies to microservices)\n// Reference pattern: timeout-pattern"
+[
+  {
+    "id": "timeout-ms",
+    "name": "Timeout (Microservices)",
+    "category": "Microservices",
+    "description": "Sets maximum wait time for service operations",
+    "when_to_use": "Service calls\nResource protection\nPerformance requirements",
+    "benefits": "Resource protection\nPredictable performance\nFailure detection",
+    "drawbacks": "False failures\nConfiguration complexity\nUser experience impact",
+    "use_cases": "HTTP requests\nDatabase queries\nRemote calls",
+    "complexity": "Low",
+    "tags": [
+      "microservices",
+      "resilience",
+      "timeout"
+    ],
+    "examples": {
+      "cross-reference": {
+        "language": "cross-reference",
+        "code": "// See Timeout pattern for implementation example (applies to microservices)\n// Reference pattern: timeout-pattern"
+      }
     }
   }
-}
+]

@@ -1,16 +1,18 @@
-{
-  "id": "aggregate",
-  "name": "Aggregate",
-  "category": "Domain-Driven Design",
-  "description": "Cluster of domain objects treated as single unit for data changes",
-  "when_to_use": "Consistency boundaries\nTransaction boundaries\nInvariant protection",
-  "benefits": "Consistency\nEncapsulation\nClear boundaries\nInvariant protection",
-  "drawbacks": "Complex design\nPerformance impact\nLarge object graphs",
-  "use_cases": "Order processing\nUser accounts\nBusiness transactions",
-  "complexity": "High",
-  "tags": [
-    "ddd",
-    "tactical",
-    "consistency"
-  ]
-}
+[
+  {
+    "id": "aggregate",
+    "name": "Aggregate",
+    "category": "Domain-Driven Design",
+    "description": "Cluster of domain objects treated as single unit for data changes",
+    "when_to_use": "Consistency boundaries\nTransaction boundaries\nInvariant protection",
+    "benefits": "Consistency\nEncapsulation\nClear boundaries\nInvariant protection",
+    "drawbacks": "Complex design\nPerformance impact\nLarge object graphs",
+    "use_cases": "Order processing\nUser accounts\nBusiness transactions",
+    "complexity": "High",
+    "tags": [
+      "ddd",
+      "tactical",
+      "consistency"
+    ]
+  }
+]

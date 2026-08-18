@@ -1,25 +1,27 @@
-{
-  "id": "compound-components-pattern",
-  "name": "Compound Components Pattern",
-  "category": "React Components",
-  "description": "Components that work together to form a complete UI, sharing implicit state.",
-  "when_to_use": "Component libraries, complex UI controls, flexible APIs, reusable components",
-  "benefits": "Flexible API, separation of concerns, implicit state sharing, composable",
-  "drawbacks": "More complex implementation, requires Context",
-  "use_cases": "Tabs, accordions, dropdowns, menus, select components, modals",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "compound-components",
-    "composition",
-    "component-library",
-    "api-design",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { createContext, useContext, useState, ReactNode } from 'react';\n\nconst TabsContext = createContext<{\n  activeTab: string;\n  setActiveTab: (id: string) => void;\n} | null>(null);\n\nfunction Tabs({ children, defaultTab }: { children: ReactNode; defaultTab: string }) {\n  const [activeTab, setActiveTab] = useState(defaultTab);\n  \n  return (\n    <TabsContext.Provider value={{ activeTab, setActiveTab }}>\n      <div className=\"tabs\">{children}</div>\n    </TabsContext.Provider>\n  );\n}\n\nfunction TabList({ children }: { children: ReactNode }) {\n  return <div className=\"tab-list\" role=\"tablist\">{children}</div>;\n}\n\nfunction Tab({ id, children }: { id: string; children: ReactNode }) {\n  const context = useContext(TabsContext);\n  if (!context) throw new Error('Tab must be used within Tabs');\n  \n  const { activeTab, setActiveTab } = context;\n  const isActive = activeTab === id;\n  \n  return (\n    <button\n      role=\"tab\"\n      aria-selected={isActive}\n      className={isActive ? 'active' : ''}\n      onClick={() => setActiveTab(id)}\n    >\n      {children}\n    </button>\n  );\n}\n\nfunction TabPanels({ children }: { children: ReactNode }) {\n  return <div className=\"tab-panels\">{children}</div>;\n}\n\nfunction TabPanel({ id, children }: { id: string; children: ReactNode }) {\n  const context = useContext(TabsContext);\n  if (!context) throw new Error('TabPanel must be used within Tabs');\n  \n  const { activeTab } = context;\n  if (activeTab !== id) return null;\n  \n  return <div role=\"tabpanel\">{children}</div>;\n}\n\nTabs.List = TabList;\nTabs.Tab = Tab;\nTabs.Panels = TabPanels;\nTabs.Panel = TabPanel;\n\nfunction App() {\n  return (\n    <Tabs defaultTab=\"home\">\n      <Tabs.List>\n        <Tabs.Tab id=\"home\">Home</Tabs.Tab>\n        <Tabs.Tab id=\"profile\">Profile</Tabs.Tab>\n        <Tabs.Tab id=\"settings\">Settings</Tabs.Tab>\n      </Tabs.List>\n      \n      <Tabs.Panels>\n        <Tabs.Panel id=\"home\">\n          <h2>Home Content</h2>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"profile\">\n          <h2>Profile Content</h2>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"settings\">\n          <h2>Settings Content</h2>\n        </Tabs.Panel>\n      </Tabs.Panels>\n    </Tabs>\n  );\n}"
+[
+  {
+    "id": "compound-components-pattern",
+    "name": "Compound Components Pattern",
+    "category": "React Components",
+    "description": "Components that work together to form a complete UI, sharing implicit state.",
+    "when_to_use": "Component libraries, complex UI controls, flexible APIs, reusable components",
+    "benefits": "Flexible API, separation of concerns, implicit state sharing, composable",
+    "drawbacks": "More complex implementation, requires Context",
+    "use_cases": "Tabs, accordions, dropdowns, menus, select components, modals",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "compound-components",
+      "composition",
+      "component-library",
+      "api-design",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { createContext, useContext, useState, ReactNode } from 'react';\n\nconst TabsContext = createContext<{\n  activeTab: string;\n  setActiveTab: (id: string) => void;\n} | null>(null);\n\nfunction Tabs({ children, defaultTab }: { children: ReactNode; defaultTab: string }) {\n  const [activeTab, setActiveTab] = useState(defaultTab);\n  \n  return (\n    <TabsContext.Provider value={{ activeTab, setActiveTab }}>\n      <div className=\"tabs\">{children}</div>\n    </TabsContext.Provider>\n  );\n}\n\nfunction TabList({ children }: { children: ReactNode }) {\n  return <div className=\"tab-list\" role=\"tablist\">{children}</div>;\n}\n\nfunction Tab({ id, children }: { id: string; children: ReactNode }) {\n  const context = useContext(TabsContext);\n  if (!context) throw new Error('Tab must be used within Tabs');\n  \n  const { activeTab, setActiveTab } = context;\n  const isActive = activeTab === id;\n  \n  return (\n    <button\n      role=\"tab\"\n      aria-selected={isActive}\n      className={isActive ? 'active' : ''}\n      onClick={() => setActiveTab(id)}\n    >\n      {children}\n    </button>\n  );\n}\n\nfunction TabPanels({ children }: { children: ReactNode }) {\n  return <div className=\"tab-panels\">{children}</div>;\n}\n\nfunction TabPanel({ id, children }: { id: string; children: ReactNode }) {\n  const context = useContext(TabsContext);\n  if (!context) throw new Error('TabPanel must be used within Tabs');\n  \n  const { activeTab } = context;\n  if (activeTab !== id) return null;\n  \n  return <div role=\"tabpanel\">{children}</div>;\n}\n\nTabs.List = TabList;\nTabs.Tab = Tab;\nTabs.Panels = TabPanels;\nTabs.Panel = TabPanel;\n\nfunction App() {\n  return (\n    <Tabs defaultTab=\"home\">\n      <Tabs.List>\n        <Tabs.Tab id=\"home\">Home</Tabs.Tab>\n        <Tabs.Tab id=\"profile\">Profile</Tabs.Tab>\n        <Tabs.Tab id=\"settings\">Settings</Tabs.Tab>\n      </Tabs.List>\n      \n      <Tabs.Panels>\n        <Tabs.Panel id=\"home\">\n          <h2>Home Content</h2>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"profile\">\n          <h2>Profile Content</h2>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"settings\">\n          <h2>Settings Content</h2>\n        </Tabs.Panel>\n      </Tabs.Panels>\n    </Tabs>\n  );\n}"
+      }
     }
   }
-}
+]

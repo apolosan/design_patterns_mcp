@@ -1,16 +1,18 @@
-{
-  "id": "behavior-tree",
-  "name": "Behavior Tree",
-  "category": "Game Development",
-  "description": "Hierarchical structure for AI decision making in games",
-  "when_to_use": "Complex AI behavior\nDecision systems\nNPC behavior",
-  "benefits": "Modular AI\nReusable behaviors\nVisual editing\nHierarchical decisions",
-  "drawbacks": "Complex implementation\nPerformance overhead\nLearning curve",
-  "use_cases": "NPC AI\nEnemy behavior\nDecision systems",
-  "complexity": "High",
-  "tags": [
-    "game",
-    "ai",
-    "behavior"
-  ]
-}
+[
+  {
+    "id": "behavior-tree",
+    "name": "Behavior Tree",
+    "category": "Game Development",
+    "description": "Hierarchical structure for AI decision making in games",
+    "when_to_use": "Complex AI behavior\nDecision systems\nNPC behavior",
+    "benefits": "Modular AI\nReusable behaviors\nVisual editing\nHierarchical decisions",
+    "drawbacks": "Complex implementation\nPerformance overhead\nLearning curve",
+    "use_cases": "NPC AI\nEnemy behavior\nDecision systems",
+    "complexity": "High",
+    "tags": [
+      "game",
+      "ai",
+      "behavior"
+    ]
+  }
+]

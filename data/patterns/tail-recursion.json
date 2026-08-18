@@ -1,16 +1,18 @@
-{
-  "id": "tail-recursion",
-  "name": "Tail Recursion Pattern",
-  "category": "Functional",
-  "description": "Recursive calls at end of function to optimize stack usage",
-  "when_to_use": "Recursive algorithms\nStack optimization\nFunctional programming",
-  "benefits": "Stack optimization\nPerformance\nFunctional style\nMemory efficient",
-  "drawbacks": "Language support required\nComplexity\nLimited applicability",
-  "use_cases": "List processing\nTree traversal\nMathematical computations",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "recursion",
-    "optimization"
-  ]
-}
+[
+  {
+    "id": "tail-recursion",
+    "name": "Tail Recursion Pattern",
+    "category": "Functional",
+    "description": "Recursive calls at end of function to optimize stack usage",
+    "when_to_use": "Recursive algorithms\nStack optimization\nFunctional programming",
+    "benefits": "Stack optimization\nPerformance\nFunctional style\nMemory efficient",
+    "drawbacks": "Language support required\nComplexity\nLimited applicability",
+    "use_cases": "List processing\nTree traversal\nMathematical computations",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "recursion",
+      "optimization"
+    ]
+  }
+]

@@ -1,24 +1,26 @@
-{
-  "id": "cow-protocol-pattern",
-  "name": "CoW Protocol Pattern",
-  "category": "Intent-Based Architecture",
-  "description": "Batch auctions with Coincidence of Wants. Orders matched peer-to-peer before hitting AMM.",
-  "when_to_use": "MEV-protected trading, batch settlements, peer-to-peer matching",
-  "benefits": "MEV protection, better prices via CoWs, no front-running",
-  "drawbacks": "Batch delay (few seconds), may not fill, solver dependency",
-  "use_cases": "DEX trading, MEV protection, batch execution",
-  "complexity": "Very High",
-  "tags": [
-    "intent",
-    "cow",
-    "batch-auction",
-    "mev-protection",
-    "dex"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// CoW Protocol: Coincidence of Wants\n// User A: Sell ETH for USDC\n// User B: Sell USDC for ETH\n// → Matched directly, no AMM needed!\n\ncontract CoWSettlement {\n    struct Order {\n        address token;\n        uint256 amount;\n        address recipient;\n        bytes signature;\n    }\n    \n    function settleBatch(Order[] calldata orders) external onlySolver {\n        // 1. Find CoWs (direct matches)\n        (Order[] memory matched, Order[] memory unmatched) = findCoWs(orders);\n        \n        // 2. Settle matched orders peer-to-peer\n        for (uint i = 0; i < matched.length; i += 2) {\n            settleDirectly(matched[i], matched[i+1]);\n        }\n        \n        // 3. Route unmatched to AMM\n        for (uint i = 0; i < unmatched.length; i++) {\n            settleViaAMM(unmatched[i]);\n        }\n    }\n}"
+[
+  {
+    "id": "cow-protocol-pattern",
+    "name": "CoW Protocol Pattern",
+    "category": "Intent-Based Architecture",
+    "description": "Batch auctions with Coincidence of Wants. Orders matched peer-to-peer before hitting AMM.",
+    "when_to_use": "MEV-protected trading, batch settlements, peer-to-peer matching",
+    "benefits": "MEV protection, better prices via CoWs, no front-running",
+    "drawbacks": "Batch delay (few seconds), may not fill, solver dependency",
+    "use_cases": "DEX trading, MEV protection, batch execution",
+    "complexity": "Very High",
+    "tags": [
+      "intent",
+      "cow",
+      "batch-auction",
+      "mev-protection",
+      "dex"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// CoW Protocol: Coincidence of Wants\n// User A: Sell ETH for USDC\n// User B: Sell USDC for ETH\n// → Matched directly, no AMM needed!\n\ncontract CoWSettlement {\n    struct Order {\n        address token;\n        uint256 amount;\n        address recipient;\n        bytes signature;\n    }\n    \n    function settleBatch(Order[] calldata orders) external onlySolver {\n        // 1. Find CoWs (direct matches)\n        (Order[] memory matched, Order[] memory unmatched) = findCoWs(orders);\n        \n        // 2. Settle matched orders peer-to-peer\n        for (uint i = 0; i < matched.length; i += 2) {\n            settleDirectly(matched[i], matched[i+1]);\n        }\n        \n        // 3. Route unmatched to AMM\n        for (uint i = 0; i < unmatched.length; i++) {\n            settleViaAMM(unmatched[i]);\n        }\n    }\n}"
+      }
     }
   }
-}
+]

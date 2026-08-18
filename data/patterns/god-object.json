@@ -1,15 +1,17 @@
-{
-  "id": "god-object",
-  "name": "God Object Anti-Pattern",
-  "category": "Anti-Pattern",
-  "description": "A class that knows too much or does too much",
-  "when_to_use": "You have a class with too many responsibilities\nThe class has grown beyond manageable size\nMultiple aspects of the system are controlled by one class",
-  "drawbacks": "Violates single responsibility principle\nHard to maintain and understand\nHigh coupling with many parts of the system\nDifficult to test in isolation",
-  "use_cases": "Classes that handle both business logic and data persistence\nControllers that manage multiple unrelated operations\nUtility classes that grow into massive helper classes",
-  "complexity": "High",
-  "tags": [
-    "anti-pattern",
-    "oop",
-    "solid-violation"
-  ]
-}
+[
+  {
+    "id": "god-object",
+    "name": "God Object Anti-Pattern",
+    "category": "Anti-Pattern",
+    "description": "A class that knows too much or does too much",
+    "when_to_use": "You have a class with too many responsibilities\nThe class has grown beyond manageable size\nMultiple aspects of the system are controlled by one class",
+    "drawbacks": "Violates single responsibility principle\nHard to maintain and understand\nHigh coupling with many parts of the system\nDifficult to test in isolation",
+    "use_cases": "Classes that handle both business logic and data persistence\nControllers that manage multiple unrelated operations\nUtility classes that grow into massive helper classes",
+    "complexity": "High",
+    "tags": [
+      "anti-pattern",
+      "oop",
+      "solid-violation"
+    ]
+  }
+]

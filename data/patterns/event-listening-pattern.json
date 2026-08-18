@@ -1,24 +1,26 @@
-{
-  "id": "event-listening-pattern",
-  "name": "Event Listening Pattern",
-  "category": "Web3 Frontend",
-  "description": "Listen to contract events in real-time via WebSocket. Update UI automatically on blockchain events.",
-  "when_to_use": "Live notifications, real-time updates, state synchronization",
-  "benefits": "Real-time updates, efficient, event-driven architecture",
-  "drawbacks": "Requires WebSocket provider, connection management, pagination for history",
-  "use_cases": "Live trading feeds, notification systems, real-time dashboards",
-  "complexity": "Medium",
-  "tags": [
-    "web3",
-    "events",
-    "websocket",
-    "real-time",
-    "frontend"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "import { useContractEvent } from 'wagmi';\n\nfunction TransferListener() {\n  const [transfers, setTransfers] = useState([]);\n  \n  useContractEvent({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    eventName: 'Transfer',\n    listener(from, to, amount) {\n      setTransfers(prev => [...prev, { from, to, amount }]);\n    }\n  });\n  \n  return <TransferList transfers={transfers} />;\n}"
+[
+  {
+    "id": "event-listening-pattern",
+    "name": "Event Listening Pattern",
+    "category": "Web3 Frontend",
+    "description": "Listen to contract events in real-time via WebSocket. Update UI automatically on blockchain events.",
+    "when_to_use": "Live notifications, real-time updates, state synchronization",
+    "benefits": "Real-time updates, efficient, event-driven architecture",
+    "drawbacks": "Requires WebSocket provider, connection management, pagination for history",
+    "use_cases": "Live trading feeds, notification systems, real-time dashboards",
+    "complexity": "Medium",
+    "tags": [
+      "web3",
+      "events",
+      "websocket",
+      "real-time",
+      "frontend"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "import { useContractEvent } from 'wagmi';\n\nfunction TransferListener() {\n  const [transfers, setTransfers] = useState([]);\n  \n  useContractEvent({\n    address: TOKEN_ADDRESS,\n    abi: ERC20_ABI,\n    eventName: 'Transfer',\n    listener(from, to, amount) {\n      setTransfers(prev => [...prev, { from, to, amount }]);\n    }\n  });\n  \n  return <TransferList transfers={transfers} />;\n}"
+      }
     }
   }
-}
+]

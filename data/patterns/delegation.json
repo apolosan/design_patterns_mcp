@@ -1,24 +1,26 @@
-{
-  "id": "delegation",
-  "name": "Delegation Pattern",
-  "category": "DAO Governance",
-  "description": "Delegate voting power to representatives",
-  "when_to_use": "All governance, reduce voter fatigue, leverage expertise",
-  "benefits": "Leverages expertise, reduces fatigue, flexible",
-  "drawbacks": "Power concentration risk, delegate quality varies",
-  "use_cases": "Compound Governor, delegate.cash, voting markets",
-  "complexity": "Medium",
-  "tags": [
-    "governance",
-    "dao",
-    "delegation",
-    "voting",
-    "erc20votes"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// Delegation: ERC-20 Votes\nimport \"@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol\";\n\ncontract GovernanceToken is ERC20Votes {\n    function delegate(address delegatee) public override {\n        _delegate(msg.sender, delegatee);\n    }\n}"
+[
+  {
+    "id": "delegation",
+    "name": "Delegation Pattern",
+    "category": "DAO Governance",
+    "description": "Delegate voting power to representatives",
+    "when_to_use": "All governance, reduce voter fatigue, leverage expertise",
+    "benefits": "Leverages expertise, reduces fatigue, flexible",
+    "drawbacks": "Power concentration risk, delegate quality varies",
+    "use_cases": "Compound Governor, delegate.cash, voting markets",
+    "complexity": "Medium",
+    "tags": [
+      "governance",
+      "dao",
+      "delegation",
+      "voting",
+      "erc20votes"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Delegation: ERC-20 Votes\nimport \"@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol\";\n\ncontract GovernanceToken is ERC20Votes {\n    function delegate(address delegatee) public override {\n        _delegate(msg.sender, delegatee);\n    }\n}"
+      }
     }
   }
-}
+]

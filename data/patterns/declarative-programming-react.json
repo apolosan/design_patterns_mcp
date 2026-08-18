@@ -1,24 +1,26 @@
-{
-  "id": "declarative-programming-react",
-  "name": "Declarative Programming Pattern",
-  "category": "React Fundamentals",
-  "description": "Paradigm shift from imperative DOM manipulation to declarative UI description. React handles the how, you specify the what.",
-  "when_to_use": "All React applications, UI state management, component rendering",
-  "benefits": "Easier to understand and maintain, predictable state management, less boilerplate",
-  "drawbacks": "Learning curve for imperative developers, abstraction overhead",
-  "use_cases": "Building UIs, state-driven interfaces, component composition",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "declarative",
-    "imperative",
-    "paradigm",
-    "fundamentals"
-  ],
-  "examples": {
-    "jsx": {
-      "language": "jsx",
-      "code": "// ❌ IMPERATIVE: Manual DOM manipulation\nfunction imperativeUI() {\n  const button = document.createElement('button');\n  button.textContent = 'Click me';\n  button.addEventListener('click', () => {\n    const div = document.getElementById('result');\n    div.textContent = 'Clicked!';\n  });\n  document.body.appendChild(button);\n}\n\n// ✅ DECLARATIVE: React describes the UI\nfunction DeclarativeUI() {\n  const [clicked, setClicked] = React.useState(false);\n  \n  return (\n    <div>\n      <button onClick={() => setClicked(true)}>\n        Click me\n      </button>\n      {clicked && <div>Clicked!</div>}\n    </div>\n  );\n}"
+[
+  {
+    "id": "declarative-programming-react",
+    "name": "Declarative Programming Pattern",
+    "category": "React Fundamentals",
+    "description": "Paradigm shift from imperative DOM manipulation to declarative UI description. React handles the how, you specify the what.",
+    "when_to_use": "All React applications, UI state management, component rendering",
+    "benefits": "Easier to understand and maintain, predictable state management, less boilerplate",
+    "drawbacks": "Learning curve for imperative developers, abstraction overhead",
+    "use_cases": "Building UIs, state-driven interfaces, component composition",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "declarative",
+      "imperative",
+      "paradigm",
+      "fundamentals"
+    ],
+    "examples": {
+      "jsx": {
+        "language": "jsx",
+        "code": "// ❌ IMPERATIVE: Manual DOM manipulation\nfunction imperativeUI() {\n  const button = document.createElement('button');\n  button.textContent = 'Click me';\n  button.addEventListener('click', () => {\n    const div = document.getElementById('result');\n    div.textContent = 'Clicked!';\n  });\n  document.body.appendChild(button);\n}\n\n// ✅ DECLARATIVE: React describes the UI\nfunction DeclarativeUI() {\n  const [clicked, setClicked] = React.useState(false);\n  \n  return (\n    <div>\n      <button onClick={() => setClicked(true)}>\n        Click me\n      </button>\n      {clicked && <div>Clicked!</div>}\n    </div>\n  );\n}"
+      }
     }
   }
-}
+]

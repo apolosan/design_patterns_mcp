@@ -1,16 +1,18 @@
-{
-  "id": "flyweight-game",
-  "name": "Flyweight Pattern (Game)",
-  "category": "Game Development",
-  "description": "Shares common data between similar game objects to reduce memory usage",
-  "when_to_use": "Large numbers of similar objects\nMemory constraints\nTile-based games",
-  "benefits": "Memory efficiency\nPerformance improvement\nShared resources",
-  "drawbacks": "Complex implementation\nLimited mutability\nContext management",
-  "use_cases": "Tile maps\nParticle systems\nForest of trees",
-  "complexity": "High",
-  "tags": [
-    "game",
-    "flyweight",
-    "memory"
-  ]
-}
+[
+  {
+    "id": "flyweight-game",
+    "name": "Flyweight Pattern (Game)",
+    "category": "Game Development",
+    "description": "Shares common data between similar game objects to reduce memory usage",
+    "when_to_use": "Large numbers of similar objects\nMemory constraints\nTile-based games",
+    "benefits": "Memory efficiency\nPerformance improvement\nShared resources",
+    "drawbacks": "Complex implementation\nLimited mutability\nContext management",
+    "use_cases": "Tile maps\nParticle systems\nForest of trees",
+    "complexity": "High",
+    "tags": [
+      "game",
+      "flyweight",
+      "memory"
+    ]
+  }
+]

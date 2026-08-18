@@ -1,44 +1,67 @@
-{
-  "id": "multi-agent-collaboration",
-  "name": "Multi-Agent Collaboration",
-  "category": "Agentic AI",
-  "description": "Multiple specialized agents coordinate through defined communication structures (hierarchical, peer-to-peer, hybrid) to solve problems beyond the capability of any single agent. Each agent owns a role and shares state, plans, or results via message passing or shared memory.",
-  "when_to_use": [
-    "Tasks span multiple domains requiring specialized expertise",
-    "Single-agent context windows or capability ceilings are exceeded",
-    "Parallel exploration of solution space is beneficial",
-    "Robustness through redundancy and role specialization is required"
-  ],
-  "benefits": [
-    "Capability scaling beyond single-agent limits",
-    "Parallel execution reduces wall-clock latency",
-    "Role separation improves maintainability",
-    "Fault isolation between agents"
-  ],
-  "drawbacks": [
-    "Coordination overhead and communication costs",
-    "Emergent conflict between agent goals",
-    "Debugging complexity across distributed state",
-    "Higher token and compute consumption"
-  ],
-  "use_cases": [
-    "Research workflows combining search, summarization and writing agents",
-    "Software engineering crews (CrewAI, AutoGen) with planner/coder/reviewer roles",
-    "Customer support routing across specialized bots",
-    "Multi-step data pipelines orchestrated by autonomous agents"
-  ],
-  "complexity": "High",
-  "tags": ["agentic", "multi-agent", "collaboration", "orchestration", "ai-ml"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "interface Agent {\n  role: string;\n  receive(msg: Message): Promise<void>;\n  act(): Promise<Message | null>;\n}\n\nclass Orchestrator {\n  private agents: Agent[];\n  async dispatch(task: Task) {\n    const plan = await this.planner.act(task);\n    for (const step of plan.steps) {\n      const agent = this.agents.find(a => a.role === step.role)!;\n      const out = await agent.receive(step);\n      if (out) await this.broadcast(out);\n    }\n  }\n  async broadcast(msg: Message) {\n    await Promise.all(this.agents.map(a => a.receive(msg)));\n  }\n}",
-      "description": "Minimal orchestrator broadcasting subtasks to role-specialized agents."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "routing-pattern", "type": "uses", "strength": 0.7, "description": "Routes subtasks to specialized agents"},
-    {"target_pattern_id": "planning-pattern", "type": "complements", "strength": 0.8, "description": "Plans decompose into per-agent steps"},
-    {"target_pattern_id": "parallelization-pattern", "type": "uses", "strength": 0.7, "description": "Agents execute independent steps concurrently"}
-  ]
-}
+[
+  {
+    "id": "multi-agent-collaboration",
+    "name": "Multi-Agent Collaboration",
+    "category": "Agentic AI",
+    "description": "Multiple specialized agents coordinate through defined communication structures (hierarchical, peer-to-peer, hybrid) to solve problems beyond the capability of any single agent. Each agent owns a role and shares state, plans, or results via message passing or shared memory.",
+    "when_to_use": [
+      "Tasks span multiple domains requiring specialized expertise",
+      "Single-agent context windows or capability ceilings are exceeded",
+      "Parallel exploration of solution space is beneficial",
+      "Robustness through redundancy and role specialization is required"
+    ],
+    "benefits": [
+      "Capability scaling beyond single-agent limits",
+      "Parallel execution reduces wall-clock latency",
+      "Role separation improves maintainability",
+      "Fault isolation between agents"
+    ],
+    "drawbacks": [
+      "Coordination overhead and communication costs",
+      "Emergent conflict between agent goals",
+      "Debugging complexity across distributed state",
+      "Higher token and compute consumption"
+    ],
+    "use_cases": [
+      "Research workflows combining search, summarization and writing agents",
+      "Software engineering crews (CrewAI, AutoGen) with planner/coder/reviewer roles",
+      "Customer support routing across specialized bots",
+      "Multi-step data pipelines orchestrated by autonomous agents"
+    ],
+    "complexity": "High",
+    "tags": [
+      "agentic",
+      "multi-agent",
+      "collaboration",
+      "orchestration",
+      "ai-ml"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "interface Agent {\n  role: string;\n  receive(msg: Message): Promise<void>;\n  act(): Promise<Message | null>;\n}\n\nclass Orchestrator {\n  private agents: Agent[];\n  async dispatch(task: Task) {\n    const plan = await this.planner.act(task);\n    for (const step of plan.steps) {\n      const agent = this.agents.find(a => a.role === step.role)!;\n      const out = await agent.receive(step);\n      if (out) await this.broadcast(out);\n    }\n  }\n  async broadcast(msg: Message) {\n    await Promise.all(this.agents.map(a => a.receive(msg)));\n  }\n}",
+        "description": "Minimal orchestrator broadcasting subtasks to role-specialized agents."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "routing-pattern",
+        "type": "uses",
+        "strength": 0.7,
+        "description": "Routes subtasks to specialized agents"
+      },
+      {
+        "target_pattern_id": "planning-pattern",
+        "type": "complements",
+        "strength": 0.8,
+        "description": "Plans decompose into per-agent steps"
+      },
+      {
+        "target_pattern_id": "parallelization-pattern",
+        "type": "uses",
+        "strength": 0.7,
+        "description": "Agents execute independent steps concurrently"
+      }
+    ]
+  }
+]

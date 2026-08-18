@@ -1,22 +1,24 @@
-{
-  "id": "api-gateway",
-  "name": "API Gateway",
-  "category": "Microservices",
-  "description": "Single entry point for all clients providing routing, composition, and protocol translation",
-  "when_to_use": "Multiple microservices\nClient simplification\nCross-cutting concerns",
-  "benefits": "Single entry point\nRequest routing\nProtocol translation\nCross-cutting concerns",
-  "drawbacks": "Single point of failure\nPerformance bottleneck\nDevelopment bottleneck",
-  "use_cases": "Mobile backends\nWeb applications\nThird-party integrations",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "communication",
-    "gateway"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// API Gateway: single entry point for microservices\nclass ApiGateway {\n  private services = new Map<string, string>();\n  \n  registerService(name: string, url: string) {\n    this.services.set(name, url);\n  }\n  \n  async route(request: Request): Promise<Response> {\n    const [, service, ...path] = new URL(request.url).pathname.split('/');\n    const serviceUrl = this.services.get(service);\n    \n    if (!serviceUrl) {\n      return new Response('Service not found', { status: 404 });\n    }\n    \n    if (!this.authenticate(request)) {\n      return new Response('Unauthorized', { status: 401 });\n    }\n    \n    return fetch(serviceUrl + '/' + path.join('/'), {\n      method: request.method,\n      headers: request.headers\n    });\n  }\n  \n  private authenticate(req: Request): boolean {\n    return !!req.headers.get('Authorization');\n  }\n}\n\nconst gateway = new ApiGateway();\ngateway.registerService('users', 'http://users:3000');"
+[
+  {
+    "id": "api-gateway",
+    "name": "API Gateway",
+    "category": "Microservices",
+    "description": "Single entry point for all clients providing routing, composition, and protocol translation",
+    "when_to_use": "Multiple microservices\nClient simplification\nCross-cutting concerns",
+    "benefits": "Single entry point\nRequest routing\nProtocol translation\nCross-cutting concerns",
+    "drawbacks": "Single point of failure\nPerformance bottleneck\nDevelopment bottleneck",
+    "use_cases": "Mobile backends\nWeb applications\nThird-party integrations",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "communication",
+      "gateway"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// API Gateway: single entry point for microservices\nclass ApiGateway {\n  private services = new Map<string, string>();\n  \n  registerService(name: string, url: string) {\n    this.services.set(name, url);\n  }\n  \n  async route(request: Request): Promise<Response> {\n    const [, service, ...path] = new URL(request.url).pathname.split('/');\n    const serviceUrl = this.services.get(service);\n    \n    if (!serviceUrl) {\n      return new Response('Service not found', { status: 404 });\n    }\n    \n    if (!this.authenticate(request)) {\n      return new Response('Unauthorized', { status: 401 });\n    }\n    \n    return fetch(serviceUrl + '/' + path.join('/'), {\n      method: request.method,\n      headers: request.headers\n    });\n  }\n  \n  private authenticate(req: Request): boolean {\n    return !!req.headers.get('Authorization');\n  }\n}\n\nconst gateway = new ApiGateway();\ngateway.registerService('users', 'http://users:3000');"
+      }
     }
   }
-}
+]

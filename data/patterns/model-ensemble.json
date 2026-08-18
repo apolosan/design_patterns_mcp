@@ -1,16 +1,18 @@
-{
-  "id": "model-ensemble",
-  "name": "Model Ensemble",
-  "category": "AI/ML",
-  "description": "Combines multiple models to improve performance and reliability",
-  "when_to_use": "Improve accuracy\nReduce overfitting\nIncrease robustness",
-  "benefits": "Better accuracy\nReduced variance\nRobustness\nError reduction",
-  "drawbacks": "Increased complexity\nHigher cost\nSlower inference",
-  "use_cases": "Predictions\nClassification\nRecommendation",
-  "complexity": "High",
-  "tags": [
-    "ensemble",
-    "combination",
-    "voting"
-  ]
-}
+[
+  {
+    "id": "model-ensemble",
+    "name": "Model Ensemble",
+    "category": "AI/ML",
+    "description": "Combines multiple models to improve performance and reliability",
+    "when_to_use": "Improve accuracy\nReduce overfitting\nIncrease robustness",
+    "benefits": "Better accuracy\nReduced variance\nRobustness\nError reduction",
+    "drawbacks": "Increased complexity\nHigher cost\nSlower inference",
+    "use_cases": "Predictions\nClassification\nRecommendation",
+    "complexity": "High",
+    "tags": [
+      "ensemble",
+      "combination",
+      "voting"
+    ]
+  }
+]

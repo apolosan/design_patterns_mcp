@@ -1,17 +1,19 @@
-{
-  "id": "denormalizer",
-  "name": "Denormalizer",
-  "category": "Data Storage",
-  "description": "The Denormalizer pattern optimizes read performance by denormalizing data.",
-  "when_to_use": "[\"Read performance\",\"Query optimization\"]",
-  "benefits": "[\"Faster reads\",\"Simplified queries\"]",
-  "drawbacks": "[\"Update complexity\",\"Redundancy\"]",
-  "use_cases": "[\"Read optimization\",\"Data warehousing\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-storage\"",
-    "\"denormalizer\"",
-    "\"performance\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "denormalizer",
+    "name": "Denormalizer",
+    "category": "Data Storage",
+    "description": "The Denormalizer pattern optimizes read performance by denormalizing data.",
+    "when_to_use": "[\"Read performance\",\"Query optimization\"]",
+    "benefits": "[\"Faster reads\",\"Simplified queries\"]",
+    "drawbacks": "[\"Update complexity\",\"Redundancy\"]",
+    "use_cases": "[\"Read optimization\",\"Data warehousing\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-storage\"",
+      "\"denormalizer\"",
+      "\"performance\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

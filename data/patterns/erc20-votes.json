@@ -1,24 +1,26 @@
-{
-  "id": "erc20-votes",
-  "name": "Token-Weighted Voting (ERC-20Votes)",
-  "category": "DAO Governance",
-  "description": "1 token = 1 vote with snapshot mechanism. Prevents double voting via delegation.",
-  "when_to_use": "Standard DAO governance, token-holder voting",
-  "benefits": "Simple, Sybil-resistant, economically aligned, battle-tested",
-  "drawbacks": "Plutocratic (whale dominance), can be bought, governance attacks possible",
-  "use_cases": "Most governance tokens, protocol voting",
-  "complexity": "Low",
-  "tags": [
-    "dao",
-    "governance",
-    "voting",
-    "erc20votes",
-    "token-weighted"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "import \"@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol\";\n\ncontract GovernanceToken is ERC20Votes {\n    function delegate(address delegatee) public override {\n        _delegate(msg.sender, delegatee);\n    }\n    \n    function getPastVotes(address account, uint256 blockNumber) \n        public view returns (uint256) \n    {\n        return super.getPastVotes(account, blockNumber);\n    }\n}"
+[
+  {
+    "id": "erc20-votes",
+    "name": "Token-Weighted Voting (ERC-20Votes)",
+    "category": "DAO Governance",
+    "description": "1 token = 1 vote with snapshot mechanism. Prevents double voting via delegation.",
+    "when_to_use": "Standard DAO governance, token-holder voting",
+    "benefits": "Simple, Sybil-resistant, economically aligned, battle-tested",
+    "drawbacks": "Plutocratic (whale dominance), can be bought, governance attacks possible",
+    "use_cases": "Most governance tokens, protocol voting",
+    "complexity": "Low",
+    "tags": [
+      "dao",
+      "governance",
+      "voting",
+      "erc20votes",
+      "token-weighted"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "import \"@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol\";\n\ncontract GovernanceToken is ERC20Votes {\n    function delegate(address delegatee) public override {\n        _delegate(msg.sender, delegatee);\n    }\n    \n    function getPastVotes(address account, uint256 blockNumber) \n        public view returns (uint256) \n    {\n        return super.getPastVotes(account, blockNumber);\n    }\n}"
+      }
     }
   }
-}
+]

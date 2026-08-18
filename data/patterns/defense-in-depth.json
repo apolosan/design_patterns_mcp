@@ -1,16 +1,18 @@
-{
-  "id": "defense-in-depth",
-  "name": "Defense in Depth",
-  "category": "Security",
-  "description": "Implements multiple layers of security controls to protect against various threats",
-  "when_to_use": "Comprehensive security\nRisk mitigation\nCritical systems",
-  "benefits": "Multiple protection layers\nRisk mitigation\nComprehensive security",
-  "drawbacks": "Complexity\nCost overhead\nPerformance impact",
-  "use_cases": "Enterprise security\nCritical systems\nHigh-risk environments",
-  "complexity": "High",
-  "tags": [
-    "security",
-    "defense",
-    "layered"
-  ]
-}
+[
+  {
+    "id": "defense-in-depth",
+    "name": "Defense in Depth",
+    "category": "Security",
+    "description": "Implements multiple layers of security controls to protect against various threats",
+    "when_to_use": "Comprehensive security\nRisk mitigation\nCritical systems",
+    "benefits": "Multiple protection layers\nRisk mitigation\nComprehensive security",
+    "drawbacks": "Complexity\nCost overhead\nPerformance impact",
+    "use_cases": "Enterprise security\nCritical systems\nHigh-risk environments",
+    "complexity": "High",
+    "tags": [
+      "security",
+      "defense",
+      "layered"
+    ]
+  }
+]

@@ -1,19 +1,21 @@
-{
-  "id": "planning-pattern",
-  "name": "Planning Pattern",
-  "category": "AI/ML",
-  "description": "Enables an agent to autonomously chart a course to a goal by understanding initial and goal states, discovering optimal sequences of actions, and adapting to new information.",
-  "when_to_use": "[\"Complex goals where how is not predetermined\",\"Dynamic environments\",\"Need for adaptability\"]",
-  "benefits": "[\"Goal-oriented behavior\",\"Adaptability\",\"Structured problem-solving\"]",
-  "drawbacks": "[\"Trade-off with predictability\",\"Potential for unpredictable behavior\",\"Requires careful constraint setting\"]",
-  "use_cases": "[\"Procedural task automation\",\"Autonomous navigation\",\"Information synthesis\",\"Customer support\"]",
-  "complexity": "High",
-  "tags": [
-    "[\"planning\"",
-    "\"goal-oriented\"",
-    "\"adaptability\"",
-    "\"sequence\"",
-    "\"agentic\"",
-    "\"ai-ml\"]"
-  ]
-}
+[
+  {
+    "id": "planning-pattern",
+    "name": "Planning Pattern",
+    "category": "AI/ML",
+    "description": "Enables an agent to autonomously chart a course to a goal by understanding initial and goal states, discovering optimal sequences of actions, and adapting to new information.",
+    "when_to_use": "[\"Complex goals where how is not predetermined\",\"Dynamic environments\",\"Need for adaptability\"]",
+    "benefits": "[\"Goal-oriented behavior\",\"Adaptability\",\"Structured problem-solving\"]",
+    "drawbacks": "[\"Trade-off with predictability\",\"Potential for unpredictable behavior\",\"Requires careful constraint setting\"]",
+    "use_cases": "[\"Procedural task automation\",\"Autonomous navigation\",\"Information synthesis\",\"Customer support\"]",
+    "complexity": "High",
+    "tags": [
+      "[\"planning\"",
+      "\"goal-oriented\"",
+      "\"adaptability\"",
+      "\"sequence\"",
+      "\"agentic\"",
+      "\"ai-ml\"]"
+    ]
+  }
+]

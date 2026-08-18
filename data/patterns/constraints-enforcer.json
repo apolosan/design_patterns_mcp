@@ -1,17 +1,19 @@
-{
-  "id": "constraints-enforcer",
-  "name": "Constraints Enforcer",
-  "category": "Data Quality",
-  "description": "The Constraints Enforcer applies data constraints to ensure quality.",
-  "when_to_use": "[\"Data validation\",\"Constraint enforcement\"]",
-  "benefits": "[\"Data validation\",\"Quality enforcement\"]",
-  "drawbacks": "[\"Constraint management\",\"Error handling\"]",
-  "use_cases": "[\"Data validation\",\"Quality checks\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"data-quality\"",
-    "\"constraints\"",
-    "\"enforcer\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "constraints-enforcer",
+    "name": "Constraints Enforcer",
+    "category": "Data Quality",
+    "description": "The Constraints Enforcer applies data constraints to ensure quality.",
+    "when_to_use": "[\"Data validation\",\"Constraint enforcement\"]",
+    "benefits": "[\"Data validation\",\"Quality enforcement\"]",
+    "drawbacks": "[\"Constraint management\",\"Error handling\"]",
+    "use_cases": "[\"Data validation\",\"Quality checks\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"data-quality\"",
+      "\"constraints\"",
+      "\"enforcer\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

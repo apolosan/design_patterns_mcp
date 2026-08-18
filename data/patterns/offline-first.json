@@ -1,16 +1,18 @@
-{
-  "id": "offline-first",
-  "name": "Offline-First Pattern",
-  "category": "Mobile",
-  "description": "Design app to work offline by default and sync when connection is available",
-  "when_to_use": "Unreliable connectivity\nMobile applications\nData persistence",
-  "benefits": "Better user experience\nNetwork independence\nPerformance improvement",
-  "drawbacks": "Complex synchronization\nStorage management\nConflict resolution",
-  "use_cases": "Mobile apps\nField applications\nTravel apps",
-  "complexity": "High",
-  "tags": [
-    "mobile",
-    "offline",
-    "synchronization"
-  ]
-}
+[
+  {
+    "id": "offline-first",
+    "name": "Offline-First Pattern",
+    "category": "Mobile",
+    "description": "Design app to work offline by default and sync when connection is available",
+    "when_to_use": "Unreliable connectivity\nMobile applications\nData persistence",
+    "benefits": "Better user experience\nNetwork independence\nPerformance improvement",
+    "drawbacks": "Complex synchronization\nStorage management\nConflict resolution",
+    "use_cases": "Mobile apps\nField applications\nTravel apps",
+    "complexity": "High",
+    "tags": [
+      "mobile",
+      "offline",
+      "synchronization"
+    ]
+  }
+]

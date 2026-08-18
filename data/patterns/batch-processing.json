@@ -1,22 +1,24 @@
-{
-  "id": "batch-processing",
-  "name": "Batch Processing Pattern",
-  "category": "Performance",
-  "description": "Groups multiple operations together to reduce overhead and improve throughput",
-  "when_to_use": "High-volume operations\nI/O optimization\nNetwork efficiency",
-  "benefits": "Improved throughput\nReduced overhead\nResource efficiency",
-  "drawbacks": "Increased latency\nComplexity\nError handling",
-  "use_cases": "Database operations\nFile processing\nNetwork requests",
-  "complexity": "Medium",
-  "tags": [
-    "performance",
-    "batch",
-    "throughput"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Batch Processing: group operations\nclass BatchProcessor<T> {\n  private batch: T[] = [];\n  private timer?: NodeJS.Timeout;\n  \n  constructor(\n    private processBatch: (items: T[]) => Promise<void>,\n    private maxBatchSize = 100,\n    private maxWaitMs = 1000\n  ) {}\n  \n  add(item: T): void {\n    this.batch.push(item);\n    \n    if (this.batch.length >= this.maxBatchSize) {\n      this.flush();\n    } else if (!this.timer) {\n      this.timer = setTimeout(() => this.flush(), this.maxWaitMs);\n    }\n  }\n  \n  private async flush(): Promise<void> {\n    if (this.batch.length === 0) return;\n    \n    if (this.timer) {\n      clearTimeout(this.timer);\n      this.timer = undefined;\n    }\n    \n    const items = this.batch;\n    this.batch = [];\n    \n    await this.processBatch(items);\n  }\n  \n  async shutdown(): Promise<void> {\n    await this.flush();\n  }\n}\n\n// Example: Batch database inserts\nconst insertBatcher = new BatchProcessor(\n  async (users) => {\n    await db.query('INSERT INTO users (email, name) VALUES ' + \n      users.map(() => '(?, ?)').join(','),\n      users.flatMap(u => [u.email, u.name])\n    );\n  },\n  100,\n  1000\n);\n\ninsertBatcher.add({ email: 'user1@example.com', name: 'User 1' });\ninsertBatcher.add({ email: 'user2@example.com', name: 'User 2' });\n// Batched into single query"
+[
+  {
+    "id": "batch-processing",
+    "name": "Batch Processing Pattern",
+    "category": "Performance",
+    "description": "Groups multiple operations together to reduce overhead and improve throughput",
+    "when_to_use": "High-volume operations\nI/O optimization\nNetwork efficiency",
+    "benefits": "Improved throughput\nReduced overhead\nResource efficiency",
+    "drawbacks": "Increased latency\nComplexity\nError handling",
+    "use_cases": "Database operations\nFile processing\nNetwork requests",
+    "complexity": "Medium",
+    "tags": [
+      "performance",
+      "batch",
+      "throughput"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Batch Processing: group operations\nclass BatchProcessor<T> {\n  private batch: T[] = [];\n  private timer?: NodeJS.Timeout;\n  \n  constructor(\n    private processBatch: (items: T[]) => Promise<void>,\n    private maxBatchSize = 100,\n    private maxWaitMs = 1000\n  ) {}\n  \n  add(item: T): void {\n    this.batch.push(item);\n    \n    if (this.batch.length >= this.maxBatchSize) {\n      this.flush();\n    } else if (!this.timer) {\n      this.timer = setTimeout(() => this.flush(), this.maxWaitMs);\n    }\n  }\n  \n  private async flush(): Promise<void> {\n    if (this.batch.length === 0) return;\n    \n    if (this.timer) {\n      clearTimeout(this.timer);\n      this.timer = undefined;\n    }\n    \n    const items = this.batch;\n    this.batch = [];\n    \n    await this.processBatch(items);\n  }\n  \n  async shutdown(): Promise<void> {\n    await this.flush();\n  }\n}\n\n// Example: Batch database inserts\nconst insertBatcher = new BatchProcessor(\n  async (users) => {\n    await db.query('INSERT INTO users (email, name) VALUES ' + \n      users.map(() => '(?, ?)').join(','),\n      users.flatMap(u => [u.email, u.name])\n    );\n  },\n  100,\n  1000\n);\n\ninsertBatcher.add({ email: 'user1@example.com', name: 'User 1' });\ninsertBatcher.add({ email: 'user2@example.com', name: 'User 2' });\n// Batched into single query"
+      }
     }
   }
-}
+]

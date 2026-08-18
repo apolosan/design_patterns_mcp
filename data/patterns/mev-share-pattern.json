@@ -1,24 +1,26 @@
-{
-  "id": "mev-share-pattern",
-  "name": "MEV-Share Pattern",
-  "category": "MEV",
-  "description": "Users capture their own MEV through orderflow auctions. Searchers bid for backrun rights.",
-  "when_to_use": "MEV redistribution, user orderflow monetization",
-  "benefits": "90% of backrun profit to users, fair MEV distribution",
-  "drawbacks": "Complex mechanism, solver dependency, partial information leakage",
-  "use_cases": "DEX trades, user transaction optimization, MEV kickbacks",
-  "complexity": "Very High",
-  "tags": [
-    "mev",
-    "mev-share",
-    "orderflow",
-    "auction",
-    "redistribution"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// MEV-Share: Users send transactions to Flashbots\n// Flashbots creates \"hint\" with partial tx info\n// Searchers bid to backrun user's tx\n// User receives 90% of backrun profit\n\nconst mevShareClient = new MevShareClient(network, authSigner);\n\nawait mevShareClient.sendTransaction(tx, {\n  hints: {\n    calldata: true,  // Share calldata\n    logs: true,      // Share event logs\n    functionSelector: true\n  },\n  maxBlockNumber: currentBlock + 25,\n  builders: ['flashbots', 'beaverbuild']\n});"
+[
+  {
+    "id": "mev-share-pattern",
+    "name": "MEV-Share Pattern",
+    "category": "MEV",
+    "description": "Users capture their own MEV through orderflow auctions. Searchers bid for backrun rights.",
+    "when_to_use": "MEV redistribution, user orderflow monetization",
+    "benefits": "90% of backrun profit to users, fair MEV distribution",
+    "drawbacks": "Complex mechanism, solver dependency, partial information leakage",
+    "use_cases": "DEX trades, user transaction optimization, MEV kickbacks",
+    "complexity": "Very High",
+    "tags": [
+      "mev",
+      "mev-share",
+      "orderflow",
+      "auction",
+      "redistribution"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// MEV-Share: Users send transactions to Flashbots\n// Flashbots creates \"hint\" with partial tx info\n// Searchers bid to backrun user's tx\n// User receives 90% of backrun profit\n\nconst mevShareClient = new MevShareClient(network, authSigner);\n\nawait mevShareClient.sendTransaction(tx, {\n  hints: {\n    calldata: true,  // Share calldata\n    logs: true,      // Share event logs\n    functionSelector: true\n  },\n  maxBlockNumber: currentBlock + 25,\n  builders: ['flashbots', 'beaverbuild']\n});"
+      }
     }
   }
-}
+]

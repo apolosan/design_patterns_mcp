@@ -1,17 +1,19 @@
-{
-  "id": "data-overwrite",
-  "name": "Data Overwrite",
-  "category": "Idempotency",
-  "description": "The Data Overwrite pattern handles idempotency by overwriting existing data. Used when metadata operations are not available, such as when working with object stores.",
-  "when_to_use": "[\"Metadata operations not available\",\"Need data-level overwrite\"]",
-  "benefits": "[\"Works with object stores\",\"Ensures clean state\"]",
-  "drawbacks": "[\"More resource intensive\",\"Potential data loss\"]",
-  "use_cases": "[\"Object store operations\",\"Full dataset replacement\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"idempotency\"",
-    "\"overwrite\"",
-    "\"data-operation\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "data-overwrite",
+    "name": "Data Overwrite",
+    "category": "Idempotency",
+    "description": "The Data Overwrite pattern handles idempotency by overwriting existing data. Used when metadata operations are not available, such as when working with object stores.",
+    "when_to_use": "[\"Metadata operations not available\",\"Need data-level overwrite\"]",
+    "benefits": "[\"Works with object stores\",\"Ensures clean state\"]",
+    "drawbacks": "[\"More resource intensive\",\"Potential data loss\"]",
+    "use_cases": "[\"Object store operations\",\"Full dataset replacement\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"idempotency\"",
+      "\"overwrite\"",
+      "\"data-operation\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

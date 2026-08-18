@@ -1,22 +1,24 @@
-{
-  "id": "sidecar",
-  "name": "Sidecar",
-  "category": "Microservices",
-  "description": "Deploys helper processes alongside main service for cross-cutting concerns",
-  "when_to_use": "Cross-cutting concerns\nLanguage diversity\nInfrastructure services",
-  "benefits": "Language independence\nSeparation of concerns\nReusability",
-  "drawbacks": "Resource overhead\nComplexity\nNetwork hops",
-  "use_cases": "Logging\nMonitoring\nSecurity\nService mesh",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "deployment",
-    "separation"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Sidecar: extend functionality without modifying service\nclass SidecarProxy {\n  constructor(\n    private serviceUrl: string,\n    private logger: Logger\n  ) {}\n  \n  async proxy(request: Request): Promise<Response> {\n    const startTime = Date.now();\n    this.logger.log('Request: ' + request.method + ' ' + request.url);\n    \n    const response = await fetch(this.serviceUrl + request.url, {\n      method: request.method,\n      headers: request.headers\n    });\n    \n    const duration = Date.now() - startTime;\n    this.logger.log('Response: ' + response.status + ' (' + duration + 'ms)');\n    \n    return response;\n  }\n}\n\nconst sidecar = new SidecarProxy('http://localhost:3000', logger);"
+[
+  {
+    "id": "sidecar",
+    "name": "Sidecar",
+    "category": "Microservices",
+    "description": "Deploys helper processes alongside main service for cross-cutting concerns",
+    "when_to_use": "Cross-cutting concerns\nLanguage diversity\nInfrastructure services",
+    "benefits": "Language independence\nSeparation of concerns\nReusability",
+    "drawbacks": "Resource overhead\nComplexity\nNetwork hops",
+    "use_cases": "Logging\nMonitoring\nSecurity\nService mesh",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "deployment",
+      "separation"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Sidecar: extend functionality without modifying service\nclass SidecarProxy {\n  constructor(\n    private serviceUrl: string,\n    private logger: Logger\n  ) {}\n  \n  async proxy(request: Request): Promise<Response> {\n    const startTime = Date.now();\n    this.logger.log('Request: ' + request.method + ' ' + request.url);\n    \n    const response = await fetch(this.serviceUrl + request.url, {\n      method: request.method,\n      headers: request.headers\n    });\n    \n    const duration = Date.now() - startTime;\n    this.logger.log('Response: ' + response.status + ' (' + duration + 'ms)');\n    \n    return response;\n  }\n}\n\nconst sidecar = new SidecarProxy('http://localhost:3000', logger);"
+      }
     }
   }
-}
+]

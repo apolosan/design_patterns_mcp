@@ -1,26 +1,28 @@
-{
-  "id": "react-server-components",
-  "name": "React Server Components (RSC)",
-  "category": "React Server Components",
-  "description": "Server-rendered components in React 18+. Default in Next.js App Router. Zero client JS.",
-  "when_to_use": "Data fetching, SEO, performance, reducing client bundle",
-  "benefits": "Zero client JS, direct DB access, better performance, automatic code splitting",
-  "drawbacks": "Cannot use hooks, event handlers, or browser APIs",
-  "use_cases": "Server data fetching, static content, SEO pages, dashboard data",
-  "complexity": "High",
-  "tags": [
-    "react",
-    "rsc",
-    "server-components",
-    "nextjs",
-    "app-router",
-    "modern",
-    "2024"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "// app/page.tsx - Server Component (default in App Router)\nasync function HomePage() {\n  // Direct database/API access on server\n  const posts = await db.post.findMany();\n  \n  return (\n    <div>\n      <h1>Blog Posts</h1>\n      {posts.map(post => (\n        <article key={post.id}>\n          <h2>{post.title}</h2>\n          <p>{post.excerpt}</p>\n        </article>\n      ))}\n    </div>\n  );\n}\n\n// Mixing Server + Client Components\n// app/dashboard/page.tsx (Server)\nasync function Dashboard() {\n  const data = await fetchDashboardData();\n  \n  return (\n    <div>\n      <h1>Dashboard</h1>\n      {/* Server Component - no JS */}\n      <Stats data={data.stats} />\n      \n      {/* Client Component - interactive */}\n      <InteractiveChart data={data.chart} />\n    </div>\n  );\n}\n\n// app/dashboard/InteractiveChart.tsx (Client)\n'use client'; // Mark as Client Component\n\nimport { useState } from 'react';\n\nexport function InteractiveChart({ data }: Props) {\n  const [range, setRange] = useState('7d');\n  \n  return (\n    <div>\n      <select value={range} onChange={(e) => setRange(e.target.value)}>\n        <option value=\"7d\">7 days</option>\n        <option value=\"30d\">30 days</option>\n      </select>\n      <Chart data={data} range={range} />\n    </div>\n  );\n}\n\n// Passing Server Components to Client Components\n// Server Component\nfunction Layout({ children }: { children: ReactNode }) {\n  return (\n    <ClientWrapper>\n      {children} {/* Server Component as children! */}\n    </ClientWrapper>\n  );\n}\n\n// Client Component accepts RSC as children\n'use client';\nfunction ClientWrapper({ children }: { children: ReactNode }) {\n  return <div className=\"wrapper\">{children}</div>;\n}"
+[
+  {
+    "id": "react-server-components",
+    "name": "React Server Components (RSC)",
+    "category": "React Server Components",
+    "description": "Server-rendered components in React 18+. Default in Next.js App Router. Zero client JS.",
+    "when_to_use": "Data fetching, SEO, performance, reducing client bundle",
+    "benefits": "Zero client JS, direct DB access, better performance, automatic code splitting",
+    "drawbacks": "Cannot use hooks, event handlers, or browser APIs",
+    "use_cases": "Server data fetching, static content, SEO pages, dashboard data",
+    "complexity": "High",
+    "tags": [
+      "react",
+      "rsc",
+      "server-components",
+      "nextjs",
+      "app-router",
+      "modern",
+      "2024"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "// app/page.tsx - Server Component (default in App Router)\nasync function HomePage() {\n  // Direct database/API access on server\n  const posts = await db.post.findMany();\n  \n  return (\n    <div>\n      <h1>Blog Posts</h1>\n      {posts.map(post => (\n        <article key={post.id}>\n          <h2>{post.title}</h2>\n          <p>{post.excerpt}</p>\n        </article>\n      ))}\n    </div>\n  );\n}\n\n// Mixing Server + Client Components\n// app/dashboard/page.tsx (Server)\nasync function Dashboard() {\n  const data = await fetchDashboardData();\n  \n  return (\n    <div>\n      <h1>Dashboard</h1>\n      {/* Server Component - no JS */}\n      <Stats data={data.stats} />\n      \n      {/* Client Component - interactive */}\n      <InteractiveChart data={data.chart} />\n    </div>\n  );\n}\n\n// app/dashboard/InteractiveChart.tsx (Client)\n'use client'; // Mark as Client Component\n\nimport { useState } from 'react';\n\nexport function InteractiveChart({ data }: Props) {\n  const [range, setRange] = useState('7d');\n  \n  return (\n    <div>\n      <select value={range} onChange={(e) => setRange(e.target.value)}>\n        <option value=\"7d\">7 days</option>\n        <option value=\"30d\">30 days</option>\n      </select>\n      <Chart data={data} range={range} />\n    </div>\n  );\n}\n\n// Passing Server Components to Client Components\n// Server Component\nfunction Layout({ children }: { children: ReactNode }) {\n  return (\n    <ClientWrapper>\n      {children} {/* Server Component as children! */}\n    </ClientWrapper>\n  );\n}\n\n// Client Component accepts RSC as children\n'use client';\nfunction ClientWrapper({ children }: { children: ReactNode }) {\n  return <div className=\"wrapper\">{children}</div>;\n}"
+      }
     }
   }
-}
+]

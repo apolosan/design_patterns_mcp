@@ -1,16 +1,18 @@
-{
-  "id": "device-shadow",
-  "name": "Device Shadow Pattern",
-  "category": "IoT",
-  "description": "Maintains virtual representation of device state in the cloud for offline devices",
-  "when_to_use": "Intermittent connectivity\nDevice state management\nOffline operations",
-  "benefits": "Offline capability\nState synchronization\nReliable device management",
-  "drawbacks": "State consistency\nStorage overhead\nSynchronization complexity",
-  "use_cases": "Smart home devices\nIndustrial sensors\nMobile IoT devices",
-  "complexity": "Medium",
-  "tags": [
-    "iot",
-    "shadow",
-    "state"
-  ]
-}
+[
+  {
+    "id": "device-shadow",
+    "name": "Device Shadow Pattern",
+    "category": "IoT",
+    "description": "Maintains virtual representation of device state in the cloud for offline devices",
+    "when_to_use": "Intermittent connectivity\nDevice state management\nOffline operations",
+    "benefits": "Offline capability\nState synchronization\nReliable device management",
+    "drawbacks": "State consistency\nStorage overhead\nSynchronization complexity",
+    "use_cases": "Smart home devices\nIndustrial sensors\nMobile IoT devices",
+    "complexity": "Medium",
+    "tags": [
+      "iot",
+      "shadow",
+      "state"
+    ]
+  }
+]

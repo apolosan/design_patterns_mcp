@@ -1,17 +1,19 @@
-{
-  "id": "late-data-detector",
-  "name": "Late Data Detector",
-  "category": "Error Management",
-  "description": "The Late Data Detector pattern identifies records that arrive after their expected processing time. It helps in completing already processed partitions or controlling the state in stateful jobs.",
-  "when_to_use": "[\"Event-time processing\",\"Need to detect out-of-order data\"]",
-  "benefits": "[\"Identifies late arrivals\",\"Helps maintain data accuracy\"]",
-  "drawbacks": "[\"Watermark management\",\"Late data handling decisions\"]",
-  "use_cases": "[\"Stream processing\",\"Real-time analytics\"]",
-  "complexity": "Medium",
-  "tags": [
-    "[\"error-management\"",
-    "\"late-data\"",
-    "\"detection\"",
-    "\"data-engineering\"]"
-  ]
-}
+[
+  {
+    "id": "late-data-detector",
+    "name": "Late Data Detector",
+    "category": "Error Management",
+    "description": "The Late Data Detector pattern identifies records that arrive after their expected processing time. It helps in completing already processed partitions or controlling the state in stateful jobs.",
+    "when_to_use": "[\"Event-time processing\",\"Need to detect out-of-order data\"]",
+    "benefits": "[\"Identifies late arrivals\",\"Helps maintain data accuracy\"]",
+    "drawbacks": "[\"Watermark management\",\"Late data handling decisions\"]",
+    "use_cases": "[\"Stream processing\",\"Real-time analytics\"]",
+    "complexity": "Medium",
+    "tags": [
+      "[\"error-management\"",
+      "\"late-data\"",
+      "\"detection\"",
+      "\"data-engineering\"]"
+    ]
+  }
+]

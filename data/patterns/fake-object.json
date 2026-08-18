@@ -1,16 +1,18 @@
-{
-  "id": "fake-object",
-  "name": "Fake Object",
-  "category": "Testing",
-  "description": "Working implementation with shortcuts that make it unsuitable for production",
-  "when_to_use": "Integration testing\nExternal system replacement\nPerformance testing",
-  "benefits": "Real behavior\nIntegration testing\nPerformance",
-  "drawbacks": "Implementation effort\nMaintenance burden\nBehavioral differences",
-  "use_cases": "In-memory databases\nFile system fakes\nNetwork services",
-  "complexity": "High",
-  "tags": [
-    "testing",
-    "fake",
-    "integration"
-  ]
-}
+[
+  {
+    "id": "fake-object",
+    "name": "Fake Object",
+    "category": "Testing",
+    "description": "Working implementation with shortcuts that make it unsuitable for production",
+    "when_to_use": "Integration testing\nExternal system replacement\nPerformance testing",
+    "benefits": "Real behavior\nIntegration testing\nPerformance",
+    "drawbacks": "Implementation effort\nMaintenance burden\nBehavioral differences",
+    "use_cases": "In-memory databases\nFile system fakes\nNetwork services",
+    "complexity": "High",
+    "tags": [
+      "testing",
+      "fake",
+      "integration"
+    ]
+  }
+]

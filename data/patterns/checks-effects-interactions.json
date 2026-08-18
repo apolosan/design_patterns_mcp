@@ -1,24 +1,26 @@
-{
-  "id": "checks-effects-interactions",
-  "name": "Checks-Effects-Interactions",
-  "category": "Smart Contract Security",
-  "description": "Prevents reentrancy attacks by ordering function execution Problem: Reentrancy attacks where external calls allow malicious state manipulation",
-  "when_to_use": "Order operations: checks → effects → interactions",
-  "benefits": "Prevents reentrancy, secure by design, industry standard",
-  "drawbacks": "Requires discipline, code refactoring needed",
-  "use_cases": "Withdrawal functions, ETH transfers, external calls in DeFi",
-  "complexity": "Low",
-  "tags": [
-    "security",
-    "reentrancy",
-    "solidity",
-    "defi",
-    "best-practice"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "function withdraw(uint256 amount) public {\n    require(balances[msg.sender] >= amount); // Checks\n    balances[msg.sender] -= amount; // Effects\n    (bool success,) = msg.sender.call{value: amount}(\"\"); // Interactions\n    require(success);\n}"
+[
+  {
+    "id": "checks-effects-interactions",
+    "name": "Checks-Effects-Interactions",
+    "category": "Smart Contract Security",
+    "description": "Prevents reentrancy attacks by ordering function execution Problem: Reentrancy attacks where external calls allow malicious state manipulation",
+    "when_to_use": "Order operations: checks → effects → interactions",
+    "benefits": "Prevents reentrancy, secure by design, industry standard",
+    "drawbacks": "Requires discipline, code refactoring needed",
+    "use_cases": "Withdrawal functions, ETH transfers, external calls in DeFi",
+    "complexity": "Low",
+    "tags": [
+      "security",
+      "reentrancy",
+      "solidity",
+      "defi",
+      "best-practice"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "function withdraw(uint256 amount) public {\n    require(balances[msg.sender] >= amount); // Checks\n    balances[msg.sender] -= amount; // Effects\n    (bool success,) = msg.sender.call{value: amount}(\"\"); // Interactions\n    require(success);\n}"
+      }
     }
   }
-}
+]

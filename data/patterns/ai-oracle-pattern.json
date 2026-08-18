@@ -1,24 +1,26 @@
-{
-  "id": "ai-oracle-pattern",
-  "name": "AI Oracle Pattern",
-  "category": "AI & Blockchain",
-  "description": "Connect AI models to smart contracts via oracles. Verified AI outputs trigger on-chain actions.",
-  "when_to_use": "AI-powered DeFi, automated decisions, AI-driven contracts",
-  "benefits": "AI-driven automation, verified outputs, composable AI+DeFi",
-  "drawbacks": "AI reliability risk, complexity, cost, oracle dependency",
-  "use_cases": "Chainlink AI integration, Oraichain, aelf AI oracle",
-  "complexity": "Very High",
-  "tags": [
-    "ai",
-    "oracle",
-    "chainlink",
-    "automation",
-    "ml"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "// AI Oracle for credit scoring\ncontract AICreditScoring {\n    address public aiOracle;\n    \n    struct CreditRequest {\n        address user;\n        bytes inputData;\n        uint256 timestamp;\n    }\n    \n    function requestCreditScore(bytes calldata userData) external returns (bytes32) {\n        bytes32 requestId = keccak256(abi.encode(msg.sender, userData, block.timestamp));\n        \n        // Request AI inference\n        IAIOracle(aiOracle).requestInference(\n            requestId,\n            \"credit-scoring-model-v1\",\n            userData\n        );\n        \n        return requestId;\n    }\n    \n    function fulfillCreditScore(bytes32 requestId, uint256 score, bytes calldata proof) external {\n        require(msg.sender == aiOracle);\n        require(verifyAIProof(proof)); // zkML or opML proof\n        \n        if (score > 700) {\n            approveLoan(requests[requestId].user);\n        }\n    }\n}"
+[
+  {
+    "id": "ai-oracle-pattern",
+    "name": "AI Oracle Pattern",
+    "category": "AI & Blockchain",
+    "description": "Connect AI models to smart contracts via oracles. Verified AI outputs trigger on-chain actions.",
+    "when_to_use": "AI-powered DeFi, automated decisions, AI-driven contracts",
+    "benefits": "AI-driven automation, verified outputs, composable AI+DeFi",
+    "drawbacks": "AI reliability risk, complexity, cost, oracle dependency",
+    "use_cases": "Chainlink AI integration, Oraichain, aelf AI oracle",
+    "complexity": "Very High",
+    "tags": [
+      "ai",
+      "oracle",
+      "chainlink",
+      "automation",
+      "ml"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// AI Oracle for credit scoring\ncontract AICreditScoring {\n    address public aiOracle;\n    \n    struct CreditRequest {\n        address user;\n        bytes inputData;\n        uint256 timestamp;\n    }\n    \n    function requestCreditScore(bytes calldata userData) external returns (bytes32) {\n        bytes32 requestId = keccak256(abi.encode(msg.sender, userData, block.timestamp));\n        \n        // Request AI inference\n        IAIOracle(aiOracle).requestInference(\n            requestId,\n            \"credit-scoring-model-v1\",\n            userData\n        );\n        \n        return requestId;\n    }\n    \n    function fulfillCreditScore(bytes32 requestId, uint256 score, bytes calldata proof) external {\n        require(msg.sender == aiOracle);\n        require(verifyAIProof(proof)); // zkML or opML proof\n        \n        if (score > 700) {\n            approveLoan(requests[requestId].user);\n        }\n    }\n}"
+      }
     }
   }
-}
+]

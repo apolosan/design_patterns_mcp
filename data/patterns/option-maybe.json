@@ -1,16 +1,18 @@
-{
-  "id": "option-maybe",
-  "name": "Option/Maybe Pattern",
-  "category": "Functional",
-  "description": "Represents optional values without null references",
-  "when_to_use": "Null safety\nOptional values\nError prevention",
-  "benefits": "Null safety\nExplicit optionality\nComposable\nType safe",
-  "drawbacks": "Learning curve\nVerbose syntax\nPerformance overhead",
-  "use_cases": "Database queries\nConfiguration values\nAPI responses",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "option",
-    "null-safety"
-  ]
-}
+[
+  {
+    "id": "option-maybe",
+    "name": "Option/Maybe Pattern",
+    "category": "Functional",
+    "description": "Represents optional values without null references",
+    "when_to_use": "Null safety\nOptional values\nError prevention",
+    "benefits": "Null safety\nExplicit optionality\nComposable\nType safe",
+    "drawbacks": "Learning curve\nVerbose syntax\nPerformance overhead",
+    "use_cases": "Database queries\nConfiguration values\nAPI responses",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "option",
+      "null-safety"
+    ]
+  }
+]

@@ -1,16 +1,18 @@
-{
-  "id": "trampolining",
-  "name": "Trampolining Pattern",
-  "category": "Functional",
-  "description": "Converts recursion to iteration to avoid stack overflow",
-  "when_to_use": "Deep recursion\nStack overflow prevention\nTail call optimization",
-  "benefits": "Stack overflow prevention\nMemory efficiency\nDeep recursion support",
-  "drawbacks": "Complexity\nPerformance overhead\nCode readability",
-  "use_cases": "Deep tree processing\nMutual recursion\nParser implementations",
-  "complexity": "High",
-  "tags": [
-    "functional",
-    "recursion",
-    "stack-safety"
-  ]
-}
+[
+  {
+    "id": "trampolining",
+    "name": "Trampolining Pattern",
+    "category": "Functional",
+    "description": "Converts recursion to iteration to avoid stack overflow",
+    "when_to_use": "Deep recursion\nStack overflow prevention\nTail call optimization",
+    "benefits": "Stack overflow prevention\nMemory efficiency\nDeep recursion support",
+    "drawbacks": "Complexity\nPerformance overhead\nCode readability",
+    "use_cases": "Deep tree processing\nMutual recursion\nParser implementations",
+    "complexity": "High",
+    "tags": [
+      "functional",
+      "recursion",
+      "stack-safety"
+    ]
+  }
+]

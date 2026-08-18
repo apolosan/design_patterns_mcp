@@ -1,22 +1,24 @@
-{
-  "id": "ambassador",
-  "name": "Ambassador",
-  "category": "Microservices",
-  "description": "Helper service that sends network requests on behalf of main service",
-  "when_to_use": "Network abstraction\nProtocol translation\nConnection management",
-  "benefits": "Network abstraction\nConnection pooling\nProtocol handling",
-  "drawbacks": "Network overhead\nAdditional complexity\nLatency",
-  "use_cases": "Database connections\nExternal APIs\nProtocol translation",
-  "complexity": "Medium",
-  "tags": [
-    "microservices",
-    "networking",
-    "proxy"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Ambassador: proxy for external services\nclass Ambassador {\n  private cache = new Map<string, any>();\n  \n  constructor(private serviceUrl: string) {}\n  \n  async request(path: string): Promise<any> {\n    const cached = this.cache.get(path);\n    if (cached) return cached;\n    \n    const response = await fetch(this.serviceUrl + path);\n    const data = await response.json();\n    this.cache.set(path, data);\n    return data;\n  }\n}\n\nconst externalApi = new Ambassador('https://api.external.com');\nconst data = await externalApi.request('/users/123');"
+[
+  {
+    "id": "ambassador",
+    "name": "Ambassador",
+    "category": "Microservices",
+    "description": "Helper service that sends network requests on behalf of main service",
+    "when_to_use": "Network abstraction\nProtocol translation\nConnection management",
+    "benefits": "Network abstraction\nConnection pooling\nProtocol handling",
+    "drawbacks": "Network overhead\nAdditional complexity\nLatency",
+    "use_cases": "Database connections\nExternal APIs\nProtocol translation",
+    "complexity": "Medium",
+    "tags": [
+      "microservices",
+      "networking",
+      "proxy"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Ambassador: proxy for external services\nclass Ambassador {\n  private cache = new Map<string, any>();\n  \n  constructor(private serviceUrl: string) {}\n  \n  async request(path: string): Promise<any> {\n    const cached = this.cache.get(path);\n    if (cached) return cached;\n    \n    const response = await fetch(this.serviceUrl + path);\n    const data = await response.json();\n    this.cache.set(path, data);\n    return data;\n  }\n}\n\nconst externalApi = new Ambassador('https://api.external.com');\nconst data = await externalApi.request('/users/123');"
+      }
     }
   }
-}
+]

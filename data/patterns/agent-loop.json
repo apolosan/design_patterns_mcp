@@ -1,22 +1,24 @@
-{
-  "id": "agent-loop",
-  "name": "Agent Loop Pattern",
-  "category": "AI/ML",
-  "description": "Continuous cycle of observation, reasoning, action, and feedback",
-  "when_to_use": "Interactive environments\nContinuous learning\nAdaptive behavior",
-  "benefits": "Continuous improvement\nAdaptive behavior\nReal-time response\nLearning capability",
-  "drawbacks": "Resource intensive\nPotential loops\nComplexity",
-  "use_cases": "Autonomous agents\nGame AI\nRobotic control",
-  "complexity": "High",
-  "tags": [
-    "agent",
-    "loop",
-    "continuous"
-  ],
-  "examples": {
-    "python": {
-      "language": "python",
-      "code": "# Agent Loop: continuous perception-action cycle\n\nclass AgentLoop:\n    def __init__(self, llm, tools, max_iterations=10):\n        self.llm = llm\n        self.tools = tools\n        self.max_iterations = max_iterations\n    \n    def run(self, goal: str):\n        state = {\"goal\": goal, \"done\": False, \"iterations\": 0}\n        \n        while not state[\"done\"] and state[\"iterations\"] < self.max_iterations:\n            # 1. Observe current state\n            observation = self.observe(state)\n            \n            # 2. Think: decide next action\n            thought = self.llm.generate(f\"\"\"\n            Goal: {state['goal']}\n            Observation: {observation}\n            What should I do next?\n            \"\"\")\n            \n            # 3. Act: execute action\n            action_result = self.act(thought)\n            \n            # 4. Update state\n            state[\"iterations\"] += 1\n            state[\"last_result\"] = action_result\n            \n            # 5. Check if goal achieved\n            state[\"done\"] = self.check_completion(state, action_result)\n        \n        return state\n    \n    def observe(self, state):\n        return f\"Iteration {state['iterations']}, Last: {state.get('last_result', 'None')}\"\n    \n    def act(self, thought: str):\n        # Parse and execute tool\n        if 'search' in thought.lower():\n            return self.tools['search'](\"query\")\n        return \"action completed\"\n    \n    def check_completion(self, state, result):\n        check = self.llm.generate(f\"Is goal '{state['goal']}' achieved? Result: {result}\")\n        return 'yes' in check.lower()\n\n# Usage: autonomous goal pursuit\nagent = AgentLoop(llm, {'search': lambda q: f\"found: {q}\"})\nagent.run(\"Find the capital of France\")"
+[
+  {
+    "id": "agent-loop",
+    "name": "Agent Loop Pattern",
+    "category": "AI/ML",
+    "description": "Continuous cycle of observation, reasoning, action, and feedback",
+    "when_to_use": "Interactive environments\nContinuous learning\nAdaptive behavior",
+    "benefits": "Continuous improvement\nAdaptive behavior\nReal-time response\nLearning capability",
+    "drawbacks": "Resource intensive\nPotential loops\nComplexity",
+    "use_cases": "Autonomous agents\nGame AI\nRobotic control",
+    "complexity": "High",
+    "tags": [
+      "agent",
+      "loop",
+      "continuous"
+    ],
+    "examples": {
+      "python": {
+        "language": "python",
+        "code": "# Agent Loop: continuous perception-action cycle\n\nclass AgentLoop:\n    def __init__(self, llm, tools, max_iterations=10):\n        self.llm = llm\n        self.tools = tools\n        self.max_iterations = max_iterations\n    \n    def run(self, goal: str):\n        state = {\"goal\": goal, \"done\": False, \"iterations\": 0}\n        \n        while not state[\"done\"] and state[\"iterations\"] < self.max_iterations:\n            # 1. Observe current state\n            observation = self.observe(state)\n            \n            # 2. Think: decide next action\n            thought = self.llm.generate(f\"\"\"\n            Goal: {state['goal']}\n            Observation: {observation}\n            What should I do next?\n            \"\"\")\n            \n            # 3. Act: execute action\n            action_result = self.act(thought)\n            \n            # 4. Update state\n            state[\"iterations\"] += 1\n            state[\"last_result\"] = action_result\n            \n            # 5. Check if goal achieved\n            state[\"done\"] = self.check_completion(state, action_result)\n        \n        return state\n    \n    def observe(self, state):\n        return f\"Iteration {state['iterations']}, Last: {state.get('last_result', 'None')}\"\n    \n    def act(self, thought: str):\n        # Parse and execute tool\n        if 'search' in thought.lower():\n            return self.tools['search'](\"query\")\n        return \"action completed\"\n    \n    def check_completion(self, state, result):\n        check = self.llm.generate(f\"Is goal '{state['goal']}' achieved? Result: {result}\")\n        return 'yes' in check.lower()\n\n# Usage: autonomous goal pursuit\nagent = AgentLoop(llm, {'search': lambda q: f\"found: {q}\"})\nagent.run(\"Find the capital of France\")"
+      }
     }
   }
-}
+]

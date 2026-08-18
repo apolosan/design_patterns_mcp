@@ -1,24 +1,26 @@
-{
-  "id": "multi-chain-deployment",
-  "name": "Multi-Chain Deployment Pattern",
-  "category": "Development & Deployment",
-  "description": "Deploy to multiple chains with consistent addresses using CREATE2. Reduces errors, enables cross-chain.",
-  "when_to_use": "Multi-chain protocols, consistent addressing, cross-chain apps",
-  "benefits": "Consistent addresses, reduced errors, cross-chain compatibility",
-  "drawbacks": "Different gas markets, chain-specific issues, coordination",
-  "use_cases": "Omnichain protocols, multi-chain bridges, cross-chain dApps",
-  "complexity": "High",
-  "tags": [
-    "deployment",
-    "multi-chain",
-    "create2",
-    "cross-chain",
-    "automation"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "const CHAINS = ['ethereum', 'polygon', 'arbitrum', 'optimism'];\nconst SALT = ethers.utils.id('MyProtocol_v1');\n\nfor (const chain of CHAINS) {\n  await hre.changeNetwork(chain);\n  \n  // CREATE2 ensures same address on all chains\n  const factory = await ethers.getContractAt('DeterministicFactory', FACTORY_ADDRESS);\n  \n  const tx = await factory.deploy(SALT, contractBytecode);\n  const receipt = await tx.wait();\n  \n  const deployedAddress = computeCreate2Address(SALT, contractBytecode);\n  console.log(`Deployed on ${chain} at ${deployedAddress}`);\n  \n  // Verify same address across all chains\n}"
+[
+  {
+    "id": "multi-chain-deployment",
+    "name": "Multi-Chain Deployment Pattern",
+    "category": "Development & Deployment",
+    "description": "Deploy to multiple chains with consistent addresses using CREATE2. Reduces errors, enables cross-chain.",
+    "when_to_use": "Multi-chain protocols, consistent addressing, cross-chain apps",
+    "benefits": "Consistent addresses, reduced errors, cross-chain compatibility",
+    "drawbacks": "Different gas markets, chain-specific issues, coordination",
+    "use_cases": "Omnichain protocols, multi-chain bridges, cross-chain dApps",
+    "complexity": "High",
+    "tags": [
+      "deployment",
+      "multi-chain",
+      "create2",
+      "cross-chain",
+      "automation"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "const CHAINS = ['ethereum', 'polygon', 'arbitrum', 'optimism'];\nconst SALT = ethers.utils.id('MyProtocol_v1');\n\nfor (const chain of CHAINS) {\n  await hre.changeNetwork(chain);\n  \n  // CREATE2 ensures same address on all chains\n  const factory = await ethers.getContractAt('DeterministicFactory', FACTORY_ADDRESS);\n  \n  const tx = await factory.deploy(SALT, contractBytecode);\n  const receipt = await tx.wait();\n  \n  const deployedAddress = computeCreate2Address(SALT, contractBytecode);\n  console.log(`Deployed on ${chain} at ${deployedAddress}`);\n  \n  // Verify same address across all chains\n}"
+      }
     }
   }
-}
+]

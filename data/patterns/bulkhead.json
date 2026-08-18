@@ -1,22 +1,24 @@
-{
-  "id": "bulkhead",
-  "name": "Bulkhead Pattern",
-  "category": "Cloud-Native",
-  "description": "Isolates critical resources to prevent total system failure",
-  "when_to_use": "Resource isolation\nFault containment\nCritical systems",
-  "benefits": "Fault isolation\nResource protection\nImproved reliability\nGraceful degradation",
-  "drawbacks": "Resource overhead\nComplexity\nManagement overhead",
-  "use_cases": "Thread pools\nConnection pools\nService isolation",
-  "complexity": "Medium",
-  "tags": [
-    "isolation",
-    "resilience",
-    "resource-management"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Bulkhead: isolate resources\nclass Bulkhead {\n  private queue: Array<() => void> = [];\n  private running = 0;\n  \n  constructor(private maxConcurrent: number) {}\n  \n  async execute<T>(fn: () => Promise<T>): Promise<T> {\n    if (this.running >= this.maxConcurrent) {\n      await new Promise(resolve => this.queue.push(resolve as any));\n    }\n    \n    this.running++;\n    try {\n      return await fn();\n    } finally {\n      this.running--;\n      const next = this.queue.shift();\n      if (next) next();\n    }\n  }\n}\n\nconst dbBulkhead = new Bulkhead(10);\nconst apiBulkhead = new Bulkhead(5);\nawait dbBulkhead.execute(() => db.query('SELECT * FROM users'));\nawait apiBulkhead.execute(() => fetch('https://api.example.com'));"
+[
+  {
+    "id": "bulkhead",
+    "name": "Bulkhead Pattern",
+    "category": "Cloud-Native",
+    "description": "Isolates critical resources to prevent total system failure",
+    "when_to_use": "Resource isolation\nFault containment\nCritical systems",
+    "benefits": "Fault isolation\nResource protection\nImproved reliability\nGraceful degradation",
+    "drawbacks": "Resource overhead\nComplexity\nManagement overhead",
+    "use_cases": "Thread pools\nConnection pools\nService isolation",
+    "complexity": "Medium",
+    "tags": [
+      "isolation",
+      "resilience",
+      "resource-management"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Bulkhead: isolate resources\nclass Bulkhead {\n  private queue: Array<() => void> = [];\n  private running = 0;\n  \n  constructor(private maxConcurrent: number) {}\n  \n  async execute<T>(fn: () => Promise<T>): Promise<T> {\n    if (this.running >= this.maxConcurrent) {\n      await new Promise(resolve => this.queue.push(resolve as any));\n    }\n    \n    this.running++;\n    try {\n      return await fn();\n    } finally {\n      this.running--;\n      const next = this.queue.shift();\n      if (next) next();\n    }\n  }\n}\n\nconst dbBulkhead = new Bulkhead(10);\nconst apiBulkhead = new Bulkhead(5);\nawait dbBulkhead.execute(() => db.query('SELECT * FROM users'));\nawait apiBulkhead.execute(() => fetch('https://api.example.com'));"
+      }
     }
   }
-}
+]

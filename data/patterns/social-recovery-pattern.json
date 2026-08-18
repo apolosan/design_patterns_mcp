@@ -1,24 +1,26 @@
-{
-  "id": "social-recovery-pattern",
-  "name": "Social Recovery Pattern",
-  "category": "Account Abstraction",
-  "description": "M-of-N guardians can recover account instead of seed phrases. User-friendly backup.",
-  "when_to_use": "Wallet recovery, seed phrase alternatives, user-friendly security",
-  "benefits": "No seed phrases needed, user-friendly, distributed trust",
-  "drawbacks": "Guardian selection critical, social engineering risk",
-  "use_cases": "Smart wallets, account recovery, guardian-based backup",
-  "complexity": "High",
-  "tags": [
-    "account-abstraction",
-    "social-recovery",
-    "guardians",
-    "wallet",
-    "security"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract SocialRecovery {\n    mapping(address => address[]) public guardians;\n    mapping(address => mapping(address => bool)) public recoveryApprovals;\n    \n    function initiateRecovery(address newOwner) external {\n        require(isGuardian[msg.sender]);\n        recoveryApprovals[owner][newOwner] = true;\n    }\n    \n    function executeRecovery(address newOwner) external {\n        uint256 approvals = 0;\n        for (uint i = 0; i < guardians[owner].length; i++) {\n            if (recoveryApprovals[owner][newOwner]) approvals++;\n        }\n        require(approvals >= threshold); // e.g., 3 of 5\n        \n        owner = newOwner;\n    }\n}"
+[
+  {
+    "id": "social-recovery-pattern",
+    "name": "Social Recovery Pattern",
+    "category": "Account Abstraction",
+    "description": "M-of-N guardians can recover account instead of seed phrases. User-friendly backup.",
+    "when_to_use": "Wallet recovery, seed phrase alternatives, user-friendly security",
+    "benefits": "No seed phrases needed, user-friendly, distributed trust",
+    "drawbacks": "Guardian selection critical, social engineering risk",
+    "use_cases": "Smart wallets, account recovery, guardian-based backup",
+    "complexity": "High",
+    "tags": [
+      "account-abstraction",
+      "social-recovery",
+      "guardians",
+      "wallet",
+      "security"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract SocialRecovery {\n    mapping(address => address[]) public guardians;\n    mapping(address => mapping(address => bool)) public recoveryApprovals;\n    \n    function initiateRecovery(address newOwner) external {\n        require(isGuardian[msg.sender]);\n        recoveryApprovals[owner][newOwner] = true;\n    }\n    \n    function executeRecovery(address newOwner) external {\n        uint256 approvals = 0;\n        for (uint i = 0; i < guardians[owner].length; i++) {\n            if (recoveryApprovals[owner][newOwner]) approvals++;\n        }\n        require(approvals >= threshold); // e.g., 3 of 5\n        \n        owner = newOwner;\n    }\n}"
+      }
     }
   }
-}
+]

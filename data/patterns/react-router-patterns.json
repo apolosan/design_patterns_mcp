@@ -1,26 +1,28 @@
-{
-  "id": "react-router-patterns",
-  "name": "React Router Patterns",
-  "category": "React Routing",
-  "description": "Client-side routing with React Router v6. SPA navigation and route management.",
-  "when_to_use": "Multi-page SPAs, navigation, protected routes, nested routes",
-  "benefits": "Declarative routing, nested routes, hooks API, code splitting",
-  "drawbacks": "Learning curve, breaking changes between versions",
-  "use_cases": "App navigation, authentication flows, layouts, 404 pages, dynamic routes",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "routing",
-    "react-router",
-    "navigation",
-    "spa",
-    "v6",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { BrowserRouter, Routes, Route, Link, Navigate, useParams, useNavigate, Outlet } from 'react-router-dom';\n\nfunction App() {\n  return (\n    <BrowserRouter>\n      <Routes>\n        <Route path=\"/\" element={<Layout />}>\n          <Route index element={<Home />} />\n          <Route path=\"about\" element={<About />} />\n          <Route path=\"users\" element={<Users />}>\n            <Route index element={<UserList />} />\n            <Route path=\":userId\" element={<UserDetail />} />\n          </Route>\n          <Route path=\"dashboard\" element={\n            <ProtectedRoute>\n              <Dashboard />\n            </ProtectedRoute>\n          } />\n          <Route path=\"*\" element={<NotFound />} />\n        </Route>\n      </Routes>\n    </BrowserRouter>\n  );\n}\n\nfunction Layout() {\n  return (\n    <div>\n      <nav>\n        <Link to=\"/\">Home</Link>\n        <Link to=\"/about\">About</Link>\n        <Link to=\"/users\">Users</Link>\n        <Link to=\"/dashboard\">Dashboard</Link>\n      </nav>\n      <main>\n        <Outlet />\n      </main>\n    </div>\n  );\n}\n\nfunction UserDetail() {\n  const { userId } = useParams();\n  const navigate = useNavigate();\n  \n  return (\n    <div>\n      <h2>User {userId}</h2>\n      <button onClick={() => navigate('/users')}>Back to Users</button>\n    </div>\n  );\n}\n\nfunction ProtectedRoute({ children }: { children: ReactNode }) {\n  const { user } = useAuth();\n  \n  if (!user) {\n    return <Navigate to=\"/login\" replace />;\n  }\n  \n  return <>{children}</>;\n}"
+[
+  {
+    "id": "react-router-patterns",
+    "name": "React Router Patterns",
+    "category": "React Routing",
+    "description": "Client-side routing with React Router v6. SPA navigation and route management.",
+    "when_to_use": "Multi-page SPAs, navigation, protected routes, nested routes",
+    "benefits": "Declarative routing, nested routes, hooks API, code splitting",
+    "drawbacks": "Learning curve, breaking changes between versions",
+    "use_cases": "App navigation, authentication flows, layouts, 404 pages, dynamic routes",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "routing",
+      "react-router",
+      "navigation",
+      "spa",
+      "v6",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { BrowserRouter, Routes, Route, Link, Navigate, useParams, useNavigate, Outlet } from 'react-router-dom';\n\nfunction App() {\n  return (\n    <BrowserRouter>\n      <Routes>\n        <Route path=\"/\" element={<Layout />}>\n          <Route index element={<Home />} />\n          <Route path=\"about\" element={<About />} />\n          <Route path=\"users\" element={<Users />}>\n            <Route index element={<UserList />} />\n            <Route path=\":userId\" element={<UserDetail />} />\n          </Route>\n          <Route path=\"dashboard\" element={\n            <ProtectedRoute>\n              <Dashboard />\n            </ProtectedRoute>\n          } />\n          <Route path=\"*\" element={<NotFound />} />\n        </Route>\n      </Routes>\n    </BrowserRouter>\n  );\n}\n\nfunction Layout() {\n  return (\n    <div>\n      <nav>\n        <Link to=\"/\">Home</Link>\n        <Link to=\"/about\">About</Link>\n        <Link to=\"/users\">Users</Link>\n        <Link to=\"/dashboard\">Dashboard</Link>\n      </nav>\n      <main>\n        <Outlet />\n      </main>\n    </div>\n  );\n}\n\nfunction UserDetail() {\n  const { userId } = useParams();\n  const navigate = useNavigate();\n  \n  return (\n    <div>\n      <h2>User {userId}</h2>\n      <button onClick={() => navigate('/users')}>Back to Users</button>\n    </div>\n  );\n}\n\nfunction ProtectedRoute({ children }: { children: ReactNode }) {\n  const { user } = useAuth();\n  \n  if (!user) {\n    return <Navigate to=\"/login\" replace />;\n  }\n  \n  return <>{children}</>;\n}"
+      }
     }
   }
-}
+]

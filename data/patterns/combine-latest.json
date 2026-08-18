@@ -1,22 +1,24 @@
-{
-  "id": "combine-latest",
-  "name": "CombineLatest Pattern",
-  "category": "Reactive",
-  "description": "Combines latest values from multiple observables when any emits",
-  "when_to_use": "Form validation\nState combination\nReal-time updates",
-  "benefits": "Latest values\nReal-time combination\nState tracking",
-  "drawbacks": "Frequent emissions\nMemory usage\nTiming sensitivity",
-  "use_cases": "Form validation\nReal-time dashboards\nState management",
-  "complexity": "Medium",
-  "tags": [
-    "reactive",
-    "combine",
-    "latest"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// CombineLatest: emit when any source emits\nfunction combineLatest<T extends any[]>(\n  ...observables: Observable<any>[]\n): Observable<T> {\n  return new Observable(observer => {\n    const values = new Array(observables.length);\n    const hasValue = new Array(observables.length).fill(false);\n    let completed = 0;\n    \n    const subscriptions = observables.map((obs, index) =>\n      obs.subscribe({\n        next: value => {\n          values[index] = value;\n          hasValue[index] = true;\n          \n          if (hasValue.every(h => h)) {\n            observer.next([...values] as T);\n          }\n        },\n        error: err => observer.error(err),\n        complete: () => {\n          completed++;\n          if (completed === observables.length) {\n            observer.complete();\n          }\n        }\n      })\n    );\n    \n    return () => subscriptions.forEach(sub => sub.unsubscribe());\n  });\n}\n\n// Usage: Form validation\nconst username = new BehaviorSubject('');\nconst password = new BehaviorSubject('');\n\ncombineLatest(username, password).subscribe({\n  next: ([user, pass]) => {\n    const valid = user.length > 3 && pass.length > 6;\n    console.log('Form valid:', valid);\n  },\n  error: () => {},\n  complete: () => {}\n});"
+[
+  {
+    "id": "combine-latest",
+    "name": "CombineLatest Pattern",
+    "category": "Reactive",
+    "description": "Combines latest values from multiple observables when any emits",
+    "when_to_use": "Form validation\nState combination\nReal-time updates",
+    "benefits": "Latest values\nReal-time combination\nState tracking",
+    "drawbacks": "Frequent emissions\nMemory usage\nTiming sensitivity",
+    "use_cases": "Form validation\nReal-time dashboards\nState management",
+    "complexity": "Medium",
+    "tags": [
+      "reactive",
+      "combine",
+      "latest"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// CombineLatest: emit when any source emits\nfunction combineLatest<T extends any[]>(\n  ...observables: Observable<any>[]\n): Observable<T> {\n  return new Observable(observer => {\n    const values = new Array(observables.length);\n    const hasValue = new Array(observables.length).fill(false);\n    let completed = 0;\n    \n    const subscriptions = observables.map((obs, index) =>\n      obs.subscribe({\n        next: value => {\n          values[index] = value;\n          hasValue[index] = true;\n          \n          if (hasValue.every(h => h)) {\n            observer.next([...values] as T);\n          }\n        },\n        error: err => observer.error(err),\n        complete: () => {\n          completed++;\n          if (completed === observables.length) {\n            observer.complete();\n          }\n        }\n      })\n    );\n    \n    return () => subscriptions.forEach(sub => sub.unsubscribe());\n  });\n}\n\n// Usage: Form validation\nconst username = new BehaviorSubject('');\nconst password = new BehaviorSubject('');\n\ncombineLatest(username, password).subscribe({\n  next: ([user, pass]) => {\n    const valid = user.length > 3 && pass.length > 6;\n    console.log('Form valid:', valid);\n  },\n  error: () => {},\n  complete: () => {}\n});"
+      }
     }
   }
-}
+]

@@ -1,16 +1,18 @@
-{
-  "id": "object-pool-game",
-  "name": "Object Pool (Game)",
-  "category": "Game Development",
-  "description": "Reuses objects to avoid expensive allocation/deallocation in games",
-  "when_to_use": "Frequent object creation\nPerformance optimization\nMemory management",
-  "benefits": "Performance improvement\nReduced garbage collection\nMemory efficiency",
-  "drawbacks": "Memory overhead\nPool management\nObject lifecycle",
-  "use_cases": "Bullets\nParticles\nEnemies",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "pool",
-    "performance"
-  ]
-}
+[
+  {
+    "id": "object-pool-game",
+    "name": "Object Pool (Game)",
+    "category": "Game Development",
+    "description": "Reuses objects to avoid expensive allocation/deallocation in games",
+    "when_to_use": "Frequent object creation\nPerformance optimization\nMemory management",
+    "benefits": "Performance improvement\nReduced garbage collection\nMemory efficiency",
+    "drawbacks": "Memory overhead\nPool management\nObject lifecycle",
+    "use_cases": "Bullets\nParticles\nEnemies",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "pool",
+      "performance"
+    ]
+  }
+]

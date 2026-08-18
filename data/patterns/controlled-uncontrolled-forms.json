@@ -1,26 +1,28 @@
-{
-  "id": "controlled-uncontrolled-forms",
-  "name": "Controlled and Uncontrolled Forms",
-  "category": "React Forms",
-  "description": "Controlled: React state controls input. Uncontrolled: DOM holds state via refs.",
-  "when_to_use": "Form inputs, validation, dynamic forms, file uploads",
-  "benefits": "Controlled: validation, dynamic. Uncontrolled: simpler for static",
-  "drawbacks": "Controlled: boilerplate. Uncontrolled: less control",
-  "use_cases": "Login forms, search inputs, file upload, form validation",
-  "complexity": "Low",
-  "tags": [
-    "react",
-    "forms",
-    "controlled",
-    "uncontrolled",
-    "input",
-    "validation",
-    "modern"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "// Controlled: React manages state\nfunction ControlledForm() {\n  const [email, setEmail] = useState('');\n  const [error, setError] = useState('');\n  \n  const validate = (value: string) => {\n    const isValid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value);\n    setError(isValid ? '' : 'Invalid email');\n  };\n  \n  return (\n    <form>\n      <input\n        value={email}\n        onChange={(e) => {\n          setEmail(e.target.value);\n          validate(e.target.value);\n        }}\n      />\n      {error && <span>{error}</span>}\n    </form>\n  );\n}\n\n// Uncontrolled: DOM manages state\nfunction UncontrolledForm() {\n  const emailRef = useRef<HTMLInputElement>(null);\n  \n  const handleSubmit = () => {\n    console.log(emailRef.current?.value);\n  };\n  \n  return (\n    <form onSubmit={handleSubmit}>\n      <input ref={emailRef} defaultValue=\"user@example.com\" />\n      <button type=\"submit\">Submit</button>\n    </form>\n  );\n}"
+[
+  {
+    "id": "controlled-uncontrolled-forms",
+    "name": "Controlled and Uncontrolled Forms",
+    "category": "React Forms",
+    "description": "Controlled: React state controls input. Uncontrolled: DOM holds state via refs.",
+    "when_to_use": "Form inputs, validation, dynamic forms, file uploads",
+    "benefits": "Controlled: validation, dynamic. Uncontrolled: simpler for static",
+    "drawbacks": "Controlled: boilerplate. Uncontrolled: less control",
+    "use_cases": "Login forms, search inputs, file upload, form validation",
+    "complexity": "Low",
+    "tags": [
+      "react",
+      "forms",
+      "controlled",
+      "uncontrolled",
+      "input",
+      "validation",
+      "modern"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "// Controlled: React manages state\nfunction ControlledForm() {\n  const [email, setEmail] = useState('');\n  const [error, setError] = useState('');\n  \n  const validate = (value: string) => {\n    const isValid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value);\n    setError(isValid ? '' : 'Invalid email');\n  };\n  \n  return (\n    <form>\n      <input\n        value={email}\n        onChange={(e) => {\n          setEmail(e.target.value);\n          validate(e.target.value);\n        }}\n      />\n      {error && <span>{error}</span>}\n    </form>\n  );\n}\n\n// Uncontrolled: DOM manages state\nfunction UncontrolledForm() {\n  const emailRef = useRef<HTMLInputElement>(null);\n  \n  const handleSubmit = () => {\n    console.log(emailRef.current?.value);\n  };\n  \n  return (\n    <form onSubmit={handleSubmit}>\n      <input ref={emailRef} defaultValue=\"user@example.com\" />\n      <button type=\"submit\">Submit</button>\n    </form>\n  );\n}"
+      }
     }
   }
-}
+]

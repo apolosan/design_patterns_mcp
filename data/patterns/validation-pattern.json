@@ -1,16 +1,18 @@
-{
-  "id": "validation-pattern",
-  "name": "Validation Pattern",
-  "category": "Functional",
-  "description": "Accumulates validation errors instead of short-circuiting",
-  "when_to_use": "Form validation\nError accumulation\nMultiple validations",
-  "benefits": "Error accumulation\nComplete validation\nUser friendly\nComposable",
-  "drawbacks": "Complexity\nLearning curve\nMemory overhead",
-  "use_cases": "Form validation\nData validation\nConfiguration checking",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "validation",
-    "error-accumulation"
-  ]
-}
+[
+  {
+    "id": "validation-pattern",
+    "name": "Validation Pattern",
+    "category": "Functional",
+    "description": "Accumulates validation errors instead of short-circuiting",
+    "when_to_use": "Form validation\nError accumulation\nMultiple validations",
+    "benefits": "Error accumulation\nComplete validation\nUser friendly\nComposable",
+    "drawbacks": "Complexity\nLearning curve\nMemory overhead",
+    "use_cases": "Form validation\nData validation\nConfiguration checking",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "validation",
+      "error-accumulation"
+    ]
+  }
+]

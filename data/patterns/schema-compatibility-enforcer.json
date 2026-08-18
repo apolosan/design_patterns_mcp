@@ -1,38 +1,49 @@
-{
-  "id": "schema-compatibility-enforcer",
-  "name": "Schema Compatibility Enforcer",
-  "category": "Data Engineering",
-  "description": "Validates producer/consumer schema compatibility (backward, forward, full) before deployment. Blocks incompatible changes from breaking downstream consumers and provides guidance on acceptable evolution paths.",
-  "when_to_use": [
-    "Multiple consumers depend on a producer's schema",
-    "Schema registry or contract-first workflow",
-    "Avro/Protobuf/JSON-Schema pipelines"
-  ],
-  "benefits": [
-    "Prevents breaking changes",
-    "Automated CI guardrails",
-    "Documents compatibility policy"
-  ],
-  "drawbacks": [
-    "Strict rules may block legitimate evolution",
-    "Requires schema registry investment",
-    "Edge cases need manual override"
-  ],
-  "use_cases": [
-    "Kafka Schema Registry compatibility checks",
-    "OpenAPI breaking-change detection",
-    "Parquet schema evolution"
-  ],
-  "complexity": "Medium",
-  "tags": ["data-engineering", "schema", "governance", "compatibility"],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "function checkCompatibility(prev: Schema, next: Schema, mode: 'backward'|'forward'|'full'): Issue[] {\n  const issues: Issue[] = [];\n  for (const f of Object.keys(prev)) if (!(f in next)) issues.push({field:f, kind:'removed'});\n  return issues;\n}",
-      "description": "Backward compatibility check stub."
-    }
-  },
-  "relationships": [
-    {"target_pattern_id": "schema-migrator", "type": "complements", "strength": 0.9}
-  ]
-}
+[
+  {
+    "id": "schema-compatibility-enforcer",
+    "name": "Schema Compatibility Enforcer",
+    "category": "Data Engineering",
+    "description": "Validates producer/consumer schema compatibility (backward, forward, full) before deployment. Blocks incompatible changes from breaking downstream consumers and provides guidance on acceptable evolution paths.",
+    "when_to_use": [
+      "Multiple consumers depend on a producer's schema",
+      "Schema registry or contract-first workflow",
+      "Avro/Protobuf/JSON-Schema pipelines"
+    ],
+    "benefits": [
+      "Prevents breaking changes",
+      "Automated CI guardrails",
+      "Documents compatibility policy"
+    ],
+    "drawbacks": [
+      "Strict rules may block legitimate evolution",
+      "Requires schema registry investment",
+      "Edge cases need manual override"
+    ],
+    "use_cases": [
+      "Kafka Schema Registry compatibility checks",
+      "OpenAPI breaking-change detection",
+      "Parquet schema evolution"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "data-engineering",
+      "schema",
+      "governance",
+      "compatibility"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "function checkCompatibility(prev: Schema, next: Schema, mode: 'backward'|'forward'|'full'): Issue[] {\n  const issues: Issue[] = [];\n  for (const f of Object.keys(prev)) if (!(f in next)) issues.push({field:f, kind:'removed'});\n  return issues;\n}",
+        "description": "Backward compatibility check stub."
+      }
+    },
+    "relationships": [
+      {
+        "target_pattern_id": "schema-migrator",
+        "type": "complements",
+        "strength": 0.9
+      }
+    ]
+  }
+]

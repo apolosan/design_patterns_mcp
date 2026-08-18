@@ -1,16 +1,18 @@
-{
-  "id": "database-transaction",
-  "name": "Database Transaction Pattern",
-  "category": "Data Access",
-  "description": "Ensures data consistency through ACID properties in database operations",
-  "when_to_use": "Data integrity\nMulti-step operations\nConsistency requirements",
-  "benefits": "Data consistency\nError recovery\nAtomicity\nIsolation",
-  "drawbacks": "Performance overhead\nDeadlock risk\nComplex error handling",
-  "use_cases": "Financial systems\nE-commerce\nMulti-table operations",
-  "complexity": "Medium",
-  "tags": [
-    "data-access",
-    "transaction",
-    "consistency"
-  ]
-}
+[
+  {
+    "id": "database-transaction",
+    "name": "Database Transaction Pattern",
+    "category": "Data Access",
+    "description": "Ensures data consistency through ACID properties in database operations",
+    "when_to_use": "Data integrity\nMulti-step operations\nConsistency requirements",
+    "benefits": "Data consistency\nError recovery\nAtomicity\nIsolation",
+    "drawbacks": "Performance overhead\nDeadlock risk\nComplex error handling",
+    "use_cases": "Financial systems\nE-commerce\nMulti-table operations",
+    "complexity": "Medium",
+    "tags": [
+      "data-access",
+      "transaction",
+      "consistency"
+    ]
+  }
+]

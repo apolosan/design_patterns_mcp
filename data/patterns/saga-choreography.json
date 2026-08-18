@@ -1,22 +1,24 @@
-{
-  "id": "saga-choreography",
-  "name": "Saga (Choreography)",
-  "category": "Microservices",
-  "description": "Distributed transaction managed by events without central coordinator",
-  "when_to_use": "Distributed transactions\nEvent-driven architecture\nLoose coupling",
-  "benefits": "Loose coupling\nScalability\nEvent-driven\nNo central coordinator",
-  "drawbacks": "Complex debugging\nLack of overview\nError handling complexity",
-  "use_cases": "Order processing\nAccount transfers\nMulti-step workflows",
-  "complexity": "High",
-  "tags": [
-    "microservices",
-    "transaction",
-    "choreography"
-  ],
-  "examples": {
-    "cross-reference": {
-      "language": "cross-reference",
-      "code": "// Choreography variant: events trigger saga steps directly without central coordinator. See Saga Orchestration for orchestrated approach.\n// Reference pattern: saga-orchestration"
+[
+  {
+    "id": "saga-choreography",
+    "name": "Saga (Choreography)",
+    "category": "Microservices",
+    "description": "Distributed transaction managed by events without central coordinator",
+    "when_to_use": "Distributed transactions\nEvent-driven architecture\nLoose coupling",
+    "benefits": "Loose coupling\nScalability\nEvent-driven\nNo central coordinator",
+    "drawbacks": "Complex debugging\nLack of overview\nError handling complexity",
+    "use_cases": "Order processing\nAccount transfers\nMulti-step workflows",
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "transaction",
+      "choreography"
+    ],
+    "examples": {
+      "cross-reference": {
+        "language": "cross-reference",
+        "code": "// Choreography variant: events trigger saga steps directly without central coordinator. See Saga Orchestration for orchestrated approach.\n// Reference pattern: saga-orchestration"
+      }
     }
   }
-}
+]

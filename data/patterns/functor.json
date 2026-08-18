@@ -1,16 +1,18 @@
-{
-  "id": "functor",
-  "name": "Functor Pattern",
-  "category": "Functional",
-  "description": "Allows mapping functions over wrapped values",
-  "when_to_use": "Value transformation\nContainer types\nFunctional composition",
-  "benefits": "Composable\nType safe\nReusable\nPredictable",
-  "drawbacks": "Abstract concept\nPerformance overhead\nMemory usage",
-  "use_cases": "Array operations\nOptional values\nContainer types",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "mapping",
-    "composition"
-  ]
-}
+[
+  {
+    "id": "functor",
+    "name": "Functor Pattern",
+    "category": "Functional",
+    "description": "Allows mapping functions over wrapped values",
+    "when_to_use": "Value transformation\nContainer types\nFunctional composition",
+    "benefits": "Composable\nType safe\nReusable\nPredictable",
+    "drawbacks": "Abstract concept\nPerformance overhead\nMemory usage",
+    "use_cases": "Array operations\nOptional values\nContainer types",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "mapping",
+      "composition"
+    ]
+  }
+]

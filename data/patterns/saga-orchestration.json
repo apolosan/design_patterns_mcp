@@ -1,22 +1,24 @@
-{
-  "id": "saga-orchestration",
-  "name": "Saga (Orchestration)",
-  "category": "Microservices",
-  "description": "Distributed transaction managed by central orchestrator",
-  "when_to_use": "Complex workflows\nCentralized control\nError handling",
-  "benefits": "Centralized control\nClear workflow\nError handling\nMonitoring",
-  "drawbacks": "Single point of failure\nComplex orchestrator\nCoupling",
-  "use_cases": "Complex business processes\nMulti-step transactions\nWorkflow management",
-  "complexity": "High",
-  "tags": [
-    "microservices",
-    "transaction",
-    "orchestration"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Saga Orchestration: coordinate distributed transactions\ninterface SagaStep {\n  execute: () => Promise<void>;\n  compensate: () => Promise<void>;\n}\n\nclass SagaOrchestrator {\n  private steps: SagaStep[] = [];\n  private completed: SagaStep[] = [];\n  \n  addStep(step: SagaStep) {\n    this.steps.push(step);\n  }\n  \n  async execute() {\n    try {\n      for (const step of this.steps) {\n        await step.execute();\n        this.completed.push(step);\n      }\n    } catch (error) {\n      await this.rollback();\n      throw error;\n    }\n  }\n  \n  private async rollback() {\n    for (const step of this.completed.reverse()) {\n      await step.compensate();\n    }\n  }\n}\n\nconst saga = new SagaOrchestrator();\nsaga.addStep({\n  execute: async () => reserveInventory(orderId),\n  compensate: async () => releaseInventory(orderId)\n});\nawait saga.execute();"
+[
+  {
+    "id": "saga-orchestration",
+    "name": "Saga (Orchestration)",
+    "category": "Microservices",
+    "description": "Distributed transaction managed by central orchestrator",
+    "when_to_use": "Complex workflows\nCentralized control\nError handling",
+    "benefits": "Centralized control\nClear workflow\nError handling\nMonitoring",
+    "drawbacks": "Single point of failure\nComplex orchestrator\nCoupling",
+    "use_cases": "Complex business processes\nMulti-step transactions\nWorkflow management",
+    "complexity": "High",
+    "tags": [
+      "microservices",
+      "transaction",
+      "orchestration"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Saga Orchestration: coordinate distributed transactions\ninterface SagaStep {\n  execute: () => Promise<void>;\n  compensate: () => Promise<void>;\n}\n\nclass SagaOrchestrator {\n  private steps: SagaStep[] = [];\n  private completed: SagaStep[] = [];\n  \n  addStep(step: SagaStep) {\n    this.steps.push(step);\n  }\n  \n  async execute() {\n    try {\n      for (const step of this.steps) {\n        await step.execute();\n        this.completed.push(step);\n      }\n    } catch (error) {\n      await this.rollback();\n      throw error;\n    }\n  }\n  \n  private async rollback() {\n    for (const step of this.completed.reverse()) {\n      await step.compensate();\n    }\n  }\n}\n\nconst saga = new SagaOrchestrator();\nsaga.addStep({\n  execute: async () => reserveInventory(orderId),\n  compensate: async () => releaseInventory(orderId)\n});\nawait saga.execute();"
+      }
     }
   }
-}
+]

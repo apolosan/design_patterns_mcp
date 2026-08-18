@@ -1,22 +1,24 @@
-{
-  "id": "domain-model",
-  "name": "Domain Model",
-  "category": "Enterprise",
-  "description": "Object model of the domain that incorporates both behavior and data",
-  "when_to_use": "Complex business logic\nRich domain models\nObject-oriented design",
-  "benefits": "Rich behavior\nEncapsulation\nMaintainability\nTestability",
-  "drawbacks": "Complex setup\nLearning curve\nOver-engineering risk",
-  "use_cases": "Complex business rules\nFinancial systems\nEnterprise applications",
-  "complexity": "High",
-  "tags": [
-    "enterprise",
-    "domain-logic",
-    "object-oriented"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Domain Model: rich behavior in domain objects\nclass Order {\n  private items: OrderItem[] = [];\n  private status: OrderStatus = 'pending';\n  \n  constructor(public readonly id: string, public customerId: string) {}\n  \n  addItem(product: Product, quantity: number): void {\n    if (this.status !== 'pending') {\n      throw new Error('Cannot modify confirmed order');\n    }\n    \n    const existing = this.items.find(i => i.productId === product.id);\n    if (existing) {\n      existing.quantity += quantity;\n    } else {\n      this.items.push(new OrderItem(product.id, quantity, product.price));\n    }\n  }\n  \n  removeItem(productId: string): void {\n    if (this.status !== 'pending') {\n      throw new Error('Cannot modify confirmed order');\n    }\n    this.items = this.items.filter(i => i.productId !== productId);\n  }\n  \n  calculateTotal(): number {\n    return this.items.reduce((sum, item) => sum + item.getTotal(), 0);\n  }\n  \n  confirm(): void {\n    if (this.items.length === 0) {\n      throw new Error('Cannot confirm empty order');\n    }\n    this.status = 'confirmed';\n  }\n  \n  ship(): void {\n    if (this.status !== 'confirmed') {\n      throw new Error('Order must be confirmed before shipping');\n    }\n    this.status = 'shipped';\n  }\n}\n\nclass OrderItem {\n  constructor(\n    public productId: string,\n    public quantity: number,\n    private unitPrice: number\n  ) {}\n  \n  getTotal(): number {\n    return this.quantity * this.unitPrice;\n  }\n}\n\n// Usage: Rich domain behavior\nconst order = new Order('123', 'customer-1');\norder.addItem(new Product('prod-1', 'Item', 10), 2);\nconsole.log('Total:', order.calculateTotal()); // 20\norder.confirm();\norder.ship();"
+[
+  {
+    "id": "domain-model",
+    "name": "Domain Model",
+    "category": "Enterprise",
+    "description": "Object model of the domain that incorporates both behavior and data",
+    "when_to_use": "Complex business logic\nRich domain models\nObject-oriented design",
+    "benefits": "Rich behavior\nEncapsulation\nMaintainability\nTestability",
+    "drawbacks": "Complex setup\nLearning curve\nOver-engineering risk",
+    "use_cases": "Complex business rules\nFinancial systems\nEnterprise applications",
+    "complexity": "High",
+    "tags": [
+      "enterprise",
+      "domain-logic",
+      "object-oriented"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Domain Model: rich behavior in domain objects\nclass Order {\n  private items: OrderItem[] = [];\n  private status: OrderStatus = 'pending';\n  \n  constructor(public readonly id: string, public customerId: string) {}\n  \n  addItem(product: Product, quantity: number): void {\n    if (this.status !== 'pending') {\n      throw new Error('Cannot modify confirmed order');\n    }\n    \n    const existing = this.items.find(i => i.productId === product.id);\n    if (existing) {\n      existing.quantity += quantity;\n    } else {\n      this.items.push(new OrderItem(product.id, quantity, product.price));\n    }\n  }\n  \n  removeItem(productId: string): void {\n    if (this.status !== 'pending') {\n      throw new Error('Cannot modify confirmed order');\n    }\n    this.items = this.items.filter(i => i.productId !== productId);\n  }\n  \n  calculateTotal(): number {\n    return this.items.reduce((sum, item) => sum + item.getTotal(), 0);\n  }\n  \n  confirm(): void {\n    if (this.items.length === 0) {\n      throw new Error('Cannot confirm empty order');\n    }\n    this.status = 'confirmed';\n  }\n  \n  ship(): void {\n    if (this.status !== 'confirmed') {\n      throw new Error('Order must be confirmed before shipping');\n    }\n    this.status = 'shipped';\n  }\n}\n\nclass OrderItem {\n  constructor(\n    public productId: string,\n    public quantity: number,\n    private unitPrice: number\n  ) {}\n  \n  getTotal(): number {\n    return this.quantity * this.unitPrice;\n  }\n}\n\n// Usage: Rich domain behavior\nconst order = new Order('123', 'customer-1');\norder.addItem(new Product('prod-1', 'Item', 10), 2);\nconsole.log('Total:', order.calculateTotal()); // 20\norder.confirm();\norder.ship();"
+      }
     }
   }
-}
+]

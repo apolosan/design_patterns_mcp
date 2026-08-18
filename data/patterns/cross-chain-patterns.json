@@ -1,315 +1,311 @@
-{
-  "category": "Cross-Chain",
-  "description": "Cross-Chain design patterns for blockchain and Web3 applications",
-  "patterns": [
-    {
-      "id": "atomic-swap",
-      "name": "Atomic Swap (HTLC)",
-      "category": "Cross-Chain",
-      "description": "Hash Time-Locked Contracts for trustless cross-chain swaps. Both sides lock with same hash.",
-      "when_to_use": [
-        "Trustless exchanges",
-        "cross-chain swaps",
-        "P2P trading"
-      ],
-      "benefits": [
-        "Trustless",
-        "no intermediary",
-        "atomic execution"
-      ],
-      "drawbacks": [
-        "Requires both chains online",
-        "timelock delays",
-        "UX complexity"
-      ],
-      "use_cases": [
-        "Bitcoin-Ethereum swaps",
-        "decentralized exchanges"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "cross-chain",
-        "atomic-swap",
-        "htlc",
-        "trustless"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Hash Time-Locked Contract\nfunction lock(bytes32 hashlock, uint256 timelock) external payable {\n    require(msg.value > 0);\n    swaps[hashlock] = Swap({\n        amount: msg.value,\n        timelock: block.timestamp + timelock,\n        sender: msg.sender\n    });\n}\n\nfunction claim(bytes32 preimage) external {\n    require(keccak256(abi.encodePacked(preimage)) == hashlock);\n    payable(msg.sender).transfer(swaps[hashlock].amount);\n}"
-        }
-      }
-    },
-    {
-      "id": "burn-mint-bridge",
-      "name": "Burn-and-Mint Bridge",
-      "category": "Cross-Chain",
-      "description": "Burn tokens on source, mint on destination. For native multi-chain tokens.",
-      "when_to_use": [
-        "Native multi-chain tokens",
-        "no canonical chain",
-        "symmetric chains"
-      ],
-      "benefits": [
-        "No custodial risk",
-        "symmetric design",
-        "scalable to N chains"
-      ],
-      "drawbacks": [
-        "Requires token contract control on all chains",
-        "irreversible burns"
-      ],
-      "use_cases": [
-        "Circle USDC",
-        "native multi-chain protocols"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "cross-chain",
-        "bridge",
-        "burn-mint",
-        "multi-chain"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Source chain: burn\nfunction bridgeBurn(uint256 amount, uint256 destChainId) external {\n    _burn(msg.sender, amount);\n    emit BridgeBurn(msg.sender, amount, destChainId);\n}\n\n// Destination chain: mint\nfunction bridgeMint(address to, uint256 amount, bytes calldata proof) external onlyRelayer {\n    require(verifyBurnProof(proof));\n    _mint(to, amount);\n}"
-        }
-      }
-    },
-    {
-      "id": "ccip-messaging",
-      "name": "CCIP Cross-Chain Messaging",
-      "category": "Cross-Chain",
-      "description": "Chainlink CCIP for arbitrary cross-chain message passing and token transfers.",
-      "when_to_use": [
-        "Multi-chain dApps",
-        "cross-chain function calls",
-        "oracle-backed bridges"
-      ],
-      "benefits": [
-        "Oracle security",
-        "programmable tokens",
-        "arbitrary messages"
-      ],
-      "drawbacks": [
-        "Centralization (oracles)",
-        "fees",
-        "limited chain support"
-      ],
-      "use_cases": [
-        "Cross-chain lending",
-        "multi-chain NFTs",
-        "composable protocols"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "cross-chain",
-        "ccip",
-        "chainlink",
-        "messaging",
-        "oracles"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// CCIP sender\nimport {IRouterClient} from \"@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol\";\n\nfunction sendMessage(uint64 destChainSelector, address receiver, string memory message) external {\n    Client.EVM2AnyMessage memory evm2AnyMessage = Client.EVM2AnyMessage({\n        receiver: abi.encode(receiver),\n        data: abi.encode(message),\n        tokenAmounts: new Client.EVMTokenAmount[](0),\n        feeToken: address(linkToken),\n        extraArgs: \"\"\n    });\n    \n    router.ccipSend(destChainSelector, evm2AnyMessage);\n}"
-        }
-      }
-    },
-    {
-      "id": "layerzero-omnichain",
-      "name": "LayerZero Omnichain",
-      "category": "Cross-Chain",
-      "description": "Ultra-light node protocol for omnichain applications. Uses oracles + relayers for verification.",
-      "when_to_use": [
-        "Native omnichain tokens",
-        "cross-chain dApps",
-        "unified liquidity"
-      ],
-      "benefits": [
-        "True omnichain apps",
-        "low latency",
-        "flexible security"
-      ],
-      "drawbacks": [
-        "Oracle + relayer trust",
-        "fees",
-        "potential congestion"
-      ],
-      "use_cases": [
-        "Stargate Finance",
-        "omnichain NFTs",
-        "unified DEXs"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "cross-chain",
-        "layerzero",
-        "omnichain",
-        "oracles",
-        "relayers"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// LayerZero omnichain contract\nimport \"@layerzerolabs/solidity-examples/contracts/lzApp/NonblockingLzApp.sol\";\n\ncontract OmniCounter is NonblockingLzApp {\n    function incrementCounter(uint16 _dstChainId) external payable {\n        _lzSend(_dstChainId, abi.encode(INCREMENT_TYPE), payable(msg.sender), address(0), bytes(\"\"), msg.value);\n    }\n    \n    function _nonblockingLzReceive(uint16, bytes memory, uint64, bytes memory _payload) internal override {\n        counter++;\n    }\n}"
-        }
-      }
-    },
-    {
-      "id": "light-client-bridge",
-      "name": "Light Client Bridge",
-      "category": "Cross-Chain",
-      "description": "Verify source chain state using light client proofs. Most trustless but complex.",
-      "when_to_use": [
-        "Maximum security",
-        "trustless bridges",
-        "consensus proof verification"
-      ],
-      "benefits": [
-        "Trustless",
-        "cryptographically secure",
-        "no relayer trust"
-      ],
-      "drawbacks": [
-        "Very high gas costs",
-        "complex implementation",
-        "client maintenance"
-      ],
-      "use_cases": [
-        "Rainbow Bridge (NEAR-Ethereum)",
-        "IBC (Cosmos)"
-      ],
-      "complexity": "Very High",
-      "tags": [
-        "cross-chain",
-        "light-client",
-        "trustless",
-        "consensus-proof"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Verify using light client\nfunction submitBlockHeader(bytes memory header, bytes memory proof) external {\n    require(verifyConsensusProof(header, proof));\n    blockHashes[blockNum] = keccak256(header);\n}\n\nfunction verifyTransaction(bytes memory txProof, uint256 blockNum) external view returns (bool) {\n    return MerkleProof.verify(txProof, blockHashes[blockNum], txHash);\n}"
-        }
-      }
-    },
-    {
-      "id": "lock-mint-bridge",
-      "name": "Lock-and-Mint Bridge",
-      "category": "Cross-Chain",
-      "description": "Lock assets on source chain, mint wrapped version on destination. Burn to unlock.",
-      "when_to_use": [
-        "Cross-chain token transfers",
-        "wrapped assets",
-        "multi-chain protocols"
-      ],
-      "benefits": [
-        "Simple model",
-        "preserves total supply",
-        "reversible"
-      ],
-      "drawbacks": [
-        "Custodial risk on lock contract",
-        "bridge security critical"
-      ],
-      "use_cases": [
-        "WBTC",
-        "Polygon bridge",
-        "Multichain (Anyswap)"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "cross-chain",
-        "bridge",
-        "wrapped-tokens",
-        "lock-mint"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Source chain: lock tokens\nfunction lock(uint256 amount) external {\n    token.transferFrom(msg.sender, address(this), amount);\n    emit Locked(msg.sender, amount, destChainId);\n}\n\n// Destination chain: mint wrapped tokens\nfunction mint(address to, uint256 amount, bytes calldata proof) external onlyRelayer {\n    require(verifyProof(proof));\n    wrappedToken.mint(to, amount);\n}"
-        }
-      }
-    },
-    {
-      "id": "optimistic-bridge",
-      "name": "Optimistic Bridge",
-      "category": "Cross-Chain",
-      "description": "Assume relayer messages valid, allow fraud proof challenges. Gas-efficient but delayed finality.",
-      "when_to_use": [
-        "Cost-sensitive bridges",
-        "high-value transfers",
-        "acceptable latency"
-      ],
-      "benefits": [
-        "Low gas costs",
-        "simple relayers",
-        "scales well"
-      ],
-      "drawbacks": [
-        "7-day challenge period",
-        "fraud proof complexity",
-        "liveness assumptions"
-      ],
-      "use_cases": [
-        "Optimism/Arbitrum native bridges",
-        "Nomad (legacy)"
-      ],
-      "complexity": "High",
-      "tags": [
-        "cross-chain",
-        "optimistic",
-        "fraud-proof",
-        "challenge-period"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Optimistic relayer with challenge period\nfunction relayMessage(bytes memory message, bytes memory signature) external {\n    require(verifySignature(message, signature));\n    messages[messageId] = PendingMessage({\n        data: message,\n        timestamp: block.timestamp,\n        executed: false\n    });\n}\n\nfunction executeAfterDelay(bytes32 messageId) external {\n    require(block.timestamp >= messages[messageId].timestamp + CHALLENGE_PERIOD);\n    _execute(messages[messageId].data);\n}"
-        }
-      }
-    },
-    {
-      "id": "wormhole-messaging",
-      "name": "Wormhole Cross-Chain",
-      "category": "Cross-Chain",
-      "description": "Guardian network for cross-chain messaging and token transfers. 19 validators sign messages.",
-      "when_to_use": [
-        "Multi-chain protocols",
-        "cross-chain NFTs",
-        "Portal token bridge"
-      ],
-      "benefits": [
-        "Wide chain support",
-        "fast finality",
-        "unified SDK"
-      ],
-      "drawbacks": [
-        "Guardian trust (19 validators)",
-        "hack history",
-        "centralization"
-      ],
-      "use_cases": [
-        "Portal Bridge",
-        "cross-chain lending",
-        "multi-chain governance"
-      ],
-      "complexity": "Medium",
-      "tags": [
-        "cross-chain",
-        "wormhole",
-        "guardians",
-        "messaging",
-        "bridge"
-      ],
-      "examples": {
-        "solidity": {
-          "language": "solidity",
-          "code": "// Wormhole message sender\nfunction sendMessage(bytes memory payload) external payable {\n    uint64 sequence = wormhole.publishMessage{value: msg.value}(\n        0, // nonce\n        payload,\n        consistencyLevel\n    );\n    emit MessageSent(sequence, payload);\n}\n\n// Receiver verifies VAA (Verified Action Approval)\nfunction receiveMessage(bytes memory vaa) external {\n    (IWormhole.VM memory vm, bool valid, string memory reason) = wormhole.parseAndVerifyVM(vaa);\n    require(valid, reason);\n    _processMessage(vm.payload);\n}"
-        }
+[
+  {
+    "id": "atomic-swap",
+    "name": "Atomic Swap (HTLC)",
+    "category": "Cross-Chain",
+    "description": "Hash Time-Locked Contracts for trustless cross-chain swaps. Both sides lock with same hash.",
+    "when_to_use": [
+      "Trustless exchanges",
+      "cross-chain swaps",
+      "P2P trading"
+    ],
+    "benefits": [
+      "Trustless",
+      "no intermediary",
+      "atomic execution"
+    ],
+    "drawbacks": [
+      "Requires both chains online",
+      "timelock delays",
+      "UX complexity"
+    ],
+    "use_cases": [
+      "Bitcoin-Ethereum swaps",
+      "decentralized exchanges"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "atomic-swap",
+      "htlc",
+      "trustless"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Hash Time-Locked Contract\nfunction lock(bytes32 hashlock, uint256 timelock) external payable {\n    require(msg.value > 0);\n    swaps[hashlock] = Swap({\n        amount: msg.value,\n        timelock: block.timestamp + timelock,\n        sender: msg.sender\n    });\n}\n\nfunction claim(bytes32 preimage) external {\n    require(keccak256(abi.encodePacked(preimage)) == hashlock);\n    payable(msg.sender).transfer(swaps[hashlock].amount);\n}"
       }
     }
-  ]
-}
+  },
+  {
+    "id": "burn-mint-bridge",
+    "name": "Burn-and-Mint Bridge",
+    "category": "Cross-Chain",
+    "description": "Burn tokens on source, mint on destination. For native multi-chain tokens.",
+    "when_to_use": [
+      "Native multi-chain tokens",
+      "no canonical chain",
+      "symmetric chains"
+    ],
+    "benefits": [
+      "No custodial risk",
+      "symmetric design",
+      "scalable to N chains"
+    ],
+    "drawbacks": [
+      "Requires token contract control on all chains",
+      "irreversible burns"
+    ],
+    "use_cases": [
+      "Circle USDC",
+      "native multi-chain protocols"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "bridge",
+      "burn-mint",
+      "multi-chain"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Source chain: burn\nfunction bridgeBurn(uint256 amount, uint256 destChainId) external {\n    _burn(msg.sender, amount);\n    emit BridgeBurn(msg.sender, amount, destChainId);\n}\n\n// Destination chain: mint\nfunction bridgeMint(address to, uint256 amount, bytes calldata proof) external onlyRelayer {\n    require(verifyBurnProof(proof));\n    _mint(to, amount);\n}"
+      }
+    }
+  },
+  {
+    "id": "ccip-messaging",
+    "name": "CCIP Cross-Chain Messaging",
+    "category": "Cross-Chain",
+    "description": "Chainlink CCIP for arbitrary cross-chain message passing and token transfers.",
+    "when_to_use": [
+      "Multi-chain dApps",
+      "cross-chain function calls",
+      "oracle-backed bridges"
+    ],
+    "benefits": [
+      "Oracle security",
+      "programmable tokens",
+      "arbitrary messages"
+    ],
+    "drawbacks": [
+      "Centralization (oracles)",
+      "fees",
+      "limited chain support"
+    ],
+    "use_cases": [
+      "Cross-chain lending",
+      "multi-chain NFTs",
+      "composable protocols"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "ccip",
+      "chainlink",
+      "messaging",
+      "oracles"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// CCIP sender\nimport {IRouterClient} from \"@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol\";\n\nfunction sendMessage(uint64 destChainSelector, address receiver, string memory message) external {\n    Client.EVM2AnyMessage memory evm2AnyMessage = Client.EVM2AnyMessage({\n        receiver: abi.encode(receiver),\n        data: abi.encode(message),\n        tokenAmounts: new Client.EVMTokenAmount[](0),\n        feeToken: address(linkToken),\n        extraArgs: \"\"\n    });\n    \n    router.ccipSend(destChainSelector, evm2AnyMessage);\n}"
+      }
+    }
+  },
+  {
+    "id": "layerzero-omnichain",
+    "name": "LayerZero Omnichain",
+    "category": "Cross-Chain",
+    "description": "Ultra-light node protocol for omnichain applications. Uses oracles + relayers for verification.",
+    "when_to_use": [
+      "Native omnichain tokens",
+      "cross-chain dApps",
+      "unified liquidity"
+    ],
+    "benefits": [
+      "True omnichain apps",
+      "low latency",
+      "flexible security"
+    ],
+    "drawbacks": [
+      "Oracle + relayer trust",
+      "fees",
+      "potential congestion"
+    ],
+    "use_cases": [
+      "Stargate Finance",
+      "omnichain NFTs",
+      "unified DEXs"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "layerzero",
+      "omnichain",
+      "oracles",
+      "relayers"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// LayerZero omnichain contract\nimport \"@layerzerolabs/solidity-examples/contracts/lzApp/NonblockingLzApp.sol\";\n\ncontract OmniCounter is NonblockingLzApp {\n    function incrementCounter(uint16 _dstChainId) external payable {\n        _lzSend(_dstChainId, abi.encode(INCREMENT_TYPE), payable(msg.sender), address(0), bytes(\"\"), msg.value);\n    }\n    \n    function _nonblockingLzReceive(uint16, bytes memory, uint64, bytes memory _payload) internal override {\n        counter++;\n    }\n}"
+      }
+    }
+  },
+  {
+    "id": "light-client-bridge",
+    "name": "Light Client Bridge",
+    "category": "Cross-Chain",
+    "description": "Verify source chain state using light client proofs. Most trustless but complex.",
+    "when_to_use": [
+      "Maximum security",
+      "trustless bridges",
+      "consensus proof verification"
+    ],
+    "benefits": [
+      "Trustless",
+      "cryptographically secure",
+      "no relayer trust"
+    ],
+    "drawbacks": [
+      "Very high gas costs",
+      "complex implementation",
+      "client maintenance"
+    ],
+    "use_cases": [
+      "Rainbow Bridge (NEAR-Ethereum)",
+      "IBC (Cosmos)"
+    ],
+    "complexity": "Very High",
+    "tags": [
+      "cross-chain",
+      "light-client",
+      "trustless",
+      "consensus-proof"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Verify using light client\nfunction submitBlockHeader(bytes memory header, bytes memory proof) external {\n    require(verifyConsensusProof(header, proof));\n    blockHashes[blockNum] = keccak256(header);\n}\n\nfunction verifyTransaction(bytes memory txProof, uint256 blockNum) external view returns (bool) {\n    return MerkleProof.verify(txProof, blockHashes[blockNum], txHash);\n}"
+      }
+    }
+  },
+  {
+    "id": "lock-mint-bridge",
+    "name": "Lock-and-Mint Bridge",
+    "category": "Cross-Chain",
+    "description": "Lock assets on source chain, mint wrapped version on destination. Burn to unlock.",
+    "when_to_use": [
+      "Cross-chain token transfers",
+      "wrapped assets",
+      "multi-chain protocols"
+    ],
+    "benefits": [
+      "Simple model",
+      "preserves total supply",
+      "reversible"
+    ],
+    "drawbacks": [
+      "Custodial risk on lock contract",
+      "bridge security critical"
+    ],
+    "use_cases": [
+      "WBTC",
+      "Polygon bridge",
+      "Multichain (Anyswap)"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "bridge",
+      "wrapped-tokens",
+      "lock-mint"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Source chain: lock tokens\nfunction lock(uint256 amount) external {\n    token.transferFrom(msg.sender, address(this), amount);\n    emit Locked(msg.sender, amount, destChainId);\n}\n\n// Destination chain: mint wrapped tokens\nfunction mint(address to, uint256 amount, bytes calldata proof) external onlyRelayer {\n    require(verifyProof(proof));\n    wrappedToken.mint(to, amount);\n}"
+      }
+    }
+  },
+  {
+    "id": "optimistic-bridge",
+    "name": "Optimistic Bridge",
+    "category": "Cross-Chain",
+    "description": "Assume relayer messages valid, allow fraud proof challenges. Gas-efficient but delayed finality.",
+    "when_to_use": [
+      "Cost-sensitive bridges",
+      "high-value transfers",
+      "acceptable latency"
+    ],
+    "benefits": [
+      "Low gas costs",
+      "simple relayers",
+      "scales well"
+    ],
+    "drawbacks": [
+      "7-day challenge period",
+      "fraud proof complexity",
+      "liveness assumptions"
+    ],
+    "use_cases": [
+      "Optimism/Arbitrum native bridges",
+      "Nomad (legacy)"
+    ],
+    "complexity": "High",
+    "tags": [
+      "cross-chain",
+      "optimistic",
+      "fraud-proof",
+      "challenge-period"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Optimistic relayer with challenge period\nfunction relayMessage(bytes memory message, bytes memory signature) external {\n    require(verifySignature(message, signature));\n    messages[messageId] = PendingMessage({\n        data: message,\n        timestamp: block.timestamp,\n        executed: false\n    });\n}\n\nfunction executeAfterDelay(bytes32 messageId) external {\n    require(block.timestamp >= messages[messageId].timestamp + CHALLENGE_PERIOD);\n    _execute(messages[messageId].data);\n}"
+      }
+    }
+  },
+  {
+    "id": "wormhole-messaging",
+    "name": "Wormhole Cross-Chain",
+    "category": "Cross-Chain",
+    "description": "Guardian network for cross-chain messaging and token transfers. 19 validators sign messages.",
+    "when_to_use": [
+      "Multi-chain protocols",
+      "cross-chain NFTs",
+      "Portal token bridge"
+    ],
+    "benefits": [
+      "Wide chain support",
+      "fast finality",
+      "unified SDK"
+    ],
+    "drawbacks": [
+      "Guardian trust (19 validators)",
+      "hack history",
+      "centralization"
+    ],
+    "use_cases": [
+      "Portal Bridge",
+      "cross-chain lending",
+      "multi-chain governance"
+    ],
+    "complexity": "Medium",
+    "tags": [
+      "cross-chain",
+      "wormhole",
+      "guardians",
+      "messaging",
+      "bridge"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "// Wormhole message sender\nfunction sendMessage(bytes memory payload) external payable {\n    uint64 sequence = wormhole.publishMessage{value: msg.value}(\n        0, // nonce\n        payload,\n        consistencyLevel\n    );\n    emit MessageSent(sequence, payload);\n}\n\n// Receiver verifies VAA (Verified Action Approval)\nfunction receiveMessage(bytes memory vaa) external {\n    (IWormhole.VM memory vm, bool valid, string memory reason) = wormhole.parseAndVerifyVM(vaa);\n    require(valid, reason);\n    _processMessage(vm.payload);\n}"
+      }
+    }
+  }
+]

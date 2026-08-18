@@ -1,27 +1,29 @@
-{
-  "id": "form-validation-pattern",
-  "name": "Form Validation Pattern",
-  "category": "React Forms",
-  "description": "Advanced form validation with libraries like React Hook Form and Zod for type-safe validation.",
-  "when_to_use": "Complex forms, validation rules, type safety, performance optimization",
-  "benefits": "Type-safe, performant, less re-renders, great DX, schema validation",
-  "drawbacks": "Additional dependencies, learning curve",
-  "use_cases": "Registration forms, checkout, surveys, multi-step forms, dynamic validation",
-  "complexity": "Medium",
-  "tags": [
-    "react",
-    "forms",
-    "validation",
-    "react-hook-form",
-    "zod",
-    "type-safety",
-    "modern",
-    "2024"
-  ],
-  "examples": {
-    "tsx": {
-      "language": "tsx",
-      "code": "import { useForm } from 'react-hook-form';\nimport { z } from 'zod';\nimport { zodResolver } from '@hookform/resolvers/zod';\n\nconst schema = z.object({\n  email: z.string().email('Invalid email'),\n  password: z.string().min(8, 'Min 8 characters'),\n  age: z.number().min(18, 'Must be 18+'),\n  terms: z.boolean().refine(v => v, 'Must accept terms')\n});\n\ntype FormData = z.infer<typeof schema>;\n\nfunction RegistrationForm() {\n  const { \n    register, \n    handleSubmit, \n    formState: { errors, isSubmitting } \n  } = useForm<FormData>({\n    resolver: zodResolver(schema)\n  });\n  \n  const onSubmit = async (data: FormData) => {\n    await fetch('/api/register', {\n      method: 'POST',\n      body: JSON.stringify(data)\n    });\n  };\n  \n  return (\n    <form onSubmit={handleSubmit(onSubmit)}>\n      <div>\n        <input {...register('email')} placeholder=\"Email\" />\n        {errors.email && <span>{errors.email.message}</span>}\n      </div>\n      \n      <div>\n        <input \n          {...register('password')} \n          type=\"password\" \n          placeholder=\"Password\" \n        />\n        {errors.password && <span>{errors.password.message}</span>}\n      </div>\n      \n      <div>\n        <input \n          {...register('age', { valueAsNumber: true })} \n          type=\"number\" \n          placeholder=\"Age\" \n        />\n        {errors.age && <span>{errors.age.message}</span>}\n      </div>\n      \n      <div>\n        <label>\n          <input {...register('terms')} type=\"checkbox\" />\n          Accept terms\n        </label>\n        {errors.terms && <span>{errors.terms.message}</span>}\n      </div>\n      \n      <button type=\"submit\" disabled={isSubmitting}>\n        {isSubmitting ? 'Submitting...' : 'Register'}\n      </button>\n    </form>\n  );\n}\n\nconst asyncSchema = z.object({\n  username: z.string().refine(\n    async (username) => {\n      const response = await fetch(`/api/check-username/${username}`);\n      return response.ok;\n    },\n    'Username already taken'\n  )\n});"
+[
+  {
+    "id": "form-validation-pattern",
+    "name": "Form Validation Pattern",
+    "category": "React Forms",
+    "description": "Advanced form validation with libraries like React Hook Form and Zod for type-safe validation.",
+    "when_to_use": "Complex forms, validation rules, type safety, performance optimization",
+    "benefits": "Type-safe, performant, less re-renders, great DX, schema validation",
+    "drawbacks": "Additional dependencies, learning curve",
+    "use_cases": "Registration forms, checkout, surveys, multi-step forms, dynamic validation",
+    "complexity": "Medium",
+    "tags": [
+      "react",
+      "forms",
+      "validation",
+      "react-hook-form",
+      "zod",
+      "type-safety",
+      "modern",
+      "2024"
+    ],
+    "examples": {
+      "tsx": {
+        "language": "tsx",
+        "code": "import { useForm } from 'react-hook-form';\nimport { z } from 'zod';\nimport { zodResolver } from '@hookform/resolvers/zod';\n\nconst schema = z.object({\n  email: z.string().email('Invalid email'),\n  password: z.string().min(8, 'Min 8 characters'),\n  age: z.number().min(18, 'Must be 18+'),\n  terms: z.boolean().refine(v => v, 'Must accept terms')\n});\n\ntype FormData = z.infer<typeof schema>;\n\nfunction RegistrationForm() {\n  const { \n    register, \n    handleSubmit, \n    formState: { errors, isSubmitting } \n  } = useForm<FormData>({\n    resolver: zodResolver(schema)\n  });\n  \n  const onSubmit = async (data: FormData) => {\n    await fetch('/api/register', {\n      method: 'POST',\n      body: JSON.stringify(data)\n    });\n  };\n  \n  return (\n    <form onSubmit={handleSubmit(onSubmit)}>\n      <div>\n        <input {...register('email')} placeholder=\"Email\" />\n        {errors.email && <span>{errors.email.message}</span>}\n      </div>\n      \n      <div>\n        <input \n          {...register('password')} \n          type=\"password\" \n          placeholder=\"Password\" \n        />\n        {errors.password && <span>{errors.password.message}</span>}\n      </div>\n      \n      <div>\n        <input \n          {...register('age', { valueAsNumber: true })} \n          type=\"number\" \n          placeholder=\"Age\" \n        />\n        {errors.age && <span>{errors.age.message}</span>}\n      </div>\n      \n      <div>\n        <label>\n          <input {...register('terms')} type=\"checkbox\" />\n          Accept terms\n        </label>\n        {errors.terms && <span>{errors.terms.message}</span>}\n      </div>\n      \n      <button type=\"submit\" disabled={isSubmitting}>\n        {isSubmitting ? 'Submitting...' : 'Register'}\n      </button>\n    </form>\n  );\n}\n\nconst asyncSchema = z.object({\n  username: z.string().refine(\n    async (username) => {\n      const response = await fetch(`/api/check-username/${username}`);\n      return response.ok;\n    },\n    'Username already taken'\n  )\n});"
+      }
     }
   }
-}
+]

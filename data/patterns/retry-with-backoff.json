@@ -1,22 +1,24 @@
-{
-  "id": "retry-with-backoff",
-  "name": "Retry with Backoff",
-  "category": "Microservices",
-  "description": "Automatically retries failed operations with increasing delays",
-  "when_to_use": "Transient failures\nNetwork issues\nService unavailability",
-  "benefits": "Handles transient failures\nImproves reliability\nConfigurable strategy",
-  "drawbacks": "Increased latency\nResource consumption\nPotential cascade",
-  "use_cases": "HTTP requests\nDatabase operations\nMessage processing",
-  "complexity": "Low",
-  "tags": [
-    "microservices",
-    "resilience",
-    "retry"
-  ],
-  "examples": {
-    "cross-reference": {
-      "language": "cross-reference",
-      "code": "// See Retry pattern for implementation example with exponential backoff\n// Reference pattern: retry-pattern"
+[
+  {
+    "id": "retry-with-backoff",
+    "name": "Retry with Backoff",
+    "category": "Microservices",
+    "description": "Automatically retries failed operations with increasing delays",
+    "when_to_use": "Transient failures\nNetwork issues\nService unavailability",
+    "benefits": "Handles transient failures\nImproves reliability\nConfigurable strategy",
+    "drawbacks": "Increased latency\nResource consumption\nPotential cascade",
+    "use_cases": "HTTP requests\nDatabase operations\nMessage processing",
+    "complexity": "Low",
+    "tags": [
+      "microservices",
+      "resilience",
+      "retry"
+    ],
+    "examples": {
+      "cross-reference": {
+        "language": "cross-reference",
+        "code": "// See Retry pattern for implementation example with exponential backoff\n// Reference pattern: retry-pattern"
+      }
     }
   }
-}
+]

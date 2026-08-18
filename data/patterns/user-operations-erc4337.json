@@ -1,24 +1,26 @@
-{
-  "id": "user-operations-erc4337",
-  "name": "UserOperations Pattern (ERC-4337)",
-  "category": "Account Abstraction",
-  "description": "Gasless transactions via bundlers without protocol changes. Users sign UserOps, bundlers submit on-chain.",
-  "when_to_use": "Onboarding, sponsored gas, smart contract wallets",
-  "benefits": "No protocol changes needed, backwards compatible, flexible gas payment",
-  "drawbacks": "Higher gas overhead (~42k extra), alt-mempool complexity",
-  "use_cases": "Gasless onboarding, sponsored transactions, wallet abstraction",
-  "complexity": "Very High",
-  "tags": [
-    "account-abstraction",
-    "erc-4337",
-    "gasless",
-    "bundler",
-    "userops"
-  ],
-  "examples": {
-    "solidity": {
-      "language": "solidity",
-      "code": "contract SimpleAccount {\n    function validateUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 missingAccountFunds\n    ) external returns (uint256 validationData) {\n        _validateSignature(userOp, userOpHash);\n        _payPrefund(missingAccountFunds);\n        return 0; // valid\n    }\n    \n    function execute(address dest, uint256 value, bytes calldata func) external {\n        require(msg.sender == address(entryPoint));\n        dest.call{value: value}(func);\n    }\n}"
+[
+  {
+    "id": "user-operations-erc4337",
+    "name": "UserOperations Pattern (ERC-4337)",
+    "category": "Account Abstraction",
+    "description": "Gasless transactions via bundlers without protocol changes. Users sign UserOps, bundlers submit on-chain.",
+    "when_to_use": "Onboarding, sponsored gas, smart contract wallets",
+    "benefits": "No protocol changes needed, backwards compatible, flexible gas payment",
+    "drawbacks": "Higher gas overhead (~42k extra), alt-mempool complexity",
+    "use_cases": "Gasless onboarding, sponsored transactions, wallet abstraction",
+    "complexity": "Very High",
+    "tags": [
+      "account-abstraction",
+      "erc-4337",
+      "gasless",
+      "bundler",
+      "userops"
+    ],
+    "examples": {
+      "solidity": {
+        "language": "solidity",
+        "code": "contract SimpleAccount {\n    function validateUserOp(\n        UserOperation calldata userOp,\n        bytes32 userOpHash,\n        uint256 missingAccountFunds\n    ) external returns (uint256 validationData) {\n        _validateSignature(userOp, userOpHash);\n        _payPrefund(missingAccountFunds);\n        return 0; // valid\n    }\n    \n    function execute(address dest, uint256 value, bytes calldata func) external {\n        require(msg.sender == address(entryPoint));\n        dest.call{value: value}(func);\n    }\n}"
+      }
     }
   }
-}
+]

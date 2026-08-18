@@ -1,16 +1,18 @@
-{
-  "id": "monoid",
-  "name": "Monoid Pattern",
-  "category": "Functional",
-  "description": "Type with an associative operation and identity element",
-  "when_to_use": "Combining values\nParallel processing\nReduction operations",
-  "benefits": "Parallelizable\nComposable\nIdentity preservation\nAssociative",
-  "drawbacks": "Abstract concept\nLimited types\nInterface complexity",
-  "use_cases": "String concatenation\nNumber addition\nList merging",
-  "complexity": "Medium",
-  "tags": [
-    "functional",
-    "algebra",
-    "combination"
-  ]
-}
+[
+  {
+    "id": "monoid",
+    "name": "Monoid Pattern",
+    "category": "Functional",
+    "description": "Type with an associative operation and identity element",
+    "when_to_use": "Combining values\nParallel processing\nReduction operations",
+    "benefits": "Parallelizable\nComposable\nIdentity preservation\nAssociative",
+    "drawbacks": "Abstract concept\nLimited types\nInterface complexity",
+    "use_cases": "String concatenation\nNumber addition\nList merging",
+    "complexity": "Medium",
+    "tags": [
+      "functional",
+      "algebra",
+      "combination"
+    ]
+  }
+]

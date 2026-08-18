@@ -1,22 +1,24 @@
-{
-  "id": "prototype",
-  "name": "Prototype",
-  "category": "Creational",
-  "description": "Creates new objects by cloning existing instances",
-  "when_to_use": "Object creation is expensive\nSimilar objects needed\nRuntime type determination",
-  "benefits": "Reduced subclassing\nDynamic object creation\nPerformance improvement",
-  "drawbacks": "Deep vs shallow copy issues\nCloning complexity",
-  "use_cases": "Game object spawning\nDocument templates\nCell division simulation",
-  "complexity": "Low",
-  "tags": [
-    "creational",
-    "cloning",
-    "prototype"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "class Shape {\n  constructor(public x: number, public y: number) {}\n  \n  clone(): this {\n    return Object.assign(Object.create(Object.getPrototypeOf(this)), this);\n  }\n}\n\nclass Circle extends Shape {\n  constructor(x: number, y: number, public radius: number) {\n    super(x, y);\n  }\n}\n\n// Usage: clone objects\nconst circle1 = new Circle(0, 0, 10);\nconst circle2 = circle1.clone();\ncircle2.x = 5;"
+[
+  {
+    "id": "prototype",
+    "name": "Prototype",
+    "category": "Creational",
+    "description": "Creates new objects by cloning existing instances",
+    "when_to_use": "Object creation is expensive\nSimilar objects needed\nRuntime type determination",
+    "benefits": "Reduced subclassing\nDynamic object creation\nPerformance improvement",
+    "drawbacks": "Deep vs shallow copy issues\nCloning complexity",
+    "use_cases": "Game object spawning\nDocument templates\nCell division simulation",
+    "complexity": "Low",
+    "tags": [
+      "creational",
+      "cloning",
+      "prototype"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "class Shape {\n  constructor(public x: number, public y: number) {}\n  \n  clone(): this {\n    return Object.assign(Object.create(Object.getPrototypeOf(this)), this);\n  }\n}\n\nclass Circle extends Shape {\n  constructor(x: number, y: number, public radius: number) {\n    super(x, y);\n  }\n}\n\n// Usage: clone objects\nconst circle1 = new Circle(0, 0, 10);\nconst circle2 = circle1.clone();\ncircle2.x = 5;"
+      }
     }
   }
-}
+]

@@ -1,22 +1,24 @@
-{
-  "id": "layered-architecture",
-  "name": "Layered Architecture",
-  "category": "Architectural",
-  "description": "Organizes application into horizontal layers with defined responsibilities",
-  "when_to_use": "Traditional enterprise apps\nClear separation needed\nTeam specialization",
-  "benefits": "Separation of concerns\nTeam organization\nFamiliar pattern\nTechnology isolation",
-  "drawbacks": "Rigid structure\nPerformance overhead\nTight coupling risk",
-  "use_cases": "Enterprise applications\nWeb applications\nTraditional systems",
-  "complexity": "Medium",
-  "tags": [
-    "layers",
-    "separation",
-    "traditional"
-  ],
-  "examples": {
-    "typescript": {
-      "language": "typescript",
-      "code": "// Layered Architecture: organized in horizontal layers\n\n// Presentation Layer\nclass UserController {\n  constructor(private userService: UserService) {}\n  \n  async getUser(req: Request, res: Response) {\n    const user = await this.userService.getUserById(req.params.id);\n    res.json(user);\n  }\n}\n\n// Business Logic Layer\nclass UserService {\n  constructor(private userRepo: UserRepository) {}\n  \n  async getUserById(id: string) {\n    const user = await this.userRepo.findById(id);\n    if (!user) throw new Error('User not found');\n    return user;\n  }\n  \n  async createUser(email: string) {\n    // Business validation\n    if (!email.includes('@')) throw new Error('Invalid email');\n    return this.userRepo.save({ id: crypto.randomUUID(), email });\n  }\n}\n\n// Data Access Layer\nclass UserRepository {\n  async findById(id: string) { /* DB query */ return null; }\n  async save(user: any) { /* DB insert */ }\n}\n\n// Each layer depends only on the layer below it\nconst repo = new UserRepository();\nconst service = new UserService(repo);\nconst controller = new UserController(service);"
+[
+  {
+    "id": "layered-architecture",
+    "name": "Layered Architecture",
+    "category": "Architectural",
+    "description": "Organizes application into horizontal layers with defined responsibilities",
+    "when_to_use": "Traditional enterprise apps\nClear separation needed\nTeam specialization",
+    "benefits": "Separation of concerns\nTeam organization\nFamiliar pattern\nTechnology isolation",
+    "drawbacks": "Rigid structure\nPerformance overhead\nTight coupling risk",
+    "use_cases": "Enterprise applications\nWeb applications\nTraditional systems",
+    "complexity": "Medium",
+    "tags": [
+      "layers",
+      "separation",
+      "traditional"
+    ],
+    "examples": {
+      "typescript": {
+        "language": "typescript",
+        "code": "// Layered Architecture: organized in horizontal layers\n\n// Presentation Layer\nclass UserController {\n  constructor(private userService: UserService) {}\n  \n  async getUser(req: Request, res: Response) {\n    const user = await this.userService.getUserById(req.params.id);\n    res.json(user);\n  }\n}\n\n// Business Logic Layer\nclass UserService {\n  constructor(private userRepo: UserRepository) {}\n  \n  async getUserById(id: string) {\n    const user = await this.userRepo.findById(id);\n    if (!user) throw new Error('User not found');\n    return user;\n  }\n  \n  async createUser(email: string) {\n    // Business validation\n    if (!email.includes('@')) throw new Error('Invalid email');\n    return this.userRepo.save({ id: crypto.randomUUID(), email });\n  }\n}\n\n// Data Access Layer\nclass UserRepository {\n  async findById(id: string) { /* DB query */ return null; }\n  async save(user: any) { /* DB insert */ }\n}\n\n// Each layer depends only on the layer below it\nconst repo = new UserRepository();\nconst service = new UserService(repo);\nconst controller = new UserController(service);"
+      }
     }
   }
-}
+]

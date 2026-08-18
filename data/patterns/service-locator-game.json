@@ -1,16 +1,18 @@
-{
-  "id": "service-locator-game",
-  "name": "Service Locator (Game)",
-  "category": "Game Development",
-  "description": "Provides global access to services without coupling to their concrete classes",
-  "when_to_use": "Service access\nDependency management\nSystem communication",
-  "benefits": "Service abstraction\nGlobal access\nFlexible implementation",
-  "drawbacks": "Hidden dependencies\nTesting difficulties\nService management",
-  "use_cases": "Audio systems\nRendering services\nInput managers",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "service",
-    "locator"
-  ]
-}
+[
+  {
+    "id": "service-locator-game",
+    "name": "Service Locator (Game)",
+    "category": "Game Development",
+    "description": "Provides global access to services without coupling to their concrete classes",
+    "when_to_use": "Service access\nDependency management\nSystem communication",
+    "benefits": "Service abstraction\nGlobal access\nFlexible implementation",
+    "drawbacks": "Hidden dependencies\nTesting difficulties\nService management",
+    "use_cases": "Audio systems\nRendering services\nInput managers",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "service",
+      "locator"
+    ]
+  }
+]

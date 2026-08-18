@@ -1,16 +1,18 @@
-{
-  "id": "dirty-flag",
-  "name": "Dirty Flag Pattern",
-  "category": "Game Development",
-  "description": "Avoids unnecessary work by tracking when objects need to be updated",
-  "when_to_use": "Expensive calculations\nTransform hierarchies\nRendering optimization",
-  "benefits": "Performance optimization\nLazy evaluation\nResource efficiency",
-  "drawbacks": "State tracking\nComplex invalidation\nMemory overhead",
-  "use_cases": "Transform matrices\nPhysics updates\nRendering systems",
-  "complexity": "Medium",
-  "tags": [
-    "game",
-    "optimization",
-    "caching"
-  ]
-}
+[
+  {
+    "id": "dirty-flag",
+    "name": "Dirty Flag Pattern",
+    "category": "Game Development",
+    "description": "Avoids unnecessary work by tracking when objects need to be updated",
+    "when_to_use": "Expensive calculations\nTransform hierarchies\nRendering optimization",
+    "benefits": "Performance optimization\nLazy evaluation\nResource efficiency",
+    "drawbacks": "State tracking\nComplex invalidation\nMemory overhead",
+    "use_cases": "Transform matrices\nPhysics updates\nRendering systems",
+    "complexity": "Medium",
+    "tags": [
+      "game",
+      "optimization",
+      "caching"
+    ]
+  }
+]
