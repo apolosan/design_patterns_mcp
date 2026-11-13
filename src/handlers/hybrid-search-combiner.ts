@@ -249,16 +249,14 @@ export class HybridSearchCombiner {
       // (post-fix: result.normalized instead of raw BM25).
       const keywordScore = Math.min(Math.max(keywordScoreRaw, 0), 0.99);
 
-      let finalScore = 0;
-      if (semanticScore > 0 && keywordScore > 0) {
-        finalScore =
-          (semanticWeight * semanticScore + keywordWeight * keywordScore) /
-          (semanticWeight + keywordWeight);
-      } else if (semanticScore > 0) {
-        finalScore = semanticScore;
-      } else if (keywordScore > 0) {
-        finalScore = keywordScore;
-      }
+      // Convex fusion: a channel that did not retrieve the pattern contributes
+      // zero evidence. Returning the raw score for single-signal matches would
+      // rank them above patterns confirmed by both channels.
+      const weightSum = semanticWeight + keywordWeight;
+      let finalScore =
+        weightSum > 0
+          ? (semanticWeight * Math.max(semanticScore, 0) + keywordWeight * keywordScore) / weightSum
+          : 0;
 
       finalScore = Math.min(Math.max(finalScore, 0), 1);
 

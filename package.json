@@ -1,6 +1,6 @@
 {
   "name": "design-patterns-mcp",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "MCP server providing intelligent design pattern recommendations from a comprehensive catalog of 710+ patterns using semantic search, vector embeddings, TF-IDF keyword search, and blended RAG hybrid search with graph augmentation",
   "main": "dist/mcp-server.js",
   "module": "dist/mcp-server.js",
@@ -53,7 +53,8 @@
     "setup-relationships": "bun run build && bun dist/cli/setup-relationships.js",
     "generate-embeddings": "bun run build && bun dist/cli/generate-embeddings.js",
     "integrity-check": "bun run build && bun dist/cli/integrity-check.js",
-    "integrity-check:schema": "bun run build && bun dist/cli/integrity-check.js --schema"
+    "integrity-check:schema": "bun run build && bun dist/cli/integrity-check.js --schema",
+    "calibrate-search": "bun run build && bun dist/cli/calibrate-search.js"
   },
   "repository": {
     "type": "git",

@@ -5,6 +5,23 @@ All notable changes to the Design Patterns MCP Server project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.3] - 2026-11-13
+
+### Fixed
+
+- Test isolation: each test file gets a private copy of the pattern catalog under `tests/temp/run-<pid>-<uuid>/` (`tests/helpers/test-run-context.ts`). The copy and all temp databases are deleted in `afterAll`. Before this, all files shared `tests/temp/test-patterns.db` and one file's cleanup deleted the database of files still running.
+- `tests/global-setup.ts` sweeps directories of dead test processes at start. Its teardown fails the run if `data/design-patterns.db` changed.
+- `tests/e2e/mcp-server-binary.test.ts` and `tests/integration/migration.test.ts` no longer write to the real catalog or to shared paths.
+
+### Documentation
+
+- README, CHANGELOG and QUICKSTART prose rewritten in plain style. Emoji removed from headings. Commands, paths and numbers are unchanged.
+
+### Changed
+
+- Version `0.7.2` → `0.7.3` in `package.json`, `src/mcp-server.ts` (Server registration and `/info`), `AGENTS.md`, `CLAUDE.md` and `README.md`.
+- No change to `src/` behavior.
+
 ## [0.7.2] - 2026-08-16
 
 ### Changed — Version Canonicalisation Patch
@@ -423,7 +440,7 @@ Comprehensive research and integration of new design patterns across 12 major ca
 
 ## [0.4.0] - 2026-01-14
 
-### 🎉 **Hybrid Search Engine & Blended RAG Architecture**
+### Hybrid search engine and blended RAG architecture
 
 #### Hybrid Search Implementation
 - **Blended RAG Architecture**: Combines dense (vector) + sparse (TF-IDF) + graph-augmented retrieval
@@ -468,7 +485,7 @@ Comprehensive research and integration of new design patterns across 12 major ca
 
 ## [0.3.3] - 2026-01-05
 
-### 🎉 **Test Suite Expansion & Full Production Validation**
+### Test suite expansion and full production validation
 
 #### Zero Lint Errors
 - **Lint Status**: 0 errors, 0 warnings ✅
@@ -493,9 +510,9 @@ Comprehensive research and integration of new design patterns across 12 major ca
 
 ## [0.3.2] - 2025-12-17
 
-### 🎉 **Phase 5 Complete: Final Optimizations and Full Validation**
+### Phase 5: final optimizations and full validation
 
-#### Architecture Excellence
+#### Architecture
 - **6 Design Patterns Implemented**: DI Container, Strategy Logging, Builder Config, Health Check, Command CLI, Circuit Breaker
 - **SOLID Principles**: Complete adherence to Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
 - **Clean Architecture**: Clear separation of concerns with proper layering (Presentation/Application/Domain/Infrastructure)
@@ -530,25 +547,22 @@ Comprehensive research and integration of new design patterns across 12 major ca
 
 ### Fixed
 
-#### TypeScript Compilation Errors
+#### TypeScript compilation errors
 
 - **Embedding Service Adapter**: Fixed TypeScript errors in `src/adapters/embedding-service-adapter.ts` where `Error` objects were being incorrectly passed to `structuredLogger.warn()` method
-  - Lines 217 and 249: Converted `Error` objects to proper `Record<string, unknown>` format with `{ message: error.message, stack: error.stack }`
-  - Ensures type safety while preserving error information for logging
+  - Lines 217 and 249: Converted `Error` objects to `Record<string, unknown>` with `{ message: error.message, stack: error.stack }`
   - Build now passes without TypeScript compilation errors
 
-#### Test Suite Expansion
+#### Test suite expansion
 
-- **Comprehensive Test Coverage**: Expanded test suite from 219 to 243 tests (100% pass rate maintained)
-- **Additional Test Cases**: Added comprehensive validation for edge cases, error handling, and integration scenarios
-- **Performance Tests**: Enhanced performance validation with more thorough benchmarks
-- **Contract Tests**: Improved MCP protocol compliance testing
+- Expanded from 219 to 243 tests (100% pass rate maintained)
+- Added validation for edge cases, error handling, and integration scenarios
+- Improved MCP protocol compliance testing
 
-#### Code Quality Improvements
+#### Code quality
 
-- **Type Safety**: Enhanced type consistency across logging operations
-- **Error Handling**: Maintained error information while fixing type compatibility
-- **Test Reliability**: Improved test stability and reduced flakiness
+- Type consistency across logging operations
+- Reduced test flakiness
 
 ### Technical Details
 
@@ -561,17 +575,15 @@ Comprehensive research and integration of new design patterns across 12 major ca
 
 ### Fixed
 
-#### TypeScript Compilation Errors
+#### TypeScript compilation errors
 
-- **Embedding Service Adapter**: Fixed TypeScript errors in `src/adapters/embedding-service-adapter.ts` where `Error` objects were being incorrectly passed to `structuredLogger.warn()` method
-  - Lines 217 and 249: Converted `Error` objects to proper `Record<string, unknown>` format with `{ message: error.message, stack: error.stack }`
-  - Ensures type safety while preserving error information for logging
+- **Embedding Service Adapter**: Fixed TypeScript errors in `src/adapters/embedding-service-adapter.ts` where `Error` objects were being incorrectly passed to `structuredLogger.warn()`
+  - Lines 217 and 249: Converted `Error` objects to `Record<string, unknown>` with `{ message: error.message, stack: error.stack }`
   - Build now passes without TypeScript compilation errors
 
-#### Code Quality Improvements
+#### Code quality
 
-- **Type Safety**: Enhanced type consistency across logging operations
-- **Error Handling**: Maintained error information while fixing type compatibility
+- Type consistency across logging operations
 
 ### Technical Details
 
@@ -735,17 +747,17 @@ Added comprehensive integration tests for Kotlin pattern searchability and relat
 
 ## [0.2.5] - 2025-10-12
 
-### 🔧 Database Migration Tests Fixed
+### Database migration tests fixed
 
-Successfully fixed failing database migration tests using advanced testing patterns. Applied Layer-Specific Logic Testing, Mutation Testing, Arrange-Act-Assert pattern, and Test Containerization to achieve 100% test pass rate.
+Fixed failing database migration tests using Layer-Specific Logic Testing, Mutation Testing, Arrange-Act-Assert, and Test Containerization.
 
-**Test Results**: 176/176 tests passing (previously 130/130 with migration test failures).
+**Test results**: 176/176 passing (previously 130/130 with migration failures).
 
-### 🔧 Pattern Catalog Expansion
+### Pattern catalog expansion
 
-Added 2 new concurrency patterns to enhance the comprehensive design patterns catalog.
+Added 2 new concurrency patterns.
 
-**Pattern Catalog**: 610 design patterns across 90+ categories.
+**Pattern catalog**: 610 design patterns across 90+ categories.
 
 ### Added
 
@@ -770,9 +782,9 @@ Added 2 new concurrency patterns to enhance the comprehensive design patterns ca
 
 ## [0.2.4] - 2025-10-10
 
-### 🎉 Production-Ready Release - 100% Test Pass Rate
+### Stability fixes: 100% test pass rate
 
-Critical stability improvements achieving 100% test pass rate (130/130 tests passing).
+Critical stability improvements. 130/130 tests now pass.
 
 **Pattern Catalog**: 608 design patterns across 90+ categories.
 
@@ -898,7 +910,7 @@ const adapter = new EmbeddingServiceAdapter(config, cacheService);
 
 ### Summary
 
-This release achieves 100% production readiness with:
+This release reaches 100% test pass rate with:
 
 - ✅ 15 total critical issues resolved (P0/P1/P2/P3)
 - ✅ 100% test pass rate (130/130 tests)
@@ -911,9 +923,9 @@ This release achieves 100% production readiness with:
 
 ## [0.2.1] - 2025-10-01
 
-### 🎉 Major Architecture Refactoring
+### Major architecture refactoring
 
-This release represents a complete architectural overhaul following SOLID principles and design pattern best practices.
+This release is a full architectural overhaul. It follows SOLID principles throughout.
 
 ### Added
 

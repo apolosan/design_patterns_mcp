@@ -12,7 +12,7 @@ describe('SearchMediator — fuzzy disabled in unit tests', () => {
       query: vi.fn().mockReturnValue([]),
       queryOne: vi.fn().mockReturnValue(null),
     };
-    const vectorOps = { searchSimilar: vi.fn().mockResolvedValue([]) };
+    const vectorOps = { searchSimilar: vi.fn().mockReturnValue([]) };
     return new SearchMediator(db as never, vectorOps as never, undefined, {
       useFuzzyRefinement: false,
       useHybridSearch: false,

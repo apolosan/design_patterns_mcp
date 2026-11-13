@@ -4,21 +4,23 @@ import type { PatternRequest } from '../../src/types/search-types.js';
 
 describe('SearchMediator (immutable config)', () => {
   function createMediator(): SearchMediator {
+    const builderRow = {
+      id: 'builder',
+      name: 'Builder',
+      category: 'Creational',
+      description: 'Builds complex objects step by step',
+      complexity: 'Intermediate',
+      tags: '["creational"]',
+    };
     const db = {
-      query: vi.fn().mockReturnValue([
-        {
-          id: 'builder',
-          name: 'Builder',
-          category: 'Creational',
-          description: 'Builds complex objects step by step',
-          complexity: 'Intermediate',
-          tags: '["creational"]',
-        },
-      ]),
+      query: vi.fn().mockReturnValue([builderRow]),
+      queryOne: vi.fn((_sql: string, params: readonly string[] = []) =>
+        params[0] === builderRow.id ? builderRow : null
+      ),
     };
 
     const vectorOps = {
-      searchSimilar: vi.fn().mockResolvedValue([]),
+      searchSimilar: vi.fn().mockReturnValue([]),
     };
 
     return new SearchMediator(db as never, vectorOps as never, undefined, {
@@ -96,21 +98,23 @@ describe('SearchMediator (immutable config)', () => {
 
 describe('SearchMediator.searchByType (existing behavior)', () => {
   function createMediator(): SearchMediator {
+    const builderRow = {
+      id: 'builder',
+      name: 'Builder',
+      category: 'Creational',
+      description: 'Builds complex objects step by step',
+      complexity: 'Intermediate',
+      tags: '["creational"]',
+    };
     const db = {
-      query: vi.fn().mockReturnValue([
-        {
-          id: 'builder',
-          name: 'Builder',
-          category: 'Creational',
-          description: 'Builds complex objects step by step',
-          complexity: 'Intermediate',
-          tags: '["creational"]',
-        },
-      ]),
+      query: vi.fn().mockReturnValue([builderRow]),
+      queryOne: vi.fn((_sql: string, params: readonly string[] = []) =>
+        params[0] === builderRow.id ? builderRow : null
+      ),
     };
 
     const vectorOps = {
-      searchSimilar: vi.fn().mockResolvedValue([]),
+      searchSimilar: vi.fn().mockReturnValue([]),
     };
 
     return new SearchMediator(db as never, vectorOps as never, undefined, {
@@ -122,14 +126,14 @@ describe('SearchMediator.searchByType (existing behavior)', () => {
   it('routes keyword strategy without invoking semantic handler path', async () => {
     const mediator = createMediator();
     const keywordSpy = vi.spyOn(
-      (mediator as unknown as { keywordHandler: { search: (r: PatternRequest) => Promise<unknown[]> } })
+      (mediator as unknown as { keywordHandler: { searchSafe: (r: PatternRequest) => Promise<unknown> } })
         .keywordHandler,
-      'search'
+      'searchSafe'
     );
     const semanticSpy = vi.spyOn(
-      (mediator as unknown as { semanticHandler: { search: (r: PatternRequest) => Promise<unknown[]> } })
+      (mediator as unknown as { semanticHandler: { searchSafe: (r: PatternRequest) => Promise<unknown> } })
         .semanticHandler,
-      'search'
+      'searchSafe'
     );
 
     const request: PatternRequest = {
@@ -148,9 +152,11 @@ describe('SearchMediator.searchByType (existing behavior)', () => {
 
   it('reports degraded fallback when typed search throws', async () => {
     const mediator = createMediator();
-    vi.spyOn(mediator, 'search')
-      .mockRejectedValueOnce(new Error('semantic unavailable'))
-      .mockResolvedValueOnce([]);
+    vi.spyOn(
+      (mediator as unknown as { semanticHandler: { searchSafe: (r: PatternRequest) => Promise<unknown> } })
+        .semanticHandler,
+      'searchSafe'
+    ).mockResolvedValue({ success: false, error: new Error('semantic unavailable') });
 
     const request: PatternRequest = {
       id: 'req-2',

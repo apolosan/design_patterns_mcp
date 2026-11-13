@@ -114,17 +114,21 @@ export class BM25Scorer {
     const max = Math.max(...rawScores);
     const range = max - min;
 
-    // Single result or all identical scores: it's the best by definition
+    // A document with raw score 0 shares no query term with the query: it is a
+    // miss, never a match, regardless of how the other documents scored.
+    // Without this guard an all-zero vector (unknown vocabulary, stop-word-only
+    // query) has range 0 and every document would be promoted to 1.0.
+    // When all matching documents tie, each is the best by definition.
     if (range === 0) {
       return results.map((r) => ({
         id: r.id,
-        normalized: 1.0,
+        normalized: r.score > 0 ? 1.0 : 0,
       }));
     }
 
     return results.map((r) => ({
       id: r.id,
-      normalized: (r.score - min) / range,
+      normalized: r.score > 0 ? (r.score - min) / range : 0,
     }));
   }
 

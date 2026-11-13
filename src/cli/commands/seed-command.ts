@@ -30,7 +30,10 @@ export class SeedCommand extends BaseCLICommand {
 
     // Seed all patterns and relationships
     const result = await patternSeeder.seedAll();
-    logger.info('seed', `Seeded ${result.totalPatterns} patterns, ${result.totalImplementations} implementations, and ${result.totalRelationships} relationships`);
+    if (!result.success) {
+      throw result.error ?? new Error(result.message);
+    }
+    logger.info('seed', result.message);
 
     // Log seeding results
     logger.info('seed', 'Database Statistics:');

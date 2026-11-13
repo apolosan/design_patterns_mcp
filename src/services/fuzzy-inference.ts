@@ -1,9 +1,32 @@
 /**
  * Fuzzy Inference Engine for Pattern Relevance
- * Implements fuzzy logic rules for combining multiple relevance dimensions
+ *
+ * Implements a COMPLETE, factorised rule base over four evidence dimensions.
+ *
+ * Why factorised: a rule base is complete when at least one rule fires for every
+ * input (the standard definition used by fuzzy control literature). Enumerating
+ * the full antecedent lattice (3 keyword x 3 semantic x 3 context x 3 complexity)
+ * would be 81 rules; factorising by dimension gives completeness for free,
+ * because each input partition is total over its own domain, and keeps the rule
+ * set readable.
+ *
+ * Why availability matters: the previous base conjoined seven of its eight rules
+ * with semanticSimilarity.high or .medium. With the semantic channel off those
+ * degrees are zero, and no t-norm saves a conjunction with zero -- min(0, x) = 0
+ * and prod(0, x) = 0 alike. The defect was not the operator, it was treating
+ * "channel absent" as "degree zero". Rules that need semantics now check
+ * semanticAvailable first and are simply not evaluated when the evidence is
+ * missing.
  */
-
 import { FuzzyMembershipResult, PatternMembershipFunctions, PatternMembershipInput } from './fuzzy-membership.js';
+import { NEUTRAL_RELEVANCE } from './fuzzy-defuzzification.js';
+
+/**
+ * Minimum firing strength that is narrated back to the caller. Rules below it
+ * still contribute to the fuzzy output, they are just not listed in
+ * fuzzyReasoning, which the MCP formatter prints verbatim.
+ */
+const NARRATIVE_FLOOR = 0.05;
 
 export interface FuzzyInferenceInput {
   membershipValues: FuzzyMembershipResult;
@@ -48,161 +71,141 @@ export class FuzzyInferenceEngine {
     let highOutput = 0;
     let veryHighOutput = 0;
 
-    // Rule 1: IF semantic_similarity IS high AND keyword_match IS strong THEN relevance IS very_high
-    const rule1Strength = Math.min(
-      membershipValues.semanticSimilarity.high,
-      membershipValues.keywordMatchStrength.strong
-    );
-    if (rule1Strength > 0.35) { // Lowered: allow dispatch for good matches
-      veryHighOutput = Math.max(veryHighOutput, rule1Strength);
-      ruleFirings.push({
-        rule: "High semantic similarity AND strong keyword match → Very High Relevance",
-        strength: rule1Strength,
-        contribution: rule1Strength
-      });
-      reasoning.push(`Strong semantic and keyword alignment (${(rule1Strength * 100).toFixed(1)}% confidence)`);
-    }
+    const applyRule = (
+      kind: 'low' | 'medium' | 'high' | 'very_high',
+      strength: number,
+      rule: string,
+      message: (strength: number) => string
+    ): void => {
+      if (!(strength > 0)) return;
+      if (kind === 'low') lowOutput = Math.max(lowOutput, strength);
+      else if (kind === 'medium') mediumOutput = Math.max(mediumOutput, strength);
+      else if (kind === 'high') highOutput = Math.max(highOutput, strength);
+      else veryHighOutput = Math.max(veryHighOutput, strength);
 
-    // Rule 2: IF semantic_similarity IS high AND contextual_fit IS excellent THEN relevance IS very_high
-    const rule2Strength = Math.min(
-      membershipValues.semanticSimilarity.high,
-      membershipValues.contextualFit.excellent
-    );
-    if (rule2Strength > 0.40) { // Lowered: allow excellent contextual matches
-      veryHighOutput = Math.max(veryHighOutput, rule2Strength);
-      ruleFirings.push({
-        rule: "High semantic similarity AND excellent contextual fit → Very High Relevance",
-        strength: rule2Strength,
-        contribution: rule2Strength
-      });
-      reasoning.push(`Excellent semantic-contextual fit (${(rule2Strength * 100).toFixed(1)}% confidence)`);
-    }
+      if (strength < NARRATIVE_FLOOR) return;
+      ruleFirings.push({ rule, strength, contribution: strength });
+      reasoning.push(message(strength));
+    };
 
-    // Rule 3: IF semantic_similarity IS medium AND keyword_match IS moderate AND contextual_fit IS good THEN relevance IS high
-    const rule3Strength = Math.min(
-      membershipValues.semanticSimilarity.medium,
-      membershipValues.keywordMatchStrength.moderate,
-      membershipValues.contextualFit.good
-    );
-    if (rule3Strength > 0.2) { // Lowered: allow balanced moderate matches
-      highOutput = Math.max(highOutput, rule3Strength);
-      ruleFirings.push({
-        rule: "Medium semantic similarity AND moderate keyword match AND good contextual fit → High Relevance",
-        strength: rule3Strength,
-        contribution: rule3Strength
-      });
-      reasoning.push(`Balanced relevance factors (${(rule3Strength * 100).toFixed(1)}% confidence)`);
-    }
+    const keyword = membershipValues.keywordMatchStrength;
+    const context = membershipValues.contextualFit;
+    const complexity = membershipValues.patternComplexity;
+    // Directly-injected memberships (tests, callers building them by hand) carry
+    // no flag; treat that as "the evidence is present" so the rule base behaves
+    // as documented instead of silently going inert.
+    const semanticAvailable = membershipValues.semanticAvailable ?? true;
+    const semantic = membershipValues.semanticSimilarity;
 
-    // Rule 4: IF semantic_similarity IS medium AND keyword_match IS strong THEN relevance IS high
-    const rule4Strength = Math.min(
-      membershipValues.semanticSimilarity.medium,
-      membershipValues.keywordMatchStrength.strong
-    );
-    if (rule4Strength > 0.2) { // Lowered: allow strong keyword with medium semantic
-      highOutput = Math.max(highOutput, rule4Strength);
-      ruleFirings.push({
-        rule: "Medium semantic similarity AND strong keyword match → High Relevance",
-        strength: rule4Strength,
-        contribution: rule4Strength
-      });
-      reasoning.push(`Good semantic-keyword alignment (${(rule4Strength * 100).toFixed(1)}% confidence)`);
-    }
-
-    // Rule 5: REMOVED - Low semantic similarity should not result in medium relevance
-
-    // Rule 6: IF contextual_fit IS poor THEN relevance IS low (strong penalty)
-    const rule6Strength = membershipValues.contextualFit.poor;
-    if (rule6Strength > 0.7) { // Very high threshold - only penalize clearly poor fits
-      lowOutput = Math.max(lowOutput, rule6Strength);
-      ruleFirings.push({
-        rule: "Poor contextual fit → Low Relevance",
-        strength: rule6Strength,
-        contribution: rule6Strength
-      });
-      reasoning.push(`Contextual fit concerns (${(rule6Strength * 100).toFixed(1)}% impact)`);
-    }
-
-    // Rule 7: IF pattern_complexity IS complex AND semantic_similarity IS high THEN relevance IS high
-    const rule7Strength = Math.min(
-      membershipValues.patternComplexity.complex,
-      membershipValues.semanticSimilarity.high
-    );
-    if (rule7Strength > 0.3) { // Lowered: allow complex patterns with good semantic match
-      highOutput = Math.max(highOutput, rule7Strength);
-      ruleFirings.push({
-        rule: "Complex pattern with high semantic similarity → High Relevance",
-        strength: rule7Strength,
-        contribution: rule7Strength
-      });
-      reasoning.push(`Complex but semantically relevant pattern (${(rule7Strength * 100).toFixed(1)}% confidence)`);
-    }
-
-    // Rule 8: IF pattern_complexity IS simple AND semantic_similarity IS high THEN relevance IS medium
-    const rule8Strength = Math.min(
-      membershipValues.patternComplexity.simple,
-      membershipValues.semanticSimilarity.high // Require HIGH semantic similarity even for simple patterns
-    );
-    if (rule8Strength > 0.4) { // Lowered: allow simple patterns with good semantic match
-      mediumOutput = Math.max(mediumOutput, rule8Strength);
-      ruleFirings.push({
-        rule: "Simple pattern with high semantic similarity → Medium Relevance",
-        strength: rule8Strength,
-        contribution: rule8Strength
-      });
-      reasoning.push(`Simple but highly relevant pattern (${(rule8Strength * 100).toFixed(1)}% confidence)`);
-    }
-
-    // Default rule: Intelligent fallback based on available evidence
-    const maxFiredStrength = Math.max(lowOutput, mediumOutput, highOutput, veryHighOutput);
-    if (maxFiredStrength < 0.5) { // Higher threshold for default - require more evidence
-      // Smart default based on strongest available evidence
-      const semanticStrength = membershipValues.semanticSimilarity.high * 0.6 +
-                              membershipValues.semanticSimilarity.medium * 0.3;
-      const keywordStrength = membershipValues.keywordMatchStrength.strong * 0.5 +
-                             membershipValues.keywordMatchStrength.moderate * 0.2;
-      const contextStrength = membershipValues.contextualFit.excellent * 0.4 +
-                             membershipValues.contextualFit.good * 0.2;
-
-      const smartDefault = Math.max(
-        Math.min(semanticStrength + keywordStrength + contextStrength, 0.7), // Cap at 0.7
-        0.1 // Lower minimum baseline
+    // ---- Semantic dimension first: it holds the most specific rules ----
+    // Specificity precedence: "semantic high AND keyword strong" implies "keyword
+    // strong", so when the specific rule fires the generic one would only add a
+    // weaker conclusion on top and average the score back down (1.0 high mixed
+    // with 1.0 very_high reported 0.875 instead of 0.95).
+    // ---- Applicability dimension: the second opinion, and the reason the fuzzy
+    // layer has a job. Agreement beats either signal alone, and a strong
+    // applicability match with keyword support is a genuine RECOVERY (the primary
+    // retriever never saw that vocabulary), so it must be able to reorder. This
+    // is what makes the response non-monotone in keyword strength, which is the
+    // necessary condition for any ranking gain.
+    const applicability = membershipValues.applicabilityMatch;
+    if (applicability) {
+      applyRule(
+        'very_high',
+        Math.min(applicability.strong, keyword.strong),
+        'Strong applicability AND strong keyword match -> Very High Relevance',
+        (st) => `Both retrievers agree (${(st * 100).toFixed(1)}% confidence)`
       );
+      applyRule(
+        'high',
+        Math.min(applicability.strong, Math.max(keyword.strong, keyword.moderate)),
+        'Strong applicability with keyword support -> High Relevance',
+        (st) => `Recovered by applicability evidence (${(st * 100).toFixed(1)}% confidence)`
+      );
+      applyRule(
+        'medium',
+        Math.min(applicability.moderate, Math.max(keyword.strong, keyword.moderate)),
+        'Moderate applicability with keyword support -> Medium Relevance',
+        (st) => `Supported by applicability evidence (${(st * 100).toFixed(1)}% confidence)`
+      );
+    }
 
-      // Assign to appropriate category based on smart default
-      if (smartDefault > 0.55) {
-        highOutput = Math.max(highOutput, smartDefault);
-        ruleFirings.push({
-          rule: "Smart default: High relevance based on combined evidence",
-          strength: smartDefault,
-          contribution: smartDefault
-        });
-        reasoning.push(`High relevance from combined evidence (${(smartDefault * 100).toFixed(1)}% confidence)`);
-      } else if (smartDefault > 0.35) {
-        mediumOutput = Math.max(mediumOutput, smartDefault);
-        ruleFirings.push({
-          rule: "Smart default: Medium relevance based on available evidence",
-          strength: smartDefault,
-          contribution: smartDefault
-        });
-        reasoning.push(`Medium relevance from available evidence (${(smartDefault * 100).toFixed(1)}% confidence)`);
-      } else if (smartDefault > 0.2) {
-        lowOutput = Math.max(lowOutput, smartDefault);
-        ruleFirings.push({
-          rule: "Smart default: Low relevance - limited matching evidence",
-          strength: smartDefault,
-          contribution: smartDefault
-        });
-        reasoning.push(`Low-moderate relevance (${(smartDefault * 100).toFixed(1)}% confidence)`);
-      } else {
-        lowOutput = Math.max(lowOutput, 0.15); // Very low baseline
-        ruleFirings.push({
-          rule: "Smart default: Very low relevance - minimal matching evidence",
-          strength: 0.15,
-          contribution: 0.15
-        });
-        reasoning.push(`Very low baseline relevance (15.0% confidence)`);
-      }
+    if (semanticAvailable) {
+      applyRule(
+        'very_high',
+        Math.min(semantic.high, keyword.strong),
+        'High semantic similarity AND strong keyword match -> Very High Relevance',
+        (s) => `Strong semantic and keyword alignment (${(s * 100).toFixed(1)}% confidence)`
+      );
+      applyRule(
+        'very_high',
+        Math.min(semantic.high, context.excellent),
+        'High semantic similarity AND excellent contextual fit -> Very High Relevance',
+        (s) => `Excellent semantic-contextual fit (${(s * 100).toFixed(1)}% confidence)`
+      );
+      applyRule(
+        'high',
+        Math.min(semantic.medium, keyword.moderate),
+        'Medium semantic similarity AND moderate keyword match -> High relevance',
+        (s) => `Balanced semantic and keyword evidence (${(s * 100).toFixed(1)}% confidence)`
+      );
+    }
+
+    // ---- Keyword dimension: a total partition, so one of these always fires ----
+    if (veryHighOutput === 0) {
+      applyRule(
+        'high',
+        keyword.strong,
+        'Strong keyword match -> High relevance',
+        (s) => `Strong keyword match (${(s * 100).toFixed(1)}% confidence)`
+      );
+    }
+    applyRule(
+      'medium',
+      keyword.moderate,
+      'Moderate keyword match -> Medium relevance',
+      (s) => `Moderate keyword match (${(s * 100).toFixed(1)}% confidence)`
+    );
+    applyRule(
+      'low',
+      keyword.weak,
+      'Weak keyword match -> Low relevance',
+      (s) => `Weak keyword evidence (${(s * 100).toFixed(1)}% impact)`
+    );
+
+    // ---- Contextual dimension: also a total partition, always evaluated ----
+    // Not dominated by the levels above: a poor fit is a genuine counter-signal
+    // (the pattern does not support what was asked), so it must be able to pull a
+    // strong lexical match back down.
+    applyRule(
+      'high',
+      veryHighOutput > 0 ? 0 : context.excellent,
+      'Excellent contextual fit -> High relevance',
+      (s) => `Excellent contextual fit (${(s * 100).toFixed(1)}% confidence)`
+    );
+    applyRule(
+      'low',
+      context.poor,
+      'Poor contextual fit -> Low relevance',
+      (s) => `Poor contextual fit (${(s * 100).toFixed(1)}% impact)`
+    );
+
+    // ---- Refinement: complexity only tempers a moderate keyword hit ----
+    applyRule(
+      'medium',
+      Math.min(complexity.simple, keyword.moderate),
+      'Simple pattern with a moderate keyword match -> Medium relevance',
+      (s) => `Simple but relevant pattern (${(s * 100).toFixed(1)}% confidence)`
+    );
+
+    // No fallback rule: the keyword and contextual partitions are total, so the
+    // base is complete and something always fires. If every partition were empty
+    // (malformed input) the anchored defuzzifier would report NEUTRAL_RELEVANCE
+    // from its full residual mass, and that absence is narrated explicitly.
+    if (ruleFirings.length === 0) {
+      reasoning.push(
+        `No rule fired: relevance anchored at neutral (${(NEUTRAL_RELEVANCE * 100).toFixed(1)}%)`
+      );
     }
 
     const fuzzyScore = {
@@ -241,12 +244,15 @@ export class FuzzyInferenceEngine {
 
     const totalMembership = fuzzyScore.low + fuzzyScore.medium + fuzzyScore.high + fuzzyScore.very_high;
 
-    // More conservative: require at least 0.3 total membership for meaningful confidence
-    if (totalMembership < 0.3) {
-      return Math.max(0.1, weightedSum / totalMembership);
+    // No evidence at all is a legitimate state: report the neutral value.
+    // Dividing by zero here produced NaN, masked in the past by a fallback rule
+    // that always left some membership behind.
+    if (totalMembership === 0) {
+      return NEUTRAL_RELEVANCE;
     }
 
-    return totalMembership > 0 ? weightedSum / totalMembership : 0.5;
+    const preliminary = weightedSum / totalMembership;
+    return Number.isFinite(preliminary) ? preliminary : NEUTRAL_RELEVANCE;
   }
 
   /**
@@ -265,7 +271,12 @@ export class FuzzyInferenceEngine {
   }
 
   /**
-   * Get rule statistics for analysis
+   * Get rule statistics for analysis.
+   *
+   * Not used by the search pipeline: this is an offline calibration aid for
+   * inspecting which rules carry a corpus. Kept deliberately, together with
+   * batchDefuzzify / getStatistics on the defuzzifier, so a recalibration does
+   * not have to rebuild the aggregation from logs.
    */
   getRuleStatistics(results: FuzzyInferenceOutput[]): {
     mostFiredRules: Array<{ rule: string; count: number; avgStrength: number }>;

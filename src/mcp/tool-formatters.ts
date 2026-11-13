@@ -32,7 +32,9 @@ export function formatFindPatternsResult(recommendations: PatternRecommendation[
         const lines: string[] = [
           `${index + 1}. **${rec.pattern.name}** (${rec.pattern.category})`,
           `   ID: ${rec.pattern.id}`,
-          `   Confidence: ${(rec.confidence * 100).toFixed(1)}%`,
+          typeof rec.score === 'number' && rec.score.toFixed(3) !== rec.confidence.toFixed(3)
+            ? `   Score: ${(rec.score * 100).toFixed(1)}% (confidence ${(rec.confidence * 100).toFixed(1)}%)`
+            : `   Confidence: ${(rec.confidence * 100).toFixed(1)}%`,
           `   Rationale: ${rec.justification.primaryReason}`,
           `   Benefits: ${coerceToStringArray(rec.justification.benefits, 'benefits').join(', ') || 'N/A'}`,
         ];
@@ -45,8 +47,8 @@ export function formatFindPatternsResult(recommendations: PatternRecommendation[
         if (typeof rec.justification.fuzzyConfidence === 'number') {
           lines.push(`   Fuzzy confidence: ${(rec.justification.fuzzyConfidence * 100).toFixed(1)}%`);
         }
-        if (typeof rec.justification.originalConfidence === 'number') {
-          lines.push(`   Pre-fuzzy confidence: ${(rec.justification.originalConfidence * 100).toFixed(1)}%`);
+        if (typeof rec.justification.fuzzyRelevance === 'number') {
+          lines.push(`   Fuzzy relevance: ${(rec.justification.fuzzyRelevance * 100).toFixed(1)}%`);
         }
 
         return lines.join('\n');
@@ -72,7 +74,14 @@ export function formatSearchResults(
         (result, index) =>
           `${index + 1}. **${result.pattern.name}** (${result.pattern.category})\n` +
           `   ID: ${result.pattern.id}\n` +
-          `   Score: ${(result.score * 100).toFixed(1)}%\n` +
+          `   Score: ${(result.score * 100).toFixed(1)}%` +
+          (typeof result.confidence === 'number' &&
+          result.confidence.toFixed(3) !== result.score.toFixed(3)
+            ? ` (confidence ${(result.confidence * 100).toFixed(1)}%)\n`
+            : '\n') +
+          (typeof result.fuzzyRelevance === 'number'
+            ? `   Fuzzy relevance: ${(result.fuzzyRelevance * 100).toFixed(1)}%\n`
+            : '') +
           `   Description: ${result.pattern.description}`
       )
       .join('\n')
@@ -94,7 +103,11 @@ export function formatSearchResultsFromRecommendations(
       complexity: rec.pattern.complexity,
       tags: rec.pattern.tags,
     },
-    score: rec.confidence,
+    // The mediator ordered by `score`; publishing `confidence` here made the
+    // list look out of order to whoever read the numbers.
+    score: rec.score ?? rec.confidence,
+    confidence: rec.confidence,
+    fuzzyRelevance: rec.justification.fuzzyRelevance,
   }));
 
   return formatSearchResults(query, searchTypeUsed, degraded, results);

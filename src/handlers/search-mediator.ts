@@ -16,7 +16,7 @@ import { FuzzyDefuzzificationEngine } from '../services/fuzzy-defuzzification.js
 import { PatternRecommendation } from '../models/recommendation.js';
 import { structuredLogger } from '../utils/logger.js';
 import { Result, ok, err, isOk } from '../types/result.js';
-import type { PatternRequest, MatchResult, DetailedPattern } from '../types/search-types.js';
+import type { PatternRequest, MatchResult } from '../types/search-types.js';
 
 /**
  * Search mediator configuration
@@ -32,6 +32,69 @@ export interface SearchMediatorConfig {
 }
 
 export type SearchStrategy = 'keyword' | 'semantic' | 'hybrid';
+
+/**
+ * Weight of the fuzzy relevance in the composite ranking score. The search
+ * confidence stays dominant because it is the only signal that discriminates
+ * ranking positions inside one query; the fuzzy relevance refines it with
+ * context, complexity and keyword/semantic agreement.
+ *
+ * Settled by measurement (`bun run calibrate-search`: 710 patterns, 48 queries
+ * over the name / name+category / description / applicability tiers). MRR@5 per
+ * weight with the pipeline as shipped (score every candidate, cut afterwards),
+ * against the confidence-only baseline of 0.802:
+ *
+ *   0.00 -> 0.802   0.35 -> 0.809   0.80 -> 0.838   1.00 -> 0.817
+ *
+ * 0.80 is the measured best on both MRR and P@5 (0.179). Read it as the top of
+ * the observed plateau, not a law: the curve is not smooth (0.65 sits at 0.827)
+ * and the sample is 48 catalog-derived queries, so re-run the harness whenever
+ * the rule base, the recovery pass or the retrieval depth changes.
+ *
+ * The weight only pays while the composite sees candidates the confidence cut
+ * would drop: with the old cut-first order the same 0.80 scored 0.813, i.e. the
+ * cut, not the weight, was capping the signal. Re-check the weight when query
+ * embeddings make the semantic dimension available — that is the signal which
+ * can reorder candidates for reasons the lexicon does not explain.
+ */
+export const FUZZY_RANK_WEIGHT = 0.8;
+
+
+/**
+ * Composite ranking score: the search confidence stays dominant because it is
+ * the only signal that separates positions inside one query; the fuzzy
+ * relevance refines it with context, complexity and signal agreement.
+ *
+ * Extracted so the calibration harness measures exactly the formula production
+ * uses instead of a copy of it. The weight is a parameter here and a constant
+ * at the call site; it is settled by measurement, not by configuration.
+ */
+export function computeCompositeScore(
+  confidence: number,
+  fuzzyRelevance: number,
+  weight: number = FUZZY_RANK_WEIGHT
+): number {
+  const boundedWeight = Math.min(Math.max(weight, 0), 1);
+  return (1 - boundedWeight) * confidence + boundedWeight * fuzzyRelevance;
+}
+
+/** Canonical spellings of the languages accepted in pattern tags. */
+const LANGUAGE_ALIASES: Record<string, string> = {
+  ts: 'typescript',
+  js: 'javascript',
+  jsx: 'javascript',
+  tsx: 'typescript',
+  py: 'python',
+  rb: 'ruby',
+  kt: 'kotlin',
+  rs: 'rust',
+  golang: 'go',
+  cs: 'csharp',
+  'c#': 'csharp',
+  dotnet: 'csharp',
+  'c++': 'cpp',
+  gpp: 'cpp',
+};
 
 /**
  * Partial config override applied per-call. Each non-undefined field
@@ -118,11 +181,11 @@ export class SearchMediator {
     const effectiveOverride = this.applyBaseConfigConstraints(strategyOverride);
 
     try {
-      const recommendations = await this.search(request, effectiveOverride);
+      const { recommendations, degraded } = await this.executeSearch(request, effectiveOverride);
       return {
         recommendations,
         searchTypeUsed: searchType,
-        degraded: false,
+        degraded,
       };
     } catch (error) {
       structuredLogger.warn('search-mediator', 'Typed search failed, falling back to keyword', {
@@ -133,7 +196,7 @@ export class SearchMediator {
       const keywordOnlyOverride: SearchConfigOverride = {
         useSemanticSearch: false,
         useKeywordSearch: true,
-        useHybridSearch: this.config.useHybridSearch,
+        useHybridSearch: false,
       };
 
       const fallback = await this.search(request, keywordOnlyOverride);
@@ -213,11 +276,28 @@ export class SearchMediator {
     request: PatternRequest,
     override: SearchConfigOverride = {}
   ): Promise<Result<PatternRecommendation[]>> {
+    try {
+      const { recommendations } = await this.executeSearch(request, override);
+      return ok(recommendations);
+    } catch (error) {
+      return err(error as Error);
+    }
+  }
+
+  /**
+   * Run the full search pipeline and report whether any enabled channel
+   * failed. Throws only when every enabled channel failed, so callers can
+   * fall back. Degraded results are never cached, otherwise a transient
+   * vector-store outage would be served from cache after recovery.
+   */
+  private async executeSearch(
+    request: PatternRequest,
+    override: SearchConfigOverride
+  ): Promise<{ recommendations: PatternRecommendation[]; degraded: boolean }> {
     const startTime = Date.now();
     const effectiveConfig: SearchMediatorConfig = { ...this.config, ...override };
 
     try {
-      // Check cache first
       const cacheKey = this.buildCacheKey(request, effectiveConfig);
       const cachedResult = this.cache.get(cacheKey);
 
@@ -226,95 +306,102 @@ export class SearchMediator {
           query: request.query.substring(0, 50),
           resultsCount: (cachedResult as PatternRecommendation[]).length,
         });
-        return ok(cachedResult as PatternRecommendation[]);
+        return { recommendations: cachedResult as PatternRecommendation[], degraded: false };
       }
 
-      // Perform matching
-      const matches = await this.performMatching(request, effectiveConfig);
+      const { matches, degraded } = await this.performMatching(request, effectiveConfig);
+
+      // The applicability index is not a second retriever any more. Its candidates
+      // were admitted into the pool with a manufactured confidence, and
+      // `bun run calibrate-search` measured the admission as inert: removing the
+      // recovered candidates left MRR@5 identical at every weight and on every
+      // tier, while three of them did occupy returned slots. The index still
+      // earns its place through the fuzzy applicability dimension below, which
+      // lifts the applicability tier from 0.292 to 0.392.
+      const applicability = effectiveConfig.useKeywordSearch
+        ? this.keywordHandler.applicabilityScores(request.query)
+        : new Map<string, number>();
 
       if (matches.length === 0) {
         structuredLogger.warn('search-mediator', 'No matches found', {
           query: request.query,
+          degraded,
         });
-        return ok([]);
+        return { recommendations: [], degraded };
       }
 
-      // Build recommendations
-      let recommendations = this.recommendationBuilder.buildRecommendations(
-        matches,
-        request
-      );
+      // The handlers apply the floor they were constructed with, so a per-call
+      // override would otherwise be silently ignored. Enforcing it here makes
+      // the override mean what it says; the handler filter stays as a fast path.
+      const recommendations = this.recommendationBuilder
+        .buildRecommendations(matches, request)
+        .filter((recommendation) => recommendation.confidence >= effectiveConfig.minConfidence);
 
-      // Apply fuzzy refinement if enabled
-      if (effectiveConfig.useFuzzyRefinement) {
-        recommendations = this.applyFuzzyRefinement(recommendations, request, effectiveConfig);
-      }
+      const requested = request.maxResults ?? effectiveConfig.maxResults;
 
-      // The fuzzy logic quantizes scores to 3 representative values
-      // (0.15/0.45/0.80) via centroid defuzzification over
-      // {low, medium, high, very_high} representativeValues. Even with
-      // diverse multi-signal inputs, the output collapses to these buckets
-      // because membership degrees fire the same output category across
-      // patterns in the same query.
-      //
-      // Preserve the pre-fuzzy confidence (alpha-weighted blend from
-      // combineMatches or single-strategy normalized score) so the underlying
-      // BM25 / vector / hybrid discrimination survives. The fuzzy logic
-      // remains useful for telemetry: originalConfidence, fuzzyReasoning,
-      // fuzzyConfidence, fuzzyInputFingerprint are still populated.
-      for (const rec of recommendations) {
-        const original = rec.justification.originalConfidence;
-        if (typeof original === 'number') {
-          rec.confidence = original;
-        }
-      }
-
-      // Sort and limit results
       recommendations.sort((a, b) => b.confidence - a.confidence);
-      const finalResults = recommendations.slice(
-        0,
-        request.maxResults ?? effectiveConfig.maxResults
-      );
+      // Score every candidate the retrievers and the recovery pass produced, and
+      // cut only afterwards. Cutting first left the fuzzy pass permuting records
+      // the confidence ranking had already chosen: measured MRR@5 0.825 against
+      // 0.827 when the composite sees the whole candidate pool, and 0.838 only
+      // when the caller asks for enough results to make the retrievers dig
+      // deeper. The candidates are already in memory and already scored, so
+      // scoring them costs arithmetic, not I/O.
+      const finalResults = effectiveConfig.useFuzzyRefinement
+        ? recommendations.slice()
+        : recommendations.slice(0, requested);
 
-      // Cache results
-      this.cache.set(cacheKey, finalResults, effectiveConfig.cacheResultsTTL);
+      // The fuzzy pass refines the ranking through a composite score, and it
+      // runs over a window wider than the caller asked for so evidence can
+      // promote a record the confidence cut would otherwise have removed. The
+      // pre-fuzzy confidence stays untouched for consumers that report it; only
+      // the composite score reflects the refinement.
+      if (effectiveConfig.useFuzzyRefinement) {
+        this.applyFuzzyRefinement(finalResults, request, effectiveConfig, applicability);
+        for (const rec of finalResults) {
+          const fuzzyRelevance = rec.justification.fuzzyRelevance;
+          if (typeof fuzzyRelevance !== 'number') continue;
+          rec.score = computeCompositeScore(rec.confidence, fuzzyRelevance);
+        }
+        finalResults.sort((a, b) => (b.score ?? b.confidence) - (a.score ?? a.confidence));
+        finalResults.splice(requested);
+      }
 
-      const duration = Date.now() - startTime;
+      if (!degraded) {
+        this.cache.set(cacheKey, finalResults, effectiveConfig.cacheResultsTTL);
+      }
+
       structuredLogger.info('search-mediator', 'Search completed', {
         query: request.query.substring(0, 50),
         matchesFound: matches.length,
         recommendationsBuilt: recommendations.length,
         finalResultsCount: finalResults.length,
-        durationMs: duration,
+        degraded,
+        durationMs: Date.now() - startTime,
       });
 
-      return ok(finalResults);
+      return { recommendations: finalResults, degraded };
     } catch (error) {
-      const duration = Date.now() - startTime;
-      structuredLogger.error(
-        'search-mediator',
-        'Search failed',
-        error as Error,
-        {
-          query: request.query,
-          durationMs: duration,
-        }
-      );
-      return err(error as Error);
+      structuredLogger.error('search-mediator', 'Search failed', error as Error, {
+        query: request.query,
+        durationMs: Date.now() - startTime,
+      });
+      throw error;
     }
   }
 
   /**
    * Perform pattern matching using configured strategies.
    * Uses the provided effective config (base + override) instead of instance state.
+   *
+   * Each channel reports failure through its Result instead of an empty list,
+   * so an outage is distinguishable from "no hits". `degraded` is true when at
+   * least one enabled channel failed; if all of them failed the error is thrown.
    */
   private async performMatching(
     request: PatternRequest,
     effectiveConfig: SearchMediatorConfig
-  ): Promise<MatchResult[]> {
-    const allMatches: MatchResult[] = [];
-
-    // Calculate dynamic alpha for hybrid search
+  ): Promise<{ matches: MatchResult[]; degraded: boolean }> {
     const alphaResult = this.hybridCombiner.calculateAlpha(request.query);
 
     structuredLogger.debug('search-mediator', 'Dynamic alpha calculated', {
@@ -323,46 +410,67 @@ export class SearchMediator {
       keywordAlpha: alphaResult.keywordAlpha.toFixed(3),
     });
 
-    // Execute searches in parallel
-    const searchPromises: Promise<MatchResult[]>[] = [];
+    const channels: Array<Promise<{ name: string; result: Result<MatchResult[]> }>> = [];
 
     if (effectiveConfig.useSemanticSearch) {
       const semanticWeight = effectiveConfig.useHybridSearch ? alphaResult.semanticAlpha : 1.0;
-      searchPromises.push(
-        this.semanticHandler.search(request).then((matches) =>
-          this.hybridCombiner.applySemanticWeight(matches, semanticWeight)
-        )
+      channels.push(
+        this.semanticHandler.searchSafe(request).then((result) => ({
+          name: 'semantic',
+          result: isOk(result)
+            ? ok(this.hybridCombiner.applySemanticWeight(result.value, semanticWeight))
+            : result,
+        }))
       );
     }
 
     if (effectiveConfig.useKeywordSearch) {
       const keywordWeight = effectiveConfig.useHybridSearch ? alphaResult.keywordAlpha : 1.0;
-      searchPromises.push(
-        this.keywordHandler.search(request).then((matches) =>
-          this.hybridCombiner.applyKeywordWeight(matches, keywordWeight)
-        )
+      channels.push(
+        this.keywordHandler.searchSafe(request).then((result) => ({
+          name: 'keyword',
+          result: isOk(result)
+            ? ok(this.hybridCombiner.applyKeywordWeight(result.value, keywordWeight))
+            : result,
+        }))
       );
     }
 
-    // Wait for all searches to complete
-    const searchResults = await Promise.all(searchPromises);
-    for (const results of searchResults) {
-      allMatches.push(...results);
+    const outcomes = await Promise.all(channels);
+    const allMatches: MatchResult[] = [];
+    const failures: Error[] = [];
+
+    for (const { name, result } of outcomes) {
+      if (isOk(result)) {
+        allMatches.push(...result.value);
+      } else {
+        failures.push(result.error);
+        structuredLogger.warn('search-mediator', 'Search channel failed', {
+          channel: name,
+          error: result.error.message,
+        });
+      }
     }
 
-    // If no matches found, try broad search
+    if (outcomes.length > 0 && failures.length === outcomes.length) {
+      throw new Error(
+        `All search channels failed: ${failures.map((e) => e.message).join('; ')}`
+      );
+    }
+
+    const degraded = failures.length > 0;
+
     if (allMatches.length === 0) {
       structuredLogger.warn('search-mediator', 'No matches, trying broad search');
       const broadMatches = await this.keywordHandler.broadSearch(request);
       allMatches.push(...broadMatches);
     }
 
-    // Combine matches if hybrid search is enabled
     if (effectiveConfig.useHybridSearch && allMatches.length > 0) {
-      return this.hybridCombiner.combineMatches(allMatches, alphaResult);
+      return { matches: this.hybridCombiner.combineMatches(allMatches, alphaResult), degraded };
     }
 
-    return allMatches;
+    return { matches: allMatches, degraded };
   }
 
   /**
@@ -372,7 +480,8 @@ export class SearchMediator {
     recommendations: PatternRecommendation[],
     request: PatternRequest,
     effectiveConfig: SearchMediatorConfig = this.config,
-  ): PatternRecommendation[] {
+    applicability: ReadonlyMap<string, number> = new Map()
+  ): void {
     const startTime = Date.now();
     let processedCount = 0;
     let ruleFiringsCount = 0;
@@ -382,14 +491,8 @@ export class SearchMediator {
     for (const recommendation of recommendations) {
       try {
         const pattern = recommendation.pattern;
-        const detailedPattern = this.recommendationBuilder.getDetailedPattern(
-          pattern.id
-        );
-
-        if (!detailedPattern) continue;
-
         // Calculate contextual fit
-        const contextualFit = this.calculateContextualFit(detailedPattern, request);
+        const contextualFit = this.calculateContextualFit(pattern, request);
 
         // Capture pre-fuzzy confidence so downstream consumers can compare
         // raw hybrid score vs the fuzzy-refined score on the same record.
@@ -409,7 +512,8 @@ export class SearchMediator {
         const fuzzyInput = {
           semanticSimilarity: semanticComponent,
           keywordMatchStrength: keywordComponent,
-          patternComplexity: detailedPattern.complexity || 'Medium',
+          applicabilityMatch: applicability.get(pattern.id),
+          patternComplexity: pattern.complexity || 'Medium',
           contextualFit,
           programmingLanguage: request.programmingLanguage,
           patternId: pattern.id,
@@ -420,12 +524,13 @@ export class SearchMediator {
         const fuzzyResult = this.fuzzyInferenceEngine.evaluatePattern(fuzzyInput);
 
         // Apply defuzzification
-        const defuzzResult = this.fuzzyDefuzzificationEngine.defuzzifyPatternRelevance(
+        const defuzzResult = this.fuzzyDefuzzificationEngine.defuzzifyPatternRelevanceAnchored(
           fuzzyResult.fuzzyScore
         );
 
-        // Update recommendation
-        recommendation.confidence = defuzzResult.crispValues.relevance;
+        // Publish the fuzzy outcome on its own fields; confidence keeps the
+        // ranking score, so no downstream consumer has to undo anything.
+        recommendation.justification.fuzzyRelevance = defuzzResult.crispValues.relevance;
         recommendation.justification.fuzzyReasoning = fuzzyResult.reasoning;
         recommendation.justification.fuzzyConfidence = defuzzResult.confidence;
         recommendation.justification.originalConfidence = originalConfidence;
@@ -433,7 +538,7 @@ export class SearchMediator {
           semanticSimilarity: semanticComponent,
           keywordMatchStrength: keywordComponent,
           contextualFit,
-          patternComplexity: detailedPattern.complexity || 'Medium',
+          patternComplexity: pattern.complexity || 'Medium',
         };
 
         // Accumulate telemetry
@@ -463,60 +568,57 @@ export class SearchMediator {
       rulesFiredDistribution: ruleCounts,
       durationMs: duration,
     });
+  }
 
-    return recommendations;
+  /**
+   * Language tokens are matched whole. The previous 3-character prefix test
+   * matched "governance" for Go, "scalability" for Scala and 610 of the 710
+   * catalog patterns for C.
+   */
+  private languageTokens(tags: readonly string[]): Set<string> {
+    const tokens = new Set<string>();
+    for (const tag of tags) {
+      for (const raw of tag.toLowerCase().split(/[^a-z0-9#+]+/)) {
+        if (!raw) continue;
+        tokens.add(raw);
+        const alias = LANGUAGE_ALIASES[raw];
+        if (alias) tokens.add(alias);
+      }
+    }
+    return tokens;
   }
 
   /**
    * Calculate contextual fit
    */
   private calculateContextualFit(
-    pattern: DetailedPattern,
+    pattern: PatternRecommendation['pattern'],
     request: PatternRequest
   ): number {
-    let fit = 0.5;
-
-    if (request.programmingLanguage) {
-      const lang = request.programmingLanguage;
-      const hasLanguageExamples = pattern.tags.some((tag) =>
-        tag.toLowerCase().includes(lang.toLowerCase().slice(0, 3))
-      );
-      fit += hasLanguageExamples ? 0.3 : -0.1;
+    // Baseline 0.4 leaves room to fall into the "poor" set (<= 0.15) when the
+    // requested language is demonstrably absent; the old 0.5 baseline could
+    // only ever produce values in [0.4, 1.0], so "poor" never fired.
+    let fit = 0.4;
+    const requestedLanguage = request.programmingLanguage?.trim().toLowerCase();
+    if (requestedLanguage) {
+      const canonical = LANGUAGE_ALIASES[requestedLanguage] ?? requestedLanguage;
+      const hasLanguageExamples = this.languageTokens(pattern.tags ?? []).has(canonical);
+      fit += hasLanguageExamples ? 0.35 : -0.4;
     }
-
+    const lowerQuery = request.query.toLowerCase();
     if (
-      request.query.toLowerCase().includes('create') ||
-      request.query.toLowerCase().includes('factory')
+      (lowerQuery.includes('create') || lowerQuery.includes('factory')) &&
+      pattern.category.toLowerCase() === 'creational'
     ) {
-      if (pattern.category.toLowerCase() === 'creational') {
-        fit += 0.2;
-      }
+      fit += 0.2;
     }
-
     if (
-      request.query.split(' ').length <= 3 &&
+      request.query.split(/\s+/).filter(Boolean).length <= 3 &&
       pattern.complexity.toLowerCase() === 'low'
     ) {
       fit += 0.1;
     }
-
     return Math.max(0, Math.min(1, fit));
-  }
-
-  /**
-   * Calculate keyword match strength
-   */
-  private calculateKeywordStrength(supportingReasons: string[]): number {
-    if (!supportingReasons || supportingReasons.length === 0) return 0.3;
-
-    const keywordReasons = supportingReasons.filter(
-      (reason) =>
-        reason.toLowerCase().includes('contains') ||
-        reason.toLowerCase().includes('matches') ||
-        reason.toLowerCase().includes('keyword')
-    );
-
-    return Math.min(1, keywordReasons.length * 0.2 + 0.3);
   }
 
   /**
@@ -576,14 +678,25 @@ export class SearchMediator {
    * Build cache key for request, including the effective config so that
    * different strategies don't share cache entries.
    */
+  /**
+   * Every input that changes the response belongs in the key. `searchSafe` takes
+   * a per-call config override, so leaving any of these out lets the second
+   * caller receive the first caller's answer — fuzzy-ranked records when it asked
+   * for no refinement, or an unfiltered set when it raised the confidence floor,
+   * with nothing in the payload revealing the swap.
+   */
   private buildCacheKey(request: PatternRequest, effectiveConfig: SearchMediatorConfig): string {
     return `search:${request.query}:${JSON.stringify({
       categories: request.categories?.sort(),
-      maxResults: request.maxResults,
+      // The effective value, not the request field: an override can set the
+      // limit while the request leaves it undefined.
+      maxResults: request.maxResults ?? effectiveConfig.maxResults,
       programmingLanguage: request.programmingLanguage,
+      minConfidence: effectiveConfig.minConfidence,
       useSemantic: effectiveConfig.useSemanticSearch,
       useKeyword: effectiveConfig.useKeywordSearch,
       useHybrid: effectiveConfig.useHybridSearch,
+      useFuzzyRefinement: effectiveConfig.useFuzzyRefinement,
     })}`;
   }
 }

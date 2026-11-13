@@ -49,5 +49,14 @@ export interface SearchPatternResult {
     complexity?: string;
     tags?: string[];
   };
+  /**
+   * The number that ordered this list: search confidence blended with the fuzzy
+   * relevance when the refinement ran. Publishing confidence here instead made
+   * the payload contradict its own order.
+   */
   score: number;
+  /** Pre-fuzzy search confidence, kept so the raw signal stays visible */
+  confidence?: number;
+  /** Defuzzified fuzzy relevance, when the fuzzy refinement ran */
+  fuzzyRelevance?: number;
 }

@@ -20,7 +20,7 @@ bun run db:setup
 
 ### Using npm
 
-The `prepare` lifecycle script in `package.json` requires `bun`. If you don't have `bun` installed, use `--ignore-scripts` to skip it and build manually with `npx tsc`:
+The `prepare` script in `package.json` requires `bun`. If bun is not installed, skip it with `--ignore-scripts` and build with `npx tsc`:
 
 ```bash
 npm install --ignore-scripts
@@ -344,7 +344,7 @@ tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
 
 - Repository: https://github.com/apolosan/design_patterns_mcp
 - Documentation: see README
-- Tests: 626 cases | 99.8% pass rate (1 pre-existing data-hygiene failure documented in the latest adversarial QA audit)
+- Tests: 626 cases | 99.8% pass rate (1 pre-existing data-hygiene failure; see the adversarial QA audit)
 - Adversarial QA report available in the project audit documentation
 
 ## Known issues & limitations

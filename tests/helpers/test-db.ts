@@ -1,8 +1,12 @@
 import { join } from 'path';
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
-import { randomUUID } from 'crypto';
+import { existsSync, rmSync, writeFileSync } from 'fs';
+import { createTestRunContext, type TestRunContext } from './test-run-context';
 
-const TEMP_DB_DIR = join(__dirname, '..', '..', 'temp', 'test-databases');
+/** Root of the per-test-file scratch directories (see test-run-context.ts). */
+export const TEST_RUNS_ROOT = join(__dirname, '..', 'temp');
+
+/** The real pattern catalog. Tests only ever read it, to copy it. */
+export const CATALOG_DATABASE_PATH = join(__dirname, '..', '..', 'data', 'design-patterns.db');
 
 export interface PatternRow {
   id: string;
@@ -49,16 +53,36 @@ export interface ExamplesField {
   };
 }
 
-function ensureTempDir(): void {
-  if (!existsSync(TEMP_DB_DIR)) {
-    mkdirSync(TEMP_DB_DIR, { recursive: true });
-  }
+/**
+ * Scratch space of the test file that imported this module. Vitest evaluates
+ * modules once per test file, so every file gets its own.
+ */
+let activeContext: TestRunContext | null = null;
+
+function testRunContext(): TestRunContext {
+  activeContext ??= createTestRunContext({
+    rootDir: TEST_RUNS_ROOT,
+    sourceDatabasePath: CATALOG_DATABASE_PATH,
+  });
+  return activeContext;
 }
 
+/**
+ * Deletes the catalog copy and every temporary database of the current test
+ * file. Called by tests/setup.ts once the file has finished.
+ */
+export function disposeTestRunContext(): void {
+  activeContext?.dispose();
+  activeContext = null;
+}
+
+/**
+ * Returns the path for a new temporary database. The file lives in the
+ * current test file's scratch directory and is deleted with it, so calling
+ * {@link cleanupTempDatabase} is optional.
+ */
 export function createTempDatabasePath(prefix: string = 'test'): string {
-  ensureTempDir();
-  const uniqueId = randomUUID();
-  return join(TEMP_DB_DIR, `${prefix}-${uniqueId}.db`);
+  return testRunContext().tempDatabasePath(prefix);
 }
 
 export function cleanupTempDatabase(path: string): void {
@@ -71,17 +95,15 @@ export function cleanupTempDatabase(path: string): void {
   }
 }
 
+/**
+ * Returns the path of the current test file's private copy of the pattern
+ * catalog. The copy is made on first use; it can be opened for writing
+ * without affecting other test files or the real catalog.
+ *
+ * @throws {Error} When the real catalog has not been built yet.
+ */
 export function getTestDatabasePath(): string {
-  if (process.env.TEST_DB_PATH && existsSync(process.env.TEST_DB_PATH)) {
-    return process.env.TEST_DB_PATH;
-  }
-  
-  const mainDbPath = join(__dirname, '..', '..', 'data', 'design-patterns.db');
-  if (existsSync(mainDbPath)) {
-    return mainDbPath;
-  }
-  
-  throw new Error('Test database not found. Run setup first or ensure main database exists.');
+  return testRunContext().databasePath();
 }
 
 export function getTestDatabaseConfig(readonly: boolean = true, customPath?: string) {

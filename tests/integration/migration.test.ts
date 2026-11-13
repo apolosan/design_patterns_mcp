@@ -3,6 +3,7 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, vi } 
 import { DatabaseManager } from '../../src/services/database-manager';
 import { MigrationManager, Migration, MigrationOptions } from '../../src/services/migrations';
 import { MigrationRecord, TableName, ColumnInfo } from '../helpers/test-interfaces';
+import { createTempDatabasePath } from '../helpers/test-db';
 
 // Subclass to expose protected methods for testing purposes
 class TestableMigrationManager extends MigrationManager {
@@ -312,9 +313,10 @@ describe('Database Migration', () => {
     let testMigrationManager: TestableMigrationManager;
 
     beforeEach(async () => {
-      // Create a fresh in-memory database for each test
+      // Create a fresh database for each test. A name such as ":memory:<suffix>"
+      // is not in-memory: it becomes a file with that name in the project root.
       testDbManager = new DatabaseManager({
-        filename: `:memory:${Date.now()}-${Math.random()}`,
+        filename: createTempDatabasePath('migration-ddl'),
         options: { readonly: false },
       });
       await testDbManager.initialize();

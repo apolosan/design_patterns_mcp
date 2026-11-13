@@ -29,7 +29,7 @@ function buildMediator() {
       updated_at: '2026-01-01T00:00:00Z',
     }),
   };
-  const vectorOps = { searchSimilar: vi.fn().mockResolvedValue([]) };
+  const vectorOps = { searchSimilar: vi.fn().mockReturnValue([]) };
   const mediator = new SearchMediator(db as never, vectorOps as never, undefined, {
     useFuzzyRefinement: true,
     useSemanticSearch: false,

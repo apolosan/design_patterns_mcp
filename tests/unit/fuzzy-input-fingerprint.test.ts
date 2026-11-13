@@ -30,7 +30,7 @@ function buildMediator() {
     query: vi.fn().mockReturnValue([]),
     queryOne: vi.fn().mockReturnValue(patternRow),
   };
-  const vectorOps = { searchSimilar: vi.fn().mockResolvedValue([]) };
+  const vectorOps = { searchSimilar: vi.fn().mockReturnValue([]) };
   const mediator = new SearchMediator(db as never, vectorOps as never, undefined, {
     useFuzzyRefinement: true,
     useSemanticSearch: false,

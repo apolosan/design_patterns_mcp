@@ -10,6 +10,7 @@ import { validatePattern } from '../utils/pattern-schema-validation.js';
 import fs from 'fs';
 import path from 'path';
 import { resolvePatternsPath } from '../core/path-resolver.js';
+import { RELATIONSHIP_TYPES } from '../models/relationship.js';
 
 interface SeederConfig {
   patternsPath: string;
@@ -51,9 +52,14 @@ export class PatternSeeder {
   }
 
   /**
-   * Seed all pattern data
+   * Seed all pattern data.
+   * Never rejects: failures are reported through `success`/`failedFiles`.
    */
-  async seedAll(): Promise<SeederResult> {
+  seedAll(): Promise<SeederResult> {
+    return Promise.resolve(this.seedAllSync());
+  }
+
+  private seedAllSync(): SeederResult {
     const results: SeederResult[] = [];
     let totalPatterns = 0;
     let totalImplementations = 0;
@@ -71,8 +77,17 @@ export class PatternSeeder {
         filename: string;
       }> = [];
 
+      const failedFiles: string[] = [];
+
       for (const file of patternFiles) {
-        const loadedData = await this.loadPatternFile(file);
+        // Isolate per-file failures: one malformed file must not abort the catalog.
+        let loadedData: unknown;
+        try {
+          loadedData = this.loadPatternFile(file);
+        } catch {
+          failedFiles.push(path.basename(file));
+          continue;
+        }
 
         if (!this.isPatternFileData(loadedData)) {
           logger.warn('pattern-seeder', `Skipping invalid pattern file: ${file}`);
@@ -134,18 +149,22 @@ export class PatternSeeder {
       }
 
       // Second pass: Insert all patterns
+      const insertedPatterns: Pattern[] = [];
       this.db.transaction(() => {
         for (const pattern of allPatterns) {
           const patternInserted = this.insertPattern(pattern);
           if (patternInserted) {
             totalPatterns++;
+            insertedPatterns.push(pattern);
           }
         }
       });
 
-      // Third pass: Insert all implementations
+      // Third pass: Insert implementations only for patterns written in this
+      // run. Skipped (already existing) patterns keep their implementations,
+      // so repeated seeding never duplicates them.
       this.db.transaction(() => {
-        for (const pattern of allPatterns) {
+        for (const pattern of insertedPatterns) {
           if (pattern.implementations) {
             for (const impl of pattern.implementations) {
               const implInserted = this.insertImplementation(pattern.id, impl);
@@ -179,11 +198,14 @@ export class PatternSeeder {
 
       return {
         success: true,
-        message: `Successfully seeded ${totalPatterns} patterns, ${totalImplementations} implementations, and ${totalRelationships} relationships`,
+        message:
+          `Successfully seeded ${totalPatterns} patterns, ${totalImplementations} implementations, and ${totalRelationships} relationships` +
+          (failedFiles.length > 0 ? ` (skipped ${failedFiles.length} unreadable files: ${failedFiles.join(', ')})` : ''),
         totalPatterns,
         totalImplementations,
         totalRelationships,
         fileResults: results,
+        failedFiles,
       };
     } catch (error) {
       return {
@@ -319,6 +341,7 @@ export class PatternSeeder {
     // Collect all relationships for deferred insertion
     const allRelationships: Array<{ sourceId: string; relationship: string | RawRelationship }> =
       [];
+    const insertedIds = new Set<string>();
 
     // First pass: Insert all patterns and collect relationships
     this.db.transaction(() => {
@@ -326,6 +349,7 @@ export class PatternSeeder {
         const patternInserted = this.insertPattern(pattern);
         if (patternInserted) {
           patternsInserted++;
+          insertedIds.add(pattern.id);
 
           // Collect relationships for later insertion
           const relatedPatterns = pattern.relatedPatterns ?? pattern.related_patterns;
@@ -338,9 +362,9 @@ export class PatternSeeder {
       }
     });
 
-    // Second pass: Insert implementations
+    // Second pass: Insert implementations (only for patterns written now)
     this.db.transaction(() => {
-      for (const pattern of patterns) {
+      for (const pattern of patterns.filter(p => insertedIds.has(p.id))) {
         // Insert implementations
         if (pattern.implementations) {
           for (const impl of pattern.implementations) {
@@ -421,6 +445,9 @@ export class PatternSeeder {
         (pattern.updatedAt ? new Date(pattern.updatedAt) : new Date()).toISOString(),
       ];
 
+      // A (re)written pattern gets its implementations from this seed run;
+      // drop any previous ones so replace mode cannot accumulate copies.
+      this.db.execute('DELETE FROM pattern_implementations WHERE pattern_id = ?', [pattern.id]);
       this.db.execute(sql, params);
       return true;
     } catch (error) {
@@ -701,12 +728,12 @@ export class PatternSeeder {
       }
 
       // Check for invalid relationship types
+      const typePlaceholders = RELATIONSHIP_TYPES.map(() => '?').join(', ');
       const invalidTypes = this.db.query<{ type: string; count: number }>(
         `SELECT type, COUNT(*) as count FROM pattern_relationships
-         WHERE type NOT IN ('similar', 'alternative', 'complementary', 'conflicting',
-                           'evolves-to', 'specializes', 'generalizes', 'requires',
-                           'extends', 'replaces', 'combines-with', 'contrasts-with')
-         GROUP BY type`
+         WHERE type NOT IN (${typePlaceholders})
+         GROUP BY type`,
+        RELATIONSHIP_TYPES
       );
 
       if (invalidTypes.length > 0) {
@@ -732,6 +759,8 @@ interface SeederResult {
   filename?: string;
   error?: Error;
   fileResults?: SeederResult[];
+  /** Basenames of pattern files that could not be read or parsed. */
+  failedFiles?: string[];
   totalPatterns?: number;
   totalImplementations?: number;
   totalRelationships?: number;

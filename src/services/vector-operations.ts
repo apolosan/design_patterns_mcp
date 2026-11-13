@@ -12,6 +12,7 @@ import {
   VectorStats,
 } from '../models/vector.js';
 import { logger } from './logger.js';
+import { parseTags } from '../utils/parse-tags.js';
 
 interface CompressionStats {
   originalSize: number;
@@ -429,9 +430,13 @@ export class VectorOperationsService {
         }
 
         if (filters.tags && filters.tags.length > 0) {
-          const tagConditions = filters.tags.map(() => 'JSON_EXTRACT(p.tags, ?)').join(' OR ');
-          whereConditions.push(`(${tagConditions})`);
-          whereParams.push(...filters.tags.map(tag => `$.${tag}`));
+          // tags is stored as a JSON array: test membership, never build a
+          // JSON path from user input.
+          const placeholders = filters.tags.map(() => '?').join(',');
+          whereConditions.push(
+            `EXISTS (SELECT 1 FROM json_each(p.tags) WHERE json_each.value IN (${placeholders}))`
+          );
+          whereParams.push(...filters.tags);
         }
 
         if (filters.excludePatterns && filters.excludePatterns.length > 0) {
@@ -451,7 +456,7 @@ export class VectorOperationsService {
         SELECT 
           pe.pattern_id,
           pe.embedding,
-          vec_distance_l2(pe.embedding, ?) as distance,
+          vec_distance_cosine(pe.embedding, ?) as distance,
           p.name,
           p.category,
           p.description,
@@ -459,7 +464,7 @@ export class VectorOperationsService {
         FROM pattern_embeddings pe
         JOIN patterns p ON pe.pattern_id = p.id
         ${whereClause}
-        ORDER BY vec_distance_l2(pe.embedding, ?)
+        ORDER BY vec_distance_cosine(pe.embedding, ?)
         LIMIT ?
       `;
 
@@ -484,7 +489,9 @@ export class VectorOperationsService {
 
       const results: VectorSearchResult[] = rows.map((row, index) => ({
         patternId: row.pattern_id,
-        score: 1 / (1 + row.distance), // Convert distance to similarity score
+        // Cosine distance -> cosine similarity: same scale as the linear path,
+        // so minScore and downstream fusion weights mean the same thing.
+        score: 1 - row.distance,
         distance: row.distance,
         rank: index + 1,
         pattern: {
@@ -492,7 +499,7 @@ export class VectorOperationsService {
           name: row.name,
           category: row.category,
           description: row.description,
-          tags: row.tags ? row.tags.split(',').filter(Boolean) : [],
+          tags: parseTags(row.tags),
         },
       }));
 
@@ -509,7 +516,9 @@ export class VectorOperationsService {
   }
 
   /**
-   * Linear vector search (fallback method)
+   * Linear vector search (fallback when sqlite-vec is unavailable).
+   * Reads embeddings and pattern metadata in a single JOIN and applies the
+   * filters in memory, avoiding per-row lookups.
    */
   private linearVectorSearch(
     queryEmbedding: number[],
@@ -518,43 +527,59 @@ export class VectorOperationsService {
   ): VectorSearchResult[] {
     const limit = maxResults ?? this.config.maxResults;
 
-    // Get all embeddings
-    const sql = 'SELECT pattern_id, embedding FROM pattern_embeddings';
-    const rows = this.db.query<{ pattern_id: string; embedding: string }>(sql);
+    const rows = this.db.query<{
+      pattern_id: string;
+      embedding: string;
+      name: string;
+      category: string;
+      description: string;
+      tags: string | null;
+    }>(
+      `SELECT pe.pattern_id, pe.embedding, p.name, p.category, p.description, p.tags
+       FROM pattern_embeddings pe
+       JOIN patterns p ON pe.pattern_id = p.id`
+    );
+
+    const categories = filters?.categories?.length ? new Set(filters.categories) : null;
+    const wantedTags = filters?.tags?.length ? new Set(filters.tags) : null;
+    const excluded = filters?.excludePatterns?.length ? new Set(filters.excludePatterns) : null;
+    const minScore = filters?.minScore ?? 0.1;
 
     const results: VectorSearchResult[] = [];
 
     for (const row of rows) {
+      if (categories && !categories.has(row.category)) continue;
+      if (excluded?.has(row.pattern_id)) continue;
+
+      const tags = parseTags(row.tags);
+      if (wantedTags && !tags.some(tag => wantedTags.has(tag))) continue;
+
       const embedding = JSON.parse(row.embedding) as number[];
       const similarity = this.calculateSimilarity(queryEmbedding, embedding);
-
-      // Apply filters
-      if (filters && !this.matchesFilters(row.pattern_id, filters)) {
-        continue;
-      }
+      if (similarity < minScore) continue;
 
       results.push({
         patternId: row.pattern_id,
         score: similarity,
-        distance: 1 - similarity, // Convert similarity to distance
-        rank: 0, // Will be set after sorting
-        pattern: this.getPatternInfo(row.pattern_id) ?? undefined,
+        distance: 1 - similarity,
+        rank: 0,
+        pattern: {
+          id: row.pattern_id,
+          name: row.name,
+          category: row.category,
+          description: row.description,
+          tags,
+        },
       });
     }
 
-    // Sort by similarity score (descending)
     results.sort((a, b) => b.score - a.score);
-
-    // Apply threshold and limit
-    const minScore = filters?.minScore ?? 0.1;
-    const filteredResults = results.filter(result => result.score >= minScore).slice(0, limit);
-
-    // Set ranks
-    filteredResults.forEach((result, index) => {
+    const limited = results.slice(0, limit);
+    limited.forEach((result, index) => {
       result.rank = index + 1;
     });
 
-    return filteredResults;
+    return limited;
   }
 
   /**
@@ -597,91 +622,6 @@ export class VectorOperationsService {
     }
 
     return dotProduct / (norm1 * norm2);
-  }
-
-  /**
-   * Check if pattern matches search filters
-   */
-  private matchesFilters(patternId: string, filters: VectorSearchFilters): boolean {
-    try {
-      // Get pattern information
-      const pattern = this.getPatternInfo(patternId);
-
-      if (!pattern) {
-        return false;
-      }
-
-      // Category filter
-      if (filters.categories && filters.categories.length > 0) {
-        if (!filters.categories.includes(pattern.category)) {
-          return false;
-        }
-      }
-
-      // Complexity filter
-      if (filters.complexity && filters.complexity.length > 0) {
-        // This would need pattern data - simplified for now
-        // In production, join with patterns table
-      }
-
-      // Usage count filter
-      if (filters.minUsageCount) {
-        // This would need usage analytics - simplified for now
-      }
-
-      return true;
-    } catch (error) {
-      logger.error(
-        'vector-operations',
-        `Filter check failed for pattern ${patternId}`,
-        error instanceof Error ? error : new Error(String(error))
-      );
-      return false;
-    }
-  }
-
-  /**
-   * Get pattern information for search results
-   */
-  private getPatternInfo(
-    patternId: string
-  ): { id: string; name: string; category: string; description: string; tags: string[] } | null {
-    try {
-      const sql = 'SELECT id, name, category, description, tags FROM patterns WHERE id = ?';
-      const pattern = this.db.queryOne<{
-        id: string;
-        name: string;
-        category: string;
-        description: string;
-        tags: string;
-      }>(sql, [patternId]);
-
-      if (pattern) {
-        return {
-          ...pattern,
-          tags: pattern.tags ? pattern.tags.split(',').filter(Boolean) : [],
-        };
-      }
-
-      return {
-        id: patternId,
-        name: 'Unknown Pattern',
-        category: 'Unknown',
-        description: 'Pattern information not available',
-        tags: [],
-      };
-    } catch (error) {
-      logger.error('vector-operations', 'Failed to get pattern info', error as Error, {
-        patternId,
-      });
-      return {
-        id: patternId,
-        name: 'Unknown Pattern',
-        category: 'Unknown',
-        description: 'Pattern information not available',
-        tags: [],
-      };
-    }
   }
 
   /**

@@ -1,6 +1,8 @@
 /**
  * Fuzzy Defuzzification Engine
- * Converts fuzzy outputs back to crisp values using max membership method
+ * Converts fuzzy outputs back to crisp values as the membership-weighted
+ * average of each term's representative value (labelled "centroid"; the
+ * max-membership form only survives as the empty-denominator fallback)
  */
 
 export interface DefuzzificationInput {
@@ -29,9 +31,32 @@ export interface DefuzzificationResult {
   explanation: string;
 }
 
+/**
+ * Consequent term shapes for the pattern relevance variable: one crisp
+ * representative value plus the span the term may occupy. Kept in one place so
+ * the plain and the anchored defuzzifiers cannot drift apart.
+ */
+/**
+ * The relevance reported when nothing supports a pattern.
+ *
+ * Deliberately NOT the medium representative value (0.45): "I have no evidence"
+ * and "I have moderate evidence" must not report the same number, otherwise a
+ * conclusion cannot be told apart from ignorance. 0.35 sits between the low
+ * (0.15) and medium (0.45) terms, so the ordering reads correctly and a moderate
+ * conclusion outranks ignorance.
+ */
+export const NEUTRAL_RELEVANCE = 0.35;
+
+const RELEVANCE_OUTPUT_RANGES = {
+  low: { min: 0.0, max: 0.3, representativeValue: 0.15 },
+  medium: { min: 0.3, max: 0.7, representativeValue: 0.45 },
+  high: { min: 0.7, max: 0.9, representativeValue: 0.8 },
+  very_high: { min: 0.9, max: 1.0, representativeValue: 0.95 },
+} as const;
+
 export class FuzzyDefuzzificationEngine {
   /**
-   * Defuzzify using max membership method (simpler and more predictable)
+   * Defuzzify using the membership-weighted average of representative values
    */
   defuzzify(input: DefuzzificationInput): DefuzzificationResult {
     const crispValues: { [outputVariable: string]: number } = {};
@@ -159,17 +184,63 @@ export class FuzzyDefuzzificationEngine {
       fuzzyOutputs: {
         relevance: fuzzyScore
       },
-      outputRanges: {
-        relevance: {
-          low: { min: 0.0, max: 0.3, representativeValue: 0.15 },
-          medium: { min: 0.3, max: 0.7, representativeValue: 0.45 },
-          high: { min: 0.7, max: 0.9, representativeValue: 0.80 },
-          very_high: { min: 0.9, max: 1.0, representativeValue: 0.95 }
-        }
-      }
+      outputRanges: { relevance: RELEVANCE_OUTPUT_RANGES }
     };
 
     return this.defuzzify(input);
+  }
+
+  /**
+   * Certainty-anchored centre-of-sets defuzzification.
+   *
+   * Plain centre-of-sets returns sum(mu times v) divided by sum(mu), which
+   * cancels the firing strength when a single term is active: very_high fired
+   * at 0.2 and very_high fired at 1.0 both return 0.95. Clipping a symmetric
+   * triangle does not help either, because the clipped shape stays symmetric
+   * around the apex and its centroid is still the apex.
+   *
+   * This method adds the completeness rule "if nothing fires then relevance is
+   * neutral" with the residual mass (1 minus the dominant membership). Weak
+   * evidence is therefore pulled towards neutral instead of being reported as
+   * certain, and the output becomes continuous in the rule strengths instead
+   * of snapping between the four representative values.
+   */
+  defuzzifyPatternRelevanceAnchored(
+    fuzzyScore: { low: number; medium: number; high: number; very_high: number },
+    options?: { noEvidenceValue?: number }
+  ): DefuzzificationResult {
+    const neutral = options?.noEvidenceValue ?? NEUTRAL_RELEVANCE;
+    const terms = Object.entries(RELEVANCE_OUTPUT_RANGES) as Array<
+      [string, { min: number; max: number; representativeValue: number }]
+    >;
+
+    let numerator = 0;
+    let membershipSum = 0;
+    let maxMembership = 0;
+    for (const [term, shape] of terms) {
+      const membership = Math.max(0, fuzzyScore[term as keyof typeof fuzzyScore]);
+      numerator += membership * shape.representativeValue;
+      membershipSum += membership;
+      maxMembership = Math.max(maxMembership, membership);
+    }
+
+    const residual = Math.max(0, 1 - Math.min(maxMembership, 1));
+    const denominator = membershipSum + residual;
+    const raw = denominator > 0 ? (numerator + residual * neutral) / denominator : neutral;
+
+    // The declared spans bound the valid output; anything outside means the
+    // caller handed in malformed memberships.
+    const lowerBound = RELEVANCE_OUTPUT_RANGES.low.min;
+    const upperBound = RELEVANCE_OUTPUT_RANGES.very_high.max;
+    const relevance = Math.min(Math.max(raw, lowerBound), upperBound);
+    const confidence = Math.min(maxMembership * 0.9 + 0.1, 0.95);
+
+    return {
+      crispValues: { relevance },
+      method: 'centroid-anchored',
+      confidence,
+      explanation: 'Anchored centroid: relevance ' + (relevance * 100).toFixed(1) + '% (dominant membership ' + (maxMembership * 100).toFixed(1) + '%, no-evidence mass ' + (residual * 100).toFixed(1) + '%). Confidence: ' + (confidence * 100).toFixed(1) + '%.',
+    };
   }
 
   /**

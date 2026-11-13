@@ -4,15 +4,19 @@ import { describe, expect, it } from 'vitest';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { CANONICAL_TOOL_NAMES } from '../../src/mcp/canonical-tools.js';
+import { getTestDatabasePath } from '../helpers/test-db.js';
 
 const projectRoot = path.resolve(import.meta.dirname, '../..');
 const serverPath = path.join(projectRoot, 'dist/mcp-server.js');
-const databasePath = path.join(projectRoot, 'data/design-patterns.db');
 
 const CANONICAL_TOOLS = [...CANONICAL_TOOL_NAMES].sort();
 
 describe('MCP server compiled binary E2E', () => {
   it('exposes canonical tools via stdio JSON-RPC', async () => {
+    // The server writes its database back to disk when it shuts down, so it
+    // runs against this file's private copy of the catalog, not the real one.
+    const databasePath = getTestDatabasePath();
+
     expect(existsSync(serverPath)).toBe(true);
     expect(existsSync(databasePath)).toBe(true);
 

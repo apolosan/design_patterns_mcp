@@ -7,6 +7,7 @@
  */
 
 import { DatabaseManager } from '../services/database-manager.js';
+import { parseArrayProperty } from '../utils/parse-tags.js';
 import { BM25Scorer } from '../services/bm25-scorer.js';
 import type { BM25Document } from '../services/bm25-scorer.js';
 import { structuredLogger } from '../utils/logger.js';
@@ -31,6 +32,13 @@ export class KeywordSearchHandler implements SearchHandler {
   private config: KeywordSearchHandlerConfig;
   private bm25Scorer: BM25Scorer | null = null;
   private patternMap: Map<string, PatternSummary> = new Map();
+  /**
+   * Second lexical index over the fields the primary index deliberately omits
+   * (when_to_use, use_cases, benefits). It produces an INDEPENDENT ranking, which
+   * is the only thing that lets the fuzzy layer fuse opinions instead of
+   * re-weighting one signal with itself.
+   */
+  private applicabilityScorer: BM25Scorer | null = null;
 
   constructor(db: DatabaseManager, config?: Partial<KeywordSearchHandlerConfig>) {
     this.db = db;
@@ -41,6 +49,23 @@ export class KeywordSearchHandler implements SearchHandler {
    * Lazily initialize BM25 scorer from database patterns.
    * Called on first search to ensure DB is ready.
    */
+  /**
+   * Normalised applicability score per pattern for one query, or an empty map
+   * when the second index has nothing to offer. One pass per query; no per
+   * candidate lookup.
+   */
+  applicabilityScores(query: string): Map<string, number> {
+    this.ensureBM25();
+    const scores = new Map<string, number>();
+    if (!this.applicabilityScorer) return scores;
+    for (const result of this.applicabilityScorer.normalizeScores(
+      this.applicabilityScorer.scoreQuery(query)
+    )) {
+      scores.set(result.id, result.normalized);
+    }
+    return scores;
+  }
+
   private ensureBM25(): BM25Scorer {
     if (this.bm25Scorer) return this.bm25Scorer;
 
@@ -51,7 +76,10 @@ export class KeywordSearchHandler implements SearchHandler {
       description: string;
       complexity: string;
       tags: string;
-    }>('SELECT id, name, category, description, complexity, tags FROM patterns');
+      when_to_use: string | null;
+      use_cases: string | null;
+      benefits: string | null;
+    }>('SELECT id, name, category, description, complexity, tags, when_to_use, use_cases, benefits FROM patterns');
 
     const documents: BM25Document[] = [];
 
@@ -80,6 +108,19 @@ export class KeywordSearchHandler implements SearchHandler {
     }
 
     this.bm25Scorer = new BM25Scorer(documents);
+
+    // Built from the same rows, over the unindexed columns only. Lazy: one
+    // tokenisation pass per handler instance, never per query.
+    this.applicabilityScorer = new BM25Scorer(
+      patterns.map((pattern) => ({
+        id: pattern.id,
+        text: [
+          parseArrayProperty(pattern.when_to_use, 'when_to_use').join(' '),
+          parseArrayProperty(pattern.use_cases, 'use_cases').join(' '),
+          parseArrayProperty(pattern.benefits, 'benefits').join(' '),
+        ].join(' '),
+      }))
+    );
 
     structuredLogger.debug('keyword-search-handler', 'BM25 scorer initialized', {
       corpusSize: documents.length,
@@ -117,6 +158,7 @@ export class KeywordSearchHandler implements SearchHandler {
 
       // Build matches with normalized scores
       const matches: MatchResult[] = [];
+      const limit = this.resolveLimit(request);
 
       for (const result of normalized) {
         // Apply category filter if specified
@@ -145,8 +187,8 @@ export class KeywordSearchHandler implements SearchHandler {
           });
         }
 
-        // Stop after maxResults
-        if (matches.length >= this.config.maxResults) break;
+        // Stop after the per-request candidate limit
+        if (matches.length >= limit) break;
       }
 
       const duration = Date.now() - startTime;
@@ -187,6 +229,7 @@ export class KeywordSearchHandler implements SearchHandler {
       const normalized = scorer.normalizeScores(bm25Results);
 
       const matches: MatchResult[] = [];
+      const limit = this.resolveLimit(request);
 
       for (const result of normalized) {
         const pattern = this.patternMap.get(result.id);
@@ -208,7 +251,7 @@ export class KeywordSearchHandler implements SearchHandler {
           });
         }
 
-        if (matches.length >= this.config.maxResults) break;
+        if (matches.length >= limit) break;
       }
 
       const duration = Date.now() - startTime;
@@ -220,6 +263,14 @@ export class KeywordSearchHandler implements SearchHandler {
 
       return matches;
     });
+  }
+
+  /**
+   * Candidate pool size: the handler default, widened so that a caller asking
+   * for N results gets N (with headroom for hybrid fusion).
+   */
+  private resolveLimit(request: PatternRequest): number {
+    return Math.max(this.config.maxResults, (request.maxResults ?? 0) * 2);
   }
 
   /**

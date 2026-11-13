@@ -3,17 +3,21 @@
  * Represents relationships between design patterns
  */
 
-export type RelationshipType =
-  | 'related'
-  | 'extends'
-  | 'implements'
-  | 'uses'
-  | 'similar'
-  | 'alternative'
-  | 'complements'
-  | 'conflicts'
-  | 'prerequisite'
-  | 'successor';
+/** Canonical relationship vocabulary (single source of truth for type and validation). */
+export const RELATIONSHIP_TYPES = [
+  'related',
+  'extends',
+  'implements',
+  'uses',
+  'similar',
+  'alternative',
+  'complements',
+  'conflicts',
+  'prerequisite',
+  'successor',
+] as const;
+
+export type RelationshipType = (typeof RELATIONSHIP_TYPES)[number];
 
 export interface Relationship {
   /** Unique relationship identifier */

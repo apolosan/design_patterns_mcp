@@ -18,7 +18,6 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { DatabaseManager } from './services/database-manager.js';
 import { VectorOperationsService } from './services/vector-operations.js';
-import { PatternMatcher } from './services/pattern-matcher.js';
 import { SemanticSearchService } from './services/semantic-search.js';
 import { LLMBridgeService } from './services/llm-bridge.js';
 import { MigrationManager } from './services/migrations.js';
@@ -56,7 +55,6 @@ class DesignPatternsMCPServer {
   private server: Server;
   private db: DatabaseManager;
   private vectorOps: VectorOperationsService;
-  private patternMatcher: PatternMatcher;
   private searchMediator: SearchMediator;
   private semanticSearch!: SemanticSearchService;
   private llmBridge: LLMBridgeService | null = null;
@@ -89,7 +87,6 @@ class DesignPatternsMCPServer {
       this.db = container.getService<DatabaseManager>(TOKENS.DATABASE_MANAGER);
       this.vectorOps = container.getService<VectorOperationsService>(TOKENS.VECTOR_OPERATIONS);
       this.semanticSearch = container.getService<SemanticSearchService>(TOKENS.SEMANTIC_SEARCH);
-      this.patternMatcher = container.getService<PatternMatcher>(TOKENS.PATTERN_MATCHER);
       this.searchMediator = container.getService<SearchMediator>(TOKENS.SEARCH_MEDIATOR);
       this.migrationManager = container.getService<MigrationManager>(TOKENS.MIGRATION_MANAGER);
       this.patternSeeder = container.getService<PatternSeeder>(TOKENS.PATTERN_SEEDER);
@@ -134,17 +131,6 @@ class DesignPatternsMCPServer {
         contextWindow: 512,
         useQueryExpansion: false,
         useReRanking: true,
-      });
-
-      this.patternMatcher = new PatternMatcher(this.db, this.vectorOps, {
-        maxResults: 5,
-        minConfidence: 0.05, // Lower threshold for more results
-        useSemanticSearch: true,
-        useKeywordSearch: true,
-        useHybridSearch: true,
-        semanticWeight: 0.7,
-        keywordWeight: 0.3,
-        useFuzzyRefinement: this.config.enableFuzzyLogic ?? true, // Enable fuzzy refinement by default
       });
 
       this.searchMediator = new SearchMediator(this.db, this.vectorOps, new CacheService(), {
@@ -211,7 +197,7 @@ class DesignPatternsMCPServer {
     this.server = new Server(
       {
         name: 'design-patterns-mcp',
-        version: '0.7.2',
+        version: '0.7.3',
       },
       {
         capabilities: {
@@ -572,7 +558,7 @@ class DesignPatternsMCPServer {
   } {
     const info = {
       name: 'Design Patterns MCP Server',
-      version: '0.7.2',
+      version: '0.7.3',
       status: 'running',
       database: {
         path: this.config.databasePath,

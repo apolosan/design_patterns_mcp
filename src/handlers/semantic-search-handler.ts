@@ -16,6 +16,9 @@ import type {
   SemanticSearchHandlerConfig,
 } from '../types/search-types.js';
 
+/** Strategy whose vectors are not comparable with the stored model embeddings. */
+const INCOMPATIBLE_STRATEGY = 'simple-hash';
+
 const DEFAULT_CONFIG: SemanticSearchHandlerConfig = {
   maxResults: 10,
   minConfidence: 0.05,
@@ -64,15 +67,25 @@ export class SemanticSearchHandler implements SearchHandler {
       // Generate embedding for the query
       const queryEmbedding = await this.generateQueryEmbedding(request.query);
 
+      // Candidate pool grows with the caller's limit so a request for N
+      // results is not silently capped by the handler default.
+      const candidateLimit = Math.max(this.config.maxResults, (request.maxResults ?? 0) * 2);
+      const relevanceFloor = Math.max(this.config.minConfidence, this.config.similarityThreshold);
+
       // Search for similar patterns
-      const searchResults = this.vectorOps.searchSimilar(queryEmbedding, {
-        categories: request.categories,
-        minUsageCount: 0,
-      });
+      const searchResults = this.vectorOps.searchSimilar(
+        queryEmbedding,
+        {
+          categories: request.categories,
+          minUsageCount: 0,
+          minScore: relevanceFloor,
+        },
+        candidateLimit
+      );
 
       const matches: MatchResult[] = searchResults
-        .filter((result) => result.score >= this.config.minConfidence)
-        .slice(0, this.config.maxResults)
+        .filter((result) => result.score >= relevanceFloor)
+        .slice(0, candidateLimit)
         .map((result) => ({
           pattern: {
             id: result.patternId,
@@ -101,16 +114,20 @@ export class SemanticSearchHandler implements SearchHandler {
   }
 
   /**
-   * Generate query embedding using the embedding adapter
+   * Generate the query embedding with the same model family used for the
+   * stored pattern embeddings.
+   *
+   * Throws when no compatible model is available. A hash-based vector lives
+   * in a different space than the stored MiniLM vectors, so similarity
+   * scores computed from it are meaningless; failing lets the mediator
+   * degrade to keyword search and report `degraded: true`.
    */
   private async generateQueryEmbedding(query: string): Promise<number[]> {
-    // Check cache first
     const cachedEmbedding = this.cache.getEmbeddings(query);
     if (cachedEmbedding) {
       return cachedEmbedding;
     }
 
-    // Ensure adapter is initialized
     if (!this.embeddingAdapter) {
       this.embeddingAdapter = new EmbeddingServiceAdapter({
         cacheEnabled: true,
@@ -119,62 +136,27 @@ export class SemanticSearchHandler implements SearchHandler {
         retryAttempts: 3,
         retryDelay: 1000,
         preferredStrategy: 'transformers',
-        fallbackToSimple: true,
+        fallbackToSimple: false,
       });
     }
 
-    // Initialize if needed
     if (!(await this.embeddingAdapter.isReady())) {
       await this.embeddingAdapter.initialize();
     }
 
-    // Generate embedding
+    const strategy = this.embeddingAdapter.getStrategyInfo();
+    if (strategy?.name === INCOMPATIBLE_STRATEGY) {
+      throw new Error(
+        `Embedding strategy "${strategy.name}" is incompatible with stored pattern embeddings`
+      );
+    }
+
     const embedding = await this.embeddingAdapter.generateEmbedding(query);
-
-    if (!embedding || embedding.length === 0) {
-      // Fallback to simple hash-based embedding
-      return this.generateFallbackEmbedding(query);
+    if (embedding.length === 0) {
+      throw new Error('Embedding model returned an empty query embedding');
     }
 
-    // Cache the embedding
     this.cache.setEmbeddings(query, embedding, 3600000);
-
     return embedding;
-  }
-
-  /**
-   * Fallback embedding generation using simple hash
-   */
-  private generateFallbackEmbedding(query: string): number[] {
-    const words = query.toLowerCase().split(/\s+/);
-    const embedding = new Array(384).fill(0) as number[];
-
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-      const wordHash = this.simpleHash(word);
-
-      for (let j = 0; j < Math.min(word.length, 10); j++) {
-        const charCode = word.charCodeAt(j);
-        const position = (wordHash + j + i * 7) % embedding.length;
-        embedding[position] += (charCode / 255) * 0.5 + Math.sin(wordHash * j) * 0.3;
-      }
-    }
-
-    // Normalize
-    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
-    return embedding.map((val) => val / (norm || 1));
-  }
-
-  /**
-   * Simple hash function
-   */
-  private simpleHash(text: string): number {
-    let hash = 0;
-    for (let i = 0; i < text.length; i++) {
-      const char = text.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash;
-    }
-    return Math.abs(hash);
   }
 }

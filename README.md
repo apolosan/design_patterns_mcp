@@ -1,13 +1,13 @@
 # Design Patterns MCP Server
 
-[![Version](https://img.shields.io/badge/version-0.7.2-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
+[![Version](https://img.shields.io/badge/version-0.7.3-blue.svg)](https://github.com/apolosan/design_patterns_mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Test Status](https://img.shields.io/badge/tests-654%20%7C%20100%25-brightgreen.svg)](#testing)
 [![Patterns](https://img.shields.io/badge/patterns-710-orange.svg)](#available-pattern-categories)
 [![Built for](https://img.shields.io/badge/built%20for-AI%20coding%20agents-8a2be2.svg)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-An intelligent MCP (Model Context Protocol) server that provides design pattern recommendations using hybrid search (semantic + keyword + graph augmentation). Access **710 design patterns** across 90+ categories through a natural language interface with advanced blended RAG architecture.
+MCP server for design pattern recommendations. It runs hybrid search (semantic + keyword + graph augmentation) over **710 patterns** across 90+ categories and returns results through any MCP client.
 
 ## Quick Start
 
@@ -42,12 +42,12 @@ Configure in your MCP client (Claude Desktop, Cursor, etc.) and start discoverin
 |---------|-------------|
 | **Hybrid Search Engine** | Blended RAG combining semantic, keyword (BM25), and graph-augmented retrieval |
 | **710 Patterns** | Comprehensive catalog across 90+ categories including **Feature Flag** / Feature Toggle for progressive delivery and experimentation |
-| **MCP Integration** | Seamless integration with Claude, Cursor, and other MCP clients |
+| **MCP Integration** | Works with Claude, Cursor, and other MCP clients |
 | **Multi-Level Caching** | L1 in-memory + L3 SQLite cache with 95%+ hit rate |
 | **Event Bus System** | Decoupled service communication via pub/sub |
 | **Telemetry & Health** | Real-time performance metrics and system monitoring |
-| **SOLID Architecture** | Clean, maintainable codebase following best practices |
-| **Production Ready** | 654 test cases across 77 test files with 100% pass rate (0 failures, 0 skips) |
+| **SOLID Architecture** | Codebase follows SOLID principles throughout |
+| **Test suite** | 654 test cases across 77 test files, 100% pass rate (0 failures, 0 skips) |
 
 ## Available Pattern Categories
 
@@ -257,7 +257,7 @@ bun run typecheck    # TypeScript type checking
 
 ## Testing
 
-The project includes **654 test cases across 77 test files** with 100% pass rate (0 failures, 0 skips):
+The test suite has **654 test cases across 77 test files**, all passing (0 failures, 0 skips):
 
 - **Contract Tests**: MCP protocol compliance validation
 - **Integration Tests**: Component interaction tests against live SQLite DB and embeddings
@@ -307,6 +307,13 @@ Contributions are welcome! See the contributing guide.
 
 ## Release Notes
 
+### v0.7.3 (2026-11-13)
+
+- Each test file now works on its own copy of `data/design-patterns.db` in `tests/temp/run-<pid>-<uuid>/`. The copy and every temp database are deleted when the file finishes. This removes the intermittent "no such table: patterns" and "database disk image is malformed" failures in full runs.
+- A global setup removes directories left by killed runs. Its teardown fails the run if a test wrote to the real catalog.
+- README, CHANGELOG and QUICKSTART prose was rewritten in plain style. Commands, paths and numbers are unchanged.
+- No change to `src/` behavior. Version strings updated in `package.json`, `src/mcp-server.ts`, `AGENTS.md`, `CLAUDE.md` and this README.
+
 ### v0.7.2 — Version Bump (2026-08-16)
 
 - Canonical version bumped from `0.7.1` → `0.7.2` across active source and documentation files.
@@ -354,8 +361,8 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Version**: 0.7.2
-**Last Updated**: August 2026
+**Version**: 0.7.3
+**Last Updated**: November 2026
 **Patterns**: 710 JSON definitions (highlight: **Feature Flag** / Feature Toggle)
 **Tests**: 654 test cases | 100% pass rate (0 failures, 0 skips)
 

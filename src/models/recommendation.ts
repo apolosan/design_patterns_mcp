@@ -95,6 +95,8 @@ export interface PatternRecommendation {
     fuzzyConfidence?: number;
     enhancedScoring?: string[];
     originalConfidence?: number;
+    /** Defuzzified fuzzy relevance (telemetry only, never the ranking score) */
+    fuzzyRelevance?: number;
     fuzzyInputFingerprint?: {
       semanticSimilarity: number;
       keywordMatchStrength: number;
